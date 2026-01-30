@@ -24,6 +24,44 @@
 
 ---
 
+## 📥 Installation
+
+### Method 1: Clone Repository
+
+```bash
+git clone https://github.com/cahyo40/agent.git
+cd agent
+```
+
+### Method 2: Download ZIP
+
+1. Klik tombol **Code** di atas
+2. Pilih **Download ZIP**
+3. Extract ke folder project Anda
+
+### Method 3: Copy Specific Skill
+
+```bash
+# Clone hanya skill tertentu
+curl -O https://raw.githubusercontent.com/cahyo40/agent/main/.agent/skills/senior-flutter-developer/SKILL.md
+```
+
+### Setup di Project Anda
+
+Copy folder `.agent/skills/` ke root project Anda:
+
+```
+your-project/
+├── .agent/
+│   └── skills/
+│       ├── senior-flutter-developer/
+│       ├── senior-react-developer/
+│       └── ...
+└── your-code/
+```
+
+---
+
 ## 🏆 Skills Categories
 
 | Category | Count | Highlights |
