@@ -39,10 +39,26 @@ cd agent
 2. Pilih **Download ZIP**
 3. Extract ke folder project Anda
 
-### Method 3: Copy Specific Skill
+### Method 3: Clone Only `.agent` Folder (Sparse Checkout)
 
 ```bash
-# Clone hanya skill tertentu
+# Buat folder dan init git
+mkdir my-skills && cd my-skills
+git init
+git remote add origin https://github.com/cahyo40/agent.git
+
+# Enable sparse checkout
+git sparse-checkout init --cone
+git sparse-checkout set .agent
+
+# Pull hanya folder .agent
+git pull origin main
+```
+
+### Method 4: Copy Specific Skill
+
+```bash
+# Download skill tertentu langsung
 curl -O https://raw.githubusercontent.com/cahyo40/agent/main/.agent/skills/senior-flutter-developer/SKILL.md
 ```
 
