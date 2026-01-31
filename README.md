@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-152-blue?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-156-blue?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-4.0.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 152+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 156+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **152 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **156 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -160,7 +160,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 ```
 agents/
 ├── .agent/
-│   └── skills/          # 152 skill folders
+│   └── skills/          # 156 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/
