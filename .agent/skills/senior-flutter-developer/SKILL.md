@@ -548,9 +548,684 @@ void main() {
 - [ ] Localization complete
 ```
 
+## Animation Mastery
+
+### Animation Types Overview
+
+```
+FLUTTER ANIMATION TYPES
+├── IMPLICIT ANIMATIONS (Easy)
+│   ├── AnimatedContainer
+│   ├── AnimatedOpacity
+│   ├── AnimatedPositioned
+│   └── AnimatedSwitcher
+│
+├── EXPLICIT ANIMATIONS (More Control)
+│   ├── AnimationController
+│   ├── Tween + AnimatedBuilder
+│   ├── AnimatedWidget
+│   └── TweenAnimationBuilder
+│
+├── PHYSICS-BASED
+│   ├── SpringSimulation
+│   ├── GravitySimulation
+│   └── FrictionSimulation
+│
+└── HERO & PAGE TRANSITIONS
+    ├── Hero widget
+    ├── PageRouteBuilder
+    └── CustomTransitionPage
+```
+
+### Implicit Animations
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// AnimatedContainer - Multiple properties at once
+// ════════════════════════════════════════════════════════════════════════════
+
+class AnimatedCard extends StatefulWidget {
+  @override
+  State<AnimatedCard> createState() => _AnimatedCardState();
+}
+
+class _AnimatedCardState extends State<AnimatedCard> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => setState(() => _isExpanded = !_isExpanded),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        width: _isExpanded ? 300 : 200,
+        height: _isExpanded ? 200 : 100,
+        decoration: BoxDecoration(
+          color: _isExpanded ? Colors.blue : Colors.grey[300],
+          borderRadius: BorderRadius.circular(_isExpanded ? 16 : 8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(_isExpanded ? 0.3 : 0.1),
+              blurRadius: _isExpanded ? 20 : 5,
+              offset: Offset(0, _isExpanded ? 10 : 2),
+            ),
+          ],
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// AnimatedSwitcher - Widget transitions
+// ════════════════════════════════════════════════════════════════════════════
+
+AnimatedSwitcher(
+  duration: const Duration(milliseconds: 300),
+  transitionBuilder: (child, animation) {
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.1),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      ),
+    );
+  },
+  child: _showFirst
+      ? const Text('First', key: ValueKey('first'))
+      : const Text('Second', key: ValueKey('second')),
+)
+```
+
+### Explicit Animations
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// AnimationController with Tween
+// ════════════════════════════════════════════════════════════════════════════
+
+class PulsingButton extends StatefulWidget {
+  @override
+  State<PulsingButton> createState() => _PulsingButtonState();
+}
+
+class _PulsingButtonState extends State<PulsingButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.7).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Opacity(
+            opacity: _opacityAnimation.value,
+            child: child,
+          ),
+        );
+      },
+      child: ElevatedButton(
+        onPressed: () {},
+        child: const Text('Tap Me'),
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Staggered Animation
+// ════════════════════════════════════════════════════════════════════════════
+
+class StaggeredList extends StatefulWidget {
+  @override
+  State<StaggeredList> createState() => _StaggeredListState();
+}
+
+class _StaggeredListState extends State<StaggeredList>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..forward();
+  }
+
+  Animation<double> _getDelayedAnimation(int index) {
+    final start = (index * 0.1).clamp(0.0, 0.8);
+    final end = (start + 0.2).clamp(0.0, 1.0);
+    
+    return Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(start, end, curve: Curves.easeOutCubic),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        final animation = _getDelayedAnimation(index);
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, 50 * (1 - animation.value)),
+              child: Opacity(
+                opacity: animation.value,
+                child: child,
+              ),
+            );
+          },
+          child: ListTile(title: Text('Item $index')),
+        );
+      },
+    );
+  }
+}
+```
+
+### Custom Painter Animation
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// Animated Custom Painter
+// ════════════════════════════════════════════════════════════════════════════
+
+class AnimatedProgressRing extends StatefulWidget {
+  const AnimatedProgressRing({required this.progress});
+  final double progress;
+
+  @override
+  State<AnimatedProgressRing> createState() => _AnimatedProgressRingState();
+}
+
+class _AnimatedProgressRingState extends State<AnimatedProgressRing>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    )..forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return CustomPaint(
+          size: const Size(100, 100),
+          painter: ProgressRingPainter(
+            progress: widget.progress * _controller.value,
+            color: Theme.of(context).primaryColor,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ProgressRingPainter extends CustomPainter {
+  ProgressRingPainter({required this.progress, required this.color});
+  
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 10;
+
+    // Background circle
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = color.withOpacity(0.2)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 8,
+    );
+
+    // Progress arc
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -pi / 2,
+      2 * pi * progress,
+      false,
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 8
+        ..strokeCap = StrokeCap.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(ProgressRingPainter oldDelegate) {
+    return oldDelegate.progress != progress;
+  }
+}
+```
+
+### Page Transitions
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// Custom Page Transition
+// ════════════════════════════════════════════════════════════════════════════
+
+class SlideUpRoute<T> extends PageRouteBuilder<T> {
+  SlideUpRoute({required this.page})
+      : super(
+          pageBuilder: (_, __, ___) => page,
+          transitionsBuilder: (_, animation, __, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 1),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              )),
+              child: child,
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 400),
+        );
+
+  final Widget page;
+}
+
+// With GoRouter
+GoRoute(
+  path: '/detail',
+  pageBuilder: (context, state) => CustomTransitionPage(
+    child: DetailScreen(),
+    transitionsBuilder: (_, animation, __, child) {
+      return FadeTransition(
+        opacity: CurveTween(curve: Curves.easeIn).animate(animation),
+        child: child,
+      );
+    },
+  ),
+)
+```
+
+---
+
+## BLoC Pattern
+
+### BLoC vs Cubit
+
+```
+BLOC vs CUBIT
+├── CUBIT (Simpler)
+│   ├── Methods emit new states
+│   ├── Good for simple state changes
+│   └── Less boilerplate
+│
+└── BLOC (More Control)
+    ├── Events trigger state changes
+    ├── Better for complex flows
+    ├── Transformable event streams
+    └── Better traceability
+```
+
+### Cubit Implementation
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// State Definition
+// ════════════════════════════════════════════════════════════════════════════
+
+@freezed
+class CounterState with _$CounterState {
+  const factory CounterState({
+    @Default(0) int count,
+    @Default(false) bool isLoading,
+    String? error,
+  }) = _CounterState;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Cubit
+// ════════════════════════════════════════════════════════════════════════════
+
+class CounterCubit extends Cubit<CounterState> {
+  CounterCubit() : super(const CounterState());
+
+  void increment() => emit(state.copyWith(count: state.count + 1));
+  void decrement() => emit(state.copyWith(count: state.count - 1));
+  
+  Future<void> reset() async {
+    emit(state.copyWith(isLoading: true));
+    await Future.delayed(const Duration(seconds: 1));
+    emit(const CounterState());
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Usage in Widget
+// ════════════════════════════════════════════════════════════════════════════
+
+class CounterPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CounterCubit(),
+      child: const CounterView(),
+    );
+  }
+}
+
+class CounterView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: BlocBuilder<CounterCubit, CounterState>(
+          builder: (context, state) {
+            if (state.isLoading) {
+              return const CircularProgressIndicator();
+            }
+            return Text('${state.count}');
+          },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: () => context.read<CounterCubit>().increment(),
+            child: const Icon(Icons.add),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            onPressed: () => context.read<CounterCubit>().decrement(),
+            child: const Icon(Icons.remove),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### Bloc with Events
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// Events
+// ════════════════════════════════════════════════════════════════════════════
+
+@freezed
+class AuthEvent with _$AuthEvent {
+  const factory AuthEvent.loginRequested(String email, String password) = LoginRequested;
+  const factory AuthEvent.logoutRequested() = LogoutRequested;
+  const factory AuthEvent.checkAuthStatus() = CheckAuthStatus;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// States
+// ════════════════════════════════════════════════════════════════════════════
+
+@freezed
+class AuthState with _$AuthState {
+  const factory AuthState.initial() = AuthInitial;
+  const factory AuthState.loading() = AuthLoading;
+  const factory AuthState.authenticated(User user) = Authenticated;
+  const factory AuthState.unauthenticated() = Unauthenticated;
+  const factory AuthState.failure(String message) = AuthFailure;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Bloc
+// ════════════════════════════════════════════════════════════════════════════
+
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  AuthBloc({required this.authRepository}) : super(const AuthState.initial()) {
+    on<LoginRequested>(_onLoginRequested);
+    on<LogoutRequested>(_onLogoutRequested);
+    on<CheckAuthStatus>(_onCheckAuthStatus);
+  }
+
+  final AuthRepository authRepository;
+
+  Future<void> _onLoginRequested(
+    LoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthState.loading());
+    
+    try {
+      final user = await authRepository.login(event.email, event.password);
+      emit(AuthState.authenticated(user));
+    } catch (e) {
+      emit(AuthState.failure(e.toString()));
+    }
+  }
+
+  Future<void> _onLogoutRequested(
+    LogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    await authRepository.logout();
+    emit(const AuthState.unauthenticated());
+  }
+
+  Future<void> _onCheckAuthStatus(
+    CheckAuthStatus event,
+    Emitter<AuthState> emit,
+  ) async {
+    final user = await authRepository.getCurrentUser();
+    if (user != null) {
+      emit(AuthState.authenticated(user));
+    } else {
+      emit(const AuthState.unauthenticated());
+    }
+  }
+}
+```
+
+### Advanced BLoC Patterns
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// Event Transformer - Debounce
+// ════════════════════════════════════════════════════════════════════════════
+
+class SearchBloc extends Bloc<SearchEvent, SearchState> {
+  SearchBloc() : super(const SearchState.initial()) {
+    on<SearchQueryChanged>(
+      _onSearchQueryChanged,
+      transformer: debounce(const Duration(milliseconds: 300)),
+    );
+  }
+
+  EventTransformer<T> debounce<T>(Duration duration) {
+    return (events, mapper) => events.debounceTime(duration).flatMap(mapper);
+  }
+
+  Future<void> _onSearchQueryChanged(
+    SearchQueryChanged event,
+    Emitter<SearchState> emit,
+  ) async {
+    if (event.query.isEmpty) {
+      emit(const SearchState.initial());
+      return;
+    }
+    
+    emit(const SearchState.loading());
+    final results = await searchRepository.search(event.query);
+    emit(SearchState.success(results));
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// BlocListener - Side Effects
+// ════════════════════════════════════════════════════════════════════════════
+
+BlocListener<AuthBloc, AuthState>(
+  listenWhen: (previous, current) => 
+    previous != current && current is AuthFailure,
+  listener: (context, state) {
+    if (state is AuthFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+    }
+  },
+  child: const AuthView(),
+)
+
+// ════════════════════════════════════════════════════════════════════════════
+// MultiBlocProvider & MultiBlocListener
+// ════════════════════════════════════════════════════════════════════════════
+
+MultiBlocProvider(
+  providers: [
+    BlocProvider(create: (_) => AuthBloc()),
+    BlocProvider(create: (_) => ThemeBloc()),
+    BlocProvider(create: (context) => CartBloc(
+      authBloc: context.read<AuthBloc>(),
+    )),
+  ],
+  child: const MyApp(),
+)
+```
+
+### Testing BLoC
+
+```dart
+// ════════════════════════════════════════════════════════════════════════════
+// Cubit Test
+// ════════════════════════════════════════════════════════════════════════════
+
+void main() {
+  group('CounterCubit', () {
+    late CounterCubit cubit;
+
+    setUp(() {
+      cubit = CounterCubit();
+    });
+
+    tearDown(() {
+      cubit.close();
+    });
+
+    test('initial state is CounterState(count: 0)', () {
+      expect(cubit.state, const CounterState());
+    });
+
+    blocTest<CounterCubit, CounterState>(
+      'emits [CounterState(count: 1)] when increment is called',
+      build: () => CounterCubit(),
+      act: (cubit) => cubit.increment(),
+      expect: () => [const CounterState(count: 1)],
+    );
+
+    blocTest<CounterCubit, CounterState>(
+      'emits states in order when multiple actions',
+      build: () => CounterCubit(),
+      act: (cubit) {
+        cubit.increment();
+        cubit.increment();
+        cubit.decrement();
+      },
+      expect: () => [
+        const CounterState(count: 1),
+        const CounterState(count: 2),
+        const CounterState(count: 1),
+      ],
+    );
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// Bloc Test with Mocks
+// ════════════════════════════════════════════════════════════════════════════
+
+class MockAuthRepository extends Mock implements AuthRepository {}
+
+void main() {
+  group('AuthBloc', () {
+    late AuthBloc bloc;
+    late MockAuthRepository mockRepo;
+
+    setUp(() {
+      mockRepo = MockAuthRepository();
+      bloc = AuthBloc(authRepository: mockRepo);
+    });
+
+    blocTest<AuthBloc, AuthState>(
+      'emits [loading, authenticated] on successful login',
+      build: () {
+        when(() => mockRepo.login(any(), any()))
+            .thenAnswer((_) async => tUser);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(const LoginRequested('email', 'pass')),
+      expect: () => [
+        const AuthState.loading(),
+        AuthState.authenticated(tUser),
+      ],
+      verify: (_) {
+        verify(() => mockRepo.login('email', 'pass')).called(1);
+      },
+    );
+  });
+}
+```
+
+---
+
 ## Related Skills
 
 - `@senior-ios-developer` - Native iOS patterns
 - `@senior-android-developer` - Native Android patterns
 - `@app-store-publisher` - Store publishing
 - `@senior-ui-ux-designer` - Mobile UX
+- `@dapp-mobile-developer` - Flutter + Web3

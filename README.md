@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-150-blue?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-152-blue?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-4.0.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 150+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 152+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **150 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **152 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -97,8 +97,8 @@ your-project/
 | 💼 Business Systems | 10 | E-commerce, CRM, POS |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎮 Desktop & Games | 4 | Electron, Unity, Roblox |
-| 🔮 Emerging Tech | 4 | VR/AR, quantum, Web3 |
-| 📚 Others | 14 | Various specialized |
+| 🔮 Emerging Tech | 6 | VR/AR, quantum, Web3, dApp |
+| 📚 Others | 16 | Various specialized |
 
 ---
 
@@ -160,7 +160,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 ```
 agents/
 ├── .agent/
-│   └── skills/          # 150 skill folders
+│   └── skills/          # 152 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/
