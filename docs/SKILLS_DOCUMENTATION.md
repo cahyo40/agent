@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 5.0.0  
+> **Version:** 5.1.0  
 > **Last Updated:** 2026-02-01  
-> **Total Skills:** 209
+> **Total Skills:** 215
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **209 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **215 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Key Features
 
@@ -32,13 +32,13 @@ Antigravity AI Agent Skills adalah koleksi **209 skills** yang memperluas kemamp
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| 🤖 AI & Machine Learning | 12 | LLM, agents, RAG, edge AI |
-| 🔧 Backend Development | 20 | Python, Go, Rust, PHP, gRPC |
+| 🤖 AI & Machine Learning | 13 | LLM, agents, RAG, NLP, edge AI |
+| 🔧 Backend Development | 24 | Python, Go, Rust, PHP, gRPC, Elixir, Scala |
 | 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod |
 | 🎨 Frontend Development | 12 | React, Vue, Next.js, Nuxt |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 12 | CI/CD, K8s, GitHub Actions |
-| 💾 Data & Databases | 14 | MongoDB, PostgreSQL, Kafka |
+| 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Kafka, Big Data |
 | 🔐 Security | 5 | OWASP, API security, pen testing |
 | 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
 | 📝 Content Creation | 16 | Video, podcasts, blogs, social |
@@ -48,7 +48,7 @@ Antigravity AI Agent Skills adalah koleksi **209 skills** yang memperluas kemamp
 | 🎮 Desktop & Games | 4 | Electron, Unity, Roblox |
 | 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
-| 📚 Others | 35 | Various specialized skills |
+| 📚 Others | 38 | Various specialized skills |
 
 ---
 
@@ -79,7 +79,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ## Skills by Category
 
-### 🤖 AI & Machine Learning (12 Skills)
+### 🤖 AI & Machine Learning (13 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -93,12 +93,13 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `autonomous-agent-patterns` | Agent design patterns, tool integration |
 | `chatbot-developer` | Conversational AI, dialog design |
 | `mcp-server-builder` | MCP servers for AI agent tools |
+| `nlp-specialist` | NLP, sentiment, NER, transformers |
 | `stitch-enhance-prompt` | UI prompt optimization for Stitch |
 | `stitch-loop` | Autonomous website building |
 
 ---
 
-### 🔧 Backend Development (20 Skills)
+### 🔧 Backend Development (24 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -122,6 +123,10 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `api-design-specialist` | REST/GraphQL design, versioning |
 | `kafka-developer` | Event streaming, Kafka Streams |
 | `microservices-architect` | Service decomposition, API gateways |
+| `elixir-phoenix-developer` | Elixir, Phoenix, OTP, LiveView |
+| `scala-developer` | Scala, Akka, Apache Spark |
+| `bun-developer` | Bun runtime, fast JS/TS, SQLite |
+| `deno-developer` | Deno runtime, secure, TypeScript |
 
 ---
 
@@ -184,7 +189,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-### 💾 Data & Databases (14 Skills)
+### 💾 Data & Databases (16 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -202,6 +207,8 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `r-statistician` | Hypothesis testing, Bayesian |
 | `spreadsheet-expert` | Excel, Google Sheets |
 | `gis-specialist` | PostGIS, mapping, spatial data |
+| `big-data-engineer` | Spark, Hadoop, Delta Lake, Airflow |
+| `kafka-developer` | Event streaming, Kafka Streams |
 
 ---
 
