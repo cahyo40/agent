@@ -1,220 +1,82 @@
 ---
 name: ai-image-prompt-engineer
-description: "Expert AI image prompt engineering for logos, illustrations, posters, and visual content using Midjourney, DALL-E, and Stable Diffusion"
+description: "Expert AI image prompt engineering for high-fidelity visual content using Midjourney v6, Flux, DALL-E 3, and Stable Diffusion XL"
 ---
 
-# AI Image Prompt Engineer
+# AI Image Prompt Engineer (Advanced)
 
 ## Overview
 
-Craft effective prompts for AI image generators to create logos, illustrations, posters, and other visual content.
+Master the science of AI image generation. This skill covers advanced prompt structures, lighting physics, camera optics, art history styles, and technical parameters for the world's most powerful AI models (Midjourney, Flux.1, Stable Diffusion XL, DALL-E 3).
 
 ## When to Use This Skill
 
-- Use when creating AI-generated logos
-- Use when making illustrations with AI
-- Use when designing posters/graphics
+- Use for any professional creative project requiring AI-generated visual assets
+- Use for consistent character/style generation across multiple images
+- Use when precision in lighting, angle, and texture is required
+- Use for benchmarking and selecting the best AI model for a specific artistic task
 
 ## How It Works
 
-### Step 1: Prompt Structure
+### Step 1: Scientific Prompt Structure (The 5-Layer Model)
+
+1. **Subject**: The core entity (Who/What).
+2. **Action/Context**: What the subject is doing and where.
+3. **Descriptor/Aesthetic**: Textures, materials, art styles (e.g., "Satin finish," "Surrealism").
+4. **Lighting & Atmosphere**: Physics of light (e.g., "Volumetric lighting," "Chiaroscuro," "Global illumination").
+5. **Camera & Technical**: Optics (e.g., "85mm lens," "f/1.8," "Shot on IMAX," "Shallow depth of field").
+
+### Step 2: Lighting & Materials Physics
+
+| Keyword | Effect | Best Use |
+|---------|--------|----------|
+| **Rembrandt Lighting** | High-contrast, moody, 45-degree angle | Portraits |
+| **God Rays** | Beams of light through dust/fog | Nature, Spiritual |
+| **Bioluminescence** | Glowing organic elements | Sci-fi, Fantasy |
+| **Subsurface Scattering** | Light passing through wax/skin | Realism |
+| **Iridescent** | Rainbow-like color shifts | Futuristic, Fashion |
+
+### Step 3: Camera Optics & Composition
+
+- **Focal Length**: `35mm` (Storytelling), `85mm` (Portraits), `14mm` (Aggressive wide).
+- **Aperture**: `f/1.8` (Blurred background), `f/22` (Infinite focus).
+- **Angles**: `Low angle` (Heroic), `Bird's eye` (Overview), `Dutch angle` (Tension).
+
+### Step 4: Model Specific Parameters
 
 ```markdown
-## Universal Prompt Formula
+### Midjourney v6
+--ar 16:9      (Aspect Ratio)
+--stylize 250  (Aesthetics)
+--chaos 10     (Variation)
+--weird 50     (Unique vibes)
+--cref [url]   (Character Reference)
+--sref [url]   (Style Reference)
 
-[Subject] + [Style] + [Details] + [Mood/Atmosphere] + [Technical Specs]
-
-### Example
-"A minimalist owl logo, flat vector design, geometric shapes, 
-blue and gold colors, professional corporate style, 
-clean white background, high contrast"
-```
-
-### Step 2: Logo Prompts
-
-```markdown
-## Logo Prompt Templates
-
-### Minimalist Logo
-"Minimalist [subject] logo, flat vector design, single color,
-geometric shapes, clean lines, scalable, professional,
-white background, no text"
-
-### Mascot Logo
-"[Animal/Character] mascot logo, friendly expression, 
-modern cartoon style, vibrant colors, dynamic pose,
-suitable for sports team, isolated on white"
-
-### Abstract Logo
-"Abstract logo representing [concept], flowing shapes,
-gradient colors [color1] to [color2], modern and elegant,
-negative space design, vector art style"
-
-### Wordmark Logo
-"Typography-based logo for '[brand name]', custom lettering,
-[style: bold/elegant/playful], [color scheme], 
-professional font design, clean background"
-
-## Logo Style Keywords
-- Flat design, vector, geometric
-- Minimalist, clean, simple
-- Modern, contemporary, sleek
-- Vintage, retro, classic
-- Hand-drawn, organic, natural
-- Corporate, professional, formal
-- Playful, fun, dynamic
-```
-
-### Step 3: Illustration Prompts
-
-```markdown
-## Illustration Styles
-
-### Flat Illustration
-"Flat illustration of [subject], minimal shading,
-bold colors, geometric simplification, 
-modern vector style, [mood], clean composition"
-
-### Isometric Illustration
-"Isometric view of [subject], 3D perspective,
-colorful flat shading, technical precision,
-clean lines, white background"
-
-### Character Illustration
-"Character illustration of [description], 
-[art style: anime/cartoon/realistic], 
-full body pose, expressive face,
-detailed costume, vibrant colors"
-
-### Editorial Illustration
-"Editorial illustration about [concept/topic],
-metaphorical visual, thought-provoking,
-magazine style, limited color palette,
-conceptual art, professional quality"
-
-## Illustration Keywords
-- Digital painting, concept art
-- Children's book style, whimsical
-- Line art, ink drawing, sketch
-- Watercolor effect, soft edges
-- Pop art, bold outlines
-- Fantasy art, detailed
-```
-
-### Step 4: Poster Prompts
-
-```markdown
-## Poster Templates
-
-### Event Poster
-"Event poster for [event name], [theme/mood],
-bold typography area, eye-catching visuals,
-[color scheme], modern design,
-clear hierarchy, promotional style"
-
-### Movie Poster
-"Movie poster style, [genre: action/horror/romance],
-dramatic lighting, cinematic composition,
-main character focus, atmospheric background,
-professional film poster quality"
-
-### Motivational Poster
-"Inspirational poster design, [theme],
-impactful imagery, space for quote,
-clean modern layout, [color palette],
-corporate/office suitable"
-
-### Product Poster
-"Product advertisement poster, [product type],
-clean studio lighting, minimalist background,
-premium feel, lifestyle context,
-commercial photography style"
-```
-
-### Step 5: Platform-Specific Tips
-
-```markdown
-## Midjourney Specific
-
-### Parameters
---ar 1:1       (square, for logos)
---ar 16:9      (landscape, for banners)
---ar 9:16      (portrait, for posters)
---v 6          (latest version)
---style raw    (less stylized)
---no [element] (exclude elements)
-
-### Quality Boosters
-"high quality, 4k, detailed, professional,
-award-winning design, trending on Dribbble"
-
----
-
-## DALL-E Specific
-
-### Best Practices
-- Be descriptive and specific
-- Mention style explicitly
-- Include color preferences
-- Specify "no text" for clean logos
-
----
-
-## Stable Diffusion Specific
-
-### Positive Prompts
-"masterpiece, best quality, highly detailed,
-professional, sharp focus, 8k resolution"
-
-### Negative Prompts
-"blurry, low quality, distorted, watermark,
-text, signature, ugly, deformed"
-```
-
-### Step 6: Color & Style Keywords
-
-```markdown
-## Color Palettes
-
-### Corporate
-"Navy blue, royal blue, professional gray,
-gold accents, clean white"
-
-### Tech/Modern
-"Electric blue, neon purple, dark backgrounds,
-gradient effects, futuristic"
-
-### Nature/Organic
-"Forest green, earth tones, warm browns,
-natural colors, organic feel"
-
-### Luxury
-"Black and gold, deep burgundy, champagne,
-elegant, premium, sophisticated"
-
-## Style Descriptors
-
-| Style | Keywords |
-|-------|----------|
-| Modern | clean, minimal, sleek, contemporary |
-| Vintage | retro, classic, nostalgic, aged |
-| Playful | fun, colorful, dynamic, energetic |
-| Elegant | sophisticated, refined, luxurious |
-| Bold | striking, impactful, dramatic |
+### Stable Diffusion / Flux
+(Prompt Weighting): (subject:1.5)
+Negative Prompt: (deformed, blurry, watermark, lowres:1.3)
 ```
 
 ## Best Practices
 
-- ✅ Be specific about style and colors
-- ✅ Include "no text" for clean logos
-- ✅ Specify aspect ratio
-- ✅ Use negative prompts when available
-- ❌ Don't use vague descriptions
-- ❌ Don't request copyrighted styles by name
-- ❌ Don't skip technical specifications
+### ✅ Do This
+
+- ✅ Describe the "Light Source" explicitly (e.g., "Sunlight through blinds")
+- ✅ Use "Medium" descriptors (e.g., "Oil on canvas," "3D render," "Polaroid")
+- ✅ Implement "Negative Prompting" to remove unwanted artifacts
+- ✅ Leverage "Reference Images" (ID, SREF) to maintain consistency
+- ✅ Keep prompts structured and avoid "Keyword Soup"
+
+### ❌ Avoid This
+
+- ❌ Don't use contradictory terms (e.g., "Minimalist high-detail")
+- ❌ Avoid generic quality words like "Beautiful" or "Stunning"—be technical instead
+- ❌ Don't ignore the importance of "Aspect Ratio" for composition
+- ❌ Avoid over-weighting prompts which can lead to visual "deep-frying"
 
 ## Related Skills
 
-- `@brand-designer`
-- `@illustration-creator`
-- `@senior-prompt-engineer`
+- `@ai-poster-designer` - Layout focus
+- `@digital-human-architect` - High-fidelity character focus
+- `@generative-video-specialist` - Transition into motion

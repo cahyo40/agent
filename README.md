@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-255-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.1.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-261-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.2.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 255+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 261+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **255 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **261 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -91,12 +91,12 @@ your-project/
 | 💾 Data & Databases | 16 | ETL, MongoDB, PostgreSQL, Big Data |
 | 🔐 Security | 8 | OWASP, Pen testing, DevSecOps, Privacy |
 | 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
-| 📝 Content Creation | 17 | Video, podcasts, blogs, Gen Video |
+| 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, Architecture |
 | 💼 Industry Apps | 21 | Healthcare, Trading, ERP, Fleet, BI, Travel, Logistics, Marketplace, Gig Economy |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
-| 🔮 Emerging Tech | 10 | VR/AR, Quantum, Web3, Biometrics |
+| 🔮 Emerging Tech | 11 | VR/AR, Quantum, Web3, Biometrics, Digital Human |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |

@@ -1,84 +1,62 @@
 ---
 name: thumbnail-designer
-description: "Expert YouTube thumbnail design for high click-through rates"
+description: "Specialist in high-CTR (Click-Through Rate) thumbnail design using AI-generated imagery and psychological hooks"
 ---
 
 # Thumbnail Designer
 
 ## Overview
 
-Design click-worthy thumbnails that maximize video CTR.
+Master the art of the "Click." This skill focuses on the psychology of attention—using high-contrast colors, expressive AI-generated faces, "Z-Pattern" layouts, and bold, readable typography to maximize Click-Through Rate (CTR) for video content.
 
 ## When to Use This Skill
 
-- Use when creating YouTube thumbnails
-- Use when optimizing CTR
+- Use when creating thumbnails for YouTube, TikTok, or Reels
+- Use for A/B testing different visual hooks with AI-generated variations
+- Use when you need to "Stop the Scroll" in a crowded feed
+- Use for designing branding for video series with AI consistency
 
 ## How It Works
 
-### Step 1: Thumbnail Anatomy
+### Step 1: Eye-Catching AI Imagery
 
-```markdown
-## High-CTR Elements
+- **Expressive Faces**: Prompting AI for "exaggerated facial expressions" (Shock, Awe, Success) to create an immediate emotional connection.
+- **Micro-Detailing**: Using keywords like "8k," "highly detailed texture," or "macro photography" to make the subject "Pop" on small screens.
 
-### Face
-- Clear emotion (surprise, shock, joy)
-- Eye contact with viewer
-- At least 30% of frame
+### Step 2: The "Z-Pattern" Layout
 
-### Text
-- 3-4 words max
-- Large, bold font
-- Contrasting color
+- Placing the most important element (Face/Product) where the eye starts (top-left/right), and the "Value Prop" (Text) in the remaining focal path.
 
-### Background
-- Bright, saturated colors
-- Simple, uncluttered
-- Contrasts with YouTube red UI
+### Step 3: Contrast & Color Theory for CTR
+
+```text
+PROMPT STRATEGY:
+"Main subject in foreground, highly detailed, vibrant colors, bokeh background in complementary color (e.g., Orange vs Blue), neon rim light, sharp focus, 8k --ar 16:9"
 ```
 
-### Step 2: Color Psychology
+### Step 4: Text Overlay Strategy
 
-```markdown
-## Colors that Pop
-
-| Color | Emotion | Use For |
-|-------|---------|---------|
-| Yellow | Attention | Highlights, text |
-| Red | Urgency | Warnings, drama |
-| Blue | Trust | Tech, tutorials |
-| Green | Growth | Money, success |
-| Orange | Energy | Action, CTA |
-
-## Avoid
-- Gray (boring)
-- Dark blues (blends with YT)
-- Too many colors (3 max)
-```
-
-### Step 3: Design Template
-
-```markdown
-## Thumbnail Composition
-
-[Face/Subject] | [Text] | [Supporting Visual]
-     40%       |  35%   |        25%
-
-### Text Placement
-- Top-right or bottom-left
-- Never over face
-- Shadow/outline for readability
-```
+- Using bold, high-contrast typography (3-4 words max) that complements the AI-generated imagery.
 
 ## Best Practices
 
-- ✅ Test with A/B thumbnails
-- ✅ Mobile-first design (small preview)
-- ✅ Consistent style for branding
-- ❌ Don't use too many elements
-- ❌ Don't mislead (clickbait)
+### ✅ Do This
+
+- ✅ Use "Complementary Colors" for the subject vs. background (e.g., Blue background for an Orange subject)
+- ✅ Ensure the subject occupies at least 40% of the thumbnail frame
+- ✅ Test visibility at 10% size to ensure readability on mobile devices
+- ✅ Use "Neon Rim Lights" in prompts to separate the subject from the background
+- ✅ Keep the right-center area clear (where the timestamp/duration often covers)
+
+### ❌ Avoid This
+
+- ❌ Don't use small text—it becomes unreadable on mobile
+- ❌ Avoid "False Advertising" (Clickbait that doesn't deliver) to maintain viewer trust
+- ❌ Don't clutter the image with too many competing elements
+- ❌ Don't use low-contrast color schemes (e.g., Grey on Black)
 
 ## Related Skills
 
-- `@senior-youtube-content-creator`
-- `@brand-designer`
+- `@ai-image-prompt-engineer` - Base prompting foundation
+- `@senior-youtube-content-creator` - Platform strategy
+- `@short-form-video-creator` - For TikTok/Reels context
