@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 5.2.0  
+> **Version:** 5.3.0  
 > **Last Updated:** 2026-02-01  
-> **Total Skills:** 230
+> **Total Skills:** 240
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **230 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **240 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Key Features
 
@@ -35,7 +35,7 @@ Antigravity AI Agent Skills adalah koleksi **230 skills** yang memperluas kemamp
 | 🤖 AI & Machine Learning | 15 | LLM, agents, RAG, NLP, CV, OCR |
 | 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
 | 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod |
-| 🎨 Frontend Development | 14 | React, Vue, Next.js, Svelte, Astro |
+| 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 15 | CI/CD, K8s, Terraform, Ansible |
 | 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Big Data |
@@ -44,11 +44,12 @@ Antigravity AI Agent Skills adalah koleksi **230 skills** yang memperluas kemamp
 | 📝 Content Creation | 16 | Video, podcasts, blogs, social |
 | 📊 Marketing & Business | 12 | SEO, copywriting, growth |
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
-| 💼 Industry Apps | 12 | Healthcare, trading, food delivery |
-| 🎮 Desktop & Games | 7 | Unreal, Godot, Unity, Design |
+| 💼 Industry Apps | 15 | Healthcare, Trading, ERP, Fleet, BI |
+| 🎮 Desktop & Games | 10 | Unreal, Godot, Unity Pro, Roblox Pro |
 | 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
+| 🏗️ Industrial Tech | 2 | IIO, SCADA specialization |
 | 📚 Others | 33 | Various specialized skills |
 
 ---
