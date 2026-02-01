@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-209-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-5.0.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-215-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-5.1.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 209+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 215+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **209 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **215 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
