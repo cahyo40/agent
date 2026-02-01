@@ -7,212 +7,189 @@ description: "Expert API testing including Postman, REST API automation, contrac
 
 ## Overview
 
-Test APIs thoroughly using Postman, automated testing, and validation techniques.
+Master API testing with Postman, automated tests, contract testing, and comprehensive API validation strategies.
 
 ## When to Use This Skill
 
-- Use when testing REST/GraphQL APIs
+- Use when testing REST APIs
 - Use when automating API tests
+- Use when validating API contracts
+- Use when load testing APIs
 
 ## How It Works
 
-### Step 1: Postman Basics
-
-```markdown
-## Request Components
-
-### HTTP Methods
-- GET: Retrieve data
-- POST: Create data
-- PUT: Update (replace)
-- PATCH: Update (partial)
-- DELETE: Remove data
-
-### Request Parts
-- URL + Query params
-- Headers (Auth, Content-Type)
-- Body (JSON, form-data)
-
-### Response Validation
-- Status code
-- Response time
-- Body content
-- Headers
-```
-
-### Step 2: Postman Tests
+### Step 1: Postman Collections
 
 ```javascript
-// Test status code
+// Pre-request script
+pm.environment.set("timestamp", Date.now());
+
+// Generate auth token
+const token = pm.environment.get("access_token");
+pm.request.headers.add({
+    key: "Authorization",
+    value: `Bearer ${token}`
+});
+
+// Test script
 pm.test("Status code is 200", () => {
-  pm.response.to.have.status(200);
+    pm.response.to.have.status(200);
 });
 
-// Test response time
 pm.test("Response time < 500ms", () => {
-  pm.expect(pm.response.responseTime).to.be.below(500);
+    pm.expect(pm.response.responseTime).to.be.below(500);
 });
 
-// Test response body
-pm.test("Response has correct data", () => {
-  const json = pm.response.json();
-  pm.expect(json.success).to.be.true;
-  pm.expect(json.data).to.be.an('array');
-  pm.expect(json.data.length).to.be.above(0);
+pm.test("Response has correct structure", () => {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property("id");
+    pm.expect(jsonData).to.have.property("name");
+    pm.expect(jsonData.email).to.be.a("string");
 });
 
-// Test specific fields
-pm.test("User has required fields", () => {
-  const user = pm.response.json().data;
-  pm.expect(user).to.have.property('id');
-  pm.expect(user).to.have.property('email');
-  pm.expect(user.email).to.include('@');
+// JSON Schema validation
+const schema = {
+    type: "object",
+    required: ["id", "name", "email"],
+    properties: {
+        id: { type: "number" },
+        name: { type: "string" },
+        email: { type: "string", format: "email" }
+    }
+};
+
+pm.test("Response matches schema", () => {
+    pm.response.to.have.jsonSchema(schema);
 });
-
-// Save to environment
-const token = pm.response.json().token;
-pm.environment.set("authToken", token);
 ```
 
-### Step 3: Collection Runner
+### Step 2: Automated Testing (Jest + Supertest)
 
-```markdown
-## Test Workflow
-
-### Pre-request Script
-- Set dynamic variables
-- Generate timestamps
-- Create test data
-
-### Tests
-- Validate response
-- Extract data for next request
-- Chain requests together
-
-## Environment Variables
-- {{baseUrl}} = https://api.example.com
-- {{authToken}} = saved from login
-- {{userId}} = dynamic from response
-```
-
-### Step 4: Newman (CLI)
-
-```bash
-# Run collection
-newman run collection.json -e environment.json
-
-# With report
-newman run collection.json \
-  -e environment.json \
-  --reporters cli,html \
-  --reporter-html-export report.html
-
-# CI/CD integration
-newman run collection.json \
-  -e environment.json \
-  --bail \
-  --color on
-```
-
-### Step 5: Jest/Supertest (Code)
-
-```javascript
-const request = require('supertest');
-const app = require('../app');
+```typescript
+import request from 'supertest';
+import app from '../src/app';
 
 describe('User API', () => {
-  let authToken;
+  let authToken: string;
+  let userId: string;
 
   beforeAll(async () => {
     const res = await request(app)
-      .post('/auth/login')
-      .send({ email: 'test@test.com', password: 'password' });
+      .post('/api/auth/login')
+      .send({ email: 'test@example.com', password: 'password' });
     authToken = res.body.token;
   });
 
-  describe('GET /users', () => {
-    it('should return users list', async () => {
+  describe('POST /api/users', () => {
+    it('should create a user', async () => {
       const res = await request(app)
-        .get('/users')
+        .post('/api/users')
         .set('Authorization', `Bearer ${authToken}`)
-        .expect(200);
+        .send({
+          name: 'John Doe',
+          email: 'john@example.com'
+        });
 
-      expect(res.body.data).toBeInstanceOf(Array);
-      expect(res.body.data.length).toBeGreaterThan(0);
+      expect(res.status).toBe(201);
+      expect(res.body).toHaveProperty('id');
+      expect(res.body.name).toBe('John Doe');
+      userId = res.body.id;
     });
 
-    it('should require authentication', async () => {
-      await request(app)
-        .get('/users')
-        .expect(401);
+    it('should return 400 for invalid data', async () => {
+      const res = await request(app)
+        .post('/api/users')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ name: '' });
+
+      expect(res.status).toBe(400);
+      expect(res.body.errors).toBeDefined();
     });
   });
 
-  describe('POST /users', () => {
-    it('should create new user', async () => {
-      const newUser = {
-        name: 'Test User',
-        email: 'new@test.com'
-      };
-
+  describe('GET /api/users/:id', () => {
+    it('should get user by id', async () => {
       const res = await request(app)
-        .post('/users')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send(newUser)
-        .expect(201);
+        .get(`/api/users/${userId}`)
+        .set('Authorization', `Bearer ${authToken}`);
 
-      expect(res.body.data.email).toBe(newUser.email);
+      expect(res.status).toBe(200);
+      expect(res.body.id).toBe(userId);
     });
 
-    it('should validate email format', async () => {
+    it('should return 404 for non-existent user', async () => {
       const res = await request(app)
-        .post('/users')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({ name: 'Test', email: 'invalid' })
-        .expect(400);
+        .get('/api/users/non-existent')
+        .set('Authorization', `Bearer ${authToken}`);
 
-      expect(res.body.error).toContain('email');
+      expect(res.status).toBe(404);
     });
   });
 });
 ```
 
-### Step 6: Test Checklist
+### Step 3: Contract Testing (Pact)
 
-```markdown
-## API Test Coverage
+```typescript
+import { Pact } from '@pact-foundation/pact';
 
-### Positive Tests
-- [ ] Valid request returns expected data
-- [ ] Pagination works correctly
-- [ ] Filters work as expected
-- [ ] Sorting works correctly
+const provider = new Pact({
+  consumer: 'Frontend',
+  provider: 'UserService',
+  port: 1234
+});
 
-### Negative Tests
-- [ ] Invalid ID returns 404
-- [ ] Missing required field returns 400
-- [ ] Invalid data type returns 400
-- [ ] Unauthorized returns 401
-- [ ] Forbidden returns 403
+describe('User Service Contract', () => {
+  beforeAll(() => provider.setup());
+  afterAll(() => provider.finalize());
+  afterEach(() => provider.verify());
 
-### Edge Cases
-- [ ] Empty array response
-- [ ] Very long strings
-- [ ] Special characters
-- [ ] Null values
-- [ ] Rate limiting (429)
+  it('should get user', async () => {
+    await provider.addInteraction({
+      state: 'user exists',
+      uponReceiving: 'a request for user',
+      withRequest: {
+        method: 'GET',
+        path: '/api/users/1',
+        headers: { 'Accept': 'application/json' }
+      },
+      willRespondWith: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          id: 1,
+          name: 'John Doe',
+          email: 'john@example.com'
+        }
+      }
+    });
+
+    const response = await fetch('http://localhost:1234/api/users/1');
+    const data = await response.json();
+    
+    expect(data.name).toBe('John Doe');
+  });
+});
 ```
 
 ## Best Practices
 
-- ✅ Test all HTTP methods
-- ✅ Validate error responses
-- ✅ Check response schema
-- ✅ Test authentication flows
+### ✅ Do This
+
+- ✅ Test all endpoints
+- ✅ Validate response schemas
+- ✅ Test error scenarios
+- ✅ Use environment variables
+- ✅ Automate in CI/CD
+
+### ❌ Avoid This
+
+- ❌ Don't hardcode values
 - ❌ Don't skip negative tests
-- ❌ Don't hardcode test data
+- ❌ Don't ignore auth tests
+- ❌ Don't skip cleanup
 
 ## Related Skills
 
-- `@playwright-specialist`
-- `@senior-backend-developer`
+- `@api-design-specialist` - API design
+- `@senior-backend-developer` - Backend development

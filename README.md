@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-156-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-4.0.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-209-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-5.0.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 156+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 209+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **156 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **209 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -82,23 +82,23 @@ your-project/
 
 | Category | Count | Highlights |
 |----------|-------|------------|
-| 🤖 AI & Machine Learning | 10 | LLM, RAG, agents, edge AI |
-| 🔧 Backend Development | 13 | Python, Go, Node.js, GraphQL |
-| 📱 Mobile Development | 10 | Flutter, iOS, Android |
-| 🎨 Frontend Development | 11 | React, Vue, Next.js |
+| 🤖 AI & Machine Learning | 12 | LLM, RAG, agents, edge AI |
+| 🔧 Backend Development | 20 | Python, Go, Rust, PHP, GraphQL, gRPC |
+| 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod, GetX |
+| 🎨 Frontend Development | 12 | React, Vue, Next.js, Nuxt |
 | 🎨 UI/UX & Design | 14 | Figma, design systems |
-| ☁️ Cloud & DevOps | 7 | AWS, K8s, CI/CD |
-| 💾 Data Engineering | 8 | ETL, analytics, databases |
-| 🔐 Security | 4 | Cybersecurity, pen testing |
-| 🧪 Testing & QA | 4 | E2E, TDD, API testing |
-| 📝 Content Creation | 14 | Video, podcasts, blogs |
-| 📊 Marketing & Business | 10 | SEO, copywriting |
+| ☁️ Cloud & DevOps | 12 | AWS, K8s, GitHub Actions, Docker |
+| 💾 Data & Databases | 14 | ETL, MongoDB, PostgreSQL, Kafka |
+| 🔐 Security | 5 | OWASP, pen testing, API security |
+| 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
+| 📝 Content Creation | 16 | Video, podcasts, blogs, social |
+| 📊 Marketing & Business | 12 | SEO, copywriting, growth |
 | 📝 Documentation | 6 | Technical writing |
-| 💼 Business Systems | 10 | E-commerce, CRM, POS |
+| 💼 Industry Apps | 12 | Healthcare, trading, food delivery |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎮 Desktop & Games | 4 | Electron, Unity, Roblox |
-| 🔮 Emerging Tech | 6 | VR/AR, quantum, Web3, dApp |
-| 📚 Others | 16 | Various specialized |
+| 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
+| 📚 Others | 35 | Various specialized |
 
 ---
 
@@ -157,10 +157,10 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ## 📁 Repository Structure
 
-```
+```text
 agents/
 ├── .agent/
-│   └── skills/          # 156 skill folders
+│   └── skills/          # 209 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/

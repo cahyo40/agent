@@ -7,150 +7,172 @@ description: "Expert Firebase development including Firestore, Authentication, C
 
 ## Overview
 
-This skill transforms you into an experienced Firebase Developer who builds real-time, scalable applications using Firebase services including Firestore, Auth, Functions, and Storage.
+Build applications with Firebase including Firestore, Authentication, Cloud Functions, Storage, and real-time features for web and mobile.
 
 ## When to Use This Skill
 
-- Use when building with Firebase
-- Use when implementing Firestore database
-- Use when setting up Firebase Auth
-- Use when creating Cloud Functions
+- Use when building Firebase apps
+- Use when need serverless backend
+- Use when real-time sync required
+- Use when rapid prototyping
 
 ## How It Works
 
 ### Step 1: Firebase Setup
 
-```javascript
-// firebase.js
+```typescript
+// Firebase configuration
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
+import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "project.firebaseapp.com",
-  projectId: "project-id",
-  storageBucket: "project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: 'project.firebaseapp.com',
+  projectId: 'project-id',
+  storageBucket: 'project.appspot.com',
+  messagingSenderId: '123456789',
+  appId: '1:123456789:web:abc123'
 };
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
+export const functions = getFunctions(app);
 ```
 
 ### Step 2: Firestore Operations
 
-```javascript
+```typescript
 import { 
-  collection, doc, addDoc, getDoc, getDocs, 
-  updateDoc, deleteDoc, query, where, orderBy, limit,
-  onSnapshot
+  collection, doc, getDoc, getDocs, 
+  addDoc, updateDoc, deleteDoc, 
+  query, where, orderBy, limit, 
+  onSnapshot, serverTimestamp 
 } from 'firebase/firestore';
 
 // Create
-const docRef = await addDoc(collection(db, 'users'), {
-  name: 'John',
-  email: 'john@example.com',
-  createdAt: serverTimestamp()
-});
+async function createUser(userData: User) {
+  const docRef = await addDoc(collection(db, 'users'), {
+    ...userData,
+    createdAt: serverTimestamp()
+  });
+  return docRef.id;
+}
 
 // Read
-const userDoc = await getDoc(doc(db, 'users', docRef.id));
-const userData = userDoc.data();
+async function getUser(userId: string) {
+  const docSnap = await getDoc(doc(db, 'users', userId));
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  }
+  return null;
+}
 
 // Query
-const q = query(
-  collection(db, 'posts'),
-  where('authorId', '==', userId),
-  orderBy('createdAt', 'desc'),
-  limit(10)
-);
-const snapshot = await getDocs(q);
+async function getActiveUsers() {
+  const q = query(
+    collection(db, 'users'),
+    where('status', '==', 'active'),
+    orderBy('createdAt', 'desc'),
+    limit(10)
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
 
 // Real-time listener
-const unsubscribe = onSnapshot(q, (snapshot) => {
-  const posts = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
-  setPosts(posts);
-});
-
-// Update
-await updateDoc(doc(db, 'users', id), { name: 'Jane' });
-
-// Delete
-await deleteDoc(doc(db, 'users', id));
+function subscribeToUsers(callback: (users: User[]) => void) {
+  const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+  
+  return onSnapshot(q, (snapshot) => {
+    const users = snapshot.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+    callback(users);
+  });
+}
 ```
 
-### Step 3: Firebase Authentication
+### Step 3: Authentication
 
-```javascript
+```typescript
 import { 
+  signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  onAuthStateChanged
+  signInWithPopup, GoogleAuthProvider,
+  signOut, onAuthStateChanged
 } from 'firebase/auth';
 
-// Email/Password signup
-const { user } = await createUserWithEmailAndPassword(
-  auth, email, password
-);
+// Email/Password auth
+async function signUp(email: string, password: string) {
+  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  return credential.user;
+}
 
-// Email/Password login
-await signInWithEmailAndPassword(auth, email, password);
+async function signIn(email: string, password: string) {
+  const credential = await signInWithEmailAndPassword(auth, email, password);
+  return credential.user;
+}
 
-// Google login
-const provider = new GoogleAuthProvider();
-await signInWithPopup(auth, provider);
+// Google auth
+async function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  const credential = await signInWithPopup(auth, provider);
+  return credential.user;
+}
 
-// Auth state listener
+// Auth state observer
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log('Logged in:', user.uid);
+    console.log('Signed in:', user.uid);
   } else {
-    console.log('Logged out');
+    console.log('Signed out');
   }
 });
-
-// Logout
-await signOut(auth);
 ```
 
 ### Step 4: Cloud Functions
 
-```javascript
-// functions/index.js
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+```typescript
+// functions/src/index.ts
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+
 admin.initializeApp();
 
-// HTTP function
-exports.api = functions.https.onRequest(async (req, res) => {
-  const users = await admin.firestore().collection('users').get();
-  res.json(users.docs.map(doc => doc.data()));
+// HTTP trigger
+export const createUser = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Not authenticated');
+  }
+  
+  const { name, email } = data;
+  const userRef = await admin.firestore().collection('users').add({
+    name,
+    email,
+    createdBy: context.auth.uid,
+    createdAt: admin.firestore.FieldValue.serverTimestamp()
+  });
+  
+  return { id: userRef.id };
 });
 
 // Firestore trigger
-exports.onUserCreated = functions.firestore
+export const onUserCreate = functions.firestore
   .document('users/{userId}')
   .onCreate(async (snap, context) => {
     const user = snap.data();
-    await sendWelcomeEmail(user.email);
-  });
-
-// Scheduled function
-exports.dailyCleanup = functions.pubsub
-  .schedule('0 0 * * *')
-  .onRun(async () => {
-    await cleanupOldData();
+    
+    // Send welcome email
+    await admin.firestore().collection('mail').add({
+      to: user.email,
+      template: { name: 'welcome' }
+    });
   });
 ```
 
@@ -158,18 +180,20 @@ exports.dailyCleanup = functions.pubsub
 
 ### ✅ Do This
 
-- ✅ Use security rules properly
-- ✅ Index queries for performance
-- ✅ Use batched writes for multiple ops
-- ✅ Unsubscribe listeners on cleanup
+- ✅ Use Security Rules
+- ✅ Index queries properly
+- ✅ Use batch writes
+- ✅ Handle offline mode
+- ✅ Unsubscribe listeners
 
 ### ❌ Avoid This
 
-- ❌ Don't expose API keys in client
 - ❌ Don't skip security rules
-- ❌ Don't store sensitive data unencrypted
+- ❌ Don't fetch entire collections
+- ❌ Don't ignore billing
+- ❌ Don't forget cleanup
 
 ## Related Skills
 
-- `@senior-react-developer` - React integration
 - `@senior-flutter-developer` - Flutter + Firebase
+- `@senior-react-developer` - React + Firebase

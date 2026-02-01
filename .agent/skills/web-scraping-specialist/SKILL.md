@@ -7,113 +7,48 @@ description: "Expert web scraping including data extraction, crawling, parsing, 
 
 ## Overview
 
-This skill helps you extract data from websites efficiently and ethically using various scraping tools and techniques.
+Build robust web scrapers using Python with BeautifulSoup, Scrapy, and Selenium for data extraction with ethical practices.
 
 ## When to Use This Skill
 
-- Use when extracting data from websites
-- Use when building web crawlers
-- Use when parsing HTML/XML
+- Use when extracting web data
+- Use when building scrapers/crawlers
+- Use when parsing HTML/JSON
 - Use when automating data collection
 
 ## How It Works
 
-### Step 1: Scraping Strategy
-
-```
-WEB SCRAPING DECISION TREE
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│  Is there a public API?                                        │
-│  ├── YES → Use API (preferred)                                 │
-│  └── NO → Continue                                             │
-│                                                                 │
-│  Is content static HTML?                                        │
-│  ├── YES → Use requests + BeautifulSoup/Cheerio                │
-│  └── NO (JavaScript rendered) → Use Playwright/Puppeteer       │
-│                                                                 │
-│  Need to scrape many pages?                                     │
-│  ├── YES → Use Scrapy (Python) or custom crawler               │
-│  └── NO → Simple script is fine                                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Step 2: Python with BeautifulSoup
+### Step 1: BeautifulSoup Basics
 
 ```python
 import requests
 from bs4 import BeautifulSoup
-from time import sleep
-import csv
 
-class ProductScraper:
-    def __init__(self, base_url: str):
-        self.base_url = base_url
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'text/html,application/xhtml+xml',
-            'Accept-Language': 'en-US,en;q=0.9',
-        })
+def scrape_page(url: str) -> dict:
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    }
     
-    def fetch_page(self, url: str) -> BeautifulSoup:
-        """Fetch and parse a page with rate limiting."""
-        response = self.session.get(url, timeout=10)
-        response.raise_for_status()
-        sleep(1)  # Be respectful - 1 second delay
-        return BeautifulSoup(response.text, 'lxml')
+    response = requests.get(url, headers=headers, timeout=10)
+    response.raise_for_status()
     
-    def parse_product(self, soup: BeautifulSoup) -> dict:
-        """Extract product data from page."""
-        return {
-            'title': soup.select_one('h1.product-title').get_text(strip=True),
-            'price': soup.select_one('.price').get_text(strip=True),
-            'description': soup.select_one('.description').get_text(strip=True),
-            'image': soup.select_one('.product-image img')['src'],
-            'rating': soup.select_one('.rating')['data-value'],
-        }
+    soup = BeautifulSoup(response.content, 'lxml')
     
-    def scrape_listing(self, url: str) -> list[str]:
-        """Get all product URLs from listing page."""
-        soup = self.fetch_page(url)
-        links = soup.select('a.product-link')
-        return [self.base_url + link['href'] for link in links]
+    # Extract data
+    title = soup.find('h1').text.strip()
+    paragraphs = [p.text.strip() for p in soup.find_all('p')]
+    links = [a['href'] for a in soup.find_all('a', href=True)]
     
-    def scrape_all(self, listing_url: str) -> list[dict]:
-        """Scrape all products from listing."""
-        product_urls = self.scrape_listing(listing_url)
-        products = []
-        
-        for url in product_urls:
-            try:
-                soup = self.fetch_page(url)
-                product = self.parse_product(soup)
-                product['url'] = url
-                products.append(product)
-                print(f"Scraped: {product['title']}")
-            except Exception as e:
-                print(f"Error scraping {url}: {e}")
-        
-        return products
-    
-    def save_to_csv(self, products: list[dict], filename: str):
-        """Save products to CSV file."""
-        with open(filename, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=products[0].keys())
-            writer.writeheader()
-            writer.writerows(products)
-
-# Usage
-scraper = ProductScraper('https://example.com')
-products = scraper.scrape_all('/products')
-scraper.save_to_csv(products, 'products.csv')
+    return {
+        'title': title,
+        'paragraphs': paragraphs,
+        'links': links
+    }
 ```
 
-### Step 3: Scrapy for Large Scale
+### Step 2: Scrapy Spider
 
 ```python
-# products/spiders/product_spider.py
 import scrapy
 from scrapy.crawler import CrawlerProcess
 
@@ -126,163 +61,90 @@ class ProductSpider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 2,
         'DOWNLOAD_DELAY': 1,
         'ROBOTSTXT_OBEY': True,
-        'USER_AGENT': 'MyBot/1.0 (+https://mysite.com/bot)',
     }
     
     def parse(self, response):
-        """Parse listing page."""
-        for product_link in response.css('a.product-link::attr(href)'):
-            yield response.follow(product_link, self.parse_product)
+        for product in response.css('.product-card'):
+            yield {
+                'name': product.css('h2::text').get(),
+                'price': product.css('.price::text').get(),
+                'url': product.css('a::attr(href)').get(),
+            }
         
         # Follow pagination
-        next_page = response.css('a.next-page::attr(href)').get()
+        next_page = response.css('a.next::attr(href)').get()
         if next_page:
             yield response.follow(next_page, self.parse)
-    
-    def parse_product(self, response):
-        """Parse product page."""
-        yield {
-            'title': response.css('h1.title::text').get(),
-            'price': response.css('.price::text').get(),
-            'description': response.css('.description::text').get(),
-            'url': response.url,
-        }
-
-# Run spider
-if __name__ == '__main__':
-    process = CrawlerProcess({
-        'FEED_FORMAT': 'json',
-        'FEED_URI': 'products.json',
-    })
-    process.crawl(ProductSpider)
-    process.start()
 ```
 
-### Step 4: Node.js with Cheerio
-
-```typescript
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import { writeFileSync } from 'fs';
-
-interface Product {
-  title: string;
-  price: string;
-  url: string;
-}
-
-class Scraper {
-  private baseUrl: string;
-  
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
-  }
-
-  async fetchPage(url: string): Promise<cheerio.CheerioAPI> {
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-      },
-    });
-    
-    // Rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    return cheerio.load(response.data);
-  }
-
-  async scrapeProducts(listingUrl: string): Promise<Product[]> {
-    const $ = await this.fetchPage(listingUrl);
-    const products: Product[] = [];
-
-    $('.product-card').each((_, element) => {
-      products.push({
-        title: $(element).find('.title').text().trim(),
-        price: $(element).find('.price').text().trim(),
-        url: this.baseUrl + $(element).find('a').attr('href'),
-      });
-    });
-
-    return products;
-  }
-}
-
-// Usage
-const scraper = new Scraper('https://example.com');
-const products = await scraper.scrapeProducts('/products');
-writeFileSync('products.json', JSON.stringify(products, null, 2));
-```
-
-### Step 5: Handling Anti-Scraping
+### Step 3: Async Scraping
 
 ```python
-import random
-from fake_useragent import UserAgent
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+import asyncio
+import aiohttp
+from bs4 import BeautifulSoup
 
-class RobustScraper:
-    def __init__(self):
-        self.session = requests.Session()
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def scrape_all(urls: list[str]) -> list[dict]:
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        pages = await asyncio.gather(*tasks)
         
-        # Retry strategy
-        retry = Retry(
-            total=3,
-            backoff_factor=1,
-            status_forcelist=[429, 500, 502, 503, 504],
-        )
-        adapter = HTTPAdapter(max_retries=retry)
-        self.session.mount('http://', adapter)
-        self.session.mount('https://', adapter)
+        results = []
+        for html in pages:
+            soup = BeautifulSoup(html, 'lxml')
+            results.append({'title': soup.title.string})
         
-        # Rotating user agents
-        self.ua = UserAgent()
+        return results
+```
+
+### Step 4: Selenium for Dynamic Content
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def scrape_dynamic(url: str):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
     
-    def get_headers(self) -> dict:
-        return {
-            'User-Agent': self.ua.random,
-            'Accept': 'text/html,application/xhtml+xml',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-        }
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
     
-    def fetch(self, url: str, proxy: str = None) -> str:
-        """Fetch with rotating headers and optional proxy."""
-        proxies = {'http': proxy, 'https': proxy} if proxy else None
-        
-        response = self.session.get(
-            url,
-            headers=self.get_headers(),
-            proxies=proxies,
-            timeout=15,
-        )
-        
-        # Random delay (1-3 seconds)
-        sleep(random.uniform(1, 3))
-        
-        return response.text
+    # Wait for dynamic content
+    wait = WebDriverWait(driver, 10)
+    element = wait.until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, '.dynamic-content'))
+    )
+    
+    data = element.text
+    driver.quit()
+    return data
 ```
 
 ## Best Practices
 
 ### ✅ Do This
 
-- ✅ Check robots.txt first
+- ✅ Respect robots.txt
 - ✅ Add delays between requests
-- ✅ Use rotating user agents
+- ✅ Rotate User-Agents
 - ✅ Handle errors gracefully
 - ✅ Cache responses when possible
-- ✅ Identify yourself in User-Agent
 
 ### ❌ Avoid This
 
+- ❌ Don't overwhelm servers
 - ❌ Don't ignore rate limits
-- ❌ Don't scrape login-required content without permission
-- ❌ Don't overload servers
+- ❌ Don't scrape personal data
 - ❌ Don't violate ToS
 
 ## Related Skills
 
-- `@senior-python-developer` - Python scripting
-- `@senior-data-engineer` - Data pipelines
+- `@senior-python-developer` - Python fundamentals
+- `@browser-automation-expert` - Browser automation
