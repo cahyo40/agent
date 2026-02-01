@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v5.3.0  
-> **Total Skills:** 240
+> **Current Version:** v6.0.0  
+> **Total Skills:** 250
 
 ---
 
@@ -10,38 +10,39 @@
 
 ```text
 ████████████████████████████████████████ 100%
-240/240 Skills Complete ✅
+250/250 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
 
-### v5.3.0 - Professional & Industrial (Feb 2026) ✅
+### v6.0.0 - The Global Standard (Feb 2026) ✅
 
-**Goal:** 240 Skills
+**Goal:** 250 Skills
 
 | Category | Skills | Status |
 |----------|--------|--------|
-| AI & Machine Learning | 15 | ✅ Complete |
+| AI & Machine Learning | 20 | ✅ Complete |
 | Backend Development | 26 | ✅ Complete |
 | Mobile Development | 14 | ✅ Complete |
 | Frontend Development | 16 | ✅ Complete |
 | UI/UX & Design | 14 | ✅ Complete |
-| Cloud & DevOps | 15 | ✅ Complete |
+| Cloud & DevOps | 17 | ✅ Complete |
 | Data & Databases | 16 | ✅ Complete |
-| Security | 6 | ✅ Complete |
+| Security | 8 | ✅ Complete |
 | Testing & QA | 6 | ✅ Complete |
-| Content Creation | 16 | ✅ Complete |
-| Marketing & Business | 12 | ✅ Complete |
+| Content Creation | 17 | ✅ Complete |
+| Marketing & Business | 13 | ✅ Complete |
 | Documentation | 7 | ✅ Complete |
-| Industry Apps | 15 | ✅ Complete |
-| Desktop & Games | 10 | ✅ Complete |
-| Emerging Tech | 8 | ✅ Complete |
+| Industry Apps | 16 | ✅ Complete |
+| Desktop & Games | 11 | ✅ Complete |
+| Emerging Tech | 10 | ✅ Complete |
 | Bots & Automation | 7 | ✅ Complete |
 | Media Processing | 2 | ✅ Complete |
-| Industrial Tech | 2 | ✅ Complete |
-| Others | 33 | ✅ Complete |
+| Industrial Tech | 3 | ✅ Complete |
+| Creative Arts | 1 | ✅ Complete |
+| Others | 26 | ✅ Complete |
 
 ### v5.0.0 New Skills Added
 
@@ -74,47 +75,13 @@
 
 ### v6.0.0 - 250 Skills Target (Q3 2026)
 
-**Planned New Categories:**
-
-| Category | Planned Skills |
-|----------|----------------|
-| 🚗 Automotive | `autonomous-vehicle-engineer`, `fleet-management-developer` |
-| 🏢 Enterprise | `erp-developer`, `bi-dashboard-developer` |
-| 🎵 Audio/Music | `audio-processing-specialist`, `music-app-developer` |
-| 🏭 Manufacturing | `industrial-iot-developer`, `scada-specialist` |
-
-**Planned Individual Skills:**
-
-- [ ] `terraform-specialist` - Infrastructure as Code
-- [ ] `ansible-specialist` - Configuration management
-- [ ] `svelte-developer` - Svelte/SvelteKit
-- [ ] `astro-developer` - Astro framework
-- [ ] `deno-developer` - Deno runtime
-- [ ] `bun-developer` - Bun runtime
-- [ ] `graphql-federation-expert` - Apollo Federation
-- [ ] `elixir-phoenix-developer` - Elixir/Phoenix
-- [ ] `scala-developer` - Scala/Spark
-- [ ] `unreal-engine-developer` - UE5 game development
-
----
-
-## 📁 Repository Structure
-
-```text
-agents/
-├── .agent/
-│   └── skills/
-│       ├── senior-flutter-developer/
-│       │   └── SKILL.md
-│       ├── senior-react-developer/
-│       │   └── SKILL.md
-│       └── ... (209 skills)
-├── docs/
-│   ├── SKILLS_DOCUMENTATION.md
-│   └── ROADMAP.md
 ├── README.md
 └── LICENSE
+
 ```
+
+(Archive containing 250 skills)
+
 
 ---
 
@@ -181,7 +148,8 @@ What this skill does and when to use it.
 | v5.1.0 | Feb 2026 | 215 | +3% |
 | v5.2.0 | Feb 2026 | 230 | +7% |
 | v5.3.0 | Feb 2026 | 240 | +4% |
-| v6.0.0 | Q3 2026 | 250 | +4% (planned) |
+| v6.0.0 | Feb 2026 | 250 | +4% |
+| v7.0.0 | 2027 | 300 | +20% (planned) |
 
 ---
 

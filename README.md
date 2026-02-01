@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-240-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-5.3.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-250-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.0.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 240+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 250+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **240 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **250 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -82,24 +82,26 @@ your-project/
 
 | Category | Count | Highlights |
 |----------|-------|------------|
-| 🤖 AI & Machine Learning | 15 | LLM, RAG, agents, CV, OCR |
+| 🤖 AI & Machine Learning | 20 | LLM, RAG, agents, CV, OCR, LLM Security |
 | 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
 | 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod, GetX |
-| 🎨 Frontend Development | 14 | React, Vue, Next.js, Svelte, Astro |
+| 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Figma, design systems |
-| ☁️ Cloud & DevOps | 15 | AWS, K8s, Terraform, Ansible |
+| ☁️ Cloud & DevOps | 17 | AWS, K8s, Terraform, Chaos Eng |
 | 💾 Data & Databases | 16 | ETL, MongoDB, PostgreSQL, Big Data |
-| 🔐 Security | 6 | OWASP, pen testing, DevSecOps |
+| 🔐 Security | 8 | OWASP, Pen testing, DevSecOps, Privacy |
 | 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
-| 📝 Content Creation | 16 | Video, podcasts, blogs, social |
-| 📊 Marketing & Business | 12 | SEO, copywriting, growth |
+| 📝 Content Creation | 17 | Video, podcasts, blogs, Gen Video |
+| 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, Architecture |
-| 💼 Industry Apps | 12 | Healthcare, trading, food delivery |
-| 🎮 Desktop & Games | 7 | Unreal, Godot, Unity, Roblox |
-| 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
+| 💼 Industry Apps | 16 | Healthcare, Trading, ERP, Fleet, BI |
+| 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
+| 🔮 Emerging Tech | 10 | VR/AR, Quantum, Web3, Biometrics |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
-| 📚 Others | 33 | Various specialized |
+| 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
+| 🎨 Creative Arts | 1 | Creative Coding Artist |
+| 📚 Others | 26 | Various specialized |
 
 ---
 

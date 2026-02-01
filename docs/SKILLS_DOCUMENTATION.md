@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 5.3.0  
+> **Version:** 6.0.0  
 > **Last Updated:** 2026-02-01  
-> **Total Skills:** 240
+> **Total Skills:** 250
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **240 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **250 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Key Features
 
@@ -32,25 +32,26 @@ Antigravity AI Agent Skills adalah koleksi **240 skills** yang memperluas kemamp
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| 🤖 AI & Machine Learning | 15 | LLM, agents, RAG, NLP, CV, OCR |
+| 🤖 AI & Machine Learning | 20 | LLM, agents, RAG, NLP, CV, OCR |
 | 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
 | 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
-| ☁️ Cloud & DevOps | 15 | CI/CD, K8s, Terraform, Ansible |
+| ☁️ Cloud & DevOps | 17 | CI/CD, K8s, Terraform, Chaos Eng |
 | 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Big Data |
-| 🔐 Security | 6 | OWASP, Pen testing, DevSecOps |
+| 🔐 Security | 8 | OWASP, Pen testing, DevSecOps, Privacy |
 | 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
-| 📝 Content Creation | 16 | Video, podcasts, blogs, social |
-| 📊 Marketing & Business | 12 | SEO, copywriting, growth |
+| 📝 Content Creation | 17 | Video, podcasts, blogs, Gen Video |
+| 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
-| 💼 Industry Apps | 15 | Healthcare, Trading, ERP, Fleet, BI |
-| 🎮 Desktop & Games | 10 | Unreal, Godot, Unity Pro, Roblox Pro |
-| 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
+| 💼 Industry Apps | 16 | Healthcare, Trading, ERP, Fleet, BI |
+| 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
+| 🔮 Emerging Tech | 10 | VR/AR, quantum, Web3, Biometrics |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
-| 🏗️ Industrial Tech | 2 | IIO, SCADA specialization |
-| 📚 Others | 33 | Various specialized skills |
+| 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
+| 🎨 Creative Arts | 1 | Creative Coding Artist |
+| 📚 Others | 26 | Various specialized skills |
 
 ---
 
