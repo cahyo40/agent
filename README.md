@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-250-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.0.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-255-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.1.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 250+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 255+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **250 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **255 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -94,7 +94,7 @@ your-project/
 | 📝 Content Creation | 17 | Video, podcasts, blogs, Gen Video |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, Architecture |
-| 💼 Industry Apps | 16 | Healthcare, Trading, ERP, Fleet, BI |
+| 💼 Industry Apps | 21 | Healthcare, Trading, ERP, Fleet, BI, Travel, Logistics, Marketplace, Gig Economy |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 10 | VR/AR, Quantum, Web3, Biometrics |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |

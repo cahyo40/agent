@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.0.0  
+> **Version:** 6.1.0  
 > **Last Updated:** 2026-02-01  
-> **Total Skills:** 250
+> **Total Skills:** 255
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **250 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **255 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Key Features
 
@@ -44,7 +44,7 @@ Antigravity AI Agent Skills adalah koleksi **250 skills** yang memperluas kemamp
 | 📝 Content Creation | 17 | Video, podcasts, blogs, Gen Video |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
-| 💼 Industry Apps | 16 | Healthcare, Trading, ERP, Fleet, BI |
+| 💼 Industry Apps | 21 | Healthcare, Trading, ERP, Fleet, BI, Travel, Logistics, Marketplace, Gig Economy |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 10 | VR/AR, quantum, Web3, Biometrics |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |

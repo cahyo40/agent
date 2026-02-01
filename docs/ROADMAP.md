@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.0.0  
-> **Total Skills:** 250
+> **Current Version:** v6.1.0  
+> **Total Skills:** 255
 
 ---
 
@@ -10,16 +10,16 @@
 
 ```text
 ████████████████████████████████████████ 100%
-250/250 Skills Complete ✅
+255/255 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
 
-### v6.0.0 - The Global Standard (Feb 2026) ✅
+### v6.1.0 - Industrial Specialization (Feb 2026) ✅
 
-**Goal:** 250 Skills
+**Goal:** 255 Skills
 
 | Category | Skills | Status |
 |----------|--------|--------|
@@ -35,7 +35,7 @@
 | Content Creation | 17 | ✅ Complete |
 | Marketing & Business | 13 | ✅ Complete |
 | Documentation | 7 | ✅ Complete |
-| Industry Apps | 16 | ✅ Complete |
+| Industry Apps | 21 | ✅ Complete |
 | Desktop & Games | 11 | ✅ Complete |
 | Emerging Tech | 10 | ✅ Complete |
 | Bots & Automation | 7 | ✅ Complete |
@@ -149,7 +149,8 @@ What this skill does and when to use it.
 | v5.2.0 | Feb 2026 | 230 | +7% |
 | v5.3.0 | Feb 2026 | 240 | +4% |
 | v6.0.0 | Feb 2026 | 250 | +4% |
-| v7.0.0 | 2027 | 300 | +20% (planned) |
+| v6.1.0 | Feb 2026 | 255 | +2% |
+| v7.0.0 | 2027 | 300 | +18% (planned) |
 
 ---
 
