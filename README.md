@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-215-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-5.1.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-230-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-5.2.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 215+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 230+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **215 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **230 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -82,23 +82,24 @@ your-project/
 
 | Category | Count | Highlights |
 |----------|-------|------------|
-| 🤖 AI & Machine Learning | 12 | LLM, RAG, agents, edge AI |
-| 🔧 Backend Development | 20 | Python, Go, Rust, PHP, GraphQL, gRPC |
+| 🤖 AI & Machine Learning | 15 | LLM, RAG, agents, CV, OCR |
+| 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
 | 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod, GetX |
-| 🎨 Frontend Development | 12 | React, Vue, Next.js, Nuxt |
+| 🎨 Frontend Development | 14 | React, Vue, Next.js, Svelte, Astro |
 | 🎨 UI/UX & Design | 14 | Figma, design systems |
-| ☁️ Cloud & DevOps | 12 | AWS, K8s, GitHub Actions, Docker |
-| 💾 Data & Databases | 14 | ETL, MongoDB, PostgreSQL, Kafka |
-| 🔐 Security | 5 | OWASP, pen testing, API security |
+| ☁️ Cloud & DevOps | 15 | AWS, K8s, Terraform, Ansible |
+| 💾 Data & Databases | 16 | ETL, MongoDB, PostgreSQL, Big Data |
+| 🔐 Security | 6 | OWASP, pen testing, DevSecOps |
 | 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
 | 📝 Content Creation | 16 | Video, podcasts, blogs, social |
 | 📊 Marketing & Business | 12 | SEO, copywriting, growth |
-| 📝 Documentation | 6 | Technical writing |
+| 📝 Documentation | 7 | Technical writing, Architecture |
 | 💼 Industry Apps | 12 | Healthcare, trading, food delivery |
-| 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
-| 🎮 Desktop & Games | 4 | Electron, Unity, Roblox |
+| 🎮 Desktop & Games | 7 | Unreal, Godot, Unity, Roblox |
 | 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
-| 📚 Others | 35 | Various specialized |
+| 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
+| 🎞️ Media Processing | 2 | Audio & Video engineering |
+| 📚 Others | 33 | Various specialized |
 
 ---
 
