@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 4.0.0  
-> **Last Updated:** 2026-01-30  
-> **Total Skills:** 150
+> **Version:** 5.0.0  
+> **Last Updated:** 2026-02-01  
+> **Total Skills:** 209
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **150 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **209 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Key Features
 
@@ -32,23 +32,23 @@ Antigravity AI Agent Skills adalah koleksi **150 skills** yang memperluas kemamp
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| 🤖 AI & Machine Learning | 10 | LLM, agents, RAG, edge AI |
-| 🔧 Backend Development | 13 | APIs, databases, microservices |
-| 📱 Mobile Development | 10 | Flutter, iOS, Android, React Native |
-| 🎨 Frontend Development | 11 | React, Vue, Next.js, animations |
+| 🤖 AI & Machine Learning | 12 | LLM, agents, RAG, edge AI |
+| 🔧 Backend Development | 20 | Python, Go, Rust, PHP, gRPC |
+| 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod |
+| 🎨 Frontend Development | 12 | React, Vue, Next.js, Nuxt |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
-| ☁️ Cloud & DevOps | 7 | CI/CD, Kubernetes, deployment |
-| 💾 Data Engineering | 8 | ETL, analytics, databases |
-| 🔐 Security | 4 | Cybersecurity, API security |
-| 🧪 Testing & QA | 4 | E2E, TDD, API testing |
-| 📝 Content Creation | 14 | Video, podcasts, blogs |
-| 📊 Marketing & Business | 10 | SEO, copywriting, strategy |
+| ☁️ Cloud & DevOps | 12 | CI/CD, K8s, GitHub Actions |
+| 💾 Data & Databases | 14 | MongoDB, PostgreSQL, Kafka |
+| 🔐 Security | 5 | OWASP, API security, pen testing |
+| 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
+| 📝 Content Creation | 16 | Video, podcasts, blogs, social |
+| 📊 Marketing & Business | 12 | SEO, copywriting, growth |
 | 📝 Documentation | 6 | Technical writing, diagrams |
-| 💼 Business Systems | 10 | E-commerce, CRM, POS |
+| 💼 Industry Apps | 12 | Healthcare, trading, food delivery |
 | 🎮 Desktop & Games | 4 | Electron, Unity, Roblox |
-| 🔮 Emerging Tech | 4 | VR/AR, quantum, Web3 |
-| 💬 Bots & Automation | 7 | Chatbots, Discord, Telegram |
-| 📚 Others | 14 | Various specialized skills |
+| 🔮 Emerging Tech | 8 | VR/AR, quantum, Web3, GIS |
+| 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
+| 📚 Others | 35 | Various specialized skills |
 
 ---
 
@@ -56,7 +56,7 @@ Antigravity AI Agent Skills adalah koleksi **150 skills** yang memperluas kemamp
 
 ### Method 1: Direct Mention
 
-```
+```text
 @senior-flutter-developer buatkan widget login screen
 
 @short-form-video-creator buat strategi konten TikTok
@@ -70,7 +70,7 @@ AI akan otomatis mendeteksi skill yang relevan berdasarkan konteks.
 
 ### Method 3: Combine Skills
 
-```
+```text
 @script-writer @thumbnail-designer 
 buatkan script dan ide thumbnail untuk video YouTube
 ```
@@ -79,7 +79,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ## Skills by Category
 
-### 🤖 AI & Machine Learning (10 Skills)
+### 🤖 AI & Machine Learning (12 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -93,47 +93,60 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `autonomous-agent-patterns` | Agent design patterns, tool integration |
 | `chatbot-developer` | Conversational AI, dialog design |
 | `mcp-server-builder` | MCP servers for AI agent tools |
+| `stitch-enhance-prompt` | UI prompt optimization for Stitch |
+| `stitch-loop` | Autonomous website building |
 
 ---
 
-### 🔧 Backend Development (13 Skills)
+### 🔧 Backend Development (20 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `senior-backend-developer` | REST API design, database optimization |
-| `senior-backend-engineer-golang` | Go/Golang, REST/gRPC APIs |
+| `senior-backend-engineer-golang` | Go/Golang, REST/gRPC APIs, concurrency |
 | `senior-python-developer` | FastAPI, async programming |
+| `python-fastapi-developer` | FastAPI best practices |
+| `python-flask-developer` | Flask web applications |
+| `python-async-specialist` | asyncio, concurrent programming |
 | `senior-django-developer` | Django, DRF, ORM optimization |
 | `senior-nodejs-developer` | Express, NestJS, event-driven |
 | `senior-rust-developer` | Ownership, lifetimes, async Rust |
+| `senior-php-developer` | Modern PHP 8+, Laravel |
 | `senior-graphql-developer` | Schema design, resolvers, Apollo |
+| `senior-grpc-developer` | Protocol Buffers, streaming |
 | `senior-java-developer` | Spring Boot, microservices, JPA |
+| `senior-kotlin-developer` | Coroutines, Kotlin idioms |
+| `kotlin-spring-developer` | Kotlin + Spring Boot |
 | `senior-laravel-developer` | Laravel, Eloquent, API development |
 | `nuxt-developer` | Nuxt.js, Vue 3, SSR/SSG |
 | `api-design-specialist` | REST/GraphQL design, versioning |
-| `redis-specialist` | Caching, rate limiting, pub/sub |
-| `elasticsearch-developer` | Full-text search, indexing |
+| `kafka-developer` | Event streaming, Kafka Streams |
+| `microservices-architect` | Service decomposition, API gateways |
 
 ---
 
-### 📱 Mobile Development (10 Skills)
+### 📱 Mobile Development (14 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `senior-flutter-developer` | Flutter, Riverpod, clean architecture |
+| `flutter-riverpod-specialist` | Riverpod state management |
+| `flutter-getx-specialist` | GetX state, routing, DI |
 | `flutter-testing-specialist` | Unit, widget, integration tests |
-| `flutter-animation-master` | Animations, custom painter |
-| `flutter-bloc-expert` | BLoC, Cubit, state management |
 | `flutter-package-developer` | Package creation, pub.dev |
 | `flutter-ci-cd` | GitHub Actions, Codemagic |
 | `senior-ios-developer` | Swift, SwiftUI, Combine |
 | `senior-android-developer` | Kotlin, Jetpack Compose |
 | `react-native-developer` | React Native, Expo |
 | `fitness-app-developer` | Workout tracking, health metrics |
+| `senior-firebase-developer` | Firestore, Auth, Functions |
+| `senior-supabase-developer` | PostgreSQL, RLS, Edge Functions |
+| `dapp-mobile-developer` | Flutter + Web3 integration |
+| `mobile-app-designer` | iOS/Android design patterns |
 
 ---
 
-### 🎨 Frontend Development (11 Skills)
+### 🎨 Frontend Development (12 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -147,32 +160,12 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `web-animation-specialist` | GSAP, Framer Motion |
 | `senior-webperf-engineer` | Core Web Vitals, Lighthouse |
 | `headless-cms-specialist` | Contentful, Sanity, Strapi |
-| `ui-kit-developer` | Component libraries like Bootstrap |
+| `ui-kit-developer` | Component libraries |
+| `stitch-react-components` | Stitch to React conversion |
 
 ---
 
-### 🎨 UI/UX & Design (14 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `senior-ui-ux-designer` | User-centered design, design systems |
-| `design-system-architect` | Component libraries, Storybook |
-| `mobile-app-designer` | iOS/Android design patterns |
-| `figma-specialist` | Figma workflow, components |
-| `motion-designer` | UI animations, Lottie |
-| `illustration-creator` | SVG icons, illustrations |
-| `brand-designer` | Brand guidelines, visual identity |
-| `generative-art-creator` | Algorithmic art, p5.js |
-| `accessibility-specialist` | WCAG compliance, a11y |
-| `ux-writer` | Microcopy, error messages |
-| `thumbnail-designer` | YouTube thumbnails, CTR |
-| `infographic-creator` | Data visualization, graphics |
-| `ai-image-prompt-engineer` | Midjourney, DALL-E prompts |
-| `portfolio-dashboard-developer` | Portfolio sites, dashboards |
-
----
-
-### ☁️ Cloud & DevOps (7 Skills)
+### ☁️ Cloud & DevOps (12 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -181,142 +174,124 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `senior-site-reliability-engineer` | SLO/SLI, observability |
 | `senior-linux-sysadmin` | VPS setup, server security |
 | `senior-web-deployment-specialist` | Nginx, SSL, Docker |
+| `github-actions-specialist` | CI/CD workflows, automation |
+| `docker-containerization-specialist` | Dockerfile, multi-stage builds |
+| `docker-compose-orchestrator` | Multi-container applications |
+| `kubernetes-specialist` | Deployments, Helm charts |
 | `git-workflow-specialist` | Branching, PR practices |
-| `git-commit-specialist` | Conventional commits, versioning |
+| `git-commit-specialist` | Conventional commits |
+| `open-source-maintainer` | Community, contributions |
 
 ---
 
-### 💾 Data Engineering (8 Skills)
+### 💾 Data & Databases (14 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-data-engineer` | ETL/ELT, Spark, Kafka, Delta Lake |
+| `senior-data-engineer` | ETL/ELT, Spark, Delta Lake |
 | `senior-data-analyst` | Statistical analysis, SQL, pandas |
 | `senior-database-engineer-sql` | Schema design, PostgreSQL |
 | `senior-database-engineer-nosql` | MongoDB, document design |
+| `mongodb-developer` | Aggregation, indexing |
+| `postgresql-specialist` | JSONB, CTEs, partitioning |
+| `database-modeling-specialist` | ER diagrams, normalization |
+| `redis-specialist` | Caching, rate limiting |
+| `elasticsearch-developer` | Full-text search, indexing |
 | `analytics-engineer` | Event tracking, dashboards |
-| `senior-firebase-developer` | Firestore, Cloud Functions |
-| `senior-supabase-developer` | PostgreSQL, RLS, Edge Functions |
-| `spreadsheet-expert` | Excel, Google Sheets, VBA |
+| `r-data-scientist` | tidyverse, ggplot2, ML |
+| `r-statistician` | Hypothesis testing, Bayesian |
+| `spreadsheet-expert` | Excel, Google Sheets |
+| `gis-specialist` | PostGIS, mapping, spatial data |
 
 ---
 
-### 🔐 Security (4 Skills)
+### 🔐 Security (5 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `senior-cybersecurity-engineer` | Application security, zero trust |
-| `senior-api-security-specialist` | OAuth 2.0, JWT, API gateway |
+| `senior-api-security-specialist` | OWASP, OAuth 2.0, JWT |
 | `senior-penetration-tester` | Vulnerability assessment |
+| `web3-smart-contract-auditor` | Smart contract security |
 | `debugging-specialist` | Root cause analysis |
 
 ---
 
-### 🧪 Testing & QA (4 Skills)
+### 🧪 Testing & QA (6 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `playwright-specialist` | E2E testing, cross-browser |
+| `performance-testing-specialist` | k6, JMeter, load testing |
+| `api-testing-specialist` | Postman, REST API testing |
 | `tdd-workflow` | RED-GREEN-REFACTOR |
 | `senior-code-reviewer` | Systematic review, feedback |
-| `api-testing-specialist` | Postman, REST API testing |
+| `python-testing-specialist` | pytest, mocking, TDD |
 
 ---
 
-### 📝 Content Creation & Video (14 Skills)
+### 📝 Content Creation & Video (16 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `senior-youtube-content-creator` | Video strategy, SEO |
+| `youtube-shorts-strategist` | Shorts optimization |
 | `short-form-video-creator` | TikTok, Reels, Shorts |
+| `tiktok-content-strategist` | TikTok algorithm, trends |
+| `instagram-content-strategist` | Instagram marketing |
+| `twitter-x-strategist` | Twitter/X growth |
+| `linkedin-content-strategist` | LinkedIn personal branding |
 | `video-editor-automation` | FFmpeg, batch processing |
-| `podcast-producer` | Recording, editing, distribution |
-| `livestream-producer` | OBS, streaming, engagement |
+| `podcast-producer` | Recording, editing |
+| `livestream-producer` | OBS, streaming |
 | `script-writer` | Video scripts, hooks |
 | `content-repurposer` | 1 content → 10 formats |
 | `remotion-developer` | Programmatic video React |
 | `blog-content-writer` | SEO articles, long-form |
 | `newsletter-writer` | Email content, Substack |
 | `viral-content-creator` | Trends, hooks, virality |
-| `social-automation-builder` | Scheduling, auto-posting |
-| `email-developer` | HTML email templates |
-| `email-sequence-specialist` | Drip campaigns, automation |
 
 ---
 
-### 📊 Marketing & Business (10 Skills)
+### 📊 Marketing & Business (12 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `copywriting` | Marketing copy, CTAs |
 | `social-media-marketer` | Content strategy, paid ads |
 | `marketing-strategist` | Pricing, launch, growth |
-| `cro-specialist` | A/B testing, conversion |
-| `senior-seo-auditor` | Technical SEO, audits |
-| `senior-project-manager` | PRD, timeline planning |
+| `startup-growth-hacking` | Viral loops, experiments |
+| `startup-pitch-deck` | Investor presentations |
+| `startup-fundraising` | Investor targeting, term sheets |
+| `startup-mvp-builder` | Rapid MVP development |
 | `startup-analyst` | Market sizing, metrics |
-| `brainstorming` | Creative problem-solving |
+| `senior-seo-auditor` | Technical SEO, audits |
+| `seo-content-writer` | Keyword-optimized content |
+| `seo-keyword-research` | Keyword analysis |
 | `digital-ads-specialist` | Google Ads, Meta Ads |
-| `digital-product-creator` | Ebooks, courses, templates |
 
 ---
 
-### 📝 Documentation (6 Skills)
+### 💼 Industry Apps (12 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-technical-writer` | API docs, README |
-| `uml-specialist` | Use case, class diagrams |
-| `mermaid-diagram-expert` | Diagrams as code |
-| `senior-course-creator` | Learning modules |
-| `document-generator` | PDF, DOCX, XLSX, PPTX |
-| `ebook-author-toolkit` | Ebook writing, publishing |
-
----
-
-### 💼 Business Systems (10 Skills)
-
-| Skill | Description |
-|-------|-------------|
+| `healthcare-app-developer` | HIPAA, telemedicine, HL7 FHIR |
+| `trading-app-developer` | Real-time market data, orders |
+| `edtech-developer` | LMS, courses, gamification |
+| `proptech-developer` | Real estate platforms |
+| `food-delivery-developer` | Orders, driver dispatch |
 | `e-commerce-developer` | Cart, checkout, payments |
-| `payment-integration-specialist` | Stripe, subscriptions |
+| `fintech-developer` | Payment gateways, banking |
 | `pos-developer` | Point-of-sale systems |
-| `crm-developer` | Customer relationship management |
+| `crm-developer` | Customer management |
 | `hr-payroll-developer` | HR systems, payroll |
 | `booking-system-developer` | Appointments, reservations |
-| `e-learning-developer` | LMS, online courses |
-| `instructional-designer` | Curriculum, lesson plans |
 | `saas-product-developer` | Multi-tenant SaaS |
-| `saas-billing-specialist` | Subscriptions, billing |
 
 ---
 
-### 💬 Bots & Automation (7 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `discord-bot-developer` | Discord.js, slash commands |
-| `telegram-bot-developer` | Telegram Bot API |
-| `whatsapp-bot-developer` | WhatsApp Business API |
-| `customer-support-bot` | FAQ, ticketing, AI support |
-| `workflow-automation-builder` | Zapier, Make, n8n |
-| `browser-automation-expert` | Puppeteer, Playwright |
-| `web-scraping-specialist` | BeautifulSoup, Scrapy |
-
----
-
-### 🎮 Desktop & Games (4 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `electron-desktop-developer` | Cross-platform desktop |
-| `unity-game-developer` | 2D/3D games, C# |
-| `roblox-developer` | Lua, Roblox Studio |
-| `wordpress-developer` | Theme/plugin development |
-
----
-
-### 🔮 Emerging Tech (4 Skills)
+### 🔮 Emerging Tech (8 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -324,186 +299,10 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `senior-quantum-computing-developer` | Qiskit, quantum algorithms |
 | `senior-robotics-engineer` | ROS2, SLAM, autonomous |
 | `expert-web3-blockchain` | Smart contracts, DeFi |
-
----
-
-### 📚 Others (14 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `expert-senior-software-engineer` | Staff/Principal level |
-| `senior-software-architect` | System design, ADRs |
-| `senior-software-engineer` | Clean code, patterns |
-| `senior-system-analyst` | Requirements gathering |
-| `senior-programming-mentor` | Teaching, learning paths |
-| `internationalization-specialist` | i18n/l10n, RTL |
-| `cli-tool-builder` | CLI tools, arguments |
-| `open-source-maintainer` | Community, contributions |
-| `app-store-publisher` | App Store, Google Play |
-| `chrome-extension-developer` | Manifest V3, extensions |
+| `senior-web3-developer` | Web3 integration |
+| `web3-defi-developer` | AMM, lending protocols |
+| `gis-specialist` | PostGIS, Leaflet, Mapbox |
 | `iot-developer` | Arduino, Raspberry Pi |
-| `no-code-builder` | Bubble, Webflow, Airtable |
-| `notion-specialist` | Databases, templates |
-| `fintech-developer` | Payment gateways, banking |
-
----
-
-## Complete Skills Reference
-
-### Full List (Alphabetical) - 150 Skills
-
-```
-3d-web-experience
-accessibility-specialist
-ai-image-prompt-engineer
-ai-wrapper-product
-analytics-engineer
-api-design-specialist
-api-testing-specialist
-app-store-publisher
-autonomous-agent-patterns
-blog-content-writer
-booking-system-developer
-brainstorming
-brand-designer
-browser-automation-expert
-chatbot-developer
-chrome-extension-developer
-cli-tool-builder
-content-repurposer
-copywriting
-crm-developer
-cro-specialist
-customer-support-bot
-debugging-specialist
-design-system-architect
-digital-ads-specialist
-digital-product-creator
-discord-bot-developer
-document-generator
-e-commerce-developer
-e-learning-developer
-ebook-author-toolkit
-elasticsearch-developer
-electron-desktop-developer
-email-developer
-email-sequence-specialist
-expert-senior-software-engineer
-expert-web3-blockchain
-figma-specialist
-fintech-developer
-fitness-app-developer
-flutter-animation-master
-flutter-bloc-expert
-flutter-ci-cd
-flutter-package-developer
-flutter-testing-specialist
-generative-art-creator
-git-commit-specialist
-git-workflow-specialist
-headless-cms-specialist
-hr-payroll-developer
-illustration-creator
-infographic-creator
-instructional-designer
-internationalization-specialist
-iot-developer
-livestream-producer
-marketing-strategist
-mcp-server-builder
-mermaid-diagram-expert
-mobile-app-designer
-motion-designer
-newsletter-writer
-no-code-builder
-notion-specialist
-nuxt-developer
-open-source-maintainer
-payment-integration-specialist
-playwright-specialist
-podcast-producer
-portfolio-dashboard-developer
-pos-developer
-pwa-developer
-react-native-developer
-redis-specialist
-remotion-developer
-roblox-developer
-saas-billing-specialist
-saas-product-developer
-script-writer
-senior-ai-agent-developer
-senior-ai-ml-engineer
-senior-android-developer
-senior-api-security-specialist
-senior-backend-developer
-senior-backend-engineer-golang
-senior-cloud-architect
-senior-code-reviewer
-senior-course-creator
-senior-cybersecurity-engineer
-senior-data-analyst
-senior-data-engineer
-senior-database-engineer-nosql
-senior-database-engineer-sql
-senior-devops-engineer
-senior-django-developer
-senior-edge-ai-engineer
-senior-firebase-developer
-senior-flutter-developer
-senior-graphql-developer
-senior-ios-developer
-senior-java-developer
-senior-laravel-developer
-senior-linux-sysadmin
-senior-nextjs-developer
-senior-nodejs-developer
-senior-penetration-tester
-senior-programming-mentor
-senior-project-manager
-senior-prompt-engineer
-senior-prompt-engineering-patterns
-senior-python-developer
-senior-quantum-computing-developer
-senior-rag-engineer
-senior-react-developer
-senior-robotics-engineer
-senior-rust-developer
-senior-seo-auditor
-senior-site-reliability-engineer
-senior-software-architect
-senior-software-engineer
-senior-spatial-computing-developer
-senior-supabase-developer
-senior-system-analyst
-senior-tailwindcss-developer
-senior-technical-writer
-senior-typescript-developer
-senior-ui-ux-designer
-senior-vue-developer
-senior-web-deployment-specialist
-senior-webperf-engineer
-senior-youtube-content-creator
-short-form-video-creator
-social-automation-builder
-social-media-marketer
-spreadsheet-expert
-startup-analyst
-tdd-workflow
-telegram-bot-developer
-thumbnail-designer
-ui-kit-developer
-uml-specialist
-unity-game-developer
-ux-writer
-video-editor-automation
-viral-content-creator
-web-animation-specialist
-web-scraping-specialist
-whatsapp-bot-developer
-wordpress-developer
-workflow-automation-builder
-```
 
 ---
 
@@ -512,61 +311,53 @@ workflow-automation-builder
 | Use Case | Skill to Use |
 |----------|--------------|
 | Create TikTok/Reels content | `@short-form-video-creator` |
-| Repurpose 1 content to many | `@content-repurposer` |
-| Write video scripts | `@script-writer` |
-| Automate video editing | `@video-editor-automation` |
-| Start a podcast | `@podcast-producer` |
-| Go live / streaming | `@livestream-producer` |
-| Design YouTube thumbnails | `@thumbnail-designer` |
-| Create viral content | `@viral-content-creator` |
-| Automate social posting | `@social-automation-builder` |
-| Write blog posts | `@blog-content-writer` |
-| Write newsletters | `@newsletter-writer` |
 | Build Flutter app | `@senior-flutter-developer` |
+| State management Flutter | `@flutter-riverpod-specialist` |
 | Build React app | `@senior-react-developer` |
-| Create REST API | `@senior-python-developer` |
-| Setup VPS server | `@senior-linux-sysadmin` |
-| Deploy website | `@senior-web-deployment-specialist` |
+| Create REST API (Python) | `@python-fastapi-developer` |
+| Create REST API (Go) | `@senior-backend-engineer-golang` |
+| Setup CI/CD | `@github-actions-specialist` |
+| MongoDB development | `@mongodb-developer` |
+| PostgreSQL advanced features | `@postgresql-specialist` |
+| Load testing | `@performance-testing-specialist` |
 | Build AI agent | `@senior-ai-agent-developer` |
 | Build RAG system | `@senior-rag-engineer` |
-| Create MCP server | `@mcp-server-builder` |
-| Design systems | `@design-system-architect` |
-| Brand guidelines | `@brand-designer` |
-| API design | `@api-design-specialist` |
-| Redis caching | `@redis-specialist` |
-| Generate documents | `@document-generator` |
-| Build Discord bot | `@discord-bot-developer` |
-| Build WhatsApp bot | `@whatsapp-bot-developer` |
-| Setup e-commerce | `@e-commerce-developer` |
-| Stripe payments | `@payment-integration-specialist` |
-| Email marketing | `@email-sequence-specialist` |
-| SaaS development | `@saas-product-developer` |
+| Healthcare app | `@healthcare-app-developer` |
+| Trading/fintech app | `@trading-app-developer` |
+| Food delivery app | `@food-delivery-developer` |
+| Real estate app | `@proptech-developer` |
+| E-learning platform | `@edtech-developer` |
+| API security | `@senior-api-security-specialist` |
 
 ---
 
 ## Changelog
 
+### v5.0.0 (2026-02-01)
+
+- 🎉 **209 Skills** - Total skills increased from 156 to 209
+- ✨ New categories: Industry Apps, GIS, additional Flutter specialists
+- ➕ Added 53 new skills including:
+  - **Flutter**: `flutter-riverpod-specialist`, `flutter-getx-specialist`
+  - **Python**: `python-fastapi-developer`, `python-flask-developer`, `python-async-specialist`, `python-testing-specialist`, `python-automation-specialist`
+  - **R**: `r-data-scientist`, `r-statistician`
+  - **Database**: `mongodb-developer`, `postgresql-specialist`, `database-modeling-specialist`
+  - **Industry Apps**: `healthcare-app-developer`, `trading-app-developer`, `edtech-developer`, `proptech-developer`, `food-delivery-developer`
+  - **Infrastructure**: `senior-grpc-developer`, `kafka-developer`, `github-actions-specialist`, `kubernetes-specialist`, `microservices-architect`
+  - **Testing**: `performance-testing-specialist`
+  - **GIS**: `gis-specialist`
+  - **Web3**: `web3-smart-contract-auditor`, `web3-defi-developer`
+
 ### v4.0.0 (2026-01-30)
 
-- 🎉 **150 Skills** - Total skills increased from 118 to 150
+- 🎉 **156 Skills** - Total skills increased from 118 to 156
 - ✨ New categories: Business Systems, Bots & Automation
-- ➕ Added 32 new skills including:
-  - `api-testing-specialist`, `elasticsearch-developer`
-  - `discord-bot-developer`, `telegram-bot-developer`, `whatsapp-bot-developer`
-  - `saas-product-developer`, `saas-billing-specialist`
-  - `crm-developer`, `hr-payroll-developer`, `pos-developer`
-  - `fitness-app-developer`, `email-developer`, `email-sequence-specialist`
-  - And many more!
+- ➕ Added 38 new skills
 
 ### v3.0.0 (2026-01-30)
 
 - 🎉 **118 Skills**
-- ✨ Added Content Creation & Video category (12 skills)
-- ➕ Added AI & ML skills, documentation skills
-
-### v2.0.0 (2026-01-29)
-
-- Initial release with core development skills
+- ✨ Added Content Creation & Video category
 
 ---
 
