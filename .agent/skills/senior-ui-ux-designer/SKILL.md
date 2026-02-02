@@ -13,9 +13,68 @@ This skill transforms you into an experienced Senior UI/UX Designer who creates 
 
 - 67 UI Styles (Glassmorphism, Neumorphism, Bento Grid, AI-Native UI, etc.)
 - 96 Color Palettes (Industry-specific for SaaS, Healthcare, Fintech, etc.)
-- 57 Font Pairings (Curated typography combinations)
-- 100 Industry Reasoning Rules (Design system generation)
-- 13 Tech Stack Support (React, Next.js, Flutter, SwiftUI, etc.)
+- 57 Font Pairings (Curated typography combinations with Google Fonts URLs)
+- 96 Product Type Mappings (Style recommendations per industry)
+- Platform-specific templates (React, Next.js, Flutter, SwiftUI, etc.)
+
+## Data Files Reference
+
+This skill includes comprehensive CSV data files for design intelligence. **When generating UI/UX recommendations, read these files for accurate, complete data:**
+
+```text
+./data/
+├── styles.csv         # 67 UI styles with full implementation details
+│   Columns: Style, Keywords, Primary Colors, Secondary Colors, Effects,
+│            Best For, Do Not Use For, Light/Dark Mode, Performance,
+│            Accessibility, CSS Keywords, Implementation Checklist
+│
+├── colors.csv         # 96 industry-specific color palettes
+│   Columns: Product Type, Primary (Hex), Secondary (Hex), CTA (Hex),
+│            Background (Hex), Text (Hex), Border (Hex), Notes
+│
+├── typography.csv     # 57 font pairings with Google Fonts
+│   Columns: Pairing Name, Category, Heading Font, Body Font,
+│            Mood/Style Keywords, Best For, Google Fonts URL,
+│            CSS Import, Tailwind Config, Notes
+│
+├── products.csv       # 96 product types with style mappings
+│   Columns: Product Type, Keywords, Primary Style, Secondary Styles,
+│            Landing Page Pattern, Dashboard Style, Color Palette Focus
+│
+├── landing.csv        # Landing page patterns
+├── ui-reasoning.csv   # 100 industry reasoning rules
+├── ux-guidelines.csv  # UX best practices
+├── icons.csv          # Icon recommendations
+├── charts.csv         # Chart visualization guidelines
+├── web-interface.csv  # Web interface patterns
+└── stacks/            # Tech stack templates (13 platforms)
+    ├── react.csv
+    ├── nextjs.csv
+    ├── flutter.csv
+    ├── swiftui.csv
+    └── ... (9 more platforms)
+
+./templates/
+├── base/              # Base design templates
+└── platforms/         # Platform-specific guidelines
+```
+
+### How to Use Data Files
+
+When designing for a specific product type:
+
+1. **Find Product Type**: Search `products.csv` for matching keywords
+2. **Get Style**: Look up recommended style in `styles.csv`
+3. **Get Colors**: Look up color palette in `colors.csv`
+4. **Get Typography**: Look up font pairing in `typography.csv`
+5. **Apply Platform**: Use tech stack files in `stacks/` folder
+
+Example lookup for "beauty spa landing page":
+
+- `products.csv` → Row 34 (Beauty/Spa/Wellness) → Style: "Soft UI Evolution"
+- `styles.csv` → Row 19 (Soft UI Evolution) → Get colors, effects, CSS
+- `colors.csv` → Row 34 → Primary: #EC4899, Background: #FDF2F8
+- `typography.csv` → Row 12 (Luxury Serif) → Cormorant + Montserrat
 
 ## When to Use This Skill
 
