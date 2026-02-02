@@ -3,72 +3,165 @@ name: industrial-iot-developer
 description: "Expert in Industrial IoT (IIoT) including MQTT, Modbus, OPC UA, edge computing, and smart manufacturing systems"
 ---
 
-# Industrial IoT (IIoT) Developer
+# Industrial IoT Developer
 
 ## Overview
 
-Master Industry 4.0 and Smart Manufacturing. Expertise in industrial protocols (Modbus, OPC UA, MQTT), Edge Computing (Node-RED, Azure IoT Edge), PLC integration, and real-time data visualization for factories.
+This skill transforms you into an **IIoT Systems Integrator**. You will master **MQTT** messaging, **Edge Computing**, **OPC UA** protocol, and **Data Pipeline** architecture for connecting factory equipment to cloud analytics.
 
 ## When to Use This Skill
 
-- Use when building factory monitoring systems or digital twins
-- Use when connecting legacy industrial equipment (PLCs) to the cloud
-- Use for predictive maintenance or OEE (Overall Equipment Effectiveness) tracking
-- Use when implementing secure, high-latency industrial data flows
+- Use when connecting machines to cloud platforms
+- Use when implementing MQTT brokers for telemetry
+- Use when processing data at the edge (gateway)
+- Use when building predictive maintenance systems
+- Use when integrating with PLCs/sensors
 
-## How It Works
+---
 
-### Step 1: Industrial Protocols
+## Part 1: IIoT Architecture
 
-- **OPC UA**: Standard for secure, vendor-independent data exchange.
-- **MQTT**: Lightweight messaging for unreliable or low-bandwidth networks.
-- **Modbus (TCP/RTU)**: Common legacy protocol for sensor and PLC data.
+### 1.1 The Purdue Model (ISA-95)
 
-```python
-# Modbus example using pymodbus
-from pymodbus.client import ModbusTcpClient
+| Level | Name | Example |
+|-------|------|---------|
+| 0-1 | Field | Sensors, Actuators, PLCs |
+| 2 | Control | SCADA, HMI |
+| 3 | Operations | MES, Historians |
+| 4-5 | Enterprise | ERP, Cloud Analytics |
 
-client = ModbusTcpClient('192.168.1.10')
-result = client.read_holding_registers(1, 10)
-print(result.registers)
+### 1.2 Modern IIoT Stack
+
+```
+Sensors -> Edge Gateway -> MQTT Broker -> Cloud (AWS IoT / Azure IoT)
+                |
+                v
+           Local Analytics / Buffering
 ```
 
-### Step 2: Edge Computing & Gateways
+---
 
-- **Node-RED**: Flow-based visual programming for IoT logic.
-- **Azure/AWS IoT Edge**: Run cloud logic (AI/ML) locally on factory floor hardware.
-- **Data Buffering**: Handling connectivity loss with local storage (Store-and-forward).
+## Part 2: Protocols
 
-### Step 3: Cybersecurity in IIoT
+### 2.1 MQTT (Message Queuing Telemetry Transport)
 
-- **Security Levels**: ISA/IEC 62443 standards.
-- **VLAN Segmentation**: Separating OT (Operational Technology) from IT networks.
-- **X.509 Certificates**: Encrypting communication between devices.
+Lightweight pub/sub protocol. Perfect for constrained devices.
 
-### Step 4: Visualization (SCADA Lite)
+**Topics:**
+`factory/line1/machine1/temperature`
 
-- **Grafana/InfluxDB**: Monitoring sensor trends in real-time.
-- **Ignition**: Professional HMI/SCADA platform integration.
+**QoS Levels:**
 
-## Best Practices
+- **0**: At most once (fire and forget).
+- **1**: At least once (may duplicate).
+- **2**: Exactly once (highest overhead).
+
+**Python Example:**
+
+```python
+import paho.mqtt.client as mqtt
+
+client = mqtt.Client()
+client.connect("broker.hivemq.com", 1883)
+
+def on_message(client, userdata, msg):
+    print(f"{msg.topic}: {msg.payload.decode()}")
+
+client.subscribe("factory/+/temperature")
+client.on_message = on_message
+client.loop_forever()
+```
+
+### 2.2 OPC UA
+
+See `@scada-specialist` for details. The "IT-friendly" industrial protocol.
+
+### 2.3 Modbus
+
+See `@scada-specialist`. Legacy but ubiquitous.
+
+---
+
+## Part 3: Edge Computing
+
+### 3.1 Why Edge?
+
+- **Latency**: Real-time decisions (e.g., stop machine).
+- **Bandwidth**: Filter noise, send only anomalies.
+- **Reliability**: Works when cloud is unreachable.
+
+### 3.2 Edge Platforms
+
+| Platform | Notes |
+|----------|-------|
+| **AWS Greengrass** | Run Lambda at edge |
+| **Azure IoT Edge** | Containers at edge |
+| **EdgeX Foundry** | Open source, vendor-neutral |
+| **Node-RED** | Visual flow programming |
+
+### 3.3 Edge Analytics
+
+- **Rule Engine**: "If temperature > 80, alert."
+- **Anomaly Detection**: ML model runs on gateway.
+- **Local Storage**: Buffer data during disconnect.
+
+---
+
+## Part 4: Cloud Integration
+
+### 4.1 Cloud IoT Platforms
+
+| Platform | Features |
+|----------|----------|
+| **AWS IoT Core** | MQTT broker, Rules Engine, Shadows |
+| **Azure IoT Hub** | Device management, Stream Analytics |
+| **Google Cloud IoT** | (Deprecated 2023, use MQTT + Pub/Sub) |
+| **ThingsBoard** | Open source, dashboards |
+
+### 4.2 Data Pipeline
+
+1. **Ingest**: MQTT -> Kafka / Kinesis.
+2. **Process**: Spark Streaming for aggregation.
+3. **Store**: TimescaleDB / InfluxDB for time-series.
+4. **Visualize**: Grafana dashboards.
+
+---
+
+## Part 5: Security
+
+### 5.1 Challenges
+
+- Devices have long lifecycles (10+ years).
+- Limited compute for encryption.
+- Physical access possible.
+
+### 5.2 Best Practices
+
+1. **TLS for MQTT**: Encrypt in transit.
+2. **Mutual TLS**: Authenticate devices with certificates.
+3. **Firmware Updates**: Signed OTA updates.
+4. **Network Segmentation**: OT separate from IT.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Implement "Store and Forward" for intermittent connectivity
-- ✅ Use edge processing to reduce unnecessary cloud data egress
-- ✅ Encrypt all industrial data in transit (TLS/SSL)
-- ✅ Use meaningful tag names following ISA-95 standards
-- ✅ Validate the "Quality" bit of OPC UA tags before using data
+- ✅ **Buffer Locally**: Network fails; edge should cache and resend.
+- ✅ **Timestamp at Source**: NTP sync all devices.
+- ✅ **Schema Registry**: Define message formats (Avro, Protobuf).
 
 ### ❌ Avoid This
 
-- ❌ Don't expose PLCs directly to the open internet
-- ❌ Don't use default passwords for industrial gateways
-- ❌ Don't flood the network with high-frequency telemetry (use "Publish on Change")
-- ❌ Don't ignore the physical environment (use industrial-grade hardware)
+- ❌ **Polling Sensors Too Fast**: Generates noise and heat.
+- ❌ **Plain Text MQTT**: Always use TLS.
+- ❌ **Ignoring Device Lifecycle**: Plan for decommissioning.
+
+---
 
 ## Related Skills
 
-- `@iot-developer` - Consumer IoT foundation
-- `@scada-specialist` - High-level control systems
-- `@big-data-engineer` - Handling massive telemetry logs
+- `@scada-specialist` - PLC/Modbus layer
+- `@senior-data-engineer` - Cloud data pipelines
+- `@kafka-developer` - Message streaming

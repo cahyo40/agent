@@ -7,64 +7,141 @@ description: "Expert in autonomous vehicle systems including sensor fusion, path
 
 ## Overview
 
-Master the technology behind self-driving systems. Expertise in sensor fusion (LiDAR, Camera, Radar), SLAM (Simultaneous Localization and Mapping), path planning (A*, RRT), and safety-critical software following ISO 26262.
+This skill transforms you into an **AV/Robotics Perception & Planning Expert**. You will master **Sensor Fusion** (Camera + LiDAR + Radar), **SLAM (Localization)**, **Path Planning**, and **Functional Safety** for building self-driving systems.
 
 ## When to Use This Skill
 
-- Use when developing self-driving car or drone software
-- Use when implementing obstacle avoidance for robots
-- Use for high-precision localization and mapping using LiDAR
-- Use when designing failsafe systems for autonomous mobility
+- Use when fusing multi-sensor data for perception
+- Use when implementing localization (SLAM, GPS-RTK)
+- Use when designing motion planning algorithms
+- Use when building simulation environments
+- Use when addressing functional safety (ISO 26262)
 
-## How It Works
+---
 
-### Step 1: Perception & Sensor Fusion
+## Part 1: Sensor Stack
 
-- **LiDAR**: Point cloud processing for 3D environment reconstruction.
-- **Kalman Filters**: Estimating object state by fusing multiple noisy sensors.
-- **Computer Vision**: Object detection (pedestrians, signs) and lane tracking.
+### 1.1 Core Sensors
 
-### Step 2: Localization & SLAM
+| Sensor | Strength | Weakness | Range |
+|--------|----------|----------|-------|
+| **Camera** | Color, texture, cheap | No depth, weather | 150m+ |
+| **LiDAR** | 3D point cloud, accurate | Expensive, no color | 200m |
+| **Radar** | Velocity, all-weather | Low resolution | 300m+ |
+| **Ultrasonic** | Close range, cheap | Very short range | 5m |
+| **GPS-RTK** | Absolute position | No indoor, latency | Global |
+| **IMU** | Angular rate, accel | Drift over time | N/A |
 
-```cpp
-// ROS2 Node snippet for pose estimation
-void onLidarData(const LidarData& msg) {
-    auto currentPose = slamSystem.update(msg.scan);
-    publishPose(currentPose);
-}
-```
+### 1.2 Sensor Fusion
 
-### Step 3: Path Planning & Control
+Combine sensors to compensate for individual weaknesses.
 
-- **Global Plan**: High-level route from Point A to B.
-- **Local Plan**: Dynamic obstacle avoidance and speed control (PID, MPC).
-- **Behavioral Logic**: Decision making (Stop at light, Wait for pedestrian).
+**Common Approach:**
 
-### Step 4: Safety & Simulation
+1. **Early Fusion**: Merge raw data before detection.
+2. **Late Fusion**: Detect separately, merge results.
+3. **Kalman Filter**: Track object state across time.
 
-- **CARLA / AirSim**: Testing in high-fidelity virtual environments.
-- **Redundancy**: Triple-modular redundancy for critical steering/braking logic.
-- **ISO 26262**: Compliance with automotive functional safety standards.
+---
 
-## Best Practices
+## Part 2: Perception Pipeline
+
+### 2.1 Object Detection
+
+- **Camera**: YOLO, CenterNet for 2D bounding boxes.
+- **LiDAR**: PointPillars, VoxelNet for 3D bounding boxes.
+- **Fusion**: Project LiDAR points into camera frame.
+
+### 2.2 Lane Detection
+
+- Classic: Canny edge -> Hough Transform.
+- Deep Learning: LaneNet, SCNN.
+
+### 2.3 Semantic Segmentation
+
+Classify every pixel: Road, Sidewalk, Vehicle, Pedestrian.
+
+- Models: DeepLabV3+, SegFormer.
+
+---
+
+## Part 3: Localization (SLAM)
+
+### 3.1 What is SLAM?
+
+Simultaneous Localization and Mapping. Build a map while figuring out where you are in it.
+
+### 3.2 Types
+
+| Type | Input | Use Case |
+|------|-------|----------|
+| **Visual SLAM** | Camera | Low cost, indoor |
+| **LiDAR SLAM** | LiDAR | Outdoor, high accuracy |
+| **GPS-INS** | GPS + IMU | Highway, open sky |
+
+### 3.3 Tools
+
+- **ORB-SLAM3**: Visual/Visual-Inertial.
+- **LIO-SAM**: LiDAR-Inertial.
+- **Autoware**: Full AV stack (ROS-based).
+
+---
+
+## Part 4: Motion Planning
+
+### 4.1 Hierarchy
+
+1. **Route Planning**: A* on HD Map (Global).
+2. **Behavior Planning**: Lane change? Stop? (Finite State Machine).
+3. **Motion Planning**: Trajectory generation (Lattice, RRT*).
+4. **Control**: PID, MPC to follow trajectory.
+
+### 4.2 Common Algorithms
+
+| Algorithm | Use |
+|-----------|-----|
+| **A*** | Graph search, global path |
+| **RRT** | Rapid-exploring Random Trees |
+| **Frenet Frame** | Path optimized in road coordinates |
+| **MPC** | Model Predictive Control for trajectory following |
+
+---
+
+## Part 5: Safety & Standards
+
+### 5.1 ISO 26262
+
+Automotive Functional Safety.
+
+- **ASIL Levels**: A (low risk) -> D (highest risk).
+- Braking, Steering = ASIL D.
+
+### 5.2 Safety Architecture
+
+- **Redundancy**: Dual ECUs, sensors.
+- **Watchdogs**: Detect failures, initiate safe state.
+- **Safe State**: Pull over, stop, alert driver.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use hard real-time operating systems (RTOS) or safe ROS2 distributions
-- ✅ Implement rigorous integration testing in simulators before real-world tests
-- ✅ Use robust fail-safe and fail-operational modes
-- ✅ Ensure low-latency processing of sensor data
-- ✅ Document all architectural decisions for safety certification
+- ✅ **Simulate First**: CARLA, LGSVL, Gazebo before real hardware.
+- ✅ **Log Everything**: Record raw sensor data for replay/debugging.
+- ✅ **Calibrate Sensors**: Accurate extrinsics are critical for fusion.
 
 ### ❌ Avoid This
 
-- ❌ Don't rely on a single sensor type (e.g., Camera only vs. LiDAR only)
-- ❌ Don't ignore edge cases in weather (rain, snow, fog)
-- ❌ Don't use non-deterministic code in steering/braking control loops
-- ❌ Don't skip human-in-the-loop validation
+- ❌ **Ignoring Edge Cases**: Rain, fog, construction zones.
+- ❌ **Overfitting to Test Track**: Real world is messier.
+- ❌ **Skipping Safety Analysis**: HAZOP, FMEA are required for production.
+
+---
 
 ## Related Skills
 
-- `@senior-robotics-engineer` - Core robotics foundation
-- `@computer-vision-specialist` - Visual perception
-- `@cpp-developer` - Performance critical code
+- `@computer-vision-specialist` - Perception models
+- `@senior-robotics-engineer` - ROS integration
+- `@senior-ai-ml-engineer` - Training perception models
