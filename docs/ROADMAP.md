@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.3.0  
-> **Total Skills:** 269
+> **Current Version:** v6.4.0  
+> **Total Skills:** 275
 
 ---
 
@@ -10,12 +10,50 @@
 
 ```text
 ████████████████████████████████████████ 100%
-269/269 Skills Complete ✅
+275/275 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.4.0 - Hacking & Security Expansion (Feb 2026) ✅
+
+**Goal:** 275 Skills + Offensive Security Focus
+
+| Category | Skills | Status |
+|----------|--------|--------|
+| AI & Machine Learning | 20 | ✅ Complete |
+| Backend Development | 26 | ✅ Complete |
+| Mobile Development | 17 | ✅ Complete |
+| Frontend Development | 16 | ✅ Complete |
+| UI/UX & Design | 14 | ✅ Complete |
+| Cloud & DevOps | 17 | ✅ Complete |
+| Data & Databases | 16 | ✅ Complete |
+| **Security** | **14** | ✅ Complete |
+| Testing & QA | 6 | ✅ Complete |
+| Content Creation | 24 | ✅ Complete |
+| Marketing & Business | 14 | ✅ Complete |
+| Documentation | 7 | ✅ Complete |
+| Industry Apps | 21 | ✅ Complete |
+| Desktop & Games | 11 | ✅ Complete |
+| Emerging Tech | 16 | ✅ Complete |
+| Bots & Automation | 7 | ✅ Complete |
+| Media Processing | 2 | ✅ Complete |
+| Industrial Tech | 3 | ✅ Complete |
+| Creative Arts | 1 | ✅ Complete |
+| Others | 23 | ✅ Complete |
+
+**New in v6.4.0:**
+
+- 🆕 `bug-bounty-hunter` - Vulnerability hunting on HackerOne, Bugcrowd
+- 🆕 `ctf-competitor` - CTF challenges (Web, Pwn, Crypto, Forensics)
+- 🆕 `red-team-operator` - Adversary simulation, social engineering
+- 🆕 `malware-analyst` - Static/dynamic malware analysis
+- 🆕 `network-security-specialist` - Network pen testing, IDS/IPS
+- 🆕 `forensic-investigator` - Digital forensics, incident response
+
+---
 
 ### v6.3.0 - Multi-Platform & Flutter Integration (Feb 2026) ✅
 
@@ -193,7 +231,8 @@ What this skill does and when to use it.
 | v6.1.0 | Feb 2026 | 255 | +2% |
 | v6.2.0 | Feb 2026 | 261 | +2.3% |
 | v6.3.0 | Feb 2026 | 269 | +3% |
-| v7.0.0 | 2027 | 300 | +11% (planned) |
+| v6.4.0 | Feb 2026 | 275 | +2% |
+| v7.0.0 | 2027 | 300 | +9% (planned) |
 
 ---
 

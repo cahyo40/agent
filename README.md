@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-269-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.3.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-275-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.4.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 269+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 275+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **269 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **275 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -159,7 +159,7 @@ rm -rf temp-skills
 | 🎨 UI/UX & Design | 14 | Figma, design systems |
 | ☁️ Cloud & DevOps | 17 | AWS, K8s, Terraform, Chaos Eng |
 | 💾 Data & Databases | 16 | ETL, MongoDB, PostgreSQL, Big Data |
-| 🔐 Security | 8 | OWASP, Pen testing, DevSecOps, Privacy |
+| 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Forensics |
 | 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
 | 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
@@ -233,7 +233,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 ```text
 agents/
 ├── .agent/
-│   └── skills/          # 269 skill folders
+│   └── skills/          # 275 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/

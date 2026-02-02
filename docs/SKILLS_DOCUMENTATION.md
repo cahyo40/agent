@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.3.0  
+> **Version:** 6.4.0  
 > **Last Updated:** 2026-02-02  
-> **Total Skills:** 269
+> **Total Skills:** 275
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **269 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **275 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -48,7 +48,7 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 17 | CI/CD, K8s, Terraform, Chaos Eng |
 | 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Big Data |
-| 🔐 Security | 8 | OWASP, Pen testing, DevSecOps, Privacy |
+| 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Forensics |
 | 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
 | 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
@@ -227,15 +227,24 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-### 🔐 Security (5 Skills)
+### 🔐 Security & Hacking (14 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-cybersecurity-engineer` | Application security, zero trust |
-| `senior-api-security-specialist` | OWASP, OAuth 2.0, JWT |
-| `senior-penetration-tester` | Vulnerability assessment |
-| `web3-smart-contract-auditor` | Smart contract security |
-| `debugging-specialist` | Root cause analysis |
+| `senior-cybersecurity-engineer` | Application security, zero trust architecture |
+| `senior-api-security-specialist` | OWASP Top 10, OAuth 2.0, JWT, API gateway security |
+| `senior-penetration-tester` | Comprehensive vulnerability assessment, ethical hacking |
+| `bug-bounty-hunter` | 🆕 Vulnerability hunting on HackerOne, Bugcrowd, report writing |
+| `ctf-competitor` | 🆕 CTF challenges: Web, Pwn, Crypto, Forensics, Reversing |
+| `red-team-operator` | 🆕 Adversary simulation, social engineering, C2 operations |
+| `malware-analyst` | 🆕 Static/dynamic analysis, YARA rules, IOC extraction |
+| `network-security-specialist` | 🆕 Network pen testing, Wireshark, IDS/IPS, firewall config |
+| `forensic-investigator` | 🆕 Digital forensics, memory analysis, incident response |
+| `web3-smart-contract-auditor` | Smart contract security, Solidity vulnerabilities |
+| `llm-security-specialist` | Prompt injection defense, LLM red teaming |
+| `devsecops-specialist` | Security in CI/CD pipeline, SAST/DAST |
+| `privacy-engineering-specialist` | Differential privacy, zero-knowledge proofs |
+| `debugging-specialist` | Root cause analysis, systematic debugging |
 
 ---
 
@@ -362,6 +371,17 @@ buatkan script dan ide thumbnail untuk video YouTube
 ---
 
 ## Changelog
+
+### v6.4.0 (2026-02-02)
+
+- 🎉 **275 Skills** - Total skills increased from 269 to 275
+- ✨ New Hacking & Security Skills:
+  - `bug-bounty-hunter` - Vulnerability hunting, report writing
+  - `ctf-competitor` - CTF challenges (Web, Pwn, Crypto, Forensics)
+  - `red-team-operator` - Adversary simulation, C2 operations
+  - `malware-analyst` - Static/dynamic malware analysis
+  - `network-security-specialist` - Network pen testing, IDS/IPS
+  - `forensic-investigator` - Digital forensics, incident response
 
 ### v6.3.0 (2026-02-02)
 
