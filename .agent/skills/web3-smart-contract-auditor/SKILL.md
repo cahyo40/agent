@@ -7,141 +7,177 @@ description: "Expert smart contract security auditing including vulnerability de
 
 ## Overview
 
-Audit smart contracts for security vulnerabilities, gas inefficiencies, and best practice violations. Master common attack vectors and mitigation patterns.
+This skill transforms you into a **Smart Contract Security Auditor**. You will move beyond simple reentrancy checks to detecting DeFi logic flaws, Flash Loan attack vectors, Oracle manipulation, and mastering Gas Optimization using assembly (Yul).
 
 ## When to Use This Skill
 
-- Use when auditing smart contracts
-- Use when reviewing Solidity code
-- Use when checking for vulnerabilities
-- Use when optimizing gas usage
+- Use when auditing Solidity smart contracts (Pre-deployment)
+- Use when optimizing Gas costs (Assembly/Yul)
+- Use when validating DeFi protocols (AMMs, Lending)
+- Use when writing formal verification specs
+- Use when analyzing past hacks (Post-mortem)
 
-## How It Works
+---
 
-### Step 1: Common Vulnerabilities
+## Part 1: Top Attack Vectors (Beyond Reentrancy)
 
-```
-VULNERABILITY CHECKLIST
-├── REENTRANCY
-│   ├── External calls before state updates
-│   └── Fix: Checks-Effects-Interactions pattern
-│
-├── INTEGER OVERFLOW/UNDERFLOW
-│   ├── Pre-0.8.0 Solidity issue
-│   └── Fix: Use SafeMath or Solidity 0.8+
-│
-├── ACCESS CONTROL
-│   ├── Missing onlyOwner modifiers
-│   └── Fix: OpenZeppelin AccessControl
-│
-├── FRONT-RUNNING
-│   ├── Transaction ordering attacks
-│   └── Fix: Commit-reveal schemes
-│
-├── ORACLE MANIPULATION
-│   ├── Price oracle attacks
-│   └── Fix: TWAP, Chainlink oracles
-│
-└── FLASH LOAN ATTACKS
-    ├── Instant liquidity exploitation
-    └── Fix: Time-weighted checks
-```
+### 1.1 Reentrancy (The Classic)
 
-### Step 2: Security Patterns
+**Vulnerability:**
+Calling an external contract *before* updating state.
 
 ```solidity
-// Checks-Effects-Interactions Pattern
-function withdraw(uint amount) external {
-    // 1. CHECKS
-    require(balances[msg.sender] >= amount, "Insufficient");
-    
-    // 2. EFFECTS (update state FIRST)
-    balances[msg.sender] -= amount;
-    
-    // 3. INTERACTIONS (external calls LAST)
-    (bool success, ) = msg.sender.call{value: amount}("");
-    require(success, "Transfer failed");
-}
-
-// ReentrancyGuard
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
-contract MyContract is ReentrancyGuard {
-    function withdraw() external nonReentrant {
-        // Safe from reentrancy
-    }
+// VULNERABLE
+function withdraw() public {
+    uint bal = balances[msg.sender];
+    (bool success, ) = msg.sender.call{value: bal}(""); // Flow verified here
+    require(success);
+    balances[msg.sender] = 0; // State updated AFTER
 }
 ```
 
-### Step 3: Gas Optimization
+**Fix (Checks-Effects-Interactions):**
 
 ```solidity
-// Gas Optimization Techniques
-
-// ❌ Bad: Multiple storage reads
-function bad() external {
-    for (uint i = 0; i < array.length; i++) {
-        // array.length read each loop
-    }
-}
-
-// ✅ Good: Cache storage in memory
-function good() external {
-    uint len = array.length;
-    for (uint i = 0; i < len; i++) {
-        // len is memory variable
-    }
-}
-
-// ✅ Use unchecked for safe math
-unchecked { i++; } // Saves gas when overflow impossible
-
-// ✅ Pack struct variables
-struct Packed {
-    uint128 a;  // Same slot
-    uint128 b;  // Same slot
+// SECURE
+function withdraw() public nonReentrant {
+    uint bal = balances[msg.sender];
+    require(bal > 0);
+    balances[msg.sender] = 0; // Effect
+    (bool success, ) = msg.sender.call{value: bal}(""); // Interaction
+    require(success);
 }
 ```
 
-### Step 4: Audit Checklist
+### 1.2 Flash Loan Attacks (Price Manipulation)
 
-```
-AUDIT PROCESS
-├── 1. Scope Definition
-│   └── Which contracts? Which functions?
-├── 2. Manual Review
-│   ├── Line-by-line code analysis
-│   └── Logic flow verification
-├── 3. Automated Tools
-│   ├── Slither, Mythril, Echidna
-│   └── Gas profiling
-├── 4. Testing
-│   ├── Unit tests coverage
-│   └── Fuzz testing
-└── 5. Report
-    ├── Severity ratings (Critical/High/Medium/Low)
-    └── Remediation recommendations
+**Vulnerability:** relying on `spot price` from a single logical DEX pair (e.g., Uniswap Pool).
+
+**Attack Vector:**
+
+1. Attacker borrows huge amount of Token A via Flash Loan.
+2. Attacker dumps Token A into the pool -> Price crashes.
+3. Attacker interacts with *your* protocol which reads this crashed price.
+4. Attacker repays Flash Loan + fee. Profit.
+
+**Fix:** Use TWAP (Time-Weighted Average Price) or Chainlink Oracles. Do NOT use `spot` price for collateral valuation.
+
+### 1.3 Signature Replay
+
+**Vulnerability:** Recovering signer without checking `nonce` or `chainId`.
+
+```solidity
+// VULNERABLE
+function permit(..., uint8 v, bytes32 r, bytes32 s) {
+    address signer = ecrecover(hash, v, r, s);
+    // ... authorize signer
+}
 ```
 
-## Best Practices
+**Fix:** Include `nonce` (incremented on use) and `block.chainid` in the signed hash struct (EIP-712).
+
+---
+
+## Part 2: Gas Optimization (Yul / Assembly)
+
+Every opcode costs money.
+
+### 2.1 Storage vs Memory vs Calldata
+
+- **Storage**: Expensive (20k gas). Avoid writing if possible.
+- **Memory**: Cheap, strictly temporary.
+- **Calldata**: Cheapest. Read-only arguments.
+
+**Optimization:** Use `calldata` for external function array arguments.
+
+```solidity
+// Bad
+function process(uint[] memory data) external { ... }
+
+// Good
+function process(uint[] calldata data) external { ... }
+```
+
+### 2.2 Unchecked Arithmetic
+
+Since Solidity 0.8.x, overflow checks are default (costs gas). If you are 100% sure it won't overflow (e.g., loop counter), use `unchecked`.
+
+```solidity
+for (uint i = 0; i < len; ) {
+    // ... logic
+    unchecked { ++i; } // Saves gas per iteration
+}
+```
+
+---
+
+## Part 3: Auditing Tools & Workflow
+
+### 3.1 Static Analysis
+
+- **Slither**: Gold standard. Finds reentrancy, uninitialized variables, etc.
+  `slither .`
+- **Aderyn**: Rust-based, fast AST traversing.
+
+### 3.2 Fuzzing (Foundry)
+
+Don't just write unit tests. Write **Invariants**.
+
+```solidity
+// Invariant: Total supply should never exceed sum of balances
+function invariant_totalSupply() public {
+    assertEq(token.totalSupply(), sumBalances);
+}
+```
+
+Run with Foundry: `forge test --invariant`
+
+---
+
+## Part 4: Token Standards (ERC-20/721/1155)
+
+### 4.1 ERC-777 Reentrancy
+
+ERC-777 has `tokensReceived` hook. If you support it, you ARE vulnerable to reentrancy even on simple transfers. Be careful wrapping ETH.
+
+### 4.2 Fee-on-Transfer Tokens
+
+Some tokens (USDT, SafeMoon) take a fee on transfer.
+**Vulnerability:** Assuming `amount` sent = `amount` received.
+
+```solidity
+// Bad
+token.transferFrom(user, address(this), amount);
+balances[user] += amount; // WRONG! Might be less.
+
+// Good
+uint before = token.balanceOf(address(this));
+token.transferFrom(user, address(this), amount);
+uint received = token.balanceOf(address(this)) - before;
+balances[user] += received;
+```
+
+---
+
+## Part 5: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use OpenZeppelin contracts
-- ✅ Follow CEI pattern
-- ✅ Use ReentrancyGuard
-- ✅ Validate all inputs
-- ✅ Emit events for state changes
-- ✅ Use time-locks for admin functions
+- ✅ **Use OpenZeppelin**: Don't roll your own crypto/math libraries.
+- ✅ **Implement Circuit Breakers**: `pause()` functionality to stop contract in emergency.
+- ✅ **Check Return Values**: `transfer` might return false instead of reverting (USDT). Use `SafeERC20`.
+- ✅ **Validate Inputs**: `require(address != address(0))` is cheap insurance.
 
 ### ❌ Avoid This
 
-- ❌ Don't use tx.origin for auth
-- ❌ Don't hardcode addresses
-- ❌ Don't ignore compiler warnings
-- ❌ Don't skip external audit
+- ❌ **`tx.origin`**: Use `msg.sender` for authorization.
+- ❌ **`block.timestamp` (for randomness)**: Miners can manipulate it slightly.
+- ❌ **Private Variables for Secrets**: Nothing is private on-chain. Everyone can read `private` slots.
+
+---
 
 ## Related Skills
 
-- `@senior-web3-developer` - Web3 development
-- `@expert-web3-blockchain` - Blockchain expertise
+- `@senior-web3-developer` - Building the protocols
+- `@senior-rust-developer` - Solana Auditing (Anchor)
+- `@devsecops-specialist` - Pipeline security (Slither in CI)

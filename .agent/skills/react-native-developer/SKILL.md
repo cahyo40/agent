@@ -1,315 +1,231 @@
 ---
 name: react-native-developer
-description: "Expert React Native development including Expo, navigation, state management, and cross-platform mobile apps"
+description: "Expert React Native development including New Architecture (Fabric/TurboModules), native modules, Reanimated, and cross-platform performance"
 ---
 
 # React Native Developer
 
 ## Overview
 
-This skill helps you build cross-platform mobile apps using React Native and Expo with JavaScript/TypeScript.
+This skill transforms you into an **Expert React Native Engineer**. You will move beyond "bridged" JS threads to mastering the **New Architecture (Fabric/TurboModules)**, handling complex animations with **Reanimated 3**, integrating Native Modules (JSI), and optimizing performance (FlatList, Hermes).
 
 ## When to Use This Skill
 
-- Use when building mobile apps with React
-- Use when sharing code between iOS/Android
-- Use when leveraging web dev skills for mobile
+- Use when building high-performance cross-platform apps
+- Use when integrating platform-specific APIs (Camera, Bluetooth)
+- Use when optimizing animation framerates (60/120fps)
+- Use when debugging startup time or memory usage
+- Use when implementing OTA updates (CodePush/EAS)
 
-## How It Works
+---
 
-### Step 1: Project Structure (Expo)
+## Part 1: The New Architecture (Fabric & TurboModules)
 
-```text
-my-app/
-├── app/                   # Expo Router (file-based routing)
-│   ├── (tabs)/
-│   │   ├── index.tsx
-│   │   ├── explore.tsx
-│   │   └── _layout.tsx
-│   ├── _layout.tsx
-│   └── +not-found.tsx
-├── components/
-│   ├── ui/
-│   └── ThemedText.tsx
-├── hooks/
-├── constants/
-├── assets/
-├── app.json
-└── package.json
+The bridge is dead. Synchronous communication is key.
+
+### 1.1 Enabling New Architecture
+
+In `android/gradle.properties`:
+
+```properties
+newArchEnabled=true
 ```
 
-### Step 2: Navigation (Expo Router)
+In `ios/Podfile`:
 
-```tsx
-// app/_layout.tsx
-import { Stack } from 'expo-router';
+```ruby
+ENV['RCT_NEW_ARCH_ENABLED'] = '1'
+```
 
-export default function RootLayout() {
-  return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-    </Stack>
-  );
+### 1.2 TurboModules (Native Modules)
+
+Type-safe native modules using TypeScript (`Codegen`).
+
+**1. Define Spec (JS/TS):**
+
+```typescript
+// NativeCalculator.ts
+import type { TurboModule } from 'react-native';
+import { TurboModuleRegistry } from 'react-native';
+
+export interface Spec extends TurboModule {
+  add(a: number, b: number): Promise<number>;
 }
 
-// app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+export default TurboModuleRegistry.getEnforcing<Spec>('Calculator');
+```
 
-export default function TabsLayout() {
-  return (
-    <Tabs>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+**2. Implement (Kotlin/Android):**
+
+```kotlin
+class CalculatorModule(context: ReactApplicationContext) : 
+  NativeCalculatorSpec(context) {
+
+  override fun getName() = "Calculator"
+
+  override fun add(a: Double, b: Double, promise: Promise) {
+    promise.resolve(a + b)
+  }
 }
 ```
 
-### Step 3: Components & Styling
+---
+
+## Part 2: High-Performance UI
+
+### 2.1 FlashList (Better FlatList)
+
+`FlatList` creates a view for every item. `FlashList` recycles views (like RecyclerView/UICollectionView).
 
 ```tsx
-// components/Button.tsx
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { FlashList } from "@shopify/flash-list";
 
-interface ButtonProps {
-  title: string;
-  onPress: () => void;
-  variant?: 'primary' | 'secondary';
-  loading?: boolean;
-  disabled?: boolean;
-}
-
-export function Button({ title, onPress, variant = 'primary', loading, disabled }: ButtonProps) {
+const MyList = ({ data }) => {
   return (
-    <TouchableOpacity
-      style={[
-        styles.button,
-        variant === 'secondary' && styles.secondary,
-        disabled && styles.disabled,
-      ]}
-      onPress={onPress}
-      disabled={disabled || loading}
-      activeOpacity={0.8}
-    >
-      {loading ? (
-        <ActivityIndicator color="#fff" />
-      ) : (
-        <Text style={[styles.text, variant === 'secondary' && styles.secondaryText]}>
-          {title}
-        </Text>
-      )}
-    </TouchableOpacity>
+    <FlashList
+      data={data}
+      renderItem={({ item }) => <Text>{item.title}</Text>}
+      estimatedItemSize={200} // Critical for performance
+      drawDistance={250}
+    />
   );
-}
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  secondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#007AFF',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryText: {
-    color: '#007AFF',
-  },
-});
+};
 ```
 
-### Step 4: State Management (Zustand)
+### 2.2 Reanimated 3 (Worklet Animations)
+
+Run animations on UI Thread, not JS Thread.
 
 ```tsx
-// stores/authStore.ts
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring 
+} from 'react-native-reanimated';
+
+const Box = () => {
+  const offset = useSharedValue(0);
+
+  const style = useAnimatedStyle(() => ({
+    transform: [{ translateX: offset.value }],
+  }));
+
+  return (
+    <>
+      <Animated.View style={[styles.box, style]} />
+      <Button onPress={() => (offset.value = withSpring(Math.random() * 255))} />
+    </>
+  );
+};
+```
+
+---
+
+## Part 3: Navigation & State
+
+### 3.1 React Navigation 6/7
+
+Stack is native on iOS (`UINavigationController`) via `react-native-screens`.
+
+```tsx
+<Stack.Navigator
+  screenOptions={{
+    headerShown: false, // Custom headers are better
+    animation: 'slide_from_right',
+    presentation: 'modal', // Native modal behavior
+  }}
+>
+  <Stack.Screen name="Home" component={HomeScreen} />
+  <Stack.Screen name="Profile" component={ProfileScreen} />
+</Stack.Navigator>
+```
+
+### 3.2 State Management (Zustand + MMKV)
+
+Don't use AsyncStorage (it's slow & async). Use MMKV (C++ synchronous storage).
+
+```typescript
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MMKV } from 'react-native-mmkv';
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
+const storage = new MMKV();
 
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-}
-
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      token: null,
-      isLoading: false,
-      
-      login: async (email, password) => {
-        set({ isLoading: true });
-        try {
-          const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, password }),
-          });
-          const { user, token } = await response.json();
-          set({ user, token, isLoading: false });
-        } catch (error) {
-          set({ isLoading: false });
-          throw error;
-        }
-      },
-      
-      logout: () => set({ user: null, token: null }),
-    }),
-    {
-      name: 'auth-storage',
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
-);
+const useStore = create((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  // Persist logic manually or via middleware
+  hydrate: () => {
+    const bears = storage.getNumber('bears') || 0;
+    set({ bears });
+  },
+}));
 ```
 
-### Step 5: API Integration
+---
 
-```tsx
-// services/api.ts
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+## Part 4: Native Integration Patterns
 
-class ApiClient {
-  private token: string | null = null;
+### 4.1 Native UI Components (Fabric)
 
-  setToken(token: string | null) {
-    this.token = token;
-  }
+Exposing a custom Android `VideoView` or iOS `MapView` to React Native.
 
-  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...(this.token && { Authorization: `Bearer ${this.token}` }),
-      ...options.headers,
-    };
+**JS Spec:**
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      ...options,
-      headers,
-    });
+```typescript
+// MapViewNativeComponent.ts
+import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
+import type { ViewProps } from 'react-native';
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  get<T>(endpoint: string) {
-    return this.request<T>(endpoint);
-  }
-
-  post<T>(endpoint: string, data: unknown) {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
+interface NativeProps extends ViewProps {
+  zoomEnabled?: boolean;
 }
 
-export const api = new ApiClient();
-
-// hooks/useProducts.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../services/api';
-
-export function useProducts() {
-  return useQuery({
-    queryKey: ['products'],
-    queryFn: () => api.get('/products'),
-  });
-}
+export default codegenNativeComponent<NativeProps>('MapView');
 ```
 
-### Step 6: Native Features
+---
 
-```tsx
-// Camera
-import { Camera, CameraView } from 'expo-camera';
+## Part 5: Debugging & Profiling
 
-function CameraScreen() {
-  const [permission, requestPermission] = Camera.useCameraPermissions();
-  
-  if (!permission?.granted) {
-    return <Button title="Grant Permission" onPress={requestPermission} />;
-  }
-  
-  return <CameraView style={{ flex: 1 }} facing="back" />;
-}
+### 5.1 Flipper (Deprecated) -> Chrome DevTools & React DevTools
 
-// Location
-import * as Location from 'expo-location';
+- **CPU Profiler**: Find JS bottlenecks.
+- **Perf Monitor**: Check JS FPS vs UI FPS.
+  - If JS FPS < 60: Logic is too heavy on JS thread.
+  - If UI FPS < 60: Too many views or overdraw.
 
-async function getLocation() {
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== 'granted') return;
-  
-  const location = await Location.getCurrentPositionAsync({});
-  return location.coords;
-}
+### 5.2 Hermes Engine
 
-// Push Notifications
-import * as Notifications from 'expo-notifications';
+Enable Hermes. It compiles JS to Bytecode ahead of time (AOT).
 
-async function registerForPushNotifications() {
-  const { status } = await Notifications.requestPermissionsAsync();
-  if (status !== 'granted') return;
-  
-  const token = await Notifications.getExpoPushTokenAsync();
-  return token.data;
-}
+```groovy
+// android/app/build.gradle
+project.ext.react = [
+    enableHermes: true,
+]
 ```
 
-## Best Practices
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use Expo for faster development
-- ✅ Use TypeScript
-- ✅ Optimize FlatList with keyExtractor, memo
-- ✅ Use React Query for server state
+- ✅ **Enable Hermes**: Mandatory for startup speed and memory.
+- ✅ **Use `useCallback` / `useMemo`**: Optimization is critical in RN to prevent re-renders passing props to Native Components.
+- ✅ **Lazy Load Bundles**: Split your bundle if the app is huge (`React.lazy`).
+- ✅ **Styles outside render**: Define `StyleSheet.create` outside the component to avoid recreating style objects.
 
 ### ❌ Avoid This
 
-- ❌ Don't use inline styles extensively
-- ❌ Don't ignore platform differences
-- ❌ Don't skip performance profiling
+- ❌ **`ScrollView` for lists**: It renders ALL children at once. OOM Crash. Use `FlashList`.
+- ❌ **Doing heavy math in JS**: Move image processing / heavy calc to C++/Native via JSI/TurboModule.
+- ❌ **Inline Functions in Render**: `<View onLayout={() => {}} />` forces re-render.
+
+---
 
 ## Related Skills
 
-- `@senior-react-developer` - React patterns
-- `@senior-typescript-developer` - TypeScript
+- `@senior-react-developer` - React Core concepts
+- `@senior-android-developer` - Native Android Code
+- `@senior-ios-developer` - Native iOS Code

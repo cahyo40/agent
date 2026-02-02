@@ -7,71 +7,203 @@ description: "Expert in integrating security practices into the DevOps pipeline 
 
 ## Overview
 
-Master the integration of security into the modern DevOps lifecycle. Expertise in Shift-Left security, automated scanning (SAST/DAST/SCA), container security, and compliance-as-code.
+This skill transforms you into a **DevSecOps Architect**. You will integration security into every stage of the pipeline (Shift Left). You will master **SAST** (Static Analysis), **SCA** (Dependency Scanning), **Container Security**, **Secrets Management**, and **Policy as Code** (OPA/Kyverno).
 
 ## When to Use This Skill
 
-- Use when building secure CI/CD pipelines
-- Use when automating security vulnerability detection
-- Use when securing containerized environments (Kubernetes/Docker)
-- Use when implementing compliance checks in infrastructure
+- Use when auditing CI/CD pipelines for security
+- Use when automating vulnerability scanning (Code, Deps, Infrastructure)
+- Use when implementing "Guardrails" for developers
+- Use when handling secrets in Kubernetes/Cloud
+- Use when preparing for compliance audits (SOC2, ISO 27001)
 
-## How It Works
+---
 
-### Step 1: Shift-Left Security (SAST/SCA)
+## Part 1: The DevSecOps Pipeline
 
-- **SAST (Static Application Security Testing)**: Scan source code for vulnerabilities (e.g., SonarQube, Snyk, Semgrep).
-- **SCA (Software Composition Analysis)**: Identify vulnerable dependencies (e.g., OWASP Dependency-Check, GitHub Dependabot).
+Security is not a gate at the end. It's continuous.
+
+### 1.1 Pre-Commit (Local)
+
+Stop secrets from entering Git.
+
+**Tool: `pre-commit` + `trufflehog`**
 
 ```yaml
-# GitHub Action example for SCA
-- name: Run Snyk to check for vulnerabilities
-  uses: snyk/actions/node@master
-  env:
-    SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/tricycle/pre-commit-trufflehog
+    rev: v3.0.0
+    hooks:
+      - id: trufflehog
+        name: TruffleHog Secrets Scan
 ```
 
-### Step 2: DAST & Dynamic Scanning
+### 1.2 Build Stage (SCA & SAST)
 
-- **DAST (Dynamic Application Security Testing)**: Crawl and test running applications (e.g., OWASP ZAP, Burp Suite Enterprise).
-- **IAST (Interactive)**: Combines static and dynamic analysis from within the application.
+**SCA (Software Composition Analysis)**: Check libraries for CVEs.
+**Tool: `trivy` or `snyk`**
 
-### Step 3: Container & Infrastructure Security
+```yaml
+services:
+  app-security:
+    steps:
+      - name: Scan Dependencies (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+```
+
+**SAST (Static Application Security Testing)**: Check code patterns (SQL Injection, XSS).
+**Tool: `semgrep` or `SonarQube`**
+
+```yaml
+      - name: Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/owasp-top-ten
+```
+
+---
+
+## Part 2: Container Security
+
+Don't deploy a container with root access or 1000 CVEs.
+
+### 2.1 Dockerfile Hardening
+
+```dockerfile
+# 1. Use Minimal Base Image (smaller attack surface)
+FROM alpine:3.19
+
+# 2. Ensure latest security patches
+RUN apk upgrade --no-cache
+
+# 3. Create non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# 4. Drop capabilities (Don't need Ping/NetRaw)
+# (Done in Kubernetes SecurityContext, but good habits helps)
+
+USER appuser
+```
+
+### 2.2 Registry Scanning
+
+Configure Harbor, ECR, or Docker Hub to scan on push. Block deployment if Critical CVEs found.
+
+---
+
+## Part 3: Infrastructure Protection
+
+### 3.1 IaC Scanning (Terraform/K8s)
+
+**Tool: `tfsec` or `checkov`**
 
 ```bash
-# Scanning Docker images for vulnerabilities
-trivy image my-app:latest
-
-# Scanning Terraform for misconfigurations
-tfsec .
+# Scan terraform code
+checkov -d ./terraform --check CKV_AWS_41
+# CKV_AWS_41: Ensure IAM role allows only specific services
 ```
 
-- **Policy as Code**: Use OPA (Open Policy Agent) or Kyverno to enforce security policies in Kubernetes.
+### 3.2 Policy as Code (OPA / Kyverno)
 
-### Step 4: Secrets Management & Monitoring
+Enforce rules in the cluster. "No LoadBalancers allowed in Dev".
 
-- **Secret Detection**: Prevent leaks with tools like Gitleaks or TruffleHog.
-- **SIEM/SOAR**: Monitor events and automate responses (e.g., ELK Stack with security, Splunk).
+**Kyverno Policy:**
 
-## Best Practices
+```yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privileged-containers
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: validate-privileged
+    match:
+      resources:
+        kinds:
+        - Pod
+    validate:
+      message: "Privileged mode is not allowed."
+      pattern:
+        spec:
+          containers:
+          - securityContext:
+              privileged: false
+```
+
+---
+
+## Part 4: Dynamic Application Security Testing (DAST)
+
+Scan the running application.
+
+**Tool: OWASP ZAP (Zed Attack Proxy)**
+
+```yaml
+  dast:
+    stage: test
+    image: owasp/zap2docker-stable
+    script:
+      - zap-baseline.py -t https://staging.myapp.com
+```
+
+---
+
+## Part 5: Secrets Management
+
+### 5.1 The Golden Rule
+
+**NEVER** commit secrets. Not even encrypted ones if possible.
+
+### 5.2 External Secrets Operator (K8s)
+
+Sync AWS Secrets Manager / HashiCorp Vault to K8s Secrets securely.
+
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: database-creds
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: SecretStore
+  target:
+    name: db-secret # K8s secret to create
+  data:
+  - secretKey: password
+    remoteRef:
+      key: production/db/password
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Integrate security checks directly into the main CI/CD pipeline
-- ✅ Fail builds if "Critical" or "High" vulnerabilities are detected
-- ✅ Rotate secrets and certificates automatically
-- ✅ Use minimal base images for containers (e.g., Alpine, Distroless)
-- ✅ Implement "Least Privilege" for all service accounts
+- ✅ **Automate Everything**: Security scans must be non-negotiable blocking steps in CI.
+- ✅ **Patch Continuously**: Set up automated dependency updates (Dependabot/Renovate).
+- ✅ **Least Privilege**: IAM roles should have 0 permissions by default. Add one by one.
+- ✅ **Secure Supply Chain**: Sign images with Cosign/Notary. Verify signatures before deploy.
 
 ### ❌ Avoid This
 
-- ❌ Don't treat security as a final "gate" (Shift Left instead)
-- ❌ Don't hardcode any secrets in source code or CI configs
-- ❌ Don't ignore "Medium" vulnerabilities for too long
-- ❌ Don't skip security scans for PRs
+- ❌ **False Positives Spam**: Tune your scanners. If 100 warnings appear every run, developers will ignore them.
+- ❌ **Root Containers**: Just don't.
+- ❌ **Long-lived Keys**: Rotate AWS keys/DB passwords every 90 days or less.
+
+---
 
 ## Related Skills
 
-- `@senior-devops-engineer` - Pipeline foundation
-- `@senior-cybersecurity-engineer` - Core security concepts
-- `@terraform-specialist` - Infrastructure security
+- `@senior-linux-sysadmin` - System Hardening
+- `@kubernetes-specialist` - Cluster Security
+- `@github-actions-specialist` - Pipeline Implementation

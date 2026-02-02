@@ -7,222 +7,239 @@ description: "Expert Flutter state management with Riverpod including providers,
 
 ## Overview
 
-Master Riverpod state management in Flutter including all provider types, code generation, async handling, testing, and clean architecture integration.
+This skill transforms you into a **Riverpod Expert**. You will move beyond simple providers to mastering the **Riverpod Generator (riverpod_annotation)**, handling complex async state with `AsyncValue`, implementing **Feature-First Architecture**, and writing robust unit/widget tests for your providers.
 
 ## When to Use This Skill
 
-- Use when implementing Riverpod
-- Use when complex state management
-- Use when building scalable Flutter apps
-- Use when testing state logic
+- Use when starting a new Flutter project (Architecture decision)
+- Use when refactoring legacy `ChangeNotifier` or `Bloc` to Riverpod
+- Use when optimizing rebuilds with `select()`
+- Use when implementing caching or debounce logic
+- Use when testing state changes in isolation
 
-## How It Works
+---
 
-### Step 1: Provider Types
+## Part 1: The New Syntax (Code Generation)
+
+Riverpod 2.0+ strongly recommends using code generation for better type safety and DX.
+
+### 1.1 Providers with Annotations
 
 ```dart
+// main.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-// Simple Provider (read-only value)
-final configProvider = Provider<AppConfig>((ref) {
-  return AppConfig();
-});
+part 'main.g.dart';
 
-// StateProvider (simple mutable state)
-final counterProvider = StateProvider<int>((ref) => 0);
-
-// FutureProvider (async data)
-final userProvider = FutureProvider<User>((ref) async {
-  final api = ref.watch(apiProvider);
-  return await api.fetchCurrentUser();
-});
-
-// StreamProvider (reactive streams)
-final messagesProvider = StreamProvider<List<Message>>((ref) {
-  final repo = ref.watch(messageRepoProvider);
-  return repo.watchMessages();
-});
-
-// StateNotifierProvider (complex state)
-final todoListProvider = StateNotifierProvider<TodoNotifier, List<Todo>>((ref) {
-  return TodoNotifier(ref.watch(todoRepoProvider));
-});
-
-// NotifierProvider (Riverpod 2.0+)
-final cartProvider = NotifierProvider<CartNotifier, Cart>(() {
-  return CartNotifier();
-});
-
-// AsyncNotifierProvider
-final productsProvider = AsyncNotifierProvider<ProductsNotifier, List<Product>>(() {
-  return ProductsNotifier();
-});
-```
-
-### Step 2: Notifiers
-
-```dart
-// StateNotifier (legacy but still valid)
-class TodoNotifier extends StateNotifier<List<Todo>> {
-  final TodoRepository _repo;
-  
-  TodoNotifier(this._repo) : super([]);
-
-  Future<void> loadTodos() async {
-    state = await _repo.getAll();
-  }
-
-  void add(Todo todo) {
-    state = [...state, todo];
-  }
-
-  void toggle(String id) {
-    state = [
-      for (final todo in state)
-        if (todo.id == id) todo.copyWith(completed: !todo.completed)
-        else todo
-    ];
-  }
+// 1. Simple Read-Only Provider (autoDispose by default)
+@riverpod
+String appTitle(AppTitleRef ref) {
+  return 'My Awesome App';
 }
 
-// Notifier (Riverpod 2.0+)
-class CartNotifier extends Notifier<Cart> {
+// 2. Notifier Provider (Sync State)
+@riverpod
+class Counter extends _$Counter {
   @override
-  Cart build() => Cart.empty();
+  int build() => 0;
 
-  void addItem(Product product) {
-    state = state.copyWith(
-      items: [...state.items, CartItem(product: product, quantity: 1)]
-    );
-  }
-
-  void removeItem(String productId) {
-    state = state.copyWith(
-      items: state.items.where((i) => i.product.id != productId).toList()
-    );
-  }
+  void increment() => state++;
 }
 
-// AsyncNotifier
-class ProductsNotifier extends AsyncNotifier<List<Product>> {
+// 3. AsyncNotifier Provider (Async State)
+@riverpod
+class Products extends _$Products {
   @override
-  Future<List<Product>> build() async {
-    return await ref.watch(productRepoProvider).getAll();
+  FutureOr<List<Product>> build() async {
+    // "ref.watch" here creates dependencies automatically
+    final repo = ref.watch(productRepositoryProvider);
+    return repo.fetchProducts();
   }
 
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => 
-      ref.watch(productRepoProvider).getAll()
-    );
+  Future<void> addProduct(Product product) async {
+    // Optimistic UI Update possible here
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(productRepositoryProvider).add(product);
+      return ref.read(productRepositoryProvider).fetchProducts();
+    });
   }
 }
 ```
 
-### Step 3: Widget Integration
+### 1.2 Family & KeepAlive
+
+Passing arguments and caching.
 
 ```dart
-// ConsumerWidget
-class TodoListScreen extends ConsumerWidget {
+// Auto-generates provider family
+@riverpod
+Future<User> user(UserRef ref, {required String id}) async {
+  // Keep alive for 5 minutes (caching)
+  final link = ref.keepAlive();
+  final timer = Timer(const Duration(minutes: 5), () {
+    link.close();
+  });
+  ref.onDispose(() => timer.cancel());
+
+  return ref.watch(userRepositoryProvider).getById(id);
+}
+```
+
+---
+
+## Part 2: Advanced State Patterns
+
+### 2.1 AsyncValue & Error Handling
+
+Don't just use `try-catch`. Use `AsyncValue` power.
+
+```dart
+// In Widget
+class ProductList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todosAsync = ref.watch(todosProvider);
-    
-    return todosAsync.when(
-      loading: () => const CircularProgressIndicator(),
-      error: (error, stack) => Text('Error: $error'),
-      data: (todos) => ListView.builder(
-        itemCount: todos.length,
-        itemBuilder: (context, index) => TodoTile(todo: todos[index]),
-      ),
-    );
-  }
-}
+    final products = ref.watch(productsProvider);
 
-// ConsumerStatefulWidget
-class CounterScreen extends ConsumerStatefulWidget {
-  @override
-  ConsumerState<CounterScreen> createState() => _CounterScreenState();
-}
-
-class _CounterScreenState extends ConsumerState<CounterScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Can access ref here
-    ref.read(analyticsProvider).logScreenView('counter');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final count = ref.watch(counterProvider);
-    
-    return Column(
-      children: [
-        Text('Count: $count'),
-        ElevatedButton(
-          onPressed: () => ref.read(counterProvider.notifier).state++,
-          child: const Text('Increment'),
-        ),
-      ],
+    return products.when(
+      data: (data) => ListView(children: ...),
+      error: (e, st) => ErrorView(e),
+      loading: () => const LoadingSpinner(),
+      // Handle reloading state specifically (keep showing data while refreshing)
+      skipLoadingOnRefresh: true, 
+      skipLoadingOnReload: true,
     );
   }
 }
 ```
 
-### Step 4: Testing
+### 2.2 Rebuild Optimization (`select`)
+
+Stop widget rebuilding on every state change.
+
+```dart
+@override
+Widget build(BuildContext context, WidgetRef ref) {
+  // Only rebuild if 'name' changes. Ignore 'age' or 'email' changes.
+  final name = ref.watch(userProvider.select((user) => user.name));
+  
+  return Text(name);
+}
+```
+
+---
+
+## Part 3: Architecture Integration
+
+Feature-First Architecture with Riverpod.
+
+```text
+lib/
+├── features/
+│   ├── auth/
+│   │   ├── data/
+│   │   │   ├── auth_repository.dart  // @riverpod provider
+│   │   │   └── auth_api.dart
+│   │   ├── domain/
+│   │   │   └── user.dart             // Freezed class
+│   │   └── presentation/
+│   │       ├── auth_controller.dart  // @riverpod AsyncNotifier
+│   │       └── login_screen.dart
+│   └── products/
+├── core/
+│   ├── router/
+│   └── theme/
+└── main.dart
+```
+
+**Controller Pattern (ViewModel):**
+
+```dart
+@riverpod
+class LoginController extends _$LoginController {
+  @override
+  FutureOr<void> build() {
+    // Initial state is void (idle)
+  }
+
+  Future<void> login(String email, String password) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => 
+      ref.read(authRepositoryProvider).signIn(email, password)
+    );
+  }
+}
+```
+
+---
+
+## Part 4: Testing Strategies
+
+Testing Riverpod is easier than generic Provider because it doesn't depend on Flutter tree.
+
+### 4.1 Unit Testing Providers
 
 ```dart
 void main() {
-  test('TodoNotifier adds todo', () {
-    final container = ProviderContainer(
-      overrides: [
-        todoRepoProvider.overrideWithValue(MockTodoRepo()),
-      ],
-    );
+  test('Counter increments', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
 
-    final notifier = container.read(todoListProvider.notifier);
-    
-    notifier.add(Todo(id: '1', title: 'Test'));
-    
-    expect(container.read(todoListProvider).length, 1);
-  });
+    // Initial state
+    expect(container.read(counterProvider), 0);
 
-  testWidgets('Counter increments', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(home: CounterScreen()),
-      ),
-    );
+    // Mutation
+    container.read(counterProvider.notifier).increment();
 
-    expect(find.text('Count: 0'), findsOneWidget);
-    
-    await tester.tap(find.text('Increment'));
-    await tester.pump();
-    
-    expect(find.text('Count: 1'), findsOneWidget);
+    // Verification
+    expect(container.read(counterProvider), 1);
   });
 }
 ```
 
-## Best Practices
+### 4.2 Mocking Dependencies (Overrides)
+
+```dart
+test('Products provider fetches from repo', () async {
+  final mockRepo = MockProductRepository();
+  when(() => mockRepo.fetchProducts()).thenAnswer((_) async => [Product(id: 1)]);
+
+  final container = ProviderContainer(
+    overrides: [
+      productRepositoryProvider.overrideWithValue(mockRepo),
+    ],
+  );
+
+  // Wait for AsyncValue
+  final products = await container.read(productsProvider.future);
+  expect(products.length, 1);
+});
+```
+
+---
+
+## Part 5: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use ref.watch in build
-- ✅ Use ref.read for events
-- ✅ Keep providers focused
-- ✅ Use code generation
-- ✅ Override providers in tests
+- ✅ **Use Code Generation**: It prevents `Provider<String>` conflicts and handles modifiers (family/autoDispose) automatically.
+- ✅ **Use `ref.watch` in `build`**: Always watch providers inside `build` method to react to changes.
+- ✅ **Use `ref.read` in callbacks**: Only read inside `onPressed` or LifeCycle methods.
+- ✅ **Use `autoDispose` by default**: Most providers (especially UI state) should destroy themselves when not used.
+- ✅ **Use `Freezed` unions**: Combine with Riverpod for robust State classes (Data/Loading/Error).
 
 ### ❌ Avoid This
 
-- ❌ Don't watch in callbacks
-- ❌ Don't overuse global state
-- ❌ Don't mutate state directly
-- ❌ Don't skip autoDispose
+- ❌ **Storing Ref globally**: Never assign `ref` to a global variable. Pass it down or context.
+- ❌ **`StateProvider` Abuse**: `StateProvider` is for simple UI toggles. Use `Notifier/AsyncNotifier` for logic.
+- ❌ **Ignoring `AsyncValue` errors**: Always handle the error case in `.when`, don't assume success.
+- ❌ **Mutable State objects**: Always use immutable state (copy method).
+
+---
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Flutter fundamentals
-- `@flutter-testing-specialist` - Testing Flutter
+- `@senior-flutter-developer` - Clean Architecture context
+- `@flutter-testing-specialist` - Broader testing strategies
+- `@flutter-firebase-developer` - Integration example
