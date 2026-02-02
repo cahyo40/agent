@@ -7,123 +7,186 @@ description: "Expert Node.js development including Express, NestJS, event-driven
 
 ## Overview
 
-This skill transforms you into an experienced Node.js Developer who builds scalable, performant backend applications using Node.js ecosystem best practices.
+This skill transforms you into a **Node.js Core Engineer**. You will move beyond simple Express CRUD apps to mastering the **Event Loop**, handling **Backpressure** with Streams, utilizing **Worker Threads** for CPU tasks, and debugging **Memory Leaks**.
 
 ## When to Use This Skill
 
-- Use when building Node.js backends
-- Use when creating Express/NestJS APIs
-- Use when working with streams and events
-- Use when optimizing Node.js performance
+- Use when auditing performance of Node.js services
+- Use when implementing file processing (Streams)
+- Use when handling CPU-intensive tasks (Image resizing, Crypto)
+- Use when designing scalable microservices (NestJS)
+- Use when debugging "Heap out of memory" errors
 
-## How It Works
+---
 
-### Step 1: Express.js API
+## Part 1: The Event Loop & Async Architecture
+
+Node is single-threaded (mostly). Don't block it.
+
+### 1.1 The Golden Rule
+
+**NEVER** use synchronous I/O (`fs.readFileSync`) or heavy loops on the main thread in a web server.
+
+### 1.2 `process.nextTick` vs `setImmediate`
+
+- `process.nextTick()`: Runs *immediately* after current operation, before any I/O events. (Higher priority).
+- `setImmediate()`: Runs on the next iteration of the Event Loop (Check phase).
 
 ```javascript
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
+// Starvation Risk
+function recursive() {
+  process.nextTick(recursive); // BLOCKS I/O forever
+}
 
-const app = express();
-
-// Middleware
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong' });
-});
-
-// Routes
-app.get('/api/users', async (req, res) => {
-  const users = await User.findAll();
-  res.json(users);
-});
-
-app.post('/api/users', async (req, res) => {
-  const user = await User.create(req.body);
-  res.status(201).json(user);
-});
-
-app.listen(3000);
+// Safe recursive
+function recursiveSafe() {
+  setImmediate(recursiveSafe); // Allows I/O in between
+}
 ```
 
-### Step 2: NestJS Structure
+---
+
+## Part 2: Streams & Backpressure
+
+Handling 10GB files with 512MB RAM.
+
+### 2.1 Pipeline Pattern (Safe Streaming)
+
+Don't use `.pipe()` without error handling. Use `pipeline`.
 
 ```typescript
-// user.controller.ts
-@Controller('users')
-export class UserController {
-  constructor(private userService: UserService) {}
-
-  @Get()
-  findAll(): Promise<User[]> {
-    return this.userService.findAll();
-  }
-
-  @Post()
-  create(@Body() dto: CreateUserDto): Promise<User> {
-    return this.userService.create(dto);
-  }
-}
-
-// user.service.ts
-@Injectable()
-export class UserService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
-
-  async findAll(): Promise<User[]> {
-    return this.repo.find();
-  }
-}
-```
-
-### Step 3: Event-Driven & Streams
-
-```javascript
-import { EventEmitter } from 'events';
-import { createReadStream, createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
+import { createReadStream, createWriteStream } from 'fs';
 import { createGzip } from 'zlib';
 
-// Event Emitter
-const emitter = new EventEmitter();
-emitter.on('user:created', (user) => {
-  sendWelcomeEmail(user);
-});
-emitter.emit('user:created', { email: 'user@example.com' });
-
-// Streams for large files
-async function compressFile(input, output) {
-  await pipeline(
-    createReadStream(input),
-    createGzip(),
-    createWriteStream(output)
-  );
+async function compressFile(input: string, output: string) {
+  try {
+    await pipeline(
+      createReadStream(input), // Source
+      createGzip(),            // Transform
+      createWriteStream(output) // Destination
+    );
+    console.log('Compression complete');
+  } catch (err) {
+    console.error('Streaming failed', err);
+  }
 }
 ```
 
-## Best Practices
+### 2.2 Generators as Streams
+
+Node.js Readable streams are Async Iterables.
+
+```typescript
+import { Readable } from 'stream';
+
+async function* generateData() {
+  for (let i = 0; i < 1000; i++) {
+    yield `Row ${i}\n`; // Efficiently yield chunks
+  }
+}
+
+const readable = Readable.from(generateData());
+readable.pipe(process.stdout);
+```
+
+---
+
+## Part 3: CPU Intensive Tasks (Worker Threads)
+
+Node is bad at math/CPU tasks on the main thread. Use Workers.
+
+```javascript
+// main.js
+const { Worker } = require('worker_threads');
+
+function runService(workerData) {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker('./worker.js', { workerData });
+    worker.on('message', resolve);
+    worker.on('error', reject);
+    worker.on('exit', (code) => {
+      if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
+    });
+  });
+}
+
+// worker.js
+const { parentPort, workerData } = require('worker_threads');
+
+// Heavy calculation
+let result = 0;
+for (let i = 0; i < 1e9; i++) {
+  result += i;
+}
+
+parentPort.postMessage(result);
+```
+
+---
+
+## Part 4: Production Patterns (NestJS)
+
+Standard Enterprise Framework.
+
+```typescript
+// cats.controller.ts (Clean Architecture)
+@Controller('cats')
+export class CatsController {
+  constructor(private catsService: CatsService) {}
+
+  @Post()
+  @UseGuards(RolesGuard) // Declarative Security
+  async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) {
+    return this.catsService.create(createCatDto);
+  }
+}
+```
+
+---
+
+## Part 5: Debugging & Profiling
+
+### 5.1 Memory Leaks
+
+Common causes:
+
+1. Global variables (growing arrays).
+2. Unremoved Event Listeners (`stream.on('data', ...)` without off).
+3. Closure references.
+
+**Tool**: `node --inspect` + Chrome DevTools "Memory" tab -> Take Heap Snapshot.
+
+### 5.2 Performance Profiling
+
+**Tool**: `clinic.js`
+
+```bash
+npm install -g clinic
+clinic doctor -- node server.js
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use async/await properly
-- ✅ Handle errors with try/catch
-- ✅ Use streams for large data
-- ✅ Implement graceful shutdown
-- ✅ Use environment variables
+- ✅ **Handle Uncaught Exceptions**: Log and restart. Process is in undefined state.
+- ✅ **Use `pino` for logging**: JSON logging, extremely fast, async.
+- ✅ **Graceful Shutdown**: Listen to `SIGTERM`. Close DB connections, stop server accepting new requests.
+- ✅ **Secure Headers**: Use `helmet` middleware.
 
 ### ❌ Avoid This
 
-- ❌ Don't block the event loop
-- ❌ Don't ignore unhandled rejections
-- ❌ Don't store secrets in code
+- ❌ **`console.log` in Prod**: It's synchronous and blocking! Use a logger.
+- ❌ **Storing state in memory**: Node processes are ephemeral. Use Redis.
+- ❌ **Blocking Event Loop**: No `bcrypt.hashSync()`. Use async versions always.
+
+---
 
 ## Related Skills
 
-- `@senior-typescript-developer` - TypeScript
-- `@senior-backend-developer` - API patterns
+- `@senior-typescript-developer` - Language of choice for Node
+- `@senior-backend-engineer-golang` - Alternative backend
+- `@docker-containerization-specialist` - Packaging Node apps

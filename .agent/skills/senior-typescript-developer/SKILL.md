@@ -7,126 +7,204 @@ description: "Expert TypeScript development including advanced type system, gene
 
 ## Overview
 
-This skill transforms you into an experienced TypeScript Developer who leverages the type system to build robust, maintainable applications with excellent developer experience.
+This skill transforms you into a **TypeScript Wizard**. You will move beyond `any` and basic interfaces to mastering **Generics**, **Conditional Types**, **Mapped Types**, and runtime validation with **Zod**. You will write code that catches bugs before they even run.
 
 ## When to Use This Skill
 
-- Use when writing TypeScript code
-- Use when designing type-safe APIs
-- Use when working with advanced generics
-- Use when the user asks about TypeScript patterns
+- Use when defining complex data structures (API responses)
+- Use when building reusable libraries or components
+- Use when migrating JS codebase to Strict TS
+- Use when debugging "Type X is not assignable to Type Y"
+- Use when enforcing type safety at runtime (Schema Validation)
 
-## How It Works
+---
 
-### Step 1: Advanced Type Patterns
+## Part 1: Advanced Generics
+
+Generics are functions for types.
+
+### 1.1 Generic Constraints
 
 ```typescript
-// Utility Types
-type Readonly<T> = { readonly [K in keyof T]: T[K] };
-type Partial<T> = { [K in keyof T]?: T[K] };
-type Required<T> = { [K in keyof T]-?: T[K] };
-type Pick<T, K extends keyof T> = { [P in K]: T[P] };
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+// Enforce that T must have an 'id' property
+interface HasId {
+  id: string;
+}
 
-// Conditional Types
-type NonNullable<T> = T extends null | undefined ? never : T;
-type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
-type Parameters<T> = T extends (...args: infer P) => any ? P : never;
+function cloneWithId<T extends HasId>(item: T): T {
+  return { ...item, id: `${item.id}-copy` };
+}
 
-// Template Literal Types
-type EventName<T extends string> = `on${Capitalize<T>}`;
-type ClickEvent = EventName<'click'>; // 'onClick'
+// Usage
+cloneWithId({ id: '1', name: 'A' }); // ✅ OK
+cloneWithId({ name: 'B' });          // ❌ Error: Property 'id' is missing
 ```
 
-### Step 2: Generic Patterns
+### 1.2 Utility Types (Built-in)
+
+- `Partial<T>`: Make all optional.
+- `Pick<T, 'id' | 'name'>`: Select subset.
+- `Omit<T, 'password'>`: Exclude subset.
+- `Record<string, number>`: Dictionary.
+- `ReturnType<typeof func>`: Get return type of function.
+
+---
+
+## Part 2: Conditional & Mapped Types
+
+### 2.1 Conditional Types (`T extends U ? X : Y`)
+
+Logic in types.
 
 ```typescript
-// Generic Repository
-interface Repository<T, ID> {
-  findById(id: ID): Promise<T | null>;
-  findAll(): Promise<T[]>;
-  create(entity: Omit<T, 'id'>): Promise<T>;
-  update(id: ID, entity: Partial<T>): Promise<T>;
-  delete(id: ID): Promise<void>;
+type IsString<T> = T extends string ? true : false;
+
+type A = IsString<string>; // true
+type B = IsString<number>; // false
+
+// Extract the type inside a Promise
+type Unbox<T> = T extends Promise<infer U> ? U : T;
+
+type C = Unbox<Promise<string>>; // string
+type D = Unbox<number>;          // number
+```
+
+### 2.2 Mapped Types
+
+Iterate over keys.
+
+```typescript
+type Flags<T> = {
+  [K in keyof T as `is${Capitalize<string & K>}`]: boolean;
+};
+
+interface Features {
+  darkMode: void;
+  beta: void;
 }
 
-// Generic API Response
-interface ApiResponse<T> {
-  data: T;
-  status: 'success' | 'error';
-  message?: string;
-}
+type FeatureFlags = Flags<Features>;
+// Result:
+// {
+//   isDarkMode: boolean;
+//   isBeta: boolean;
+// }
+```
 
-async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
-  const response = await fetch(url);
-  return response.json();
-}
+---
 
-// Type-safe event emitter
-class TypedEventEmitter<Events extends Record<string, any[]>> {
-  private listeners = new Map<keyof Events, Set<Function>>();
+## Part 3: Runtime Validation (Zod)
+
+TypeScript types disappear at runtime. Zod keeps them alive.
+
+1. **Define Schema** (Single Source of Truth)
+2. **Infer Type** (No duplication)
+3. **Validate Data** (Safety)
+
+```typescript
+import { z } from "zod";
+
+// 1. Define Schema
+const UserSchema = z.object({
+  id: z.string().uuid(),
+  email: z.string().email(),
+  age: z.number().min(18).optional(),
+  role: z.enum(["ADMIN", "USER"]),
+});
+
+// 2. Infer Type
+type User = z.infer<typeof UserSchema>;
+
+// 3. Validation
+function createUser(input: unknown) {
+  // Parsing throws error if invalid
+  const user = UserSchema.parse(input); 
   
-  on<E extends keyof Events>(event: E, callback: (...args: Events[E]) => void) {
-    if (!this.listeners.has(event)) {
-      this.listeners.set(event, new Set());
-    }
-    this.listeners.get(event)!.add(callback);
-  }
-  
-  emit<E extends keyof Events>(event: E, ...args: Events[E]) {
-    this.listeners.get(event)?.forEach(cb => cb(...args));
-  }
+  // 'user' is now typed as User
+  console.log(user.email); 
 }
 ```
 
-### Step 3: Type Guards & Narrowing
+---
+
+## Part 4: Discriminated Unions (The Best Pattern)
+
+Replace complex `if/else` checks with type-safe unions.
 
 ```typescript
-// Type Guards
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
+interface Loading {
+  status: "loading";
 }
 
-function isUser(obj: unknown): obj is User {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'id' in obj &&
-    'email' in obj
-  );
+interface Success {
+  status: "success";
+  data: string[];
 }
 
-// Discriminated Unions
-type Result<T, E = Error> = 
-  | { success: true; data: T }
-  | { success: false; error: E };
+interface ErrorState {
+  status: "error";
+  error: Error;
+}
 
-function handleResult<T>(result: Result<T>) {
-  if (result.success) {
-    console.log(result.data); // TypeScript knows data exists
-  } else {
-    console.error(result.error); // TypeScript knows error exists
+type State = Loading | Success | ErrorState;
+
+function render(state: State) {
+  // TS knows 'data' only exists if status is 'success'
+  if (state.status === "success") {
+    return state.data.join(", ");
+  }
+
+  // TS knows 'error' only exists if status is 'error'
+  if (state.status === "error") {
+    return state.error.message;
+  }
+  
+  return "Loading...";
+}
+```
+
+---
+
+## Part 5: TS Config Best Practices
+
+**`tsconfig.json`** - The Strict Standard.
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "strict": true,                 // Enable all strict checks
+    "noImplicitAny": true,          // Banish 'any'
+    "strictNullChecks": true,       // Handle null/undefined explicitly
+    "noUncheckedIndexedAccess": true, // Improve array safety
+    "skipLibCheck": true,           // Faster builds
+    "forceConsistentCasingInFileNames": true
   }
 }
 ```
 
-## Best Practices
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Enable strict mode in tsconfig
-- ✅ Use type inference when obvious
-- ✅ Create reusable utility types
-- ✅ Use discriminated unions for states
-- ✅ Prefer `unknown` over `any`
+- ✅ **Use `unknown` over `any`**: `unknown` forces you to check the type before using it. `any` turns off TS.
+- ✅ **Use `const` for arrays**: `const list = [1, 2] as const;` makes it `readonly [1, 2]`. Good for fixed lists.
+- ✅ **Prefer Interfaces for Objects**: Better error messages and extendable. Use `type` for Unions/Primitives.
+- ✅ **ReturnType inference**: Don't manually type complex return values. Let TS infer it or component Props.
 
 ### ❌ Avoid This
 
-- ❌ Don't use `any` as escape hatch
-- ❌ Don't ignore TypeScript errors
-- ❌ Don't over-engineer types
+- ❌ **`!` (Non-null assertion)**: `user!.name`. You are lying to the compiler. Handle the null case.
+- ❌ **`IInterface` prefix**: It's Hungarian notation (C# style). Don't use `IUser`. Just `User`.
+- ❌ **Enums**: TS Enums have runtime overhead. Use `const` object or union string types `type Role = 'ADMIN' | 'USER'`.
+
+---
 
 ## Related Skills
 
-- `@senior-react-developer` - For React TypeScript
-- `@senior-backend-developer` - For Node TypeScript
+- `@senior-react-developer` - TS with React Props
+- `@senior-backend-engineer-golang` - Comparing Type Systems
+- `@senior-nextjs-developer` - TS in Next.js

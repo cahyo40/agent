@@ -7,145 +7,182 @@ description: "Expert GraphQL development including schema design, resolvers, Apo
 
 ## Overview
 
-This skill transforms you into an experienced GraphQL Developer who designs efficient APIs with type-safe schemas, optimized resolvers, and real-time subscriptions.
+This skill transforms you into a **GraphQL Architect**. You will move beyond basic queries to mastering **Schema Design** (Graph-first), optimizing **N+1 problems** with DataLoaders, implementing **Federation** (Microservices), and securing your graph against DoS attacks.
 
 ## When to Use This Skill
 
-- Use when building GraphQL APIs
-- Use when designing GraphQL schemas
-- Use when implementing Apollo Server/Client
-- Use when optimizing GraphQL performance
+- Use when designing a new GraphQL Schema
+- Use when optimizing slow GraphQL resolvers (N+1)
+- Use when building a Unified Graph for multiple services (Federation)
+- Use when implementing Real-time features (Subscriptions)
+- Use when debugging Apollo Cache issues
 
-## How It Works
+---
 
-### Step 1: Schema Design
+## Part 1: Schema Design Best Practices
+
+### 1.1 Nullability by Default
+
+In distributed systems, things fail.
+
+- **Bad**: `user: User!` (If User service fails, the WHOLE query fails).
+- **Good**: `user: User` (If User service fails, we return `null` but `posts` still load).
+
+### 1.2 Input Types (Arguments)
+
+Don't use long argument lists. Use Input Objects.
 
 ```graphql
-# schema.graphql
-type User {
-  id: ID!
-  email: String!
-  name: String!
-  posts: [Post!]!
-  createdAt: DateTime!
-}
-
-type Post {
-  id: ID!
-  title: String!
-  content: String!
-  author: User!
-  comments: [Comment!]!
-}
-
-type Query {
-  user(id: ID!): User
-  users(limit: Int, offset: Int): [User!]!
-  post(id: ID!): Post
-}
-
+# Bad
 type Mutation {
-  createUser(input: CreateUserInput!): User!
-  updateUser(id: ID!, input: UpdateUserInput!): User!
-  deleteUser(id: ID!): Boolean!
+  createUser(name: String!, email: String!, age: Int): User
 }
 
-type Subscription {
-  postCreated: Post!
-}
-
+# Good (Evolution-friendly)
 input CreateUserInput {
-  email: String!
   name: String!
-  password: String!
+  email: String!
+  age: Int
+}
+type Mutation {
+  createUser(input: CreateUserInput!): UserPayload
 }
 ```
 
-### Step 2: Apollo Server
+### 1.3 Payload Pattern (Errors as Data)
+
+Don't just throw Exceptions. Model errors in the schema.
+
+```graphql
+union CreateUserResult = UserSuccess | UserError
+
+type UserSuccess {
+  user: User!
+}
+
+type UserError {
+  message: String!
+  code: String!
+}
+```
+
+---
+
+## Part 2: Performance (N+1 Problem)
+
+The #1 killer of GraphQL performance.
+
+**Scenario**: Fetching 10 Users. Each User has a Profile.
+
+- Naive: 1 query for Users + 10 queries for Profiles = 11 DB calls.
+- **DataLoader**: Batch 10 Profile IDs -> 1 DB call. Total = 2 DB calls.
 
 ```typescript
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import DataLoader from 'dataloader';
 
+// 1. Create Loader
+const profileLoader = new DataLoader(async (userIds) => {
+  // Batch fetch: SELECT * FROM profiles WHERE user_id IN (1, 2, ... 10)
+  const profiles = await db.profiles.findByUserIds(userIds);
+  
+  // Map back to original order (Critical!)
+  return userIds.map(id => profiles.find(p => p.userId === id));
+});
+
+// 2. Resolver
 const resolvers = {
-  Query: {
-    user: async (_, { id }, { dataSources }) => {
-      return dataSources.userAPI.getUser(id);
-    },
-    users: async (_, { limit, offset }, { dataSources }) => {
-      return dataSources.userAPI.getUsers({ limit, offset });
-    },
-  },
-  Mutation: {
-    createUser: async (_, { input }, { dataSources }) => {
-      return dataSources.userAPI.createUser(input);
-    },
-  },
   User: {
-    posts: async (parent, _, { dataSources }) => {
-      return dataSources.postAPI.getPostsByUser(parent.id);
-    },
-  },
-};
-
-const server = new ApolloServer({ typeDefs, resolvers });
-
-const { url } = await startStandaloneServer(server, {
-  context: async ({ req }) => ({
-    token: req.headers.authorization,
-    dataSources: { userAPI: new UserAPI() },
-  }),
-});
-```
-
-### Step 3: Apollo Client (React)
-
-```tsx
-import { ApolloClient, InMemoryCache, gql, useQuery } from '@apollo/client';
-
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache(),
-});
-
-const GET_USERS = gql`
-  query GetUsers($limit: Int) {
-    users(limit: $limit) {
-      id
-      name
-      email
+    profile: (parent, args, context) => {
+      // Don't call DB directly. Call loader.
+      return context.profileLoader.load(parent.id); 
     }
   }
-`;
-
-function UserList() {
-  const { loading, error, data } = useQuery(GET_USERS, {
-    variables: { limit: 10 },
-  });
-
-  if (loading) return <Loading />;
-  if (error) return <Error message={error.message} />;
-
-  return data.users.map(user => <UserCard key={user.id} user={user} />);
 }
 ```
 
-## Best Practices
+---
+
+## Part 3: Apollo Federation (Microservices)
+
+Compose multiple subgraphs into one supergraph.
+
+**Subgraph A (Users):**
+
+```typescript
+@KeyFields("id")
+type User {
+  id: ID!
+  username: String
+}
+```
+
+**Subgraph B (Reviews):**
+
+```typescript
+type Review {
+  id: ID!
+  body: String
+  author: User! 
+}
+
+// Extending User from Subgraph A
+extend type User @KeyFields("id") {
+  id: ID! @External
+  reviews: [Review]
+}
+```
+
+---
+
+## Part 4: Caching & Security
+
+### 4.1 Caching (HTTP vs Normalized)
+
+- **HTTP Caching**: Hard in GraphQL (POST). Use Persisted Queries (GET).
+- **Apollo Client Cache**: Normalized cache on client. Requires globally unique IDs (`id`).
+
+### 4.2 Security (Complexity Analysis)
+
+Prevent deep queries that crash the server.
+
+`query { user { friends { friends { friends { ... } } } } }`
+
+**Solution: Query Complexity Analysis**
+
+- Assign "points" to fields.
+- Limit max points per query (e.g., 1000).
+
+```typescript
+import { createComplexityLimitRule } from 'graphql-validation-complexity';
+
+const rules = [
+  createComplexityLimitRule(1000, {
+    onCost: (cost) => console.log('query cost:', cost)
+  })
+];
+```
+
+---
+
+## Part 5: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use DataLoader for N+1 prevention
-- ✅ Implement query complexity limits
-- ✅ Use fragments for reusable fields
-- ✅ Validate inputs with custom scalars
+- ✅ **Use Fragments**: Co-locate data requirements with UI components.
+- ✅ **Pagination**: Use Relay Cursor Connections (`edges`, `node`, `cursor`) for infinite scroll.
+- ✅ **Persisted Queries**: Whitelist queries at build time to prevent arbitrary query execution in Prod.
+- ✅ **Tracing**: Use Apollo Studio / OpenTelemetry to find slow resolvers.
 
 ### ❌ Avoid This
 
-- ❌ Don't expose sensitive data
-- ❌ Don't allow unlimited depth
-- ❌ Don't skip error handling
+- ❌ **JSON Scalar**: Don't return raw JSON. It defeats the purpose of the Type System.
+- ❌ **Versioning (`v1`, `v2`)**: Evolve the graph. Deprecate fields (`@deprecated`), add new ones. Don't version endpoints.
+- ❌ **Business Logic in Resolvers**: Resolvers should be thin. Move logic to Domain Services / Controllers.
+
+---
 
 ## Related Skills
 
-- `@senior-nodejs-developer` - Node.js backend
-- `@senior-react-developer` - React client
+- `@senior-backend-engineer-golang` - Implementing GraphQL server
+- `@senior-react-developer` - Integration (Apollo Client/TanStack Query)
+- `@senior-nodejs-developer` - Apollo Server runtime

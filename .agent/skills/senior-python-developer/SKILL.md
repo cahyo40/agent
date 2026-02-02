@@ -7,132 +7,207 @@ description: "Expert Python development including FastAPI, async programming, ty
 
 ## Overview
 
-This skill transforms you into an experienced Python Developer who builds clean, efficient, and well-tested Python applications for backend services, automation, and data processing.
+This skill transforms you into a **Python Expert**. You will move beyond scripting to building robust, type-safe, and asynchronous applications. You will master **FastAPI**, **Pydantic** for validation, **Asyncio** for concurrency, and strictly typed Python (`mypy`).
 
 ## When to Use This Skill
 
-- Use when developing Python applications
-- Use when building FastAPI/Django backends
-- Use when writing async Python code
-- Use when the user asks about Python patterns
+- Use when building Backend APIs (FastAPI/Django/Flask)
+- Use when writing data processing scripts (Pandas/Polars)
+- Use when debugging concurrency issues (Race conditions, Deadlocks)
+- Use when optimizing Python performance (Profiling, Multiprocessing)
+- Use when structuring large Python monorepos
 
-## How It Works
+---
 
-### Step 1: Modern Python Patterns
+## Part 1: Modern Python (Type Safety)
+
+Python 3.10+ is strictly typed. Use `mypy` or `pyright`.
+
+### 1.1 Type Hinting Best Practices
 
 ```python
-from dataclasses import dataclass
-from typing import Optional, TypeVar, Generic
-from abc import ABC, abstractmethod
+from typing import Optional, List, Dict, Any, Union
+from collections.abc import Callable, Iterable
 
-# Type hints and dataclasses
-@dataclass
-class User:
-    id: int
-    email: str
-    name: str
-    is_active: bool = True
+# Use built-in types (Python 3.9+)
+def process_items(items: list[str]) -> dict[str, int]:
+    result = {}
+    for item in items:
+        result[item] = len(item)
+    return result
 
-# Generic types
-T = TypeVar('T')
+# Optional (Nullable)
+def find_user(user_id: int) -> str | None: # 3.10+ syntax for Union[str, None]
+    return "User" if user_id == 1 else None
 
-class Repository(ABC, Generic[T]):
-    @abstractmethod
-    async def get(self, id: int) -> Optional[T]: ...
-    
-    @abstractmethod
-    async def create(self, entity: T) -> T: ...
+# Protocols (Structural Typing / Interfaces)
+from typing import Protocol
 
-# Context managers
-from contextlib import asynccontextmanager
+class Loggable(Protocol):
+    def log(self, msg: str) -> None: ...
 
-@asynccontextmanager
-async def get_db():
-    db = await create_connection()
-    try:
-        yield db
-    finally:
-        await db.close()
+def logger(obj: Loggable) -> None:
+    obj.log("Hello")
 ```
 
-### Step 2: FastAPI Backend
+### 1.2 Pydantic (Data Validation)
+
+The backbone of modern Python apps.
 
 ```python
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel, EmailStr
-from sqlalchemy.ext.asyncio import AsyncSession
-
-app = FastAPI()
+from pydantic import BaseModel, Field, EmailStr, field_validator
+from datetime import datetime
 
 class UserCreate(BaseModel):
+    username: str = Field(min_length=3, max_length=50)
     email: EmailStr
-    name: str
-    password: str
+    age: int | None = None
+    created_at: datetime = Field(default_factory=datetime.now)
 
-class UserResponse(BaseModel):
-    id: int
-    email: str
-    name: str
-    
-    class Config:
-        from_attributes = True
+    @field_validator('age')
+    @classmethod
+    def check_age(cls, v: int | None) -> int | None:
+        if v is not None and v < 18:
+            raise ValueError('Must be 18+')
+        return v
 
-@app.post("/users", response_model=UserResponse)
-async def create_user(
-    user: UserCreate,
-    db: AsyncSession = Depends(get_db)
-):
-    db_user = await get_user_by_email(db, user.email)
-    if db_user:
-        raise HTTPException(400, "Email already registered")
-    return await create_user_db(db, user)
-
-@app.get("/users/{user_id}", response_model=UserResponse)
-async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    user = await get_user_by_id(db, user_id)
-    if not user:
-        raise HTTPException(404, "User not found")
-    return user
+# Usage
+try:
+    user = UserCreate(username="john", email="john@example.com", age=20)
+    print(user.model_dump_json())
+except ValueError as e:
+    print(e.errors())
 ```
 
-### Step 3: Async Patterns
+---
+
+## Part 2: Asynchronous Programming (Asyncio)
+
+Stop blocking the main thread.
+
+### 2.1 Async/Await Basics
 
 ```python
 import asyncio
-from typing import List
+import aiohttp
 
-async def fetch_all_users(user_ids: List[int]) -> List[User]:
-    tasks = [fetch_user(id) for id in user_ids]
-    return await asyncio.gather(*tasks)
+async def fetch_url(session: aiohttp.ClientSession, url: str) -> str:
+    async with session.get(url) as response:
+        return await response.text()
 
-# Rate limiting with semaphore
-async def rate_limited_fetch(urls: List[str], max_concurrent: int = 10):
-    semaphore = asyncio.Semaphore(max_concurrent)
-    
-    async def fetch_with_limit(url: str):
-        async with semaphore:
-            return await fetch(url)
-    
-    return await asyncio.gather(*[fetch_with_limit(url) for url in urls])
+async def main():
+    async with aiohttp.ClientSession() as session:
+        # Run concurrently (Parallel I/O)
+        tasks = [
+            fetch_url(session, "https://google.com"),
+            fetch_url(session, "https://github.com"),
+        ]
+        results = await asyncio.gather(*tasks)
+        print(f"Fetched {len(results)} pages")
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
-## Best Practices
+### 2.2 Sync vs Async
+
+- **CPU Bound (Heavy Math)**: Use `multiprocessing` or C extensions. `asyncio` won't help.
+- **I/O Bound (DB, Network)**: Use `asyncio`. Efficiency is massive.
+
+---
+
+## Part 3: FastAPI (Production Ready)
+
+The standard framework for Modern Python APIs.
+
+```python
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+
+app = FastAPI()
+
+# Dependency Injection
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/users/{user_id}", response_model=UserResponse)
+async def read_user(user_id: int, db: Session = Depends(get_db)):
+    user = crud.get_user(db, user_id=user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+```
+
+---
+
+## Part 4: Testing (Pytest)
+
+Stop using `unittest`. Use `pytest` fixtures.
+
+```python
+import pytest
+from httpx import AsyncClient
+
+# Fixture (Setup/Teardown)
+@pytest.fixture
+def sample_user():
+    return {"username": "test", "email": "test@test.com"}
+
+# Test Case
+def test_user_creation(sample_user):
+    assert sample_user["username"] == "test"
+
+# Async Test
+@pytest.mark.asyncio
+async def test_api_endpoint():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/health")
+    assert response.status_code == 200
+```
+
+---
+
+## Part 5: Dependency Management (Poetry/UV)
+
+Stop using `pip freeze > requirements.txt`. It breaks dependency resolution.
+
+**Use Poetry:**
+
+1. `poetry init`
+2. `poetry add fastapi uvicorn`
+3. `poetry add --group dev pytest black isort`
+4. `poetry run python main.py`
+
+**Use UV (The new hotness - extremely fast):**
+
+1. `uv venv`
+2. `uv pip install fastapi`
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use type hints everywhere
-- ✅ Use Pydantic for validation
-- ✅ Write async code for I/O
-- ✅ Use dependency injection
-- ✅ Write comprehensive tests
+- ✅ **Use Type Hints everywhere**: It serves as documentation and catches errors.
+- ✅ **Use strict formatters**: `ruff` (combines black, isort, flake8) is the new standard. Fast and strict.
+- ✅ **Handle Exceptions**: `try: ... except AppSpecificError:` instead of `except Exception:`.
+- ✅ **Use Context Managers**: `with open(...)` ensures files/connections are closed.
 
 ### ❌ Avoid This
 
-- ❌ Don't use mutable default arguments
-- ❌ Don't ignore exceptions silently
-- ❌ Don't block async event loop
+- ❌ **Mutable Default Arguments**: `def bad(items=[]):` -> The list persists across calls! Use `None`.
+- ❌ **`import *`**: Pollutes namespace. Be explicit.
+- ❌ **Global Variables**: Nightmare for concurrency and testing.
+
+---
 
 ## Related Skills
 
-- `@senior-ai-ml-engineer` - For Python ML
-- `@senior-data-engineer` - For data pipelines
+- `@senior-backend-engineer-golang` - Comparing patterns
+- `@senior-database-engineer-sql` - SQLAlchemy/SQLModel integration
+- `@devsecops-specialist` - Secure Python deployment

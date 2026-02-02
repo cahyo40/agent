@@ -7,143 +7,188 @@ description: "Expert Next.js development including App Router, React Server Comp
 
 ## Overview
 
-This skill transforms you into an experienced Next.js Developer who builds modern, performant web applications using the latest Next.js features including App Router and React Server Components.
+This skill transforms you into a **Next.js Architect**. You will move beyond the Pages Router to mastering the **App Router (RSC)**, implementing robust **Server Actions**, handling Streaming SSR with Suspense, and optimizing for Core Web Vitals (LCP/CLS) using modern image and font strategies.
 
 ## When to Use This Skill
 
-- Use when building Next.js applications
-- Use when implementing App Router patterns
-- Use when working with React Server Components
-- Use when optimizing Next.js performance
+- Use when building new Next.js applications (App Router)
+- Use when migrating from Pages Router (`pages/`) to App Router (`app/`)
+- Use when optimizing SEO and Performance (Metadata, Images)
+- Use when implementing Server-Side mutations (Server Actions)
+- Use when designing caching strategies (Data Cache, Request Memoization)
 
-## How It Works
+---
 
-### Step 1: App Router Structure
+## Part 1: App Router & Server Components
 
-```
+RSC (React Server Components) is the default. Sync/Async server logic, no bundle size cost.
+
+### 1.1 Project Structure
+
+```text
 app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Home page (/)
-├── loading.tsx         # Loading UI
-├── error.tsx           # Error boundary
-├── not-found.tsx       # 404 page
-├── api/
-│   └── users/
-│       └── route.ts    # API route
-├── dashboard/
-│   ├── layout.tsx      # Nested layout
-│   ├── page.tsx        # /dashboard
-│   └── [id]/
-│       └── page.tsx    # /dashboard/:id
-└── (auth)/             # Route group
-    ├── login/page.tsx
-    └── register/page.tsx
+├── layout.tsx         # Root Layout (Server)
+├── page.tsx           # Home Page
+├── about/
+│   └── page.tsx       # /about
+├── blog/
+│   ├── [slug]/        # Dynamic Route
+│   │   ├── page.tsx
+│   │   └── loading.tsx # Instant Loading State
+│   └── layout.tsx     # Nested Layout
+├── api/               # Route Handlers (REST)
+│   └── auth/
+│       └── route.ts
+└── globals.css
 ```
 
-### Step 2: Server Components
+### 1.2 Fetching Data (The "New" getStaticProps)
+
+Direct `async/await` in components.
 
 ```tsx
-// app/users/page.tsx - Server Component (default)
-import { getUsers } from '@/lib/db';
-
-export default async function UsersPage() {
-  const users = await getUsers(); // Direct DB access
+// app/products/page.tsx
+async function getProducts() {
+  const res = await fetch('https://api.example.com/products', {
+    next: { revalidate: 3600 } // ISR: Revalidate every hour
+    // cache: 'no-store'       // SSR: Fetch every request
+  });
   
+  if (!res.ok) throw new Error('Failed to fetch');
+  return res.json();
+}
+
+export default async function ProductsPage() {
+  const products = await getProducts();
+
   return (
-    <div>
-      <h1>Users</h1>
-      {users.map(user => (
-        <UserCard key={user.id} user={user} />
+    <ul>
+      {products.map((p) => (
+        <li key={p.id}>{p.name}</li>
       ))}
-    </div>
+    </ul>
   );
 }
-
-// Client Component (interactive)
-'use client';
-
-import { useState } from 'react';
-
-export function Counter() {
-  const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
-}
 ```
 
-### Step 3: Data Fetching & Caching
+---
+
+## Part 2: Server Actions (Mutations)
+
+No need for `pages/api/update.ts`. Call server functions directly from forms.
 
 ```tsx
-// Fetch with caching options
-async function getData() {
-  // Cache forever (default)
-  const data = await fetch('https://api.example.com/data');
-  
-  // Revalidate every 60 seconds
-  const fresh = await fetch('https://api.example.com/data', {
-    next: { revalidate: 60 }
-  });
-  
-  // No cache
-  const dynamic = await fetch('https://api.example.com/data', {
-    cache: 'no-store'
-  });
-}
+// app/actions.ts
+'use server'
 
-// Server Actions
-'use server';
+import { revalidatePath } from 'next/cache';
+import { db } from './db';
 
-export async function createUser(formData: FormData) {
-  const name = formData.get('name');
-  await db.user.create({ data: { name } });
-  revalidatePath('/users');
+export async function createTodo(formData: FormData) {
+  const title = formData.get('title') as string;
+  
+  await db.todo.create({ data: { title } });
+  
+  revalidatePath('/todos'); // Update UI
 }
 ```
 
-### Step 4: API Routes
+```tsx
+// app/todos/page.tsx
+import { createTodo } from '../actions';
 
-```typescript
-// app/api/users/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-
-export async function GET(request: NextRequest) {
-  const users = await db.user.findMany();
-  return NextResponse.json(users);
+export default function TodosPage() {
+  return (
+    <form action={createTodo}>
+      <input name="title" required />
+      <button type="submit">Add Todo</button>
+    </form>
+  ); // Works without JS!
 }
+```
 
-export async function POST(request: NextRequest) {
+---
+
+## Part 3: Caching & Revalidation
+
+Next.js 14+ has an aggressive caching strategy. Understand it or suffer.
+
+1. **Request Memoization**: `fetch` calls with same URL in same request are deduplicated internally.
+2. **Data Cache (Persistent)**: Cross-request cache (replaces `getStaticProps`).
+    - `fetch(url, { cache: 'force-cache' })` -> Static (Default).
+    - `fetch(url, { cache: 'no-store' })` -> Dynamic.
+3. **Full Route Cache**: Static pages are cached at build time.
+4. **Router Cache (Client)**: Navigation cache in browser (30s dynamic, 5m static).
+
+---
+
+## Part 4: Route Handlers (API Config)
+
+Replacing `pages/api`.
+
+```ts
+// app/api/webhook/route.ts
+import { NextResponse } from 'next/server';
+
+export async function POST(request: Request) {
   const body = await request.json();
-  const user = await db.user.create({ data: body });
-  return NextResponse.json(user, { status: 201 });
-}
-
-// Dynamic route: app/api/users/[id]/route.ts
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const user = await db.user.findUnique({ where: { id: params.id } });
-  if (!user) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  return NextResponse.json(user);
+  
+  // Headers
+  const secret = request.headers.get('x-signature');
+  
+  return NextResponse.json({ success: true }, { status: 201 });
 }
 ```
 
-## Best Practices
+---
+
+## Part 5: SEO & Metadata
+
+Dynamic metadata generation.
+
+```tsx
+// app/blog/[slug]/page.tsx
+import { Metadata } from 'next';
+
+type Props = {
+  params: { slug: string }
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPost(params.slug);
+  
+  return {
+    title: post.title,
+    description: post.summary,
+    openGraph: {
+      images: [post.coverImage],
+    },
+  };
+}
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use Server Components by default
-- ✅ Add 'use client' only when needed
-- ✅ Use Server Actions for mutations
-- ✅ Implement proper loading/error states
-- ✅ Optimize images with next/image
+- ✅ **Use `<Image />`**: Always use `next/image` to prevent Layout Shift (CLS) and optimize format (WebP/AVIF).
+- ✅ **Use `loading.tsx`**: Leverage React Suspense for instant feedback during navigation.
+- ✅ **Colocation**: Put components used only in one route inside that route's folder (e.g., `app/dashboard/_components/Header.tsx`).
+- ✅ **Error boundaries**: Create `error.tsx` to handle crashes gracefully.
+- ✅ **Streaming**: Use `<Suspense>` to stream slow parts of the page (e.g., Comments section) without blocking the whole page.
 
 ### ❌ Avoid This
 
-- ❌ Don't fetch in Client Components
-- ❌ Don't use 'use client' everywhere
-- ❌ Don't skip metadata for SEO
+- ❌ **Client Components everywhere**: Don't put `'use client'` at the top unless you need Hooks (`useState`) or Browser APIs (`window`). Default to Server.
+- ❌ **Fetching in Layouts**: Be careful. Layouts don't re-render on navigation. Fetching there might show stale data if not handled correctly.
+- ❌ **Environments secrets in client**: Never prefix secrets with `NEXT_PUBLIC_` unless they are truly public.
+
+---
 
 ## Related Skills
 
-- `@senior-react-developer` - React patterns
-- `@senior-typescript-developer` - TypeScript
+- `@senior-react-developer` - React Core concepts
+- `@senior-typescript-developer` - Type safety in Next.js
+- `@senior-webperf-engineer` - Core Web Vitals optimization
