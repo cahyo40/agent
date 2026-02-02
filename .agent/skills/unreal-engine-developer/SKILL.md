@@ -7,98 +7,220 @@ description: "Expert Unreal Engine development including C++, Blueprints, Nanite
 
 ## Overview
 
-Master AAA game development with Unreal Engine. Leverage C++ and Blueprints for game logic, Nanite for virtualized geometry, Lumen for dynamic lighting, and advanced animation systems.
+This skill transforms you into an **Unreal Engine Expert**. You will master **C++/Blueprints**, **Nanite/Lumen**, **GAS (Gameplay Ability System)**, and **AAA Workflows** for building high-fidelity games.
 
 ## When to Use This Skill
 
 - Use when building high-fidelity 3D games
-- Use when needing performant C++ game logic
-- Use when implementing complex physics or AI
-- Use when creating cinematic experiences or visualizations
+- Use when implementing complex gameplay systems
+- Use when using Nanite/Lumen rendering
+- Use when balancing C++ and Blueprints
+- Use when targeting PC/console AAA quality
 
-## How It Works
+---
 
-### Step 1: C++ Game Logic & Blueprints
+## Part 1: Unreal Fundamentals
+
+### 1.1 Core Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Actor** | Any object placed in world |
+| **Component** | Building block of Actors (Mesh, Light) |
+| **Pawn** | Actor that can be possessed |
+| **Character** | Pawn with movement capabilities |
+| **GameMode** | Rules of the game |
+| **PlayerController** | Interface between player and Pawn |
+
+### 1.2 C++ vs Blueprints
+
+| Use Case | Language |
+|----------|----------|
+| **Core Systems** | C++ |
+| **Game Logic** | Either |
+| **Rapid Prototyping** | Blueprints |
+| **UI Event Handling** | Blueprints |
+| **Performance-Critical** | C++ |
+
+---
+
+## Part 2: C++ in Unreal
+
+### 2.1 Actor Class
 
 ```cpp
-// MyCharacter.h
+// MyActor.h
+#pragma once
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "MyActor.generated.h"
+
 UCLASS()
-class MYGAME_API AMyCharacter : public ACharacter
+class MYGAME_API AMyActor : public AActor
 {
     GENERATED_BODY()
-
+    
 public:
-    AMyCharacter();
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
-    float Health;
-
+    AMyActor();
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+    float Health = 100.0f;
+    
     UFUNCTION(BlueprintCallable, Category = "Combat")
     void TakeDamage(float Amount);
+    
+protected:
+    virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
 };
+```
 
-// MyCharacter.cpp
-void AMyCharacter::TakeDamage(float Amount) {
-    Health = FMath::Max(0.0f, Health - Amount);
+```cpp
+// MyActor.cpp
+#include "MyActor.h"
+
+AMyActor::AMyActor()
+{
+    PrimaryActorTick.bCanEverTick = true;
+}
+
+void AMyActor::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
+void AMyActor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+
+void AMyActor::TakeDamage(float Amount)
+{
+    Health -= Amount;
+    if (Health <= 0.0f)
+    {
+        Destroy();
+    }
 }
 ```
 
-### Step 2: Actor Communication & Events
+### 2.2 Key Macros
+
+| Macro | Purpose |
+|-------|---------|
+| `UPROPERTY()` | Expose variable to editor/BP |
+| `UFUNCTION()` | Expose function to BP |
+| `UCLASS()` | Reflect class to Unreal |
+| `GENERATED_BODY()` | Required in UCLASS |
+
+---
+
+## Part 3: UE5 Rendering
+
+### 3.1 Nanite
+
+Virtualized geometry for film-quality assets.
+
+- Import high-poly meshes directly.
+- No LOD setup needed.
+- Streaming from disk.
+
+Enable per mesh: `Mesh Settings → Enable Nanite`.
+
+### 3.2 Lumen
+
+Global illumination and reflections.
+
+- Real-time, dynamic.
+- Software + hardware raytracing.
+
+`Project Settings → Rendering → Global Illumination → Lumen`.
+
+### 3.3 Virtual Shadow Maps
+
+High-quality dynamic shadows for Nanite.
+Pairs with Lumen automatically.
+
+---
+
+## Part 4: Gameplay Ability System (GAS)
+
+### 4.1 What is GAS?
+
+Framework for abilities, attributes, and effects.
+
+- Used in Fortnite, Paragon.
+
+### 4.2 Core Components
+
+| Component | Purpose |
+|-----------|---------|
+| **AbilitySystemComponent** | Manages abilities |
+| **GameplayAbility** | Single ability logic |
+| **GameplayEffect** | Modifier (buff, debuff) |
+| **GameplayAttribute** | Stats (Health, Mana) |
+| **GameplayTag** | Categorization/filtering |
+
+### 4.3 Example Ability
 
 ```cpp
-// Delegate for events
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, NewHealth);
-
-UPROPERTY(BlueprintAssignable, Category = "Events")
-FOnHealthChanged OnHealthChanged;
-
-// Broadcasting
-OnHealthChanged.Broadcast(Health);
+UCLASS()
+class UGA_FireBall : public UGameplayAbility
+{
+    GENERATED_BODY()
+    
+public:
+    virtual void ActivateAbility(...);
+    virtual void EndAbility(...);
+};
 ```
 
-### Step 3: Performance Features (Nanite & Lumen)
+---
 
-- **Nanite**: Enable on static meshes for infinite geometric detail without traditional LODs.
-- **Lumen**: Use for real-time global illumination and reflections. Adjust "Post Process Volume" for lighting quality.
-- **Virtual Textures**: Use for massive texture datasets.
+## Part 5: Multiplayer (Replication)
 
-### Step 4: Networking & Multiplayer
+### 5.1 Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Replicated** | Variable synced to clients |
+| **RPC** | Remote Procedure Call |
+| **NetMulticast** | Server → All clients |
+| **Server** | Client → Server |
+| **Client** | Server → Owning client |
+
+### 5.2 Replicated Property
 
 ```cpp
-// Replicating variables
-UPROPERTY(ReplicatedUsing = OnRep_Health)
+UPROPERTY(Replicated)
 float Health;
 
-void AMyCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(AMyCharacter, Health);
-}
-
-UFUNCTION()
-void OnRep_Health() {
-    // Client-side logic when health updates
+void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    DOREPLIFETIME(AMyActor, Health);
 }
 ```
 
-## Best Practices
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use C++ for performance-heavy logic, Blueprints for design flexibility
-- ✅ Use `UPROPERTY` and `UFUNCTION` macros for engine reflection
-- ✅ Profile with "Unreal Insights" for performance bottlenecks
-- ✅ Implement memory management via Smart Pointers and GC references
-- ✅ Use "Data Assets" for game configuration
+- ✅ **Use C++ for Core, BP for Polish**: Hybrid workflow.
+- ✅ **Validation in PostEditChangeProperty**: Catch editor errors.
+- ✅ **Profile with Unreal Insights**: CPU/GPU analysis.
 
 ### ❌ Avoid This
 
-- ❌ Don't put heavy logic in `Tick` functions unless necessary
-- ❌ Don't hard-reference assets in code (use `TSoftObjectPtr`)
-- ❌ Don't ignore "Collision Channels" setup
-- ❌ Don't skip "Unit Testing" with the Automation System
+- ❌ **Tick on Everything**: Disable tick when not needed.
+- ❌ **Blueprint Spaghetti**: Break into BP Functions.
+- ❌ **Ignoring Memory**: Use TWeakObjectPtr for non-owning refs.
+
+---
 
 ## Related Skills
 
-- `@cpp-developer` - Core logic language
-- `@unity-game-developer` - Cross-engine comparison
-- `@senior-software-architect` - Large-scale game systems
+- `@unity-game-developer-pro` - Unity comparison
+- `@game-design-specialist` - Game design
+- `@cpp-developer` - Advanced C++

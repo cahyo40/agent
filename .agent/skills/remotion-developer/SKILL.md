@@ -7,98 +7,229 @@ description: "Expert Remotion development for programmatic video creation with R
 
 ## Overview
 
-Build programmatic videos using React and Remotion framework.
+This skill transforms you into a **Programmatic Video Expert**. You will master **Remotion Framework**, **React for Video**, **Animation**, and **Rendering Pipelines** for creating videos with code.
 
 ## When to Use This Skill
 
-- Use when creating videos programmatically
+- Use when generating videos programmatically
+- Use when building template-based video systems
+- Use when creating dynamic, data-driven videos
 - Use when automating video production
+- Use when integrating video generation into CI/CD
 
-## How It Works
+---
 
-### Step 1: Project Setup
+## Part 1: Remotion Fundamentals
 
-```bash
-npx create-video@latest my-video
-cd my-video
-npm start
+### 1.1 Core Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Composition** | A video "component" with duration, fps, dimensions |
+| **Sequence** | Stagger child timings |
+| **useCurrentFrame** | Current frame number hook |
+| **useVideoConfig** | fps, width, height, durationInFrames |
+| **interpolate** | Map frame to animated value |
+
+### 1.2 Project Structure
+
+```
+src/
+├── Root.tsx           # Register compositions
+├── Video.tsx          # Main video component
+├── components/        # Reusable elements
+└── data/              # Dynamic data sources
 ```
 
-### Step 2: Basic Composition
+---
+
+## Part 2: Basic Animation
+
+### 2.1 Composition Setup
 
 ```tsx
-// src/HelloWorld.tsx
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Composition } from 'remotion';
+import { MyVideo } from './MyVideo';
 
-export const HelloWorld: React.FC = () => {
+export const RemotionRoot: React.FC = () => {
+  return (
+    <Composition
+      id="MyVideo"
+      component={MyVideo}
+      durationInFrames={150}  // 5 seconds at 30fps
+      fps={30}
+      width={1920}
+      height={1080}
+      defaultProps={{ title: "Hello World" }}
+    />
+  );
+};
+```
+
+### 2.2 Animated Component
+
+```tsx
+import { useCurrentFrame, useVideoConfig, interpolate, spring, AbsoluteFill } from 'remotion';
+
+export const MyVideo: React.FC<{ title: string }> = ({ title }) => {
   const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
+  const { fps } = useVideoConfig();
   
-  const opacity = Math.min(1, frame / 30);
+  // Animate opacity 0→1 over first 30 frames
+  const opacity = interpolate(frame, [0, 30], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+  
+  // Spring animation for scale
+  const scale = spring({
+    frame,
+    fps,
+    config: { damping: 100 },
+  });
   
   return (
-    <AbsoluteFill style={{ backgroundColor: '#0f172a' }}>
-      <h1 style={{
-        color: 'white',
-        fontSize: 80,
-        textAlign: 'center',
-        opacity,
-      }}>
-        Hello World!
+    <AbsoluteFill style={{ backgroundColor: 'black' }}>
+      <h1
+        style={{
+          color: 'white',
+          fontSize: 100,
+          opacity,
+          transform: `scale(${scale})`,
+        }}
+      >
+        {title}
       </h1>
     </AbsoluteFill>
   );
 };
 ```
 
-### Step 3: Register Composition
+---
+
+## Part 3: Sequencing
+
+### 3.1 Sequence Component
 
 ```tsx
-// src/Root.tsx
-import { Composition } from 'remotion';
-import { HelloWorld } from './HelloWorld';
+import { Sequence, AbsoluteFill } from 'remotion';
+import { Intro } from './Intro';
+import { MainContent } from './MainContent';
+import { Outro } from './Outro';
 
-export const RemotionRoot: React.FC = () => {
+export const MyVideo: React.FC = () => {
   return (
-    <Composition
-      id="HelloWorld"
-      component={HelloWorld}
-      durationInFrames={150}
-      fps={30}
-      width={1920}
-      height={1080}
-    />
+    <AbsoluteFill>
+      <Sequence from={0} durationInFrames={60}>
+        <Intro />
+      </Sequence>
+      
+      <Sequence from={60} durationInFrames={180}>
+        <MainContent />
+      </Sequence>
+      
+      <Sequence from={240} durationInFrames={60}>
+        <Outro />
+      </Sequence>
+    </AbsoluteFill>
   );
 };
 ```
 
-### Step 4: Animations
+---
+
+## Part 4: Dynamic Data
+
+### 4.1 Props from External Data
 
 ```tsx
-import { spring, interpolate } from 'remotion';
+// Generate video from JSON data
+const videos = [
+  { title: "Product A", price: "$99" },
+  { title: "Product B", price: "$149" },
+];
 
-const scale = spring({
-  frame,
-  fps,
-  config: { damping: 200 }
-});
-
-const rotate = interpolate(frame, [0, 30], [0, 360]);
+// Render each programmatically
+npx remotion render src/index.tsx ProductVideo output/video-a.mp4 --props='{"title":"Product A","price":"$99"}'
 ```
 
-### Step 5: Render
+### 4.2 Fetching Data
+
+```tsx
+import { staticFile, delayRender, continueRender } from 'remotion';
+
+export const DataDrivenVideo: React.FC = () => {
+  const [data, setData] = useState<Data | null>(null);
+  const [handle] = useState(() => delayRender());
+  
+  useEffect(() => {
+    fetch('https://api.example.com/data')
+      .then(res => res.json())
+      .then(data => {
+        setData(data);
+        continueRender(handle);
+      });
+  }, []);
+  
+  if (!data) return null;
+  
+  return <Video data={data} />;
+};
+```
+
+---
+
+## Part 5: Rendering
+
+### 5.1 Local Render
 
 ```bash
-npx remotion render HelloWorld output.mp4
+# Preview
+npm start
+
+# Render to file
+npx remotion render src/index.tsx MyVideo output.mp4
+
+# Render with props
+npx remotion render src/index.tsx MyVideo output.mp4 --props='{"title":"Custom"}'
+
+# Render specific frames
+npx remotion render src/index.tsx MyVideo output.mp4 --frames=0-60
 ```
 
-## Best Practices
+### 5.2 Programmatic Render (Lambda)
 
-- ✅ Use spring for smooth animations
-- ✅ Keep compositions modular
-- ❌ Don't use non-deterministic values
-- ❌ Don't fetch data in render
+```tsx
+import { renderMediaOnLambda } from '@remotion/lambda';
+
+const result = await renderMediaOnLambda({
+  region: 'us-east-1',
+  functionName: 'remotion-render',
+  composition: 'MyVideo',
+  inputProps: { title: 'Server Rendered' },
+  codec: 'h264',
+});
+```
+
+---
+
+## Part 6: Best Practices Checklist
+
+### ✅ Do This
+
+- ✅ **Use interpolate for Smoothness**: Not raw frame math.
+- ✅ **Memoize Heavy Components**: Prevent re-renders.
+- ✅ **Test Locally Before Cloud Render**: Faster iteration.
+
+### ❌ Avoid This
+
+- ❌ **Huge Assets Without Optimization**: Compress images/videos.
+- ❌ **Ignoring DurationInFrames**: Match to actual content length.
+- ❌ **Too Many Sequences**: Simplify when possible.
+
+---
 
 ## Related Skills
 
-- `@senior-react-developer`
+- `@video-processing-specialist` - FFmpeg, post-processing
+- `@senior-react-developer` - React patterns
+- `@video-editor-automation` - Batch processing

@@ -3,95 +3,243 @@ name: roblox-developer-pro
 description: "Expert Roblox development including advanced Luau, DataStores, Knit framework, and scalable game systems"
 ---
 
-# Roblox Developer (Pro)
+# Roblox Developer Pro
 
 ## Overview
 
-Master professional Roblox development. Expertise in Luau performance, secure DataStore management, the Knit framework for modular architecture, and advanced synchronization between Client and Server.
+This skill transforms you into a **Professional Roblox Developer**. You will master **Luau Programming**, **DataStores**, **Framework Patterns (Knit)**, and **Monetization** for building production-quality Roblox experiences.
 
 ## When to Use This Skill
 
-- Use when building large-scale or high-revenue Roblox games
-- Use when implementing secure and scalable backend systems
-- Use for modular, professional game architecture via Knit
-- Use when optimizing Luau code for millions of concurrent users
+- Use when building Roblox games with complex systems
+- Use when implementing persistent player data
+- Use when structuring code with frameworks
+- Use when optimizing for performance
+- Use when implementing monetization (Robux)
 
-## How It Works
+---
 
-### Step 1: Advanced Luau & Type Checking
+## Part 1: Luau Patterns
+
+### 1.1 Modern Luau Features
+
+| Feature | Example |
+|---------|---------|
+| **Type Annotations** | `function add(a: number, b: number): number` |
+| **Generics** | `type Array<T> = {[number]: T}` |
+| **String Interpolation** | `` `Hello {name}` `` |
+| **Compound Assignment** | `x += 1` |
+| **Continue Statement** | `continue` in loops |
+
+### 1.2 Type-Safe Luau
 
 ```lua
---!strict
 type PlayerData = {
-    Level: number,
-    Experience: number,
-    Inventory: {string}
+    coins: number,
+    level: number,
+    inventory: {string},
 }
 
-local function ProcessData(data: PlayerData)
-    print("Player Level: " .. data.Level)
+local function saveData(player: Player, data: PlayerData): boolean
+    -- Implementation
+    return true
 end
 ```
 
-### Step 2: Knit Framework Architecture
+### 1.3 Module Pattern
 
 ```lua
--- Service (Server)
-local Knit = require(game:GetService("ReplicatedStorage").Packages.Knit)
+-- PlayerService.lua
+local PlayerService = {}
 
-local PointService = Knit.CreateService {
-    Name = "PointService",
+function PlayerService.init()
+    -- Initialize
+end
+
+function PlayerService.getPlayer(userId: number): Player?
+    return Players:GetPlayerByUserId(userId)
+end
+
+return PlayerService
+```
+
+---
+
+## Part 2: DataStores
+
+### 2.1 Basic DataStore
+
+```lua
+local DataStoreService = game:GetService("DataStoreService")
+local playerDataStore = DataStoreService:GetDataStore("PlayerData")
+
+local function loadData(player: Player)
+    local success, data = pcall(function()
+        return playerDataStore:GetAsync("Player_" .. player.UserId)
+    end)
+    
+    if success and data then
+        return data
+    else
+        return { coins = 0, level = 1 }  -- Default
+    end
+end
+
+local function saveData(player: Player, data: PlayerData)
+    local success, err = pcall(function()
+        playerDataStore:SetAsync("Player_" .. player.UserId, data)
+    end)
+    
+    if not success then
+        warn("Failed to save: " .. err)
+    end
+end
+```
+
+### 2.2 UpdateAsync for Race Conditions
+
+```lua
+playerDataStore:UpdateAsync("Player_" .. player.UserId, function(oldData)
+    oldData = oldData or { coins = 0 }
+    oldData.coins += coinsToAdd
+    return oldData
+end)
+```
+
+### 2.3 SessionLocking (ProfileService)
+
+Use ProfileService library for production:
+
+- Prevents data loss from multiple servers.
+- Auto-retry, auto-save.
+
+---
+
+## Part 3: Knit Framework
+
+### 3.1 What is Knit?
+
+A lightweight framework for organizing client/server code.
+
+### 3.2 Server Service
+
+```lua
+local Knit = require(game.ReplicatedStorage.Packages.Knit)
+
+local CoinService = Knit.CreateService {
+    Name = "CoinService",
     Client = {
-        PointsChanged = Knit.CreateSignal(),
+        CoinsChanged = Knit.CreateSignal(),
     },
 }
 
-function PointService:AddPoints(player: Player, amount: number)
-    -- Logic here
-    self.Client.PointsChanged:Fire(player, newPoints)
+function CoinService:AddCoins(player: Player, amount: number)
+    local data = self:GetData(player)
+    data.coins += amount
+    self.Client.CoinsChanged:Fire(player, data.coins)
 end
 
-Knit.Start():catch(warn)
+function CoinService.Client:GetCoins(player: Player): number
+    return self:GetData(player).coins
+end
+
+return CoinService
 ```
 
-### Step 3: Secure DataStores (ProfileService)
-
-- **ProfileService**: Use for robust, session-locking data management to prevent item duplication bugs.
-- **MemoryStore**: Use for cross-server matchmaking and real-time global auctions.
-- **ReplicaService**: Use for efficient state replication from Server to Client.
-
-### Step 4: Parallel Luau & Task Library
+### 3.3 Client Controller
 
 ```lua
--- Using task library over wait()
-task.wait(1)
-task.spawn(function()
-    -- Non-blocking logic
-end)
+local Knit = require(game.ReplicatedStorage.Packages.Knit)
 
--- Parallel Luau (Actor model)
--- Use 'task.desynchronize()' and 'task.synchronize()'
+local CoinsController = Knit.CreateController { Name = "CoinsController" }
+
+function CoinsController:KnitStart()
+    local CoinService = Knit.GetService("CoinService")
+    
+    CoinService.CoinsChanged:Connect(function(coins)
+        print("Coins updated: " .. coins)
+    end)
+end
+
+return CoinsController
 ```
 
-## Best Practices
+---
+
+## Part 4: Monetization
+
+### 4.1 Developer Products (One-Time)
+
+```lua
+local MarketplaceService = game:GetService("MarketplaceService")
+local PRODUCT_ID = 123456789
+
+MarketplaceService.ProcessReceipt = function(receiptInfo)
+    local player = Players:GetPlayerByUserId(receiptInfo.PlayerId)
+    if not player then return Enum.ProductPurchaseDecision.NotProcessedYet end
+    
+    if receiptInfo.ProductId == PRODUCT_ID then
+        -- Grant coins
+        playerData.coins += 1000
+    end
+    
+    return Enum.ProductPurchaseDecision.PurchaseGranted
+end
+```
+
+### 4.2 Game Passes (Permanent)
+
+```lua
+local function hasGamePass(player: Player, passId: number): boolean
+    local success, owns = pcall(function()
+        return MarketplaceService:UserOwnsGamePassAsync(player.UserId, passId)
+    end)
+    return success and owns
+end
+```
+
+---
+
+## Part 5: Performance
+
+### 5.1 Common Optimizations
+
+| Issue | Solution |
+|-------|----------|
+| **Too many parts** | Use MeshParts, StreamingEnabled |
+| **Expensive loops** | Use coroutines, batch processing |
+| **Memory leaks** | Disconnect events, clear tables |
+| **Network spam** | Throttle RemoteEvents |
+
+### 5.2 Streaming Enabled
+
+Dynamically load/unload map sections based on player position.
+
+```lua
+workspace.StreamingEnabled = true
+workspace.StreamOutBehavior = Enum.StreamOutBehavior.Opportunistic
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use Type Checking (`--!strict`) for better stability
-- ✅ Use a framework like Knit to avoid "Spaghetti Code"
-- ✅ Leverage `ProfileService` for transactional data safety
-- ✅ Use `StreamingEnabled` for large worlds
-- ✅ Sanitize all inputs from `RemoteEvents` on the Server
+- ✅ **Use ProfileService**: For production data storage.
+- ✅ **Validate Client Input**: Never trust the client.
+- ✅ **Type Everything**: Luau types catch bugs early.
 
 ### ❌ Avoid This
 
-- ❌ Don't trust the Client for any game-critical logic (Health, Currency)
-- ❌ Don't use `wait()` or `spawn()`—use the `task` library
-- ❌ Don't reach DataStore limits (implement proper caching/throttling)
-- ❌ Don't over-rely on `RunService.Heartbeat` for heavy logic
+- ❌ **Client Authority**: Server must validate all important actions.
+- ❌ **Auto-Saving Too Often**: DataStore limits (60 requests/min/key).
+- ❌ **Ignoring Mobile**: 50%+ players are on mobile.
+
+---
 
 ## Related Skills
 
-- `@roblox-developer` - Foundation skills
-- `@senior-software-engineer` - Professional patterns
-- `@backend-developer` - Data management
+- `@roblox-developer` - Beginner Roblox
+- `@game-design-specialist` - Game design principles
+- `@senior-typescript-developer` - Roblox-ts alternative
