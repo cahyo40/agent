@@ -7,20 +7,23 @@ description: "Expert UI component library development like Bootstrap, Material U
 
 ## Overview
 
-Build reusable UI component libraries and CSS frameworks like Bootstrap or Material UI.
+This skill transforms you into a **Component Library Architect**. You will master **Component Design**, **Design Token Systems**, **Documentation**, and **Package Publishing** for building production-ready UI kits.
 
 ## When to Use This Skill
 
-- Use when creating component libraries
-- Use when building UI frameworks
+- Use when building reusable component libraries
+- Use when creating design systems
+- Use when publishing UI packages to npm
+- Use when implementing design tokens
+- Use when building internal UI frameworks
 
-## How It Works
+---
 
-### Step 1: Component Architecture
+## Part 1: Component Library Architecture
 
-```markdown
-## UI Kit Structure
+### 1.1 Project Structure
 
+```
 ui-kit/
 ├── src/
 │   ├── components/
@@ -28,223 +31,260 @@ ui-kit/
 │   │   │   ├── Button.tsx
 │   │   │   ├── Button.styles.ts
 │   │   │   ├── Button.test.tsx
+│   │   │   ├── Button.stories.tsx
 │   │   │   └── index.ts
-│   │   ├── Input/
-│   │   ├── Card/
-│   │   └── Modal/
-│   ├── styles/
-│   │   ├── variables.css
-│   │   ├── reset.css
-│   │   └── utilities.css
+│   │   └── index.ts
+│   ├── tokens/
+│   │   ├── colors.ts
+│   │   ├── spacing.ts
+│   │   └── typography.ts
+│   ├── hooks/
 │   └── index.ts
-├── dist/
-└── package.json
+├── package.json
+├── tsconfig.json
+├── rollup.config.js
+└── .storybook/
 ```
 
-### Step 2: Base Button Component
+### 1.2 Export Pattern
 
-```tsx
-// Button.tsx
-import React from 'react';
-import styled from 'styled-components';
+```typescript
+// src/components/Button/index.ts
+export { Button } from './Button';
+export type { ButtonProps } from './Button';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+// src/components/index.ts
+export * from './Button';
+export * from './Input';
+export * from './Modal';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  fullWidth?: boolean;
+// src/index.ts (main entry)
+export * from './components';
+export * from './tokens';
+export * from './hooks';
+```
+
+---
+
+## Part 2: Design Tokens
+
+### 2.1 Token Structure
+
+```typescript
+// tokens/colors.ts
+export const colors = {
+  primary: {
+    50: '#eff6ff',
+    100: '#dbeafe',
+    500: '#3b82f6',
+    600: '#2563eb',
+    900: '#1e3a8a',
+  },
+  gray: {
+    50: '#f9fafb',
+    100: '#f3f4f6',
+    500: '#6b7280',
+    900: '#111827',
+  },
+  semantic: {
+    success: '#22c55e',
+    error: '#ef4444',
+    warning: '#f59e0b',
+    info: '#3b82f6',
+  },
+} as const;
+```
+
+### 2.2 Spacing & Typography
+
+```typescript
+// tokens/spacing.ts
+export const spacing = {
+  px: '1px',
+  0: '0',
+  1: '0.25rem',   // 4px
+  2: '0.5rem',    // 8px
+  4: '1rem',      // 16px
+  8: '2rem',      // 32px
+} as const;
+
+// tokens/typography.ts
+export const typography = {
+  fontFamily: {
+    sans: 'Inter, system-ui, sans-serif',
+    mono: 'Fira Code, monospace',
+  },
+  fontSize: {
+    xs: ['0.75rem', { lineHeight: '1rem' }],
+    sm: ['0.875rem', { lineHeight: '1.25rem' }],
+    base: ['1rem', { lineHeight: '1.5rem' }],
+    lg: ['1.125rem', { lineHeight: '1.75rem' }],
+  },
+} as const;
+```
+
+---
+
+## Part 3: Component Design
+
+### 3.1 Button Component
+
+```typescript
+import { forwardRef, ButtonHTMLAttributes } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-primary-600 text-white hover:bg-primary-700',
+        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+        outline: 'border border-gray-300 bg-transparent hover:bg-gray-100',
+        ghost: 'hover:bg-gray-100',
+        destructive: 'bg-red-600 text-white hover:bg-red-700',
+      },
+      size: {
+        sm: 'h-8 px-3 text-sm',
+        md: 'h-10 px-4 text-sm',
+        lg: 'h-12 px-6 text-base',
+      },
+    },
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  }
+);
+
+export interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   loading?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
 }
 
-const StyledButton = styled.button<ButtonProps>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  /* Size variants */
-  padding: ${({ size }) => ({
-    sm: '8px 16px',
-    md: '12px 24px',
-    lg: '16px 32px'
-  }[size || 'md'])};
-  
-  font-size: ${({ size }) => ({
-    sm: '14px',
-    md: '16px',
-    lg: '18px'
-  }[size || 'md'])};
-  
-  /* Color variants */
-  ${({ variant }) => {
-    switch (variant) {
-      case 'primary':
-        return `
-          background: #3b82f6;
-          color: white;
-          border: none;
-          &:hover { background: #2563eb; }
-        `;
-      case 'secondary':
-        return `
-          background: #6b7280;
-          color: white;
-          border: none;
-          &:hover { background: #4b5563; }
-        `;
-      case 'outline':
-        return `
-          background: transparent;
-          color: #3b82f6;
-          border: 2px solid #3b82f6;
-          &:hover { background: #eff6ff; }
-        `;
-      case 'ghost':
-        return `
-          background: transparent;
-          color: #3b82f6;
-          border: none;
-          &:hover { background: #f3f4f6; }
-        `;
-    }
-  }}
-  
-  width: ${({ fullWidth }) => fullWidth ? '100%' : 'auto'};
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, loading, children, disabled, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={buttonVariants({ variant, size, className })}
+        disabled={disabled || loading}
+        {...props}
+      >
+        {loading && <Spinner className="mr-2 h-4 w-4" />}
+        {children}
+      </button>
+    );
   }
-`;
+);
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  variant = 'primary',
-  size = 'md',
-  loading,
-  leftIcon,
-  rightIcon,
-  disabled,
-  ...props
-}) => {
-  return (
-    <StyledButton
-      variant={variant}
-      size={size}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading && <Spinner size={size} />}
-      {!loading && leftIcon}
-      {children}
-      {!loading && rightIcon}
-    </StyledButton>
-  );
+Button.displayName = 'Button';
+```
+
+### 3.2 Compound Components
+
+```typescript
+// Card with compound pattern
+export const Card = ({ children, className }: CardProps) => (
+  <div className={cn('rounded-lg border bg-white shadow-sm', className)}>
+    {children}
+  </div>
+);
+
+Card.Header = ({ children, className }: CardHeaderProps) => (
+  <div className={cn('border-b px-6 py-4', className)}>{children}</div>
+);
+
+Card.Body = ({ children, className }: CardBodyProps) => (
+  <div className={cn('px-6 py-4', className)}>{children}</div>
+);
+
+Card.Footer = ({ children, className }: CardFooterProps) => (
+  <div className={cn('border-t px-6 py-4', className)}>{children}</div>
+);
+
+// Usage
+<Card>
+  <Card.Header>Title</Card.Header>
+  <Card.Body>Content</Card.Body>
+  <Card.Footer>Actions</Card.Footer>
+</Card>
+```
+
+---
+
+## Part 4: Storybook Documentation
+
+### 4.1 Story File
+
+```typescript
+// Button.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './Button';
+
+const meta: Meta<typeof Button> = {
+  title: 'Components/Button',
+  component: Button,
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'outline', 'ghost', 'destructive'],
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof Button>;
+
+export const Primary: Story = {
+  args: {
+    children: 'Button',
+    variant: 'primary',
+  },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div className="flex gap-4">
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
+    </div>
+  ),
 };
 ```
 
-### Step 3: CSS Variables System
+---
 
-```css
-/* variables.css */
-:root {
-  /* Colors */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-500: #6b7280;
-  --color-gray-900: #111827;
-  
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-6: 24px;
-  --space-8: 32px;
-  
-  /* Typography */
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-full: 9999px;
-  
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-}
-```
+## Part 5: Package Publishing
 
-### Step 4: Utility Classes
-
-```css
-/* utilities.css */
-
-/* Flexbox */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: var(--space-2); }
-.gap-4 { gap: var(--space-4); }
-
-/* Spacing */
-.m-0 { margin: 0; }
-.m-2 { margin: var(--space-2); }
-.p-2 { padding: var(--space-2); }
-.p-4 { padding: var(--space-4); }
-
-/* Typography */
-.text-sm { font-size: var(--font-size-sm); }
-.text-lg { font-size: var(--font-size-lg); }
-.font-bold { font-weight: 700; }
-.text-center { text-align: center; }
-
-/* Colors */
-.text-primary { color: var(--color-primary-500); }
-.bg-primary { background: var(--color-primary-500); }
-```
-
-### Step 5: NPM Package Setup
+### 5.1 package.json
 
 ```json
 {
-  "name": "@myorg/ui-kit",
+  "name": "@company/ui-kit",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
-  "scripts": {
-    "build": "rollup -c",
-    "storybook": "storybook dev -p 6006"
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles.css": "./dist/styles.css"
   },
+  "files": ["dist"],
+  "sideEffects": ["*.css"],
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
@@ -252,15 +292,52 @@ export const Button: React.FC<ButtonProps> = ({
 }
 ```
 
-## Best Practices
+### 5.2 Build with Rollup
 
-- ✅ Use CSS variables for theming
-- ✅ Support all component states
-- ✅ Write comprehensive docs
-- ❌ Don't break API compatibility
-- ❌ Don't skip accessibility
+```javascript
+// rollup.config.js
+import resolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import postcss from 'rollup-plugin-postcss';
+
+export default {
+  input: 'src/index.ts',
+  output: [
+    { file: 'dist/index.js', format: 'cjs' },
+    { file: 'dist/index.mjs', format: 'esm' },
+  ],
+  plugins: [
+    resolve(),
+    typescript(),
+    postcss({
+      extract: 'styles.css',
+      minimize: true,
+    }),
+  ],
+  external: ['react', 'react-dom'],
+};
+```
+
+---
+
+## Part 6: Best Practices Checklist
+
+### ✅ Do This
+
+- ✅ **Peer Dependencies**: React should be peer, not bundled.
+- ✅ **Tree Shakeable**: Export individual components.
+- ✅ **Accessible by Default**: ARIA, keyboard navigation.
+
+### ❌ Avoid This
+
+- ❌ **Bundling React**: Causes version conflicts.
+- ❌ **Hard-coded Styles**: Use tokens/CSS variables.
+- ❌ **Missing TypeScript Types**: Always include .d.ts.
+
+---
 
 ## Related Skills
 
-- `@design-system-architect`
-- `@senior-react-developer`
+- `@design-system-architect` - Full design systems
+- `@senior-react-developer` - React patterns
+- `@accessibility-specialist` - A11y compliance

@@ -7,155 +7,246 @@ description: "Expert bug bounty hunting including vulnerability discovery, respo
 
 ## Overview
 
-Skill ini menjadikan AI Agent Anda sebagai spesialis bug bounty hunting. Agent akan mampu mengidentifikasi vulnerability di aplikasi web dan mobile, menulis laporan yang efektif, memahami program rules, dan memaksimalkan payout di platform seperti HackerOne, Bugcrowd, dan Intigriti.
+This skill transforms you into a **Bug Bounty Professional**. You will master **Vulnerability Discovery**, **Recon Automation**, **Report Writing**, and **Platform Navigation** for earning bounties through responsible disclosure.
 
 ## When to Use This Skill
 
-- Use when hunting for vulnerabilities in bug bounty programs
-- Use when writing vulnerability reports for submission
-- Use when the user asks about bug bounty methodology
-- Use when assessing web/mobile application security
-- Use when learning ethical hacking for bounty programs
+- Use when hunting for bugs on authorized programs
+- Use when writing vulnerability reports
+- Use when automating reconnaissance
+- Use when prioritizing targets
+- Use when understanding program scopes
 
-## How It Works
+---
 
-### Step 1: Reconnaissance
+## Part 1: Bug Bounty Fundamentals
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│                   RECON METHODOLOGY                     │
-├─────────────────────────────────────────────────────────┤
-│ 1. Subdomain Enumeration                                │
-│    - Amass, Subfinder, Assetfinder                      │
-│    - Certificate transparency logs                      │
-│                                                         │
-│ 2. Technology Fingerprinting                            │
-│    - Wappalyzer, WhatWeb, BuiltWith                     │
-│    - Identify frameworks, CMS, servers                  │
-│                                                         │
-│ 3. Content Discovery                                    │
-│    - Dirsearch, Gobuster, Feroxbuster                   │
-│    - Find hidden endpoints, admin panels                │
-│                                                         │
-│ 4. JavaScript Analysis                                  │
-│    - LinkFinder, JSParser                               │
-│    - Extract API endpoints, secrets                     │
-└─────────────────────────────────────────────────────────┘
-```
+### 1.1 Top Platforms
 
-### Step 2: Common Vulnerability Classes
+| Platform | Focus |
+|----------|-------|
+| **HackerOne** | Enterprise programs, managed |
+| **Bugcrowd** | Diverse programs |
+| **Intigriti** | European focus |
+| **YesWeHack** | European programs |
+| **Synack** | Invite-only, vetted |
 
-#### OWASP Top 10 Focus
+### 1.2 Program Types
 
-```text
-Priority Vulnerabilities for Bug Bounties:
-├── 1. IDOR (Insecure Direct Object Reference) - High payout
-├── 2. Authentication Bypass - Critical
-├── 3. SQL Injection - Critical
-├── 4. XSS (Cross-Site Scripting) - Medium-High
-├── 5. SSRF (Server-Side Request Forgery) - High
-├── 6. Business Logic Flaws - Variable
-├── 7. Race Conditions - Medium-High
-├── 8. Information Disclosure - Low-Medium
-├── 9. CSRF (Cross-Site Request Forgery) - Medium
-└── 10. Open Redirect - Low
-```
+| Type | Description |
+|------|-------------|
+| **Public** | Anyone can participate |
+| **Private** | Invitation only |
+| **VDP** | Vulnerability Disclosure, often no bounty |
 
-### Step 3: Testing Methodology
+### 1.3 Scope Understanding
+
+Always check:
+
+- In-scope domains/apps
+- Out-of-scope items
+- Vulnerability types accepted
+- Testing restrictions
+
+---
+
+## Part 2: Reconnaissance Workflow
+
+### 2.1 Subdomain Enumeration
 
 ```bash
-# Subdomain enumeration
-subfinder -d target.com -o subdomains.txt
-amass enum -passive -d target.com >> subdomains.txt
+# Passive
+subfinder -d target.com -o subs.txt
+amass enum -passive -d target.com
 
-# Port scanning
-nmap -sV -sC -p- -oA nmap_scan target.com
+# Active
+ffuf -u https://FUZZ.target.com -w wordlist.txt -mc 200,301,302
 
-# Directory brute-forcing
-feroxbuster -u https://target.com -w /path/to/wordlist.txt
+# Combine and dedupe
+cat subs.txt | sort -u | httpx -o live.txt
+```
+
+### 2.2 Content Discovery
+
+```bash
+# Directory brute force
+ffuf -u https://target.com/FUZZ -w /opt/SecLists/Discovery/Web-Content/big.txt
 
 # Parameter discovery
 arjun -u https://target.com/api/endpoint
 
-# Nuclei for known vulnerabilities
-nuclei -u https://target.com -t cves/
+# JavaScript analysis
+cat js_files.txt | xargs -I@ bash -c 'curl -s @ | grep -oP "https?://[^\"]+|/api/[^\"]+|apiKey[^\"]*"'
 ```
 
-### Step 4: Writing Effective Reports
+### 2.3 Automation Pipeline
+
+```bash
+#!/bin/bash
+# recon.sh
+
+TARGET=$1
+
+echo "[*] Subdomain enumeration..."
+subfinder -d $TARGET -silent | httpx -silent > live_subs.txt
+
+echo "[*] Port scanning..."
+naabu -l live_subs.txt -p 80,443,8080,8443 -silent > ports.txt
+
+echo "[*] Tech stack..."
+httpx -l live_subs.txt -tech-detect -silent
+
+echo "[*] Nuclei scan..."
+nuclei -l live_subs.txt -t nuclei-templates/ -severity critical,high -o vulns.txt
+```
+
+---
+
+## Part 3: High-Value Vulnerability Types
+
+### 3.1 Top Bugs by Payout
+
+| Vulnerability | Typical Bounty |
+|---------------|----------------|
+| **RCE** | $10,000 - $100,000+ |
+| **SSRF to Cloud Metadata** | $5,000 - $20,000 |
+| **SQL Injection** | $3,000 - $15,000 |
+| **Authentication Bypass** | $2,000 - $10,000 |
+| **IDOR (PII access)** | $1,000 - $5,000 |
+| **XSS (Stored)** | $500 - $3,000 |
+
+### 3.2 Focus Areas
+
+| Area | What to Look For |
+|------|------------------|
+| **Auth Flows** | OAuth misconfig, session issues |
+| **API Endpoints** | IDOR, broken auth, rate limiting |
+| **File Uploads** | Path traversal, RCE via upload |
+| **Admin Panels** | Default creds, bypass |
+| **Mobile API** | API keys, broken auth |
+
+---
+
+## Part 4: Report Writing
+
+### 4.1 Good Report Structure
 
 ```markdown
-# Vulnerability Report Template
+## Title: IDOR Allows Access to Other Users' Payment Details
 
-## Title
-[Vulnerability Type] in [Feature/Endpoint] allows [Impact]
+**Program:** TargetCorp Payments
+**Severity:** High (CVSS 7.5)
+**Endpoint:** `GET /api/v1/payments/{payment_id}`
 
-## Summary
-Brief 2-3 sentence description of the vulnerability.
+### Summary
+Authenticated users can access payment details of any user by changing the `payment_id` parameter.
 
-## Severity
-Critical / High / Medium / Low (with CVSS score if applicable)
+### Steps to Reproduce
+1. Log in to https://app.target.com
+2. Navigate to Settings → Payments
+3. Intercept the request to `/api/v1/payments/12345`
+4. Change `12345` to `12346` (another user's payment ID)
+5. Response contains other user's payment details
 
-## Steps to Reproduce
-1. Navigate to https://target.com/vulnerable-endpoint
-2. Intercept request with Burp Suite
-3. Modify parameter X to Y
-4. Observe unauthorized access to...
+### Proof of Concept
+[Screenshot showing access to another user's data]
 
-## Proof of Concept
-[Screenshot or video evidence]
+### Impact
+Attacker can access PII including:
+- Full name
+- Billing address
+- Last 4 digits of card
 
-## Impact
-Describe what an attacker could achieve:
-- Access to sensitive data
-- Account takeover
-- Financial loss
-
-## Remediation
-Suggested fix for the development team.
-
-## References
-- OWASP: https://owasp.org/...
-- CWE: https://cwe.mitre.org/...
+### Remediation
+- Verify user owns the requested payment before returning data
+- Use UUID instead of sequential IDs
 ```
 
-### Step 5: Platform-Specific Tips
+### 4.2 Report Tips
 
-| Platform | Focus | Tips |
-|----------|-------|------|
-| HackerOne | Enterprise programs | Focus on critical vulns, read scope carefully |
-| Bugcrowd | Diverse programs | VRT for severity, good for beginners |
-| Intigriti | EU-focused | Strong on web apps, good community |
-| Synack | Invite-only | Higher payouts, vetted researchers |
+| Do | Don't |
+|----|-------|
+| Clear repro steps | Vague descriptions |
+| Screenshots/videos | Missing evidence |
+| Explain impact | Just "I found XSS" |
+| One bug per report | Bundle unrelated bugs |
 
-## Best Practices
+---
+
+## Part 5: Common Mistakes
+
+### 5.1 What Gets Reports Closed
+
+| Mistake | Why Closed |
+|---------|------------|
+| **Out of Scope** | Didn't read program policy |
+| **Already Known** | Duplicate |
+| **No Impact** | Theoretical only |
+| **Self-XSS** | Requires victim to paste code |
+| **Missing Verification** | Doesn't actually exploit |
+
+### 5.2 How to Stand Out
+
+- **Unique Attack Chains**: Combine low-severity bugs.
+- **Automation**: Find what others miss.
+- **Root Cause Analysis**: Show fix, not just bug.
+- **Responsive**: Answer triager questions quickly.
+
+---
+
+## Part 6: Tools Arsenal
+
+### 6.1 Essential Tools
+
+| Category | Tools |
+|----------|-------|
+| **Recon** | subfinder, amass, httpx, naabu |
+| **Scanning** | Nuclei, ffuf, Burp Suite |
+| **Exploitation** | sqlmap, XSStrike, SSRFmap |
+| **Wordlists** | SecLists, commonspeak2 |
+| **Reporting** | Markdown, screenshots |
+
+### 6.2 Nuclei Custom Templates
+
+```yaml
+id: custom-api-exposure
+
+info:
+  name: Custom API Key Exposure
+  severity: medium
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/config.js"
+      - "{{BaseURL}}/env.js"
+    matchers:
+      - type: word
+        words:
+          - "API_KEY"
+          - "apiSecret"
+```
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Always read program scope and rules thoroughly
-- ✅ Document everything with timestamps
-- ✅ Start with wide recon, then go deep on interesting targets
-- ✅ Chain vulnerabilities for higher impact
-- ✅ Be professional and respectful in communications
+- ✅ **Read Scope Carefully**: Avoid wasting time.
+- ✅ **Automate Recon**: Check for changes regularly.
+- ✅ **Quality > Quantity**: Well-written reports get paid.
 
 ### ❌ Avoid This
 
-- ❌ Never test outside of scope
-- ❌ Don't use automated tools without understanding them
-- ❌ Never access, modify, or delete real user data
-- ❌ Don't submit duplicate or low-quality reports
-- ❌ Never publicly disclose before authorized
+- ❌ **Testing Without Authorization**: Even on public programs, follow rules.
+- ❌ **Rage Quitting**: Triage takes time; be patient.
+- ❌ **Sharing Before Disclosure**: Wait for fix + permission.
 
-## Common Pitfalls
-
-**Problem:** Reports marked as duplicate
-**Solution:** Do deeper recon on less-tested assets, focus on unique attack vectors.
-
-**Problem:** Low severity ratings
-**Solution:** Chain vulnerabilities to demonstrate higher impact. IDOR + PII = Critical.
+---
 
 ## Related Skills
 
-- `@senior-penetration-tester` - Comprehensive pen testing
-- `@senior-api-security-specialist` - API vulnerability focus
-- `@senior-cybersecurity-engineer` - Defensive security
-- `@network-security-specialist` - Network-level attacks
+- `@senior-penetration-tester` - Full pentest methodology
+- `@red-team-operator` - Advanced techniques
+- `@senior-cybersecurity-engineer` - Security architecture

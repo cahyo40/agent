@@ -7,243 +7,287 @@ description: "Expert Point-of-Sale system development including retail transacti
 
 ## Overview
 
-Build Point-of-Sale systems for retail, restaurants, and service businesses.
+This skill transforms you into a **Point-of-Sale Systems Expert**. You will master **Transaction Processing**, **Hardware Integration**, **Offline-First Design**, and **Retail Workflows** for building modern POS applications.
 
 ## When to Use This Skill
 
-- Use when building cashier systems
+- Use when building retail checkout systems
 - Use when integrating payment terminals
-- Use when managing inventory/sales
+- Use when implementing receipt printing
+- Use when handling offline transactions
+- Use when managing inventory at point of sale
 
-## How It Works
+---
 
-### Step 1: POS Architecture
+## Part 1: POS Architecture
 
-```markdown
-## System Components
+### 1.1 System Components
 
-### Frontend (Cashier UI)
-- Product catalog/search
-- Cart management
-- Payment processing
-- Receipt printing
-
-### Backend
-- Transaction processing
-- Inventory management
-- Sales reporting
-- User management
-
-### Integrations
-- Payment gateway
-- Thermal printer
-- Barcode scanner
-- Cash drawer
+```
+POS Terminal → Local DB (Offline) → Cloud Sync → Central Server
+     ↓
+Hardware Layer (Printer, Scanner, Payment Terminal)
 ```
 
-### Step 2: Database Schema
+### 1.2 Core Features
 
-```sql
--- Products
-CREATE TABLE products (
-  id SERIAL PRIMARY KEY,
-  sku VARCHAR(50) UNIQUE NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
-  cost DECIMAL(10,2),
-  stock INT DEFAULT 0,
-  category_id INT REFERENCES categories(id),
-  barcode VARCHAR(50),
-  is_active BOOLEAN DEFAULT true
-);
+| Feature | Description |
+|---------|-------------|
+| **Product Catalog** | SKUs, prices, categories |
+| **Cart Management** | Add/remove items, discounts |
+| **Payment Processing** | Multiple tender types |
+| **Receipt Printing** | Thermal printing |
+| **Inventory Sync** | Stock level updates |
+| **Shift Management** | Cashier sessions, cash counts |
 
--- Transactions
-CREATE TABLE transactions (
-  id SERIAL PRIMARY KEY,
-  invoice_number VARCHAR(50) UNIQUE,
-  cashier_id INT REFERENCES users(id),
-  subtotal DECIMAL(10,2),
-  tax DECIMAL(10,2),
-  discount DECIMAL(10,2),
-  total DECIMAL(10,2),
-  payment_method VARCHAR(50),
-  payment_amount DECIMAL(10,2),
-  change_amount DECIMAL(10,2),
-  status VARCHAR(20) DEFAULT 'completed',
-  created_at TIMESTAMP DEFAULT NOW()
-);
+### 1.3 Terminal Types
 
--- Transaction Items
-CREATE TABLE transaction_items (
-  id SERIAL PRIMARY KEY,
-  transaction_id INT REFERENCES transactions(id),
-  product_id INT REFERENCES products(id),
-  quantity INT NOT NULL,
-  unit_price DECIMAL(10,2),
-  discount DECIMAL(10,2) DEFAULT 0,
-  subtotal DECIMAL(10,2)
-);
+| Type | Use Case |
+|------|----------|
+| **Fixed Terminal** | Counter checkout |
+| **mPOS** | Tablet/mobile checkout |
+| **Self-Checkout** | Customer-operated |
+| **Kiosk** | Ordering (restaurants) |
+
+---
+
+## Part 2: Transaction Flow
+
+### 2.1 Sale Transaction
+
+```typescript
+interface Transaction {
+  id: string;
+  timestamp: Date;
+  items: LineItem[];
+  subtotal: number;
+  tax: number;
+  discounts: Discount[];
+  total: number;
+  payments: Payment[];
+  status: 'pending' | 'completed' | 'voided';
+  cashierId: string;
+  terminalId: string;
+}
+
+interface LineItem {
+  productId: string;
+  sku: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+  tax: number;
+}
 ```
 
-### Step 3: Transaction Flow
+### 2.2 Tax Calculation
 
-```javascript
-// Transaction Service
-class POSTransaction {
-  constructor() {
-    this.cart = [];
-    this.customer = null;
-  }
+```typescript
+function calculateTax(subtotal: number, taxRate: number): number {
+  return Math.round(subtotal * taxRate * 100) / 100;
+}
 
-  addItem(product, quantity = 1) {
-    const existing = this.cart.find(item => item.product.id === product.id);
-    if (existing) {
-      existing.quantity += quantity;
-    } else {
-      this.cart.push({ product, quantity, discount: 0 });
-    }
-    return this.calculateTotals();
-  }
+// Handle multiple tax rates
+function calculateItemTax(item: LineItem, taxRules: TaxRule[]): number {
+  const applicableRule = taxRules.find(r => r.categoryId === item.categoryId);
+  return item.lineTotal * (applicableRule?.rate || 0);
+}
+```
 
-  removeItem(productId) {
-    this.cart = this.cart.filter(item => item.product.id !== productId);
-    return this.calculateTotals();
-  }
+### 2.3 Discount Types
 
-  calculateTotals() {
-    const subtotal = this.cart.reduce((sum, item) => {
-      return sum + (item.product.price * item.quantity) - item.discount;
-    }, 0);
+| Type | Example |
+|------|---------|
+| **Percentage** | 10% off |
+| **Fixed Amount** | $5 off |
+| **BOGO** | Buy 1 Get 1 |
+| **Bundle** | Combo pricing |
+| **Loyalty** | Points redemption |
+
+---
+
+## Part 3: Hardware Integration
+
+### 3.1 Barcode Scanners
+
+Most USB scanners work as keyboard input.
+
+```typescript
+// React hook for barcode input
+function useBarcodeScanner(onScan: (barcode: string) => void) {
+  const [buffer, setBuffer] = useState('');
+  
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && buffer.length > 0) {
+        onScan(buffer);
+        setBuffer('');
+      } else if (e.key.length === 1) {
+        setBuffer(prev => prev + e.key);
+      }
+    };
     
-    const tax = subtotal * 0.11; // PPN 11%
-    const total = subtotal + tax;
+    // Clear buffer if no input for 100ms (end of scan)
+    const timeout = setTimeout(() => setBuffer(''), 100);
     
-    return { subtotal, tax, total, items: this.cart.length };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      clearTimeout(timeout);
+    };
+  }, [buffer, onScan]);
+}
+```
+
+### 3.2 Receipt Printing (ESC/POS)
+
+```typescript
+import { ThermalPrinter, PrinterTypes } from 'node-thermal-printer';
+
+const printer = new ThermalPrinter({
+  type: PrinterTypes.EPSON,
+  interface: '/dev/usb/lp0',  // or IP address
+});
+
+async function printReceipt(transaction: Transaction) {
+  printer.alignCenter();
+  printer.println('STORE NAME');
+  printer.println('123 Main Street');
+  printer.drawLine();
+  
+  printer.alignLeft();
+  for (const item of transaction.items) {
+    printer.println(`${item.name}`);
+    printer.println(`  ${item.quantity} x ${item.unitPrice}  ${item.lineTotal}`);
   }
+  
+  printer.drawLine();
+  printer.alignRight();
+  printer.println(`Subtotal: ${transaction.subtotal}`);
+  printer.println(`Tax: ${transaction.tax}`);
+  printer.bold(true);
+  printer.println(`TOTAL: ${transaction.total}`);
+  printer.bold(false);
+  
+  printer.cut();
+  await printer.execute();
+}
+```
 
-  async processPayment(method, amount) {
-    const totals = this.calculateTotals();
-    
-    if (amount < totals.total) {
-      throw new Error('Insufficient payment');
+### 3.3 Payment Terminals
+
+| Integration | Method |
+|-------------|--------|
+| **PAX** | SDK, serial communication |
+| **Verifone** | SDK, REST API |
+| **Square Terminal** | Square SDK |
+| **Stripe Terminal** | Stripe SDK |
+
+---
+
+## Part 4: Offline-First Design
+
+### 4.1 Architecture
+
+```
+Local SQLite/IndexedDB → Sync Queue → Cloud API
+         ↓
+    Works Offline
+```
+
+### 4.2 Sync Strategy
+
+```typescript
+interface SyncQueue {
+  id: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  entity: 'transaction' | 'inventory' | 'customer';
+  data: any;
+  createdAt: Date;
+  syncedAt: Date | null;
+}
+
+async function syncTransactions() {
+  const unsyncedItems = await db.syncQueue
+    .where('syncedAt').equals(null)
+    .toArray();
+  
+  for (const item of unsyncedItems) {
+    try {
+      await api.sync(item);
+      await db.syncQueue.update(item.id, { syncedAt: new Date() });
+    } catch (error) {
+      console.error('Sync failed, will retry:', error);
     }
-
-    const transaction = await db.transactions.create({
-      invoice_number: this.generateInvoice(),
-      subtotal: totals.subtotal,
-      tax: totals.tax,
-      total: totals.total,
-      payment_method: method,
-      payment_amount: amount,
-      change_amount: amount - totals.total,
-    });
-
-    // Update inventory
-    for (const item of this.cart) {
-      await db.products.decrement('stock', {
-        where: { id: item.product.id },
-        by: item.quantity
-      });
-    }
-
-    return transaction;
-  }
-
-  generateInvoice() {
-    const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    const random = Math.random().toString(36).substr(2, 6).toUpperCase();
-    return `INV-${date}-${random}`;
   }
 }
 ```
 
-### Step 4: Receipt Printing
+### 4.3 Conflict Resolution
 
-```javascript
-// ESC/POS Receipt Printer
-const printReceipt = async (transaction) => {
-  const printer = new ThermalPrinter({
-    type: 'epson',
-    interface: '/dev/usb/lp0'
-  });
+- **Last Write Wins**: Simple, may lose data.
+- **Server Wins**: Server is source of truth.
+- **Merge**: Combine changes (complex).
 
-  printer.alignCenter();
-  printer.bold(true);
-  printer.println('NAMA TOKO');
-  printer.bold(false);
-  printer.println('Jl. Contoh No. 123');
-  printer.println('Telp: 021-12345678');
-  printer.drawLine();
+---
 
-  printer.alignLeft();
-  printer.println(`No: ${transaction.invoice_number}`);
-  printer.println(`Tanggal: ${formatDate(transaction.created_at)}`);
-  printer.println(`Kasir: ${transaction.cashier.name}`);
-  printer.drawLine();
+## Part 5: Reporting
 
-  // Items
-  for (const item of transaction.items) {
-    printer.println(`${item.product.name}`);
-    printer.println(`  ${item.quantity} x ${formatCurrency(item.unit_price)} = ${formatCurrency(item.subtotal)}`);
-  }
+### 5.1 Key Reports
 
-  printer.drawLine();
-  printer.alignRight();
-  printer.println(`Subtotal: ${formatCurrency(transaction.subtotal)}`);
-  printer.println(`PPN 11%: ${formatCurrency(transaction.tax)}`);
-  printer.bold(true);
-  printer.println(`TOTAL: ${formatCurrency(transaction.total)}`);
-  printer.bold(false);
-  printer.println(`Bayar: ${formatCurrency(transaction.payment_amount)}`);
-  printer.println(`Kembali: ${formatCurrency(transaction.change_amount)}`);
+| Report | Metrics |
+|--------|---------|
+| **Daily Sales** | Total revenue, # transactions |
+| **X Report** | Mid-shift summary (no reset) |
+| **Z Report** | End-of-day (closes shift) |
+| **Product Sales** | Units sold by SKU |
+| **Hourly Sales** | Revenue by hour |
 
-  printer.alignCenter();
-  printer.println('');
-  printer.println('Terima Kasih!');
-  printer.println('Barang yang sudah dibeli');
-  printer.println('tidak dapat dikembalikan');
+### 5.2 Z-Report Example
 
-  printer.cut();
-  await printer.execute();
-};
+```typescript
+async function generateZReport(shiftId: string) {
+  const transactions = await db.transactions
+    .where('shiftId').equals(shiftId)
+    .filter(t => t.status === 'completed')
+    .toArray();
+  
+  return {
+    shiftId,
+    startTime: shift.startTime,
+    endTime: new Date(),
+    totalSales: sum(transactions, 'total'),
+    transactionCount: transactions.length,
+    avgTicket: sum(transactions, 'total') / transactions.length,
+    cashTotal: sumByPaymentMethod(transactions, 'cash'),
+    cardTotal: sumByPaymentMethod(transactions, 'card'),
+    refunds: sum(refunds, 'total'),
+    netSales: totalSales - refunds,
+  };
+}
 ```
 
-### Step 5: Barcode Scanner Integration
+---
 
-```javascript
-// USB Barcode Scanner (acts as keyboard)
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && barcodeBuffer.length > 0) {
-    const barcode = barcodeBuffer.join('');
-    handleBarcodeScan(barcode);
-    barcodeBuffer = [];
-  } else if (e.key.length === 1) {
-    barcodeBuffer.push(e.key);
-  }
-});
+## Part 6: Best Practices Checklist
 
-const handleBarcodeScan = async (barcode) => {
-  const product = await api.products.findByBarcode(barcode);
-  if (product) {
-    pos.addItem(product);
-    playBeep();
-  } else {
-    showError('Product not found');
-  }
-};
-```
+### ✅ Do This
 
-## Best Practices
+- ✅ **Offline First**: POS must work without internet.
+- ✅ **Idempotent Transactions**: Retry without duplicates.
+- ✅ **Audit Trail**: Log all actions.
 
-- ✅ Offline-first for reliability
-- ✅ Fast product search
-- ✅ Clear transaction flow
-- ✅ Accurate inventory sync
-- ❌ Don't skip receipt backup
-- ❌ Don't ignore edge cases
+### ❌ Avoid This
+
+- ❌ **Cloud-Only Design**: Network failures = lost sales.
+- ❌ **Blocking UI on Sync**: Sync in background.
+- ❌ **Ignoring Hardware Failures**: Handle printer/scanner errors gracefully.
+
+---
 
 ## Related Skills
 
-- `@senior-backend-developer`
-- `@e-commerce-developer`
-- `@payment-integration-specialist`
+- `@restaurant-system-developer` - Restaurant POS
+- `@payment-integration-specialist` - Payment processing
+- `@inventory-management-developer` - Stock management

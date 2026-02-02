@@ -7,220 +7,277 @@ description: "Expert digital forensics including disk forensics, memory analysis
 
 ## Overview
 
-Skill ini menjadikan AI Agent Anda sebagai spesialis digital forensics. Agent akan mampu melakukan disk forensics, memory analysis, network forensics, incident response, dan pengumpulan bukti digital yang dapat digunakan untuk investigasi keamanan atau legal proceedings.
+This skill transforms you into a **Digital Forensics Expert**. You will master **Disk Analysis**, **Memory Forensics**, **Network Forensics**, and **Incident Response** for conducting thorough digital investigations.
 
 ## When to Use This Skill
 
 - Use when investigating security incidents
-- Use when analyzing disk images or memory dumps
+- Use when analyzing malware artifacts
+- Use when recovering deleted data
 - Use when collecting digital evidence
-- Use when the user asks about forensic analysis
-- Use when performing incident response
+- Use when building incident timelines
 
-## How It Works
+---
 
-### Step 1: Forensic Process
+## Part 1: Forensics Fundamentals
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│              DIGITAL FORENSICS PROCESS                  │
-├─────────────────────────────────────────────────────────┤
-│ 1. IDENTIFICATION  - Identify potential evidence sources│
-│ 2. PRESERVATION    - Create forensic copies, chain of   │
-│                      custody                            │
-│ 3. COLLECTION      - Acquire data without modification  │
-│ 4. EXAMINATION     - Process and analyze evidence       │
-│ 5. ANALYSIS        - Interpret findings                 │
-│ 6. PRESENTATION    - Document and report findings       │
-└─────────────────────────────────────────────────────────┘
+### 1.1 Investigation Process
+
+```
+Identification → Preservation → Collection → Analysis → Reporting
 ```
 
-### Step 2: Disk Forensics
+### 1.2 Chain of Custody
+
+| Element | Requirement |
+|---------|-------------|
+| **Documentation** | Who, what, when, where |
+| **Hashing** | MD5/SHA256 of evidence |
+| **Write Blockers** | Prevent modification |
+| **Secure Storage** | Encrypted, access-controlled |
+
+### 1.3 Evidence Types
+
+| Type | Examples |
+|------|----------|
+| **Disk** | Hard drives, SSDs, USB |
+| **Memory** | RAM dumps |
+| **Network** | Packet captures, logs |
+| **Cloud** | API logs, container images |
+| **Mobile** | Phone dumps |
+
+---
+
+## Part 2: Disk Forensics
+
+### 2.1 Image Acquisition
 
 ```bash
-# Create forensic image
-dd if=/dev/sda of=disk_image.dd bs=4M status=progress
-dc3dd if=/dev/sda of=disk_image.dd hash=sha256 log=acquisition.log
+# Create forensic image (dd)
+dd if=/dev/sda of=disk.img bs=4M status=progress
 
-# Verify hash
-sha256sum disk_image.dd
+# With hashing
+dc3dd if=/dev/sda of=disk.img hash=sha256 log=hash.log
 
-# Mount read-only
-mount -o ro,loop,noexec disk_image.dd /mnt/evidence
-
-# Autopsy / Sleuth Kit
-autopsy  # Web-based GUI
-fls -r disk_image.dd  # List files
-icat disk_image.dd 12345 > recovered_file.txt  # Extract by inode
-
-# Timeline analysis
-fls -m "/" -r disk_image.dd > bodyfile.txt
-mactime -b bodyfile.txt > timeline.csv
+# FTK Imager (Windows)
+# Autopsy (cross-platform)
 ```
 
-#### Windows Artifacts
-
-```text
-Critical Locations:
-├── Registry Hives
-│   ├── NTUSER.DAT (user settings)
-│   ├── SAM (user accounts)
-│   ├── SYSTEM (system config)
-│   └── SOFTWARE (installed software)
-├── Event Logs
-│   ├── Security.evtx
-│   ├── System.evtx
-│   └── Application.evtx
-├── Prefetch (C:\Windows\Prefetch)
-├── Recent Files (LNK files)
-├── Browser History
-├── $MFT (Master File Table)
-└── $UsnJrnl (Change journal)
-```
-
-### Step 3: Memory Forensics
+### 2.2 File System Analysis
 
 ```bash
-# Acquire memory (live)
-winpmem_mini_x64.exe memdump.raw  # Windows
-sudo avml memdump.lime             # Linux
+# Mount image (read-only)
+mount -o ro,loop,offset=$((512*2048)) disk.img /mnt/evidence
 
-# Volatility 3 analysis
-vol -f memdump.raw windows.info
-vol -f memdump.raw windows.pslist      # Running processes
-vol -f memdump.raw windows.pstree      # Process tree
-vol -f memdump.raw windows.cmdline     # Command lines
-vol -f memdump.raw windows.netscan     # Network connections
-vol -f memdump.raw windows.malfind     # Injected code
-vol -f memdump.raw windows.dlllist     # Loaded DLLs
-vol -f memdump.raw windows.handles     # Open handles
-vol -f memdump.raw windows.filescan    # File objects
-vol -f memdump.raw windows.hashdump    # Password hashes
+# List files with timestamps
+ls -la --time-style=full-iso
 
-# Dump suspicious process
-vol -f memdump.raw windows.pslist --pid 1234 --dump
+# Autopsy (GUI tool)
+autopsy
 ```
 
-### Step 4: Network Forensics
+### 2.3 File Recovery
 
 ```bash
-# Analyze PCAP
-tshark -r capture.pcap -z conv,tcp  # TCP conversations
-tshark -r capture.pcap -z http,tree  # HTTP statistics
+# Photorec - file carving
+photorec disk.img
+
+# TestDisk - partition recovery
+testdisk disk.img
+
+# Foremost - specific file types
+foremost -t jpg,pdf -i disk.img -o recovered/
+```
+
+### 2.4 Timeline Analysis
+
+```bash
+# Plaso/Log2Timeline
+log2timeline.py timeline.plaso disk.img
+psort.py -o l2tcsv timeline.plaso "date > '2024-01-01'" > timeline.csv
+```
+
+---
+
+## Part 3: Memory Forensics
+
+### 3.1 Memory Acquisition
+
+```bash
+# Linux
+dd if=/dev/mem of=memory.raw
+
+# Windows
+winpmem.exe memory.raw
+
+# VMware
+vmss2core <vm>.vmss <vm>.vmem
+```
+
+### 3.2 Volatility 3
+
+```bash
+# Identify profile
+vol -f memory.raw windows.info
+
+# Process list
+vol -f memory.raw windows.pslist
+
+# Hidden processes
+vol -f memory.raw windows.psscan
+
+# Network connections
+vol -f memory.raw windows.netscan
+
+# Command line arguments
+vol -f memory.raw windows.cmdline
+
+# Dump process
+vol -f memory.raw windows.pslist --pid 1234 --dump
+```
+
+### 3.3 Key Artifacts
+
+| Artifact | What It Shows |
+|----------|---------------|
+| **pslist** | Running processes |
+| **psscan** | Hidden processes |
+| **netscan** | Network connections |
+| **malfind** | Injected code |
+| **hashdump** | Password hashes |
+| **filescan** | Open file handles |
+
+---
+
+## Part 4: Network Forensics
+
+### 4.1 Packet Analysis
+
+```bash
+# Wireshark filters
+ip.addr == 10.0.0.5
+tcp.port == 80
+http.request.method == "POST"
+dns.qry.name contains "malware"
+
+# tshark (command line)
+tshark -r capture.pcap -Y "http" -T fields -e http.host -e http.request.uri
 
 # Extract files
-foremost -i capture.pcap -o extracted/
-NetworkMiner capture.pcap  # GUI tool
-
-# Zeek (Bro) analysis
-zeek -r capture.pcap
-cat conn.log | zeek-cut id.orig_h id.resp_h id.resp_p proto
-
-# DNS analysis
-tshark -r capture.pcap -Y "dns" -T fields -e dns.qry.name | sort | uniq -c | sort -rn
-
-# Find data exfiltration
-tshark -r capture.pcap -Y "tcp.len > 1000" -T fields -e ip.dst -e tcp.len | sort | uniq
+tshark -r capture.pcap --export-objects http,./extracted
 ```
 
-### Step 5: Log Analysis
+### 4.2 Network Artifacts
+
+| Source | Information |
+|--------|-------------|
+| **Firewall Logs** | Allowed/blocked connections |
+| **DNS Logs** | Domain lookups |
+| **Proxy Logs** | URL access |
+| **NetFlow** | Traffic patterns |
+| **PCAP** | Full packet content |
+
+### 4.3 Zeek/Bro
 
 ```bash
-# Windows Event Logs (with PowerShell)
-Get-WinEvent -Path Security.evtx | Where-Object {$_.Id -eq 4624}  # Logons
-Get-WinEvent -Path Security.evtx | Where-Object {$_.Id -eq 4625}  # Failed logons
-Get-WinEvent -Path Security.evtx | Where-Object {$_.Id -eq 4688}  # Process creation
+# Process PCAP
+zeek -r capture.pcap
 
-# Linux logs
-grep "Failed password" /var/log/auth.log
-grep "Accepted password" /var/log/auth.log
-journalctl --since "2026-02-01" --until "2026-02-02"
-
-# Apache/Nginx logs
-cat access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head
-grep -E "(SELECT|UNION|INSERT|UPDATE|DELETE)" access.log  # SQL injection attempts
+# Review logs
+cat conn.log | zeek-cut id.orig_h id.resp_h id.resp_p service
+cat http.log | zeek-cut host uri
+cat dns.log | zeek-cut query
 ```
 
-### Step 6: Incident Response
+---
 
-```text
-IR Playbook:
-├── 1. Detection & Triage
-│   ├── Identify scope of incident
-│   ├── Assess criticality
-│   └── Activate IR team
-├── 2. Containment
-│   ├── Isolate affected systems
-│   ├── Block malicious IPs/domains
-│   └── Disable compromised accounts
-├── 3. Eradication
-│   ├── Remove malware
-│   ├── Patch vulnerabilities
-│   └── Reset credentials
-├── 4. Recovery
-│   ├── Restore from clean backups
-│   ├── Rebuild affected systems
-│   └── Monitor for reinfection
-└── 5. Lessons Learned
-    ├── Document timeline
-    ├── Root cause analysis
-    └── Improve defenses
+## Part 5: Incident Response
+
+### 5.1 IR Process
+
+```
+Preparation → Identification → Containment → Eradication → Recovery → Lessons Learned
 ```
 
-### Step 7: Evidence Collection Checklist
+### 5.2 Containment Actions
 
-```yaml
-Chain of Custody:
-  - Date/time of acquisition
-  - Who collected the evidence
-  - Hash values (MD5, SHA256)
-  - Storage location
-  - Access log
+| Level | Action |
+|-------|--------|
+| **Network** | Block IP, isolate segment |
+| **Host** | Disconnect, disable account |
+| **Application** | Kill process, revoke tokens |
 
-Evidence Types:
-  - [ ] Disk images (E01, dd, raw)
-  - [ ] Memory dumps
-  - [ ] Network captures (PCAP)
-  - [ ] Log files
-  - [ ] Screenshots
-  - [ ] Notes and observations
+### 5.3 Evidence Collection Script
 
-Documentation:
-  - Detailed timeline of events
-  - All commands executed
-  - Findings and artifacts
-  - IOCs identified
+```bash
+#!/bin/bash
+# ir_collect.sh
+
+CASE_DIR="evidence_$(date +%Y%m%d_%H%M%S)"
+mkdir -p $CASE_DIR
+
+# System info
+uname -a > $CASE_DIR/system_info.txt
+cat /etc/passwd > $CASE_DIR/users.txt
+
+# Network
+netstat -tulpn > $CASE_DIR/network.txt
+iptables -L > $CASE_DIR/firewall.txt
+
+# Processes
+ps auxf > $CASE_DIR/processes.txt
+lsof -i > $CASE_DIR/open_connections.txt
+
+# Recent files
+find / -mtime -1 -type f 2>/dev/null > $CASE_DIR/recent_files.txt
+
+# Hash everything
+find $CASE_DIR -type f -exec sha256sum {} \; > $CASE_DIR/hashes.txt
 ```
 
-## Best Practices
+---
+
+## Part 6: Reporting
+
+### 6.1 Report Structure
+
+| Section | Content |
+|---------|---------|
+| **Executive Summary** | Key findings for non-technical |
+| **Scope** | What was investigated |
+| **Methodology** | Tools and techniques |
+| **Timeline** | Event sequence |
+| **Findings** | Evidence with screenshots |
+| **Conclusions** | What happened |
+| **Recommendations** | How to prevent recurrence |
+
+### 6.2 Documentation Tips
+
+- Screenshot everything.
+- Include commands used.
+- Hash all evidence.
+- Note timestamps in UTC.
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Always work on forensic copies, never original evidence
-- ✅ Document every action with timestamps
-- ✅ Maintain chain of custody
-- ✅ Use write blockers when acquiring disk images
-- ✅ Verify integrity with cryptographic hashes
+- ✅ **Use Write Blockers**: Preserve evidence integrity.
+- ✅ **Hash Before and After**: Verify no modification.
+- ✅ **Document Chain of Custody**: Legal admissibility.
 
 ### ❌ Avoid This
 
-- ❌ Never modify original evidence
-- ❌ Don't skip documentation—even small details matter
-- ❌ Don't analyze malware on the evidence system
-- ❌ Don't assume—verify with multiple artifacts
-- ❌ Never break chain of custody
+- ❌ **Modifying Evidence**: Always work on copies.
+- ❌ **Skipping Documentation**: Every step matters.
+- ❌ **Rushing Analysis**: Thoroughness over speed.
 
-## Common Pitfalls
-
-**Problem:** Evidence hash doesn't match after analysis
-**Solution:** Always use write blockers and work on copies. Original should never change.
-
-**Problem:** Volatility plugin not working
-**Solution:** Ensure correct profile/OS version. Use `windows.info` to verify.
+---
 
 ## Related Skills
 
-- `@malware-analyst` - Analyze malware found in investigation
-- `@network-security-specialist` - Network traffic analysis
-- `@senior-cybersecurity-engineer` - Security context
-- `@senior-linux-sysadmin` - Understanding system logs
+- `@malware-analyst` - Malware analysis
+- `@senior-penetration-tester` - Offensive perspective
+- `@ctf-competitor` - CTF forensics challenges
