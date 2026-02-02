@@ -9,6 +9,14 @@ description: "Expert UI/UX design for mobile apps and websites including user-ce
 
 This skill transforms you into an experienced Senior UI/UX Designer who creates exceptional user experiences across all platforms—mobile apps (iOS, Android) and web applications. You'll apply user-centered design principles, build scalable design systems, ensure accessibility compliance, and follow platform-specific best practices.
 
+**Key Features:**
+
+- 67 UI Styles (Glassmorphism, Neumorphism, Bento Grid, AI-Native UI, etc.)
+- 96 Color Palettes (Industry-specific for SaaS, Healthcare, Fintech, etc.)
+- 57 Font Pairings (Curated typography combinations)
+- 100 Industry Reasoning Rules (Design system generation)
+- 13 Tech Stack Support (React, Next.js, Flutter, SwiftUI, etc.)
+
 ## When to Use This Skill
 
 - Use when designing mobile apps or websites
@@ -22,92 +30,338 @@ This skill transforms you into an experienced Senior UI/UX Designer who creates 
 
 ---
 
-## Part 1: Universal Design Principles
+## Part 1: Design System Generation
 
-### User-Centered Design Process
+### How Design System Generation Works
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  1. RESEARCH        2. DEFINE         3. IDEATE            │
-│  ┌─────────┐        ┌─────────┐       ┌─────────┐          │
-│  │ User    │   →    │ Problem │   →   │ Design  │          │
-│  │ Research│        │Statement│       │ Options │          │
-│  └─────────┘        └─────────┘       └─────────┘          │
-│       ↑                                    ↓               │
-│  ┌─────────┐        ┌─────────┐       ┌─────────┐          │
-│  │ Iterate │   ←    │  Test   │   ←   │Prototype│          │
-│  │& Improve│        │& Validate       │& Design │          │
-│  └─────────┘        └─────────┘       └─────────┘          │
-│  6. ITERATE         5. TEST          4. PROTOTYPE          │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Core UX Laws
-
-| Law | Principle | Application |
-|-----|-----------|-------------|
-| **Fitts's Law** | Larger targets are easier to reach | Min touch targets: 44×44pt (iOS), 48×48dp (Android), 44×44px (Web) |
-| **Hick's Law** | More choices = longer decision time | Limit options, use progressive disclosure |
-| **Jakob's Law** | Users prefer familiar interfaces | Follow platform conventions |
-| **Miller's Law** | ~7 items in working memory | Chunk information, clear hierarchy |
-| **Aesthetic-Usability** | Beautiful designs seem more usable | Invest in visual polish |
-| **Von Restorff Effect** | Different items stand out | Use contrast for CTAs |
-| **Proximity** | Close items seem related | Group related elements |
-
-### Visual Hierarchy
-
-```
-VISUAL HIERARCHY PRINCIPLES
+```text
 ┌─────────────────────────────────────────────────────────────────┐
+│ 1. USER REQUEST                                                 │
+│    "Build a landing page for my beauty spa"                     │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 2. MULTI-DOMAIN ANALYSIS (5 parallel searches)                  │
+│    • Product type matching (100 categories)                     │
+│    • Style recommendations (67 styles)                          │
+│    • Color palette selection (96 palettes)                      │
+│    • Landing page patterns (24 patterns)                        │
+│    • Typography pairing (57 font combinations)                  │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 3. REASONING ENGINE                                             │
+│    • Match product → UI category rules                          │
+│    • Apply style priorities                                     │
+│    • Filter anti-patterns for industry                          │
+│    • Process decision rules                                     │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 4. COMPLETE DESIGN SYSTEM OUTPUT                                │
+│    Pattern + Style + Colors + Typography + Effects              │
+│    + Anti-patterns to avoid + Pre-delivery checklist            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Example Design System Output
+
+```text
++----------------------------------------------------------------------------------------+
+| TARGET: Serenity Spa - RECOMMENDED DESIGN SYSTEM                                       |
++----------------------------------------------------------------------------------------+
+|                                                                                        |
+| PATTERN: Hero-Centric + Social Proof                                                   |
+|   Conversion: Emotion-driven with trust elements                                       |
+|   CTA: Above fold, repeated after testimonials                                         |
+|   Sections: 1. Hero  2. Services  3. Testimonials  4. Booking  5. Contact              |
+|                                                                                        |
+| STYLE: Soft UI Evolution                                                               |
+|   Keywords: Soft shadows, subtle depth, calming, premium feel, organic shapes          |
+|   Best For: Wellness, beauty, lifestyle brands, premium services                       |
+|   Performance: Excellent | Accessibility: WCAG AA                                      |
+|                                                                                        |
+| COLORS:                                                                                |
+|   Primary: #E8B4B8 (Soft Pink)                                                         |
+|   Secondary: #A8D5BA (Sage Green)                                                      |
+|   CTA: #D4AF37 (Gold)                                                                  |
+|   Background: #FFF5F5 (Warm White)                                                     |
+|   Text: #2D3436 (Charcoal)                                                             |
+|   Notes: Calming palette with gold accents for luxury feel                             |
+|                                                                                        |
+| TYPOGRAPHY: Cormorant Garamond / Montserrat                                            |
+|   Mood: Elegant, calming, sophisticated                                                |
+|   Best For: Luxury brands, wellness, beauty, editorial                                 |
+|                                                                                        |
+| KEY EFFECTS:                                                                           |
+|   Soft shadows + Smooth transitions (200-300ms) + Gentle hover states                  |
+|                                                                                        |
+| AVOID (Anti-patterns):                                                                 |
+|   Bright neon colors + Harsh animations + Dark mode + AI purple/pink gradients         |
+|                                                                                        |
++----------------------------------------------------------------------------------------+
+```
+
+---
+
+## Part 2: UI Style Catalog (67 Styles)
+
+### Modern UI Styles
+
+| Style | Description | Best For |
+|-------|-------------|----------|
+| **Glassmorphism** | Frosted glass effect with blur | Premium apps, fintech, modern UI |
+| **Neumorphism** | Soft shadows, extruded elements | Minimal apps, calculators, controls |
+| **Claymorphism** | 3D clay-like, playful shadows | Creative, kids apps, casual products |
+| **Bento Grid** | Modular grid layout (Apple-style) | Dashboards, portfolios, feature pages |
+| **AI-Native UI** | Purple gradients, glow effects | AI/ML products, chatbots, tech |
+| **Minimalism** | Clean, lots of whitespace | Professional, editorial, luxury |
+| **Brutalism** | Raw, bold typography, stark contrast | Creative agencies, portfolios |
+| **Dark Mode** | Dark backgrounds, high contrast | Developer tools, media, gaming |
+| **Soft UI** | Subtle depth, calming colors | Wellness, beauty, lifestyle |
+| **Corporate Clean** | Professional, structured | B2B SaaS, enterprise, finance |
+
+### Style Selection by Industry
+
+```text
+INDUSTRY → STYLE MAPPING
+├── SaaS/Tech
+│   ├── Primary: Minimalism, Corporate Clean
+│   ├── Alternative: Glassmorphism, AI-Native
+│   └── Avoid: Brutalism, Claymorphism
+│
+├── Healthcare/Medical
+│   ├── Primary: Clean Minimal, Soft UI
+│   ├── Alternative: Corporate Clean
+│   └── Avoid: Dark mode, Brutalism, Neon
+│
+├── Fintech/Banking
+│   ├── Primary: Corporate Clean, Dark Mode
+│   ├── Alternative: Glassmorphism
+│   └── Avoid: Claymorphism, AI purple gradients
+│
+├── E-commerce/Retail
+│   ├── Primary: Minimalism, Bento Grid
+│   ├── Alternative: Product-focused layouts
+│   └── Avoid: Overly complex, distracting
+│
+├── Beauty/Wellness
+│   ├── Primary: Soft UI, Elegant Minimal
+│   ├── Alternative: Organic shapes
+│   └── Avoid: Dark mode, harsh colors
+│
+├── Gaming/Entertainment
+│   ├── Primary: Dark Mode, Neon accents
+│   ├── Alternative: Brutalism, Bold
+│   └── Avoid: Corporate, clinical
+│
+└── Creative/Portfolio
+    ├── Primary: Brutalism, Bento Grid
+    ├── Alternative: Experimental
+    └── Avoid: Generic templates
+```
+
+---
+
+## Part 3: Color Palettes (96 Palettes)
+
+### Industry-Specific Colors
+
+```text
+SAAS / TECH
+├── Primary: #2563EB (Blue), #6366F1 (Indigo)
+├── CTA: #F97316 (Orange), #22C55E (Green)
+├── Background: #F8FAFC (Light), #0F172A (Dark)
+└── Mood: Trust, innovation, professionalism
+
+HEALTHCARE
+├── Primary: #0891B2 (Teal), #22C55E (Green)
+├── Secondary: #E0F2FE (Light Blue)
+├── Background: #FFFFFF, #F0FDF4
+└── Mood: Trust, calm, clean, professional
+
+FINTECH / BANKING
+├── Primary: #1E40AF (Deep Blue), #15803D (Green)
+├── CTA: #22C55E (Success Green)
+├── Background: #FFFFFF, #111827 (Dark)
+└── Mood: Security, trust, stability
+
+E-COMMERCE
+├── Primary: #000000 (Black), #DC2626 (Red)
+├── CTA: #F97316 (Orange), #22C55E (Buy Green)
+├── Background: #FFFFFF, #FEF2F2
+└── Mood: Urgency, excitement, action
+
+BEAUTY / WELLNESS
+├── Primary: #E8B4B8 (Soft Pink), #A8D5BA (Sage)
+├── CTA: #D4AF37 (Gold)
+├── Background: #FFF5F5 (Warm White)
+└── Mood: Calm, luxury, natural, organic
+
+GAMING / ENTERTAINMENT
+├── Primary: #7C3AED (Purple), #EC4899 (Pink)
+├── CTA: #F59E0B (Amber), #EF4444 (Red)
+├── Background: #0F0F0F, #18181B
+└── Mood: Energy, excitement, immersion
+
+EDUCATION
+├── Primary: #2563EB (Blue), #7C3AED (Purple)
+├── CTA: #22C55E (Progress Green)
+├── Background: #F8FAFC, #EFF6FF
+└── Mood: Trust, growth, knowledge
+```
+
+### Color Contrast Requirements
+
+```text
+WCAG 2.1 CONTRAST REQUIREMENTS
+├── Normal Text (< 18pt): 4.5:1 minimum
+├── Large Text (≥ 18pt or 14pt bold): 3:1 minimum
+├── UI Components & Graphics: 3:1 minimum
+│
+├── AAA (Enhanced)
+│   ├── Normal Text: 7:1
+│   └── Large Text: 4.5:1
+│
+└── TOOLS
+    ├── WebAIM Contrast Checker
+    ├── Stark (Figma plugin)
+    ├── Coolors Contrast Checker
+    └── Chrome DevTools
+```
+
+---
+
+## Part 4: Typography Pairings (57 Combinations)
+
+### Popular Font Combinations
+
+| Category | Heading | Body | Mood |
+|----------|---------|------|------|
+| **Modern Tech** | Inter | Inter | Clean, neutral, versatile |
+| **Elegant Editorial** | Playfair Display | Lato | Sophisticated, classic |
+| **Startup Bold** | Poppins | Inter | Friendly, modern, approachable |
+| **Corporate Pro** | Roboto | Roboto | Professional, reliable |
+| **Creative Portfolio** | Clash Display | Satoshi | Bold, distinctive |
+| **Luxury Brand** | Cormorant Garamond | Montserrat | Elegant, premium |
+| **Tech Documentation** | JetBrains Mono | Inter | Technical, precise |
+| **Wellness Calm** | Italiana | Open Sans | Serene, sophisticated |
+| **Gaming Bold** | Orbitron | Rajdhani | Futuristic, energetic |
+| **E-commerce Clean** | DM Sans | DM Sans | Clear, readable |
+
+### Typography Scale (8px Base)
+
+```text
+RESPONSIVE TYPOGRAPHY SCALE
+├── Display: 48px/56px (xl) → 36px/44px (mobile)
+├── H1: 36px/44px → 28px/36px
+├── H2: 30px/38px → 24px/32px
+├── H3: 24px/32px → 20px/28px
+├── H4: 20px/28px → 18px/26px
+├── Body: 16px/24px → 16px/24px
+├── Small: 14px/20px → 14px/20px
+├── Caption: 12px/16px → 12px/16px
+
+FONT WEIGHTS
+├── Display: Bold (700)
+├── Headings: Semibold (600)
+├── Body: Regular (400)
+├── Emphasis: Medium (500)
+└── Links: Medium (500)
+```
+
+---
+
+## Part 5: Landing Page Patterns (24 Patterns)
+
+### Conversion-Optimized Patterns
+
+```text
+HERO-CENTRIC PATTERN (High Conversion)
+┌─────────────────────────────────────────────────────────────────┐
+│  Logo                Nav Links                       [CTA]      │
+├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  1. SIZE          Larger = More important                       │
-│     ████████      Medium importance                             │
-│     ████          Less important                                │
+│                     HEADLINE                                    │
+│              Supporting subtext that                            │
+│              explains the value prop                            │
 │                                                                 │
-│  2. COLOR         ████████ High contrast = Attention            │
-│                   ░░░░░░░░ Low contrast = Secondary             │
+│              [Primary CTA Button]                               │
+│              Trusted by: Logo Logo Logo                         │
 │                                                                 │
-│  3. POSITION      Top-left = First seen (F-pattern)            │
-│     ┌─[1]──────────────────────────────────────────────────┐   │
-│     │ [2]                                            [3]   │   │
-│     └──────────────────────────────────────────────────────┘   │
-│                                                                 │
-│  4. WHITESPACE    Isolation draws attention                     │
-│     ░░░░░░ ████ ░░░░░░  (Element stands out)                   │
-│                                                                 │
-│  5. TYPOGRAPHY    Bold headings > Regular text                  │
-│     H1 > H2 > H3 > Body > Caption                              │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────┐   ┌─────────┐   ┌─────────┐                       │
+│  │Feature 1│   │Feature 2│   │Feature 3│                       │
+│  └─────────┘   └─────────┘   └─────────┘                       │
+├─────────────────────────────────────────────────────────────────┤
+│                    SOCIAL PROOF                                 │
+│             ⭐⭐⭐⭐⭐ "Testimonial quote"                        │
+├─────────────────────────────────────────────────────────────────┤
+│                    PRICING / CTA                                │
+├─────────────────────────────────────────────────────────────────┤
+│                     FOOTER                                      │
+└─────────────────────────────────────────────────────────────────┘
+
+BENTO GRID PATTERN (Portfolio/Features)
+┌─────────────────────────────────────────────────────────────────┐
+│  [ Large Feature Card      ]   [ Card ]   [ Card ]             │
+│  [                         ]                                    │
+├─────────────────────────────────────────────────────────────────┤
+│  [ Card ]   [ Card ]   [ Wide Feature Card          ]           │
+│                         [                           ]           │
+├─────────────────────────────────────────────────────────────────┤
+│  [ Tall ]   [ Card ]   [ Card ]   [ Card ]                     │
+│  [ Card ]                                                       │
+└─────────────────────────────────────────────────────────────────┘
+
+PRODUCT-FOCUSED (E-commerce)
+┌─────────────────────────────────────────────────────────────────┐
+│  [ Product Image       ]   [ Product Info                ]     │
+│  [                     ]   [ Title                       ]     │
+│  [   Gallery           ]   [ Price ████ [Add to Cart]    ]     │
+│  [                     ]   [ Description...              ]     │
+│  [ ○ ● ○ ○             ]   [ Reviews ⭐⭐⭐⭐⭐            ]     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Part 2: Mobile App Design
+## Part 6: Core UX Laws
 
-### Platform Comparison
+| Law | Principle | Application |
+|-----|-----------|-------------|
+| **Fitts's Law** | Larger targets are easier to reach | Min touch: 44×44pt (iOS), 48×48dp (Android) |
+| **Hick's Law** | More choices = longer decision time | Limit options, progressive disclosure |
+| **Jakob's Law** | Users prefer familiar interfaces | Follow platform conventions |
+| **Miller's Law** | ~7 items in working memory | Chunk information, clear hierarchy |
+| **Aesthetic-Usability** | Beautiful designs seem more usable | Invest in visual polish |
+| **Von Restorff Effect** | Different items stand out | Use contrast for CTAs |
+| **Proximity** | Close items seem related | Group related elements |
+| **Serial Position** | First and last items remembered | Important items at edges |
+| **Peak-End Rule** | Judge experience by peak and end | Make endings memorable |
+| **Doherty Threshold** | Response < 400ms feels instant | Optimize or show loading |
 
-| Aspect | iOS (HIG) | Android (Material 3) |
-|--------|-----------|---------------------|
-| Navigation | Tab Bar (bottom, max 5) | Bottom Nav / Nav Drawer |
-| Primary Font | SF Pro | Roboto |
-| Touch Target | Min 44×44 pt | Min 48×48 dp |
-| Margins | 16pt (compact), 20pt | 16dp (phone), 24dp (tablet) |
-| Corner Radius | 12pt (buttons) | 20dp (buttons) |
-| Gestures | Swipe back, edge gestures | Swipe nav drawer |
+---
 
-### iOS Design Guidelines
+## Part 7: Platform Guidelines
 
-```
-iOS DESIGN (Human Interface Guidelines)
-├── PRINCIPLES
-│   ├── Clarity: Text legible, icons precise
-│   ├── Deference: UI supports content
-│   └── Depth: Visual layers and motion
-│
+### iOS (Human Interface Guidelines)
+
+```text
+iOS DESIGN
 ├── NAVIGATION
-│   ├── Tab Bar (max 5 items)
-│   ├── Navigation Stack (push/pop)
+│   ├── Tab Bar (bottom, max 5 items)
+│   ├── Navigation Bar (top, title + back)
 │   └── Modal Sheets
+│
+├── SPACING & SIZING
+│   ├── Touch Target: Min 44×44 pt
+│   ├── Margins: 16pt (compact), 20pt (regular)
+│   ├── Corner Radius: 8-12pt (buttons)
+│   └── Safe Areas: Respect notch, Dynamic Island
 │
 ├── TYPOGRAPHY (SF Pro)
 │   ├── Large Title: 34pt
@@ -115,24 +369,27 @@ iOS DESIGN (Human Interface Guidelines)
 │   ├── Body: 17pt
 │   └── Caption: 12pt
 │
-└── SAFE AREAS
-    └── Respect notch, Dynamic Island, home indicator
+└── KEY FEATURES
+    ├── Dynamic Type support
+    ├── Haptic feedback
+    └── Dark mode support
 ```
 
-### Android Design Guidelines
+### Android (Material Design 3)
 
-```
-ANDROID DESIGN (Material Design 3)
-├── PRINCIPLES
-│   ├── Material You: Dynamic color
-│   ├── Adaptive: All screen sizes
-│   └── Motion: Meaningful transitions
-│
+```text
+ANDROID DESIGN
 ├── NAVIGATION
 │   ├── Bottom Navigation (3-5 items)
 │   ├── Navigation Drawer (many items)
 │   ├── Navigation Rail (tablets)
 │   └── Top App Bar
+│
+├── SPACING & SIZING (4dp grid)
+│   ├── Touch Target: Min 48×48 dp
+│   ├── Margins: 16dp (phone), 24dp (tablet)
+│   ├── Corner Radius: 12-20dp (buttons)
+│   └── Use multiples: 4, 8, 12, 16, 24, 32dp
 │
 ├── TYPOGRAPHY (Roboto)
 │   ├── Display Large: 57sp
@@ -140,299 +397,127 @@ ANDROID DESIGN (Material Design 3)
 │   ├── Body Large: 16sp
 │   └── Label Small: 11sp
 │
-└── SPACING (4dp grid)
-    └── Use multiples: 8dp, 16dp, 24dp
+└── KEY FEATURES
+    ├── Material You (Dynamic Color)
+    ├── Meaningful motion
+    └── Edge-to-edge design
 ```
 
-### Mobile Navigation Patterns
+### Responsive Web Breakpoints
 
-```
-BOTTOM NAVIGATION (3-5 items)
-┌─────────────────────────────────────────┐
-│                                         │
-│              Main Content               │
-│                                         │
-├─────────────────────────────────────────┤
-│  🏠      🔍      ➕      ❤️      👤    │
-│  Home   Search   Add   Saved   Profile  │
-└─────────────────────────────────────────┘
+```text
+BREAKPOINTS (Mobile-First)
+├── xs: 0px        (Mobile Portrait)
+├── sm: 640px      (Mobile Landscape)
+├── md: 768px      (Tablet)
+├── lg: 1024px     (Desktop)
+├── xl: 1280px     (Large Desktop)
+└── 2xl: 1536px    (XL Desktop)
 
-TAB BAR (Content Categories)
-┌─────────────────────────────────────────┐
-│  ← Back              Page Title         │
-├─────────────────────────────────────────┤
-│  All  |  Food  |  Drinks  |  Desserts  →│
-├─────────────────────────────────────────┤
-│              Tab Content                │
-└─────────────────────────────────────────┘
+GRID COLUMNS
+├── Mobile: 4 columns
+├── Tablet: 8 columns
+├── Desktop: 12 columns
+└── Container max-width: 1280px (centered)
 ```
 
 ---
 
-## Part 3: Web Design
+## Part 8: Pre-Delivery Checklist
 
-### Responsive Breakpoints (Mobile-First)
+### Before Shipping Any UI
 
-```
-RESPONSIVE BREAKPOINTS
-┌─────────────────────────────────────────────────────────────────┐
-│  MOBILE        TABLET         DESKTOP        LARGE              │
-│  < 640px       640-1024px     1024-1440px    > 1440px          │
-│                                                                 │
-│  ┌──────┐      ┌────────┐     ┌───────────┐  ┌───────────────┐ │
-│  │      │      │        │     │           │  │               │ │
-│  │      │      │        │     │           │  │               │ │
-│  └──────┘      └────────┘     └───────────┘  └───────────────┘ │
-│                                                                 │
-│  1 column      2 columns      3 columns      4+ columns        │
-└─────────────────────────────────────────────────────────────────┘
-
-CSS: xs(0) → sm(640px) → md(768px) → lg(1024px) → xl(1280px) → 2xl(1536px)
-```
-
-### Web Layout Patterns
-
-```
-DASHBOARD LAYOUT
-┌─────────────────────────────────────────────────────────────────┐
-│  ☰  Logo              Search...              🔔  👤             │
-├───────────┬─────────────────────────────────────────────────────┤
-│           │  Dashboard                                          │
-│  📊 Dash  │  ┌─────────┐  ┌─────────┐  ┌─────────┐             │
-│  👥 Users │  │ Metric 1│  │ Metric 2│  │ Metric 3│             │
-│  📦 Orders│  └─────────┘  └─────────┘  └─────────┘             │
-│  ⚙️ Settings│                                                   │
-│           │  ┌───────────────────────────────────────────────┐ │
-│           │  │              Chart / Table                    │ │
-│           │  └───────────────────────────────────────────────┘ │
-└───────────┴─────────────────────────────────────────────────────┘
-
-LANDING PAGE LAYOUT
-┌─────────────────────────────────────────────────────────────────┐
-│  Logo           Nav Links                         [CTA Button]  │
-├─────────────────────────────────────────────────────────────────┤
-│                         HERO SECTION                            │
-│                   Headline + Subtext + CTA                      │
-├─────────────────────────────────────────────────────────────────┤
-│     FEATURES            ┌───┐  ┌───┐  ┌───┐                    │
-│                         │ 1 │  │ 2 │  │ 3 │                    │
-├─────────────────────────────────────────────────────────────────┤
-│                    SOCIAL PROOF / PRICING                       │
-├─────────────────────────────────────────────────────────────────┤
-│                         FOOTER                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Core Web Vitals
-
-```
-PERFORMANCE TARGETS
-├── LCP (Largest Contentful Paint)
-│   ├── Good: < 2.5s
-│   └── Poor: > 4s
+```text
+PRE-DELIVERY CHECKLIST
+├── ICONS
+│   [ ] No emojis as icons (use SVG: Heroicons, Lucide, Phosphor)
+│   [ ] Consistent icon style throughout
+│   [ ] Icon sizes: 16, 20, 24px based on context
 │
-├── INP (Interaction to Next Paint)
-│   ├── Good: < 200ms
-│   └── Poor: > 500ms
+├── INTERACTIONS
+│   [ ] cursor-pointer on all clickable elements
+│   [ ] Hover states with smooth transitions (150-300ms)
+│   [ ] Focus states visible for keyboard navigation
+│   [ ] Active/pressed states defined
+│   [ ] Disabled states (faded + cursor: not-allowed)
 │
-└── CLS (Cumulative Layout Shift)
-    ├── Good: < 0.1
-    └── Poor: > 0.25
+├── ACCESSIBILITY
+│   [ ] Light mode: text contrast 4.5:1 minimum
+│   [ ] Touch targets ≥ 44×44px
+│   [ ] prefers-reduced-motion respected
+│   [ ] Alt text for images
+│   [ ] Semantic HTML elements
+│   [ ] ARIA labels where needed
+│
+├── RESPONSIVE
+│   [ ] Tested at: 375px, 768px, 1024px, 1440px
+│   [ ] No horizontal scroll on mobile
+│   [ ] Touch-friendly on mobile
+│   [ ] Text readable without zoom
+│
+├── STATES
+│   [ ] Empty states designed
+│   [ ] Loading states (skeleton/spinner)
+│   [ ] Error states with recovery actions
+│   [ ] Success feedback provided
+│
+├── PERFORMANCE
+│   [ ] Images optimized (WebP, lazy loading)
+│   [ ] Fonts preloaded
+│   [ ] Above-the-fold content prioritized
+│
+└── DARK MODE (if applicable)
+    [ ] All colors have dark variants
+    [ ] Contrast maintained
+    [ ] No pure black (#000), use #0F0F0F or #111827
 ```
 
 ---
 
-## Part 4: Design System
+## Part 9: Common Anti-Patterns to Avoid
 
-### Color System
+```text
+UNIVERSAL ANTI-PATTERNS
+├── Generic AI purple/pink gradients (overused)
+├── Tiny touch targets (< 44px)
+├── Low contrast text
+├── Placeholder text as only label
+├── Color-only indicators
+├── Auto-dismissing important messages
+├── Custom scroll behavior
+├── Hiding primary actions in menus
+├── Infinite scroll without position indicator
 
-```
-DESIGN TOKENS
-├── PRIMARY
-│   ├── primary: #2563EB (Blue)
-│   ├── primary-hover: #1D4ED8
-│   └── primary-light: #DBEAFE
+INDUSTRY-SPECIFIC ANTI-PATTERNS
+├── FINTECH/BANKING
+│   ├── Playful claymorphism
+│   ├── Casual tone
+│   └── Bright neon colors
 │
-├── SEMANTIC
-│   ├── success: #10B981 (Green)
-│   ├── warning: #F59E0B (Amber)
-│   ├── error: #EF4444 (Red)
-│   └── info: #3B82F6 (Blue)
+├── HEALTHCARE
+│   ├── Dark mode as default
+│   ├── Red as primary color
+│   └── Complex animations
 │
-├── NEUTRAL (Light Mode)
-│   ├── text-primary: #1F2937
-│   ├── text-secondary: #6B7280
-│   ├── background: #FFFFFF
-│   └── surface: #F9FAFB
+├── BEAUTY/WELLNESS
+│   ├── Harsh, cold colors
+│   ├── Aggressive design
+│   └── Technical jargon
 │
-└── NEUTRAL (Dark Mode)
-    ├── text-primary: #F9FAFB
-    ├── text-secondary: #9CA3AF
-    ├── background: #111827
-    └── surface: #1F2937
-```
-
-### Typography Scale
-
-```
-TYPOGRAPHY
-├── Display: 3rem/48px (Bold) - Hero headlines
-├── H1: 2.25rem/36px (Bold) - Page titles
-├── H2: 1.875rem/30px (Semibold) - Sections
-├── H3: 1.5rem/24px (Semibold) - Subsections
-├── H4: 1.25rem/20px (Medium) - Cards
-├── Body: 1rem/16px (Regular) - Paragraphs
-├── Body Small: 0.875rem/14px - Secondary text
-└── Caption: 0.75rem/12px - Labels, timestamps
-
-FONT STACKS
-├── iOS: SF Pro, -apple-system
-├── Android: Roboto, sans-serif
-└── Web: Inter, system-ui, sans-serif
-```
-
-### Spacing Scale
-
-```
-SPACING (8px base)
-├── 0: 0px
-├── 1: 4px
-├── 2: 8px
-├── 3: 12px
-├── 4: 16px
-├── 5: 20px
-├── 6: 24px
-├── 8: 32px
-├── 10: 40px
-├── 12: 48px
-└── 16: 64px
+├── GAMING
+│   ├── Corporate sterile look
+│   ├── Slow, minimal animations
+│   └── Pastel palettes
+│
+└── ENTERPRISE/B2B
+    ├── Overly trendy styles
+    ├── Experimental navigation
+    └── Casual copy/tone
 ```
 
 ---
 
-## Part 5: Component Patterns
-
-### Button Design
-
-```
-BUTTON HIERARCHY
-┌─────────────────────────────────────────┐
-│  ┌───────────────────────────────────┐  │
-│  │         Primary Button            │  │  High emphasis, main action
-│  └───────────────────────────────────┘  │  Filled with primary color
-│                                         │
-│  ┌───────────────────────────────────┐  │
-│  │        Secondary Button           │  │  Medium emphasis
-│  └───────────────────────────────────┘  │  Outlined or tonal
-│                                         │
-│           Tertiary / Link               │  Low emphasis, text only
-└─────────────────────────────────────────┘
-
-BUTTON STATES
-├── Default: Base styling
-├── Hover: Slightly darker (web)
-├── Pressed/Active: Darker + scale(0.98)
-├── Focus: 2px outline ring
-├── Disabled: Faded + cursor: not-allowed
-└── Loading: Spinner + disabled
-```
-
-### Form Design
-
-```
-✅ GOOD FORM
-┌─────────────────────────────────────────┐
-│  Email                                  │  ← Label above field
-│  ┌───────────────────────────────────┐  │
-│  │ user@example.com              ✓   │  │  ← Validation indicator
-│  └───────────────────────────────────┘  │
-│                                         │
-│  Password                               │
-│  ┌───────────────────────────────────┐  │
-│  │ ••••••••••                    👁   │  │  ← Show/hide toggle
-│  └───────────────────────────────────┘  │
-│  Minimum 8 characters                   │  ← Helper text
-│                                         │
-│  ┌───────────────────────────────────┐  │
-│  │            Sign In                │  │  ← Full-width CTA
-│  └───────────────────────────────────┘  │
-└─────────────────────────────────────────┘
-
-❌ BAD FORM
-- Placeholder as label (disappears!)
-- No validation feedback
-- No password visibility toggle
-- Unclear error messages
-```
-
-### Empty States
-
-```
-✅ GOOD EMPTY STATE
-┌─────────────────────────────────────────┐
-│              ┌─────────┐                │
-│              │   📦    │                │  ← Illustration
-│              └─────────┘                │
-│         No orders yet                   │  ← Clear title
-│   Your order history will appear here   │  ← Helpful description
-│   ┌───────────────────────────────┐     │
-│   │        Browse Products        │     │  ← Action button
-│   └───────────────────────────────┘     │
-└─────────────────────────────────────────┘
-```
-
----
-
-## Part 6: Accessibility (WCAG 2.1)
-
-### Accessibility Checklist
-
-```
-PERCEIVABLE
-├── [ ] Color contrast ≥ 4.5:1 (text), ≥ 3:1 (large/UI)
-├── [ ] Images have alt text
-├── [ ] Don't rely on color alone
-├── [ ] Support text scaling (Dynamic Type)
-└── [ ] Videos have captions
-
-OPERABLE
-├── [ ] Touch targets ≥ 44×44pt (mobile) / 44×44px (web)
-├── [ ] Keyboard accessible (web)
-├── [ ] Visible focus states
-├── [ ] No time limits or provide extensions
-└── [ ] Skip links for repetitive content (web)
-
-UNDERSTANDABLE
-├── [ ] Clear, consistent navigation
-├── [ ] Form inputs have visible labels
-├── [ ] Clear error messages with recovery
-├── [ ] Predictable behavior
-└── [ ] Simple language
-
-ROBUST
-├── [ ] Valid HTML/semantic elements
-├── [ ] ARIA used correctly (or not at all)
-├── [ ] Works with screen readers
-└── [ ] Cross-browser/device compatible
-```
-
-### Color Contrast
-
-```
-CONTRAST REQUIREMENTS
-├── Normal Text (< 18pt): 4.5:1 minimum
-├── Large Text (≥ 18pt or 14pt bold): 3:1 minimum
-├── UI Components & Graphics: 3:1 minimum
-│
-└── TOOLS
-    ├── WebAIM Contrast Checker
-    ├── Stark (Figma plugin)
-    └── axe DevTools
-```
-
----
-
-## Best Practices
+## Best Practices Summary
 
 ### ✅ Do This
 
@@ -446,6 +531,8 @@ CONTRAST REQUIREMENTS
 - ✅ Make primary actions easily reachable (thumb zone)
 - ✅ Implement skeleton screens for loading
 - ✅ Follow platform conventions (HIG, Material, Web standards)
+- ✅ Use smooth transitions (150-300ms)
+- ✅ Match design style to industry expectations
 
 ### ❌ Avoid This
 
@@ -457,59 +544,11 @@ CONTRAST REQUIREMENTS
 - ❌ Don't use custom navigation that breaks conventions
 - ❌ Don't use low contrast text
 - ❌ Don't block screens with non-dismissible modals
-- ❌ Don't require precise gestures for primary actions
+- ❌ Don't use emojis as icons (use proper SVG icons)
 - ❌ Don't forget to design error states
-
-## Common Pitfalls
-
-**Problem:** Users don't notice important actions
-**Solution:** Use visual hierarchy—size, color, contrast, position. Primary actions should be larger and in thumb zone (mobile) or F-pattern (web).
-
-**Problem:** Forms have high abandonment
-**Solution:** Minimize fields, use smart defaults, show progress, auto-save, provide clear inline validation.
-
-**Problem:** App/site feels slow
-**Solution:** Use skeleton screens, optimistic UI, meaningful animations. Perceived performance matters as much as actual performance.
-
-**Problem:** Design looks different across platforms
-**Solution:** Create platform-adaptive designs. Use native components. Test on actual devices and browsers.
-
-**Problem:** Users get lost in navigation
-**Solution:** Clear navigation with visible current location. Consistent patterns. Always provide a way back.
+- ❌ Don't use AI purple/pink gradients everywhere
 
 ---
-
-## Design Review Checklist
-
-```markdown
-## 📋 UI/UX Design Review
-
-### Visual Design
-- [ ] Consistent spacing and alignment (8px grid)
-- [ ] Clear visual hierarchy
-- [ ] Appropriate color contrast (≥ 4.5:1)
-- [ ] Consistent typography scale
-- [ ] Consistent icon style
-
-### Usability
-- [ ] Touch/click targets ≥ 44px/44pt
-- [ ] Primary actions easily reachable
-- [ ] Clear feedback for interactions
-- [ ] Logical navigation flow
-- [ ] All states designed (empty, loading, error)
-
-### Accessibility
-- [ ] Screen reader compatible
-- [ ] Supports text scaling
-- [ ] Keyboard navigable (web)
-- [ ] No color-only indicators
-
-### Platform Compliance
-- [ ] Follows iOS HIG (if iOS)
-- [ ] Follows Material Design (if Android)
-- [ ] Responsive design (if web)
-- [ ] Native components where appropriate
-```
 
 ## Tools Recommendation
 
@@ -518,14 +557,24 @@ CONTRAST REQUIREMENTS
 | **Design** | Figma (recommended), Sketch, Adobe XD |
 | **Prototyping** | Figma, ProtoPie, Framer |
 | **Handoff** | Figma Dev Mode, Zeplin |
-| **Icons** | SF Symbols (iOS), Material Icons, Lucide, Phosphor |
+| **Icons** | Heroicons, Lucide, Phosphor, SF Symbols, Material Icons |
+| **Fonts** | Google Fonts, Adobe Fonts |
+| **Colors** | Coolors, Realtime Colors, Happy Hues |
 | **Accessibility** | axe DevTools, Stark, WAVE |
 | **Testing** | Maze, UserTesting, Hotjar |
-| **Analytics** | Mixpanel, Amplitude, PostHog |
+
+---
 
 ## Related Skills
 
-- `@senior-flutter-developer` - For implementing designs in Flutter
-- `@senior-frontend-developer` - For web implementation
-- `@senior-backend-developer` - For API design considerations
-- `@expert-senior-software-engineer` - For system-level design
+- `@senior-flutter-developer` - Implementing designs in Flutter
+- `@senior-react-developer` - Implementing designs in React
+- `@senior-tailwindcss-developer` - Styling with Tailwind CSS
+- `@design-system-architect` - Building component libraries
+- `@accessibility-specialist` - Deep accessibility compliance
+- `@mobile-app-designer` - Platform-specific mobile design
+- `@figma-specialist` - Advanced Figma workflows
+
+---
+
+*Inspired by [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)*
