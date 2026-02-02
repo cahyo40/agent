@@ -7,91 +7,223 @@ description: "Expert in digital audio processing including signal analysis, filt
 
 ## Overview
 
-Master digital audio processing (DSP). Expertise in signal analysis, FFT (Fast Fourier Transform), equalization, compression, reverb implementation, and modern audio AI (source separation, text-to-speech).
+This skill transforms you into a **Digital Audio Engineer**. You will master **Audio DSP**, **FFmpeg Audio**, **Speech Processing**, and **Audio AI** for building professional audio processing pipelines.
 
 ## When to Use This Skill
 
-- Use when building music production software or plugins
-- Use when implementing audio features in apps (recording, playback)
-- Use when analyzing audio data (speech recognition, noise reduction)
+- Use when processing audio files (normalize, compress, filter)
+- Use when building audio transcription systems
+- Use when implementing audio effects
+- Use when analyzing audio signals
 - Use when integrating audio AI models
 
-## How It Works
+---
 
-### Step 1: Signal Fundamentals & FFT
+## Part 1: Audio Fundamentals
+
+### 1.1 Key Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Sample Rate** | Samples per second (44.1kHz, 48kHz) |
+| **Bit Depth** | Bits per sample (16-bit, 24-bit) |
+| **Channels** | Mono (1), Stereo (2), Surround (5.1+) |
+| **Codec** | Compression format (MP3, AAC, FLAC) |
+| **Waveform** | Amplitude over time |
+| **Spectrum** | Frequency over time (FFT) |
+
+### 1.2 Common Formats
+
+| Format | Lossy? | Use Case |
+|--------|--------|----------|
+| **WAV** | No | Editing, archival |
+| **FLAC** | No | High-quality streaming |
+| **MP3** | Yes | Universal playback |
+| **AAC** | Yes | Streaming, mobile |
+| **OGG Vorbis** | Yes | Games, web |
+
+---
+
+## Part 2: FFmpeg Audio Processing
+
+### 2.1 Common Operations
+
+```bash
+# Convert format
+ffmpeg -i input.wav output.mp3
+
+# Extract audio from video
+ffmpeg -i video.mp4 -vn -acodec copy audio.aac
+
+# Normalize volume
+ffmpeg -i input.mp3 -filter:a loudnorm output.mp3
+
+# Change sample rate
+ffmpeg -i input.wav -ar 16000 output.wav
+
+# Trim audio
+ffmpeg -i input.mp3 -ss 00:00:30 -t 00:01:00 output.mp3
+
+# Merge audio files
+ffmpeg -f concat -i filelist.txt -c copy output.mp3
+```
+
+### 2.2 Audio Filters
+
+| Filter | Purpose |
+|--------|---------|
+| `loudnorm` | EBU R128 loudness normalization |
+| `highpass=f=200` | Remove low-frequency rumble |
+| `lowpass=f=3000` | Remove high-frequency hiss |
+| `afftdn` | Noise reduction (FFT-based) |
+| `compand` | Dynamic range compression |
+| `equalizer` | EQ adjustment |
+
+---
+
+## Part 3: Python Audio Processing
+
+### 3.1 Libraries
+
+| Library | Purpose |
+|---------|---------|
+| **librosa** | Audio analysis, feature extraction |
+| **pydub** | Simple audio manipulation |
+| **scipy.signal** | Signal processing |
+| **soundfile** | Read/write audio files |
+| **pyaudio** | Real-time audio I/O |
+
+### 3.2 Librosa Example
 
 ```python
-import numpy as np
 import librosa
-import scipy.signal as signal
+import librosa.display
+import matplotlib.pyplot as plt
 
 # Load audio
-y, sr = librosa.load("audio.wav")
+y, sr = librosa.load('audio.wav', sr=22050)
 
-# Short-Time Fourier Transform (STFT)
-D = librosa.stft(y)
-S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
+# Compute spectrogram
+S = librosa.feature.melspectrogram(y=y, sr=sr)
+S_dB = librosa.power_to_db(S, ref=np.max)
 
-# Basic filtering (Low-pass)
-def low_pass_filter(data, cutoff, fs, order=5):
-    nyq = 0.5 * fs
-    normal_cutoff = cutoff / nyq
-    b, a = signal.butter(order, normal_cutoff, btype='low', analog=False)
-    return signal.lfilter(b, a, data)
+# Plot
+librosa.display.specshow(S_dB, sr=sr, x_axis='time', y_axis='mel')
+plt.colorbar(format='%+2.0f dB')
+plt.show()
 ```
 
-### Step 2: Audio Effects (Time & Frequency Domain)
-
-- **Dynamics**: Implement Compressors (Threshold, Ratio, Attack, Release) and Gates.
-- **Space**: Implement Reverb (Convolution or Algorithmic) and Delays.
-- **Tone**: Implement Parametric EQs and Harmonic Distortion.
-
-### Step 3: Audio AI & Analysis
+### 3.3 Pydub Example
 
 ```python
-# Feature extraction for ML
-mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
+from pydub import AudioSegment
 
-# Source Separation (with Spleeter or similar)
-# separate_vocals(audio_path)
+# Load
+audio = AudioSegment.from_mp3("input.mp3")
+
+# Normalize
+normalized = audio.normalize()
+
+# Fade in/out
+faded = normalized.fade_in(2000).fade_out(3000)
+
+# Export
+faded.export("output.wav", format="wav")
 ```
 
-### Step 4: Real-time Processing (Web/App)
+---
+
+## Part 4: Audio AI
+
+### 4.1 Speech-to-Text
+
+| Model | Notes |
+|-------|-------|
+| **Whisper (OpenAI)** | State-of-the-art, multilingual, free |
+| **Deepgram** | Fast, real-time, API |
+| **AssemblyAI** | Speaker diarization, sentiment |
+| **Google Speech-to-Text** | Cloud API |
+
+**Whisper Example:**
+
+```python
+import whisper
+
+model = whisper.load_model("base")
+result = model.transcribe("audio.mp3")
+print(result["text"])
+```
+
+### 4.2 Text-to-Speech
+
+| Model | Notes |
+|-------|-------|
+| **ElevenLabs** | Realistic voices, cloning |
+| **Bark (Suno)** | Open source, emotional |
+| **Coqui TTS** | Open source, multilingual |
+| **Google TTS** | Cloud API |
+
+### 4.3 Music Generation
+
+- **Suno.ai**: Text-to-song with vocals.
+- **Udio**: High-quality instrumental.
+- **MusicGen (Meta)**: Open source.
+
+---
+
+## Part 5: Real-Time Audio
+
+### 5.1 WebAudio API (Browser)
 
 ```javascript
-// Web Audio API
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-const source = audioCtx.createMediaStreamSource(stream);
+const audioContext = new AudioContext();
+const oscillator = audioContext.createOscillator();
 
-const filter = audioCtx.createBiquadFilter();
-filter.type = "lowpass";
-filter.frequency.value = 1000;
-
-source.connect(filter);
-filter.connect(audioCtx.destination);
+oscillator.type = 'sine';
+oscillator.frequency.value = 440;  // A4 note
+oscillator.connect(audioContext.destination);
+oscillator.start();
 ```
 
-## Best Practices
+### 5.2 Python Real-Time (pyaudio)
+
+```python
+import pyaudio
+import numpy as np
+
+p = pyaudio.PyAudio()
+stream = p.open(format=pyaudio.paFloat32,
+                channels=1,
+                rate=44100,
+                input=True,
+                frames_per_buffer=1024)
+
+while True:
+    data = stream.read(1024)
+    audio_array = np.frombuffer(data, dtype=np.float32)
+    # Process audio_array
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Protect against digital clipping (stay below 0dBFS)
-- ✅ Use windowing (e.g., Hann) when performing FFT
-- ✅ Handle sample rate conversion carefully to avoid aliasing
-- ✅ Prefer vector operations for performance
-- ✅ Use visualizers (Spectrograms) to debug audio logic
+- ✅ **Work in Lossless**: Edit in WAV/FLAC, export to MP3 last.
+- ✅ **Normalize After Effects**: Not before.
+- ✅ **Match Sample Rates**: Avoid resampling artifacts.
 
 ### ❌ Avoid This
 
-- ❌ Don't process audio in the main UI thread (use Workers or C++ nodes)
-- ❌ Don't ignore latency (important for live use)
-- ❌ Don't forget DC offset removal
-- ❌ Don't ignore dithering when reducing bit depth
+- ❌ **Over-Compression**: Destroys dynamics.
+- ❌ **Clipping**: Keep peaks below 0 dB.
+- ❌ **Ignoring Mono Compatibility**: Check stereo mixes in mono.
+
+---
 
 ## Related Skills
 
-- `@senior-python-developer` - Analysis scripts
-- `@cpp-developer` - Low-latency engines
-- `@senior-ai-ml-engineer` - Audio AI integration
+- `@video-processing-specialist` - Video + audio integration
+- `@nlp-specialist` - Speech processing AI
+- `@podcast-producer` - Applied audio production
