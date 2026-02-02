@@ -7,83 +7,139 @@ description: "Expert infographic and data visualization design"
 
 ## Overview
 
-Create shareable infographics and data visualizations.
+This skill transforms you into a **Data Visualization Specialist**. You will master **Information Architecture**, **Visual Hierarchy**, **Chart Selection**, and **Design Tools** for creating compelling infographics that communicate complex data clearly.
 
 ## When to Use This Skill
 
-- Use when visualizing data
-- Use when creating shareable graphics
+- Use when visualizing complex data
+- Use when creating shareable educational content
+- Use when building reports and presentations
+- Use when designing data-driven social content
+- Use when simplifying technical information
 
-## How It Works
+---
 
-### Step 1: Infographic Types
+## Part 1: Infographic Types
 
-```markdown
-## Common Formats
+### 1.1 Common Formats
 
-### Statistical
-- Key numbers/stats
-- Comparisons
-- Trends over time
+| Type | Best For | Example |
+|------|----------|---------|
+| **Statistical** | Survey results, trends | "80% of users prefer X" |
+| **Timeline** | Historical events, process | "History of the Internet" |
+| **Comparison** | vs content, pros/cons | "iPhone vs Android" |
+| **Process/Flow** | How-to, workflows | "How a bill becomes law" |
+| **Geographic** | Location-based data | Heat maps, demographics |
+| **Hierarchical** | Org charts, categories | "Types of programming languages" |
+| **List** | Tips, rankings | "Top 10 productivity tools" |
 
-### Process/Timeline
-- Step-by-step flows
-- Historical events
-- Project milestones
+---
 
-### Comparison
-- Pros vs Cons
-- Before vs After
-- Product comparisons
+## Part 2: Visual Hierarchy
 
-### List/Checklist
-- Tips and tricks
-- Resource lists
-- Quick guides
-```
+### 2.1 Reading Patterns
 
-### Step 2: Design Principles
+- **Z-Pattern**: For image-heavy layouts.
+- **F-Pattern**: For text-heavy layouts.
+- **Inverted Pyramid**: Most important info first.
 
-```markdown
-## Visual Hierarchy
+### 2.2 Size = Importance
 
-1. Title (largest, top)
-2. Key stat/hero visual
-3. Supporting data
-4. Source/branding
+Larger elements draw attention first.
 
-## Layout Grid
-- Header: 15%
-- Body: 70%
-- Footer: 15%
+1. **Title**: Largest text.
+2. **Key Statistic**: Hero number (e.g., "78%").
+3. **Supporting Data**: Smaller charts.
+4. **Source/Footer**: Smallest.
 
-## Color Rules
-- 1 primary color
-- 2-3 accent colors
-- Neutral for text
-```
+### 2.3 Color Coding
 
-### Step 3: Chart Selection
+- **One Accent Color**: For emphasis.
+- **Consistent Palette**: 3-5 colors max.
+- **Accessible Contrast**: Check WCAG compliance.
 
-```markdown
-| Data Type | Best Chart |
-|-----------|------------|
-| Comparison | Bar chart |
-| Trend | Line chart |
-| Part of whole | Pie/Donut |
-| Distribution | Histogram |
-| Relationship | Scatter |
-```
+---
 
-## Best Practices
+## Part 3: Chart Selection
 
-- ✅ One main message
-- ✅ Readable at 50% size
-- ✅ Include data sources
-- ❌ Don't clutter
-- ❌ Don't use 3D charts
+### 3.1 Chart Type Guide
+
+| Data Type | Chart |
+|-----------|-------|
+| **Comparison** | Bar chart |
+| **Trend over time** | Line chart |
+| **Part of whole** | Pie chart (max 5 slices) or Donut |
+| **Distribution** | Histogram |
+| **Relationship** | Scatter plot |
+| **Ranking** | Horizontal bar |
+| **Geographic** | Map with color scale |
+
+### 3.2 Chart Rules
+
+- ❌ **No 3D charts**: Distorts perception.
+- ❌ **No truncated Y-axis**: Start from 0.
+- ✅ **Label directly**: Avoid needing a legend.
+- ✅ **Highlight the insight**: Color the key data point.
+
+---
+
+## Part 4: Data Visualization Principles
+
+### 4.1 Tufte's Rules
+
+1. **Maximize Data-Ink Ratio**: Remove chartjunk.
+2. **Show the Data**: Don't decorate, communicate.
+3. **Avoid Distortion**: Represent data accurately.
+
+### 4.2 Data Storytelling
+
+Every infographic should answer:
+
+1. **What's the insight?** (The headline)
+2. **What's the evidence?** (The data)
+3. **So what?** (The implication/action)
+
+---
+
+## Part 5: Design Tools
+
+### 5.1 Tools
+
+| Tool | Best For | Price |
+|------|----------|-------|
+| **Canva** | Quick infographics | Free/Pro |
+| **Figma** | Custom design | Free/Pro |
+| **Piktochart** | Template-based | Freemium |
+| **Infogram** | Interactive data viz | Freemium |
+| **Adobe Illustrator** | Professional print | Paid |
+| **D3.js** | Programmatic web viz | Free |
+
+### 5.2 AI-Assisted
+
+- **Napkin.ai**: Turn text into diagrams.
+- **ChatGPT + Mermaid**: Generate diagram code.
+- **Midjourney**: Generate decorative elements.
+
+---
+
+## Part 6: Best Practices Checklist
+
+### ✅ Do This
+
+- ✅ **One Key Message**: Don't try to say everything.
+- ✅ **Cite Sources**: "Source: World Bank, 2024".
+- ✅ **Mobile-Friendly**: Test at phone width.
+
+### ❌ Avoid This
+
+- ❌ **Too Much Text**: It's a visual medium.
+- ❌ **Misleading Scales**: Don't manipulate perception.
+- ❌ **Low Resolution**: Export at 2x for social media.
+
+---
 
 ## Related Skills
 
-- `@senior-data-analyst`
-- `@illustration-creator`
+- `@bi-dashboard-developer` - Interactive dashboards
+- `@senior-data-analyst` - Data analysis
+- `@ai-poster-designer` - Visual design principles
