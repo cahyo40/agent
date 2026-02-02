@@ -1,210 +1,225 @@
 ---
 name: kafka-developer
-description: "Expert Apache Kafka development including producers, consumers, streams, connectors, and event-driven architecture"
+description: "Expert Apache Kafka development including reliable producer/consumer patterns, stream processing, schema registry, and cluster optimization"
 ---
 
 # Kafka Developer
 
 ## Overview
 
-Build event-driven systems with Apache Kafka including producers, consumers, Kafka Streams, Connect, and real-time data pipelines.
+This skill transforms you into a **production-grade Kafka expert**. You will move beyond simple message passing to building resilient, fault-tolerant event streaming capabilities. You'll master idempotent producers, consumer group strategies, schema evolution with Schema Registry, and Exactly-Once Semantics (EOS).
 
 ## When to Use This Skill
 
-- Use when building event-driven systems
-- Use when real-time streaming needed
-- Use when message queue required
-- Use when data pipeline building
+- Use when building event-driven microservices
+- Use when implementing real-time data pipelines (ETL)
+- Use when designing reliable messaging systems (acks, retries)
+- Use when processing streams (aggregations, joins)
+- Use when using Change Data Capture (CDC) with Debezium
 
-## How It Works
+---
 
-### Step 1: Kafka Concepts
+## Part 1: Reliable Producer Patterns
 
-```
-KAFKA ARCHITECTURE
-├── BROKERS
-│   ├── Clustered servers
-│   ├── Partition leaders
-│   └── Replication
-│
-├── TOPICS
-│   ├── Named streams
-│   ├── Partitions
-│   └── Retention policy
-│
-├── PRODUCERS
-│   ├── Publish messages
-│   ├── Partitioning
-│   └── Acknowledgments
-│
-├── CONSUMERS
-│   ├── Consumer groups
-│   ├── Offset management
-│   └── Rebalancing
-│
-└── ECOSYSTEM
-    ├── Kafka Connect
-    ├── Kafka Streams
-    └── Schema Registry
+Data loss usually happens at the producer level due to bad config.
+
+### 1.1 Configuration for Reliability
+
+```properties
+# High Durability Config (No Data Loss)
+acks=all                  # Wait for all in-sync replicas to acknowledge
+enable.idempotence=true   # Prevent duplicate messages if network fails
+retries=MAX_INT           # Infinite retries
+max.in.flight.requests.per.connection=5 # Pipelining (guaranteed order with idempotence)
+compression.type=snappy   # Good balance of CPU/Network
+linger.ms=5               # Wait 5ms to batch messages (Throughput vs Latency tradeoff)
+batch.size=32768          # 32KB batch size
 ```
 
-### Step 2: Producer (Node.js)
+### 1.2 TypeScript Producer (KafkaJS)
+
+Implementing structured logging and error handling.
 
 ```typescript
-import { Kafka, Producer } from 'kafkajs';
+import { Kafka, Partitioners, Producer } from 'kafkajs';
 
 const kafka = new Kafka({
-  clientId: 'my-app',
-  brokers: ['localhost:9092'],
-  ssl: true,
-  sasl: {
-    mechanism: 'plain',
-    username: 'user',
-    password: 'password'
+  clientId: 'order-service',
+  brokers: ['kafka-1:9092', 'kafka-2:9092'],
+  retry: {
+    initialRetryTime: 100,
+    retries: 8
   }
 });
 
-const producer = kafka.producer();
+const producer = kafka.producer({
+  createPartitioner: Partitioners.DefaultPartitioner,
+  idempotent: true, // IMPORTANT: Exactly once delivery to broker
+});
 
-async function sendMessage(topic: string, message: any) {
-  await producer.connect();
-  
-  await producer.send({
-    topic,
-    messages: [
-      {
-        key: message.id,
-        value: JSON.stringify(message),
-        headers: {
-          'correlation-id': generateId(),
-          'timestamp': Date.now().toString()
+export async function publishOrderCreated(order: Order) {
+  try {
+    await producer.connect();
+    
+    // Key is CRITICAL for ordering. Messages with same key go to same partition.
+    // We use orderId as key so all events for one order are strictly ordered.
+    await producer.send({
+      topic: 'orders.events.v1',
+      messages: [
+        {
+          key: order.id, 
+          value: JSON.stringify(order),
+          headers: {
+            'correlation-id': order.traceId,
+            'source': 'order-service',
+            'timestamp': Date.now().toString()
+          }
         }
-      }
-    ]
-  });
-}
-
-// Batch sending
-async function sendBatch(topic: string, messages: any[]) {
-  await producer.sendBatch({
-    topicMessages: [{
-      topic,
-      messages: messages.map(m => ({
-        key: m.id,
-        value: JSON.stringify(m)
-      }))
-    }]
-  });
+      ]
+    });
+  } catch (error) {
+    // FATAL: If we can't publish, we might need to rollback the DB transaction
+    // or store in a local Outbox table for later relay.
+    console.error('Failed to publish Kafka message', error);
+    throw error;
+  }
 }
 ```
 
-### Step 3: Consumer
+---
+
+## Part 2: Robust Consumer Patterns
+
+Handling failures in consumers is complex. Without a strategy, one bad message can block processing forever ("poison pill").
+
+### 2.1 Consumer Strategy (Commit Patterns)
+
+- **Auto Commit (`enable.auto.commit=true`)**: Risky. Can lose messages if consumer crashes after poll() but before processing.
+- **Manual Commit**: Safe. Commit offsets *after* successful processing.
+
+### 2.2 Retry & Dead Letter Queue (DLQ) Strategy
+
+Don't block the main topic for transient errors.
+
+1. **Main Topic**: Fast processing.
+2. **Retry Topic**: Messages that failed (API timeout). Consumer waits (backoff) before processing.
+3. **DLQ (Dead Letter Queue)**: "Poison pill" messages (invalid JSON, logic bugs). Alert human intervention.
 
 ```typescript
-import { Kafka, Consumer, EachMessagePayload } from 'kafkajs';
+// Conceptual Implementation of Retry/DLQ
 
-const consumer = kafka.consumer({ 
-  groupId: 'my-consumer-group',
-  sessionTimeout: 30000,
-  heartbeatInterval: 3000
-});
-
-async function startConsumer() {
-  await consumer.connect();
-  await consumer.subscribe({ 
-    topics: ['orders', 'payments'],
-    fromBeginning: false 
-  });
-
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }: EachMessagePayload) => {
-      const value = JSON.parse(message.value!.toString());
-      
-      console.log({
-        topic,
-        partition,
-        offset: message.offset,
-        key: message.key?.toString(),
-        value
-      });
-
-      // Process message
-      await processMessage(topic, value);
-    }
-  });
-}
-
-// Batch processing
 await consumer.run({
-  eachBatch: async ({ batch, resolveOffset, heartbeat }) => {
-    for (const message of batch.messages) {
-      await processMessage(message);
-      resolveOffset(message.offset);
-      await heartbeat();
+  eachMessage: async ({ topic, partition, message }) => {
+    try {
+      await processLogic(message);
+    } catch (error) {
+      if (isTransient(error) && retryCount < MAX_RETRIES) {
+        // Send to Retry Topic with delay headers
+        await produceToRetryTopic(message, retryCount + 1);
+      } else {
+        // Permanent failure or max retries reached
+        // Send to DLQ (Dead Letter Queue)
+        await produceToDLQ(message, error);
+        console.error("Message moved to DLQ", error);
+      }
+      
+      // We must technically "succeed" this message in the main topic 
+      // so the offset moves forward, since we offloaded it.
     }
   }
 });
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  await consumer.disconnect();
-});
 ```
 
-### Step 4: Kafka Streams (Java)
+---
+
+## Part 3: Schema Registry (Avro/Protobuf)
+
+In production, never send raw JSON. It has no contract. If a producer changes a field, consumers break.
+
+**Why Use Schema Registry?**
+
+- **Validation**: Producer fails if data doesn't match schema.
+- **Evolution**: Allows adding optional fields (Backward Compatibility) without breaking consumers.
+- **Compliance**: Smaller payload size (binary).
+
+```json
+// Order.avsc (Avro Schema)
+{
+  "type": "record",
+  "name": "Order",
+  "namespace": "com.example.ecommerce",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "status", "type": "string", "default": "PENDING"} 
+  ]
+}
+```
+
+---
+
+## Part 4: Kafka Streams (KSQL / KStreams)
+
+For strict stateful processing (aggregations, joins) without an external DB.
+
+### 4.1 Example: Real-time Account Balance
 
 ```java
-Properties props = new Properties();
-props.put(StreamsConfig.APPLICATION_ID_CONFIG, "order-processor");
-props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+// Java KStreams API
+KStream<String, Transaction> transactions = builder.stream("transactions");
 
-StreamsBuilder builder = new StreamsBuilder();
+KTable<String, Double> balances = transactions
+    .groupByKey() // Partition by Account ID
+    .aggregate(
+        () -> 0.0, // Initial balance
+        (accountId, transaction, currentBalance) -> currentBalance + transaction.getAmount(),
+        Materialized.as("balance-store") // State store (RocksDB)
+    );
 
-// Stream from topic
-KStream<String, Order> orders = builder.stream("orders");
-
-// Filter and transform
-KStream<String, Order> validOrders = orders
-    .filter((key, order) -> order.getTotal() > 0)
-    .mapValues(order -> enrichOrder(order));
-
-// Aggregate
-KTable<String, Long> ordersByCustomer = orders
-    .groupBy((key, order) -> order.getCustomerId())
-    .count();
-
-// Join streams
-KStream<String, EnrichedOrder> enriched = orders.join(
-    customers,
-    (order, customer) -> new EnrichedOrder(order, customer),
-    JoinWindows.of(Duration.ofMinutes(5))
-);
-
-// Output to topic
-validOrders.to("processed-orders");
-
-KafkaStreams streams = new KafkaStreams(builder.build(), props);
-streams.start();
+// Push updates to a new topic "account-balances"
+balances.toStream().to("account-balances");
 ```
 
-## Best Practices
+---
+
+## Part 5: Cluster Architecture & Tuning
+
+### 5.1 Partitioning Strategy
+
+- **Partitions = Parallelism**.
+- A topic with 10 partitions can have at most 10 active consumers in a group.
+- **Key Hashing**: `hash(key) % num_partitions`. Same key always lands on same partition.
+- **Resizing**: Changing partition count re-shuffles all data (breaking key ordering). **Avoid resizing**. Over-provision partitions upfront (e.g., 30 or 60).
+
+### 5.2 Replication & Reliability
+
+- **Replication Factor (RF)**: Standard is `3`. Allows 1 broker failure without data loss.
+- **Min In-Sync Replicas (min.insync.replicas)**: Set to `2` (RF-1).
+  - Ensures data is written to at least 2 brokers before ack.
+  - If set to 1, you risk data loss.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use idempotent producers
-- ✅ Commit offsets carefully
-- ✅ Handle rebalancing
-- ✅ Use Schema Registry
-- ✅ Monitor consumer lag
+- ✅ **Use Keys**: Always set a `key` for order-dependent data (e.g., UserID, OrderID).
+- ✅ **Monitor Lag**: Consumer Lag is the #1 metric. If lag grows, you are falling behind.
+- ✅ **Use Idempotence**: `enable.idempotence=true` on producers. Free delivery guarantee.
+- ✅ **Handle Rebalancing**: Consumers stop processing during rebalance. Keep logical processing short.
+- ✅ **Retention Policies**: Configure log compaction for state topics (keep only latest value per key).
 
 ### ❌ Avoid This
 
-- ❌ Don't ignore errors
-- ❌ Don't block consumer
-- ❌ Don't use auto-commit blindly
-- ❌ Don't skip dead letter queues
+- ❌ **Large Messages**: Kafka is not S3. Keep messages < 1MB. Use Claim Check patterns (send S3 URL) for large blobs.
+- ❌ **Auto-Commit**: Avoid in production critical paths. It creates "at most once" or "at least once" unpredictability.
+- ❌ **infinite retention**: Unless using compaction, always set `log.retention.bytes` or `log.retention.hours`.
+
+---
 
 ## Related Skills
 
-- `@senior-data-engineer` - Data pipelines
-- `@microservices-architect` - Event-driven architecture
+- `@senior-backend-engineer-golang` - Implementing consumers in Go
+- `@microservices-architect` - Designing event-driven systems
+- `@devsecops-specialist` - Securing Kafka (mTLS, ACLs)

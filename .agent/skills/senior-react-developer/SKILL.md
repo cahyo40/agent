@@ -3,222 +3,380 @@ name: senior-react-developer
 description: "Expert React.js development including hooks, state management, component patterns, performance optimization, and modern React best practices"
 ---
 
-# Senior React.js Developer
+# Senior React Developer
 
 ## Overview
 
-This skill transforms you into an experienced Senior React Developer who builds scalable, performant, and maintainable React applications. You'll leverage modern hooks, implement effective state management, apply component patterns, and optimize for production.
+This skill transforms you into an **expert React engineer** capable of building scalable, maintainable, and high-performance frontend applications. You will master advanced patterns, state management strategies, performance tuning, and strict TypeScript integration.
 
 ## When to Use This Skill
 
-- Use when building React applications
-- Use when implementing component architecture
-- Use when managing state (useState, useReducer, Zustand, Redux)
-- Use when optimizing React performance
-- Use when the user asks about React patterns or hooks
+- Use when building enterprise-grade React applications
+- Use when designing complex component architectures
+- Use when optimizing render performance
+- Use when implementing advanced state management (Redux Toolkit, TanStack Query)
+- Use when reviewing React code quality
 
-## How It Works
+---
 
-### Step 1: Project Structure
+## Part 1: Advanced Component Patterns
 
-```
+### 1.1 Atomic Design & Directory Structure
+
+Scalable structure for large applications.
+
+```text
 src/
-├── components/
-│   ├── ui/              # Reusable UI components
-│   └── features/        # Feature-specific components
-├── hooks/               # Custom hooks
-├── lib/                 # Utilities and helpers
-├── services/            # API calls
-├── store/               # State management
-├── types/               # TypeScript types
-└── App.tsx
+├── assets/                 # Static assets
+├── components/             # Shared components
+│   ├── ui/                 # Atoms (Button, Input) - shadcn/ui style
+│   ├── layout/             # Organisms (Navbar, Sidebar)
+│   └── forms/              # Form-specific components
+├── features/               # Feature-based architecture (Vertical Slices)
+│   ├── auth/
+│   │   ├── api/            # API hooks (useLogin)
+│   │   ├── components/     # Feature-specific components
+│   │   ├── routes/         # Feature routes
+│   │   └── types/          # Feature types
+│   └── dashboard/
+├── hooks/                  # Global hooks
+├── lib/                    # Utils & configuration (axios, dayjs)
+├── stores/                 # Global state stores
+└── types/                  # Global types
 ```
 
-### Step 2: Component Patterns
+### 1.2 Compound Components
+
+Great for UI libraries (Select, Tabs, Accordion).
 
 ```tsx
-// Functional component with TypeScript
-interface ButtonProps {
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary';
-  isLoading?: boolean;
-  onClick?: () => void;
-}
+// Example: Accessible Tabs Component
+import React, { createContext, useContext, useState } from 'react';
 
-export function Button({ 
-  children, 
-  variant = 'primary', 
-  isLoading = false,
-  onClick 
-}: ButtonProps) {
+type TabsContextType = {
+  activeTab: string;
+  setActiveTab: (id: string) => void;
+};
+
+const TabsContext = createContext<TabsContextType | undefined>(undefined);
+
+export const Tabs = ({ children, defaultValue }: { children: React.ReactNode, defaultValue: string }) => {
+  const [activeTab, setActiveTab] = useState(defaultValue);
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <div className="tabs-root">{children}</div>
+    </TabsContext.Provider>
+  );
+};
+
+export const TabsList = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex space-x-2 border-b">{children}</div>
+);
+
+export const TabsTrigger = ({ value, children }: { value: string, children: React.ReactNode }) => {
+  const context = useContext(TabsContext);
+  if (!context) throw new Error("TabsTrigger must be used within Tabs");
+  
+  const isActive = context.activeTab === value;
   return (
     <button
-      className={`btn btn-${variant}`}
-      onClick={onClick}
-      disabled={isLoading}
+      onClick={() => context.setActiveTab(value)}
+      className={`px-4 py-2 ${isActive ? 'border-b-2 border-blue-500 font-bold' : ''}`}
     >
-      {isLoading ? <Spinner /> : children}
+      {children}
     </button>
   );
-}
+};
 
-// Compound component pattern
-const Card = ({ children }: { children: React.ReactNode }) => (
-  <div className="card">{children}</div>
-);
+export const TabsContent = ({ value, children }: { value: string, children: React.ReactNode }) => {
+  const context = useContext(TabsContext);
+  if (!context) throw new Error("TabsContent must be used within Tabs");
+  
+  if (context.activeTab !== value) return null;
+  return <div className="p-4">{children}</div>;
+};
 
-Card.Header = ({ children }: { children: React.ReactNode }) => (
-  <div className="card-header">{children}</div>
-);
-
-Card.Body = ({ children }: { children: React.ReactNode }) => (
-  <div className="card-body">{children}</div>
-);
-
-// Usage
-<Card>
-  <Card.Header>Title</Card.Header>
-  <Card.Body>Content</Card.Body>
-</Card>
+// Usage:
+// <Tabs defaultValue="account">
+//   <TabsList>
+//     <TabsTrigger value="account">Account</TabsTrigger>
+//     <TabsTrigger value="password">Password</TabsTrigger>
+//   </TabsList>
+//   <TabsContent value="account">Account settings...</TabsContent>
+//   <TabsContent value="password">Password inputs...</TabsContent>
+// </Tabs>
 ```
 
-### Step 3: Hooks Best Practices
+### 1.3 Higher-Order Components (HOC) vs Custom Hooks
+
+Prefer Hooks for logic reuse, HOCs for injecting props or layout wrappers.
+
+**Hook Architecture (Preferred):**
 
 ```tsx
-// Custom hook for data fetching
-function useApi<T>(url: string) {
-  const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+const useAuthGuard = () => {
+  const { user, isLoading } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
-    const controller = new AbortController();
-    
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(url, { signal: controller.signal });
-        if (!res.ok) throw new Error('Failed to fetch');
-        const json = await res.json();
-        setData(json);
-      } catch (err) {
-        if (err instanceof Error && err.name !== 'AbortError') {
-          setError(err);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    
-    fetchData();
-    return () => controller.abort();
-  }, [url]);
+    if (!isLoading && !user) router.push('/login');
+  }, [user, isLoading]);
 
-  return { data, error, isLoading };
-}
-
-// Usage
-const { data: users, isLoading } = useApi<User[]>('/api/users');
+  return { user, isLoading };
+};
 ```
 
-### Step 4: Performance Optimization
+---
+
+## Part 2: State Management Mastery
+
+### 2.1 Server State (TanStack Query / React Query)
+
+Separate server state from client state. This is critical for modern React.
 
 ```tsx
-// Memoize expensive computations
-const sortedItems = useMemo(() => 
-  items.sort((a, b) => a.name.localeCompare(b.name)),
-  [items]
+// features/users/api/getUsers.ts
+import { useQuery } from '@tanstack/react-query';
+import { axios } from '@/lib/axios';
+import { User } from '../types';
+
+export const useUsers = (page: number) => {
+  return useQuery({
+    queryKey: ['users', page],
+    queryFn: async (): Promise<User[]> => {
+      const { data } = await axios.get(`/users?page=${page}`);
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // Data fresh for 5 mins
+    keepPreviousData: true,    // Smoother pagination
+  });
+};
+```
+
+### 2.2 Global Client State (Zustand)
+
+Simple, performant replacement for Context API/Redux.
+
+```tsx
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+type ThemeStore = {
+  mode: 'light' | 'dark';
+  toggleTheme: () => void;
+};
+
+export const useThemeStore = create<ThemeStore>()(
+  persist(
+    (set) => ({
+      mode: 'light',
+      toggleTheme: () => set((state) => ({ 
+        mode: state.mode === 'light' ? 'dark' : 'light' 
+      })),
+    }),
+    { name: 'theme-storage' }
+  )
+);
+```
+
+---
+
+## Part 3: Performance Optimization
+
+### 3.1 Memoization (useMemo, useCallback)
+
+Only use when expensive calculations or stability of references is required (e.g., dependency in useEffect).
+
+```tsx
+const ExpensiveComponent = React.memo(({ data, onClick }: Props) => {
+  console.log("Rendered");
+  return <button onClick={onClick}>Process {data.length} items</button>;
+});
+
+const Parent = () => {
+  const [count, setCount] = useState(0);
+  const data = useMemo(() => heavyComputation(), []); // Run once
+  
+  // Stable function reference prevents re-render of Child
+  const handleClick = useCallback(() => {
+    console.log("Clicked");
+  }, []);
+
+  return (
+    <>
+      <ExpensiveComponent data={data} onClick={handleClick} />
+      <button onClick={() => setCount(c => c + 1)}>Re-render Parent ({count})</button>
+    </>
+  );
+};
+```
+
+### 3.2 Code Splitting & Lazy Loading
+
+Break bundles to improve Initial Load Time (LCP).
+
+```tsx
+import React, { Suspense } from 'react';
+
+// Lazy load heavy components (e.g., Charts, Editors)
+const HeavyChart = React.lazy(() => import('./HeavyChart'));
+
+const Dashboard = () => {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200" />}>
+        <HeavyChart />
+      </Suspense>
+    </div>
+  );
+};
+```
+
+### 3.3 Virtualization (TanStack Virtual)
+
+Rendering large lists efficiently.
+
+```tsx
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+const Row = ({ index, style }) => (
+  <div style={style} className="row">Row {index}</div>
 );
 
-// Memoize callbacks
-const handleClick = useCallback((id: string) => {
-  setSelected(id);
-}, []);
-
-// React.memo for preventing re-renders
-const UserCard = React.memo(function UserCard({ user }: { user: User }) {
-  return <div>{user.name}</div>;
-});
-
-// Lazy loading
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-
-function App() {
-  return (
-    <Suspense fallback={<Spinner />}>
-      <Dashboard />
-    </Suspense>
-  );
-}
-```
-
-## Examples
-
-### Example 1: Form with React Hook Form
-
-```tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Min 8 characters'),
-});
-
-type FormData = z.infer<typeof schema>;
-
-export function LoginForm() {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
-    resolver: zodResolver(schema),
+const List = () => {
+  const parentRef = useRef(null);
+  
+  const rowVirtualizer = useVirtualizer({
+    count: 10000,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 35,
   });
 
-  const onSubmit = async (data: FormData) => {
-    await login(data);
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('email')} placeholder="Email" />
-      {errors.email && <span>{errors.email.message}</span>}
-      
-      <input {...register('password')} type="password" />
-      {errors.password && <span>{errors.password.message}</span>}
-      
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Loading...' : 'Login'}
-      </button>
-    </form>
+    <div ref={parentRef} className="h-[400px] overflow-auto">
+      <div style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: 'relative' }}>
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+          <Row 
+            key={virtualRow.key}
+            index={virtualRow.index}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: `${virtualRow.size}px`,
+              transform: `translateY(${virtualRow.start}px)`,
+            }}
+          />
+        ))}
+      </div>
+    </div>
   );
-}
+};
 ```
 
-## Best Practices
+---
+
+## Part 4: Strict TypeScript Patterns
+
+### 4.1 Discriminated Unions for State
+
+Eliminate impossible states.
+
+```tsx
+type State = 
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: User }
+  | { status: 'error'; error: Error };
+
+const UserProfile = ({ state }: { state: State }) => {
+  // TypeScript narrows type automatically
+  if (state.status === 'loading') return <Spinner />;
+  if (state.status === 'error') return <Alert>{state.error.message}</Alert>;
+  if (state.status === 'success') return <div>{state.data.name}</div>;
+  return null;
+};
+```
+
+### 4.2 Generic Components
+
+Reusable components with type safety.
+
+```tsx
+type ListProps<T> = {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+};
+
+const List = <T extends { id: string | number }>({ items, renderItem }: ListProps<T>) => {
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item.id}>{renderItem(item)}</li>
+      ))}
+    </ul>
+  );
+};
+
+// Usage
+// <List<User> items={users} renderItem={(user) => <span>{user.name}</span>} />
+```
+
+---
+
+## Part 5: Testing Strategy
+
+### 5.1 React Testing Library (RTL)
+
+Test behavior, not implementation details.
+
+```tsx
+// UserForm.test.tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserForm } from './UserForm';
+
+test('submits form with correct data', async () => {
+  const handleSubmit = jest.fn();
+  render(<UserForm onSubmit={handleSubmit} />);
+
+  // User interactions
+  await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');
+  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+  // Assertions
+  await waitFor(() => {
+    expect(handleSubmit).toHaveBeenCalledWith({ email: 'test@example.com' });
+  });
+});
+```
+
+---
+
+## Part 6: Best Practices Summary
 
 ### ✅ Do This
 
-- ✅ Use TypeScript for type safety
-- ✅ Keep components small and focused
-- ✅ Extract logic to custom hooks
-- ✅ Use React Query/TanStack Query for server state
-- ✅ Implement Error Boundaries
+- ✅ **Use TanStack Query** for ALL async data fetching. Avoid `useEffect` for data fetching.
+- ✅ **Use React Hook Form** for forms (avoids re-renders).
+- ✅ **Use Error Boundaries** to catch crashes in component subtrees.
+- ✅ **Colocate state**. Keep state as close to where it's used as possible. Move down before moving up (Context/Zustand).
+- ✅ **Use absolute imports**. `import Button from '@/components/ui/Button'` instead of `../../`.
 
 ### ❌ Avoid This
 
-- ❌ Don't mutate state directly
-- ❌ Don't use index as key (if list changes)
-- ❌ Don't overuse useMemo/useCallback
-- ❌ Don't put everything in global state
+- ❌ **Prop Drilling**: Don't pass props down > 2 levels. Use Composition or Context.
+- ❌ **Huge Components**: Split specific logic into custom hooks.
+- ❌ **useEffect for derived data**: Calculate values during render instead. `const fullName = firstName + lastName` vs `useEffect(() => setFullName(...))`.
+- ❌ **Index as key**: Avoid `map((item, index) => <li key={index}>)`. Use unique IDs.
 
-## Common Pitfalls
-
-**Problem:** Infinite re-renders
-**Solution:** Check useEffect dependencies, don't create objects/arrays in render.
-
-**Problem:** Stale closures
-**Solution:** Add proper dependencies to useEffect/useCallback.
+---
 
 ## Related Skills
 
-- `@senior-ui-ux-designer` - For design implementation
-- `@senior-software-engineer` - For code patterns
+- `@senior-typescript-developer` - Deep type system mastery
+- `@senior-nextjs-developer` - SSR/ISR patterns
+- `@senior-ui-ux-designer` - Design system implementation
+- `@senior-webperf-engineer` - Core Web Vitals optimization
