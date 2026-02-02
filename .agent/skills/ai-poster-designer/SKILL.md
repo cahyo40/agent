@@ -7,58 +7,131 @@ description: "Specialist in AI-driven poster design focusing on visual hierarchy
 
 ## Overview
 
-Master the art of creating impactful posters using AI. This skill focuses on "Design-First Prompting"—ensuring AI models leave room for text, respect visual hierarchy, and maintain consistent aesthetic styles (Minimalist, Retro, Neo-Futuristic, etc.).
+This skill transforms you into a **Visual Design Specialist** for posters and promotional graphics. You will master **Visual Hierarchy**, **Typography Pairing**, **Color Theory**, **Negative Space**, and **AI Image Generation** for stunning print and digital posters.
 
 ## When to Use This Skill
 
-- Use when preparing event posters, promotional materials, or film posters
-- Use for guiding AI to create "text-ready" backgrounds
-- Use when you need to combine specific imagery with high-impact typography
-- Use for designing consistent series of posters for a campaign
+- Use when designing event posters (Concerts, Conferences)
+- Use when creating movie/film posters
+- Use when building promotional graphics for social media
+- Use when generating AI art for visual campaigns
+- Use when designing infographic posters
 
-## How It Works
+---
 
-### Step 1: Layout & Negative Space
+## Part 1: Visual Hierarchy
 
-- **Rule of Thirds**: Directing AI to place subjects in specific sectors to leave room for headings.
-- **Negative Space Prompting**: Using keywords like "flat background," "copy space," or "minimalist top half" to ensure text readability.
+### 1.1 The Z-Pattern (Western Reading)
 
-### Step 2: Visual Hierarchy & Theme
+Eyes scan in a Z: Top-left -> Top-right -> Bottom-left -> Bottom-right.
 
-- **Focal Point**: Ensuring the "Hook" of the poster is clear and unobstructed.
-- **Color Palettes**: Using HSL/Hex keywords to ensure the poster matches brand guidelines.
+- **Top**: Hook/Headline
+- **Middle**: Supporting image/visual
+- **Bottom**: Call to Action / Details
 
-### Step 3: Prompting for Posters
+### 1.2 Size & Weight
 
-```text
-PROMPT STRUCTURE:
-[Subject] + [Style] + [Compositional Instructions for Text] + [Color/Lighting] + [Resolution/Aspect Ratio]
-Example: "A futuristic cyberpunk city skyline, minimalist composition, bottom 30% left empty for text, deep neon blue and orange, 4k, cinematic lighting --ar 2:3"
-```
+Bigger = More Important.
 
-### Step 4: Post-AI Refinement
+1. **Headline**: Largest (Event Name)
+2. **Subheadline**: Date, Location
+3. **Body**: Details (Speakers, Sponsors)
+4. **Footer**: Logos, Fine Print
 
-- Integration with vector tools (Figma/Canva) to overlay high-quality typography over the AI-generated base.
+---
 
-## Best Practices
+## Part 2: Typography
+
+### 2.1 Font Pairing Rules
+
+- **Contrast**: Pair Serif with Sans-Serif.
+- **Max 2 Fonts**: One for Headline, one for Body.
+- **Hierarchy via Weight**: Bold for emphasis, Regular for body.
+
+### 2.2 Recommended Pairings
+
+| Headline | Body | Mood |
+|----------|------|------|
+| Playfair Display | Lato | Elegant |
+| Bebas Neue | Open Sans | Modern Bold |
+| Oswald | Roboto | Clean Tech |
+
+---
+
+## Part 3: Color Theory
+
+### 3.1 Color Harmony
+
+- **Complementary**: Opposite on wheel (Blue/Orange). High contrast.
+- **Analogous**: Adjacent colors (Blue/Teal/Green). Harmonious.
+- **Triadic**: 3 evenly spaced (Red/Yellow/Blue). Vibrant.
+
+### 3.2 60-30-10 Rule
+
+- **60%**: Dominant color (Background).
+- **30%**: Secondary color (Shapes, accents).
+- **10%**: Accent color (CTA, highlights).
+
+---
+
+## Part 4: AI Image Generation for Posters
+
+### 4.1 Prompt Structure
+
+`[Subject] in [Style], [Mood], [Color Palette], [Composition], [Aspect Ratio]`
+
+**Example:**
+`A samurai standing in fog, cinematic poster style, dramatic lighting, red and black palette, centered composition, vertical format --ar 2:3 --v 6`
+
+### 4.2 Common Styles
+
+- `movie poster style`: Dramatic, high contrast.
+- `vintage travel poster`: Flat, Art Deco.
+- `minimalist vector art`: Clean lines, simple shapes.
+- `double exposure`: Blend subject with texture/scene.
+
+---
+
+## Part 5: Poster Types & Templates
+
+### 5.1 Event Poster
+
+- **Focus**: Artist/Event Name (70% of visual weight).
+- **Details**: Date, Venue, Ticket Link.
+- **Mood**: Match the genre (Dark for Metal, Bright for Pop).
+
+### 5.2 Movie Poster
+
+- **Character Portraits**: Faces sell movies.
+- **Tagline**: Short, memorable hook.
+- **Title Treatment**: Custom typography or logo.
+
+### 5.3 Infographic Poster
+
+- **Data First**: Chart or statistic as hero.
+- **Flow**: Guide eye from top to bottom.
+- **Icons**: Replace text with visuals where possible.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Specify the aspect ratio early (e.g., `--ar 2:3` for standard posters)
-- ✅ Use keywords like "Poster Art," "Graphic Design Style," or "Vector Illustration"
-- ✅ Request "Clean background" if you plan to add complex text later
-- ✅ Test multiple composition variations (Left-heavy vs. Centered)
-- ✅ Consider the distance from which the poster will be viewed (Bold details)
+- ✅ **Use Grids**: Align elements. Canva/Figma grids help.
+- ✅ **Leave Breathing Room**: Negative space is not empty, it's strategic.
+- ✅ **Print Test**: Print at 50% scale to check readability from distance.
 
 ### ❌ Avoid This
 
-- ❌ Don't let the AI generate its own text (usually garbled)—instead, ask for "No text"
-- ❌ Avoid overly cluttered compositions that drown out the intended message
-- ❌ Don't forget to define the "Vibe" (e.g., "Energetic," "Solemn," "Corporate")
-- ❌ Don't use standard square ratios for posters unless intended for social media only
+- ❌ **Too Many Fonts**: 2 max. More looks chaotic.
+- ❌ **Low Contrast Text**: White text on light image without shadow = unreadable.
+- ❌ **Ignoring Bleed**: For print, add 3mm bleed around edges.
+
+---
 
 ## Related Skills
 
-- `@ai-image-prompt-engineer` - Base prompting skills
-- `@brand-designer` - Visual identity alignment
-- `@typography-specialist` - Perfecting the text layer
+- `@ai-image-prompt-engineer` - Generating hero images
+- `@brand-designer` - Consistent visual identity
+- `@figma-specialist` - Layout tools

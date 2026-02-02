@@ -7,57 +7,143 @@ description: "Expert in high-energy sports poster design focusing on motion, act
 
 ## Overview
 
-Master the creation of high-impact sports posters. This skill focuses on "Action-Driven Prompting"—capturing the raw energy of athletes, using dynamic lighting (Chiaroscuro, Neon rim lights), and implementing specialized sports effects like motion blur, particles, and turf/dirt splatters.
+This skill transforms you into a **Sports Graphics Designer**. You will master **Dynamic Composition**, **Motion Blur Effects**, **Dramatic Lighting**, and **AI Image Generation** for high-energy sports posters that capture the intensity of athletic competition.
 
 ## When to Use This Skill
 
-- Use when creating promotional materials for athletes, teams, or sporting events
-- Use for "Game Day" social media graphics
-- Use when you need to emphasize movement, speed, or raw physical power
-- Use for designing sports merchandise or collectible card art
+- Use when designing matchday posters (Football, Basketball, MMA)
+- Use when creating athlete portraits
+- Use when building esports/gaming tournament graphics
+- Use when generating AI art for sports campaigns
+- Use when designing social media graphics for sports teams
 
-## How It Works
+---
 
-### Step 1: Capturing Motion
+## Part 1: Dynamic Composition
 
-- **Freeze Frame vs. Blur**: Using keywords like "action shot," "mid-air leap," or "dynamic motion blur."
-- **Energy Elements**: Adding "shattering glass," "lightning sparks," or "swirling smoke" to amplify the intensity.
+### 1.1 The Action Pose
 
-### Step 2: Dramatic Lighting
+Static poses are boring. Capture peak action:
 
-- **Rim Lighting**: Using "colored rim light" (e.g., team colors) to separate the athlete from the background.
-- **Volumetric Lighting**: Using "stadium floodlights," "hazy atmosphere," or "dust motes" for depth.
+- **Football**: Mid-kick, ball leaving foot.
+- **Basketball**: Dunk at apex, fingers on rim.
+- **MMA**: Punch landing, sweat spray.
 
-### Step 3: Sports Composition
+### 1.2 Diagonal Lines
 
-```text
-PROMPT EXAMPLE (Basketball):
-"Pro basketball player dunking, aggressive pose, low angle shot, sweat dripping, wooden court floor, stadium lights in background, rim light neon orange, high speed photography, cinematic particles, 8k --ar 4:5"
-```
+Diagonals = Energy.
+Tilt the camera, have the athlete's body at an angle.
+Horizontal = stable. Diagonal = dynamic.
 
-### Step 4: Team Branding
+### 1.3 Cropping for Intensity
 
-- Incorporating team colors via prompt keywords (e.g., "Deep Emerald and Gold color scheme").
+Crop tight. Cut off edges of limbs to imply motion beyond the frame.
 
-## Best Practices
+---
+
+## Part 2: Motion & Speed Effects
+
+### 2.1 Motion Blur
+
+Apply directional blur to background, keep subject sharp.
+
+- Photoshop: Radial Blur (Zoom) on background layer.
+- AI Prompt: `speed lines, motion blur in background`.
+
+### 2.2 Particle Effects
+
+Add drama with:
+
+- **Sparks**: Fire sports, MMA.
+- **Water Droplets**: Swimming, rain games.
+- **Dust/Turf Spray**: Football, baseball slides.
+
+### 2.3 Light Trails
+
+Neon or colored light streaks following the ball or fist trajectory.
+
+---
+
+## Part 3: Dramatic Lighting
+
+### 3.1 Rim Lighting
+
+Light from behind the subject creates a glowing edge, separating them from background.
+
+- AI Prompt: `cinematic rim lighting, backlit`.
+
+### 3.2 Stadium Lights
+
+Harsh overhead lights with lens flare for authenticity.
+
+- AI Prompt: `stadium lighting, lens flare, night game atmosphere`.
+
+### 3.3 Color Grading
+
+| Mood | Treatment |
+|------|-----------|
+| Intense/Aggression | Orange and Teal (Hollywood standard) |
+| Victory/Glory | Golden hour warm tones |
+| Night Game | Cool blues with hot highlights |
+
+---
+
+## Part 4: AI Image Generation for Sports
+
+### 4.1 Prompt Structure
+
+`[Athlete] in [Action Pose], [Sport], [Lighting], [Effects], [Style]`
+
+**Example:**
+`A soccer player mid-volley kick, freezeframe moment, stadium lights in background, motion blur on legs, dramatic rim lighting, hyper-realistic sports photography --ar 4:5 --v 6`
+
+### 4.2 Common Issues
+
+- **Anatomy errors**: AI often struggles with hands/feet in action poses. Inpaint to fix.
+- **Ball physics**: Ball position may look unnatural. Composite a real ball.
+
+---
+
+## Part 5: Text & Branding
+
+### 5.1 Typography
+
+- **Bold, condensed sans-serif**: Impact, Anton, Bebas Neue.
+- **All caps**: Aggressive, commanding.
+- **Slight skew/italic**: Matches dynamic composition.
+
+### 5.2 Team Branding
+
+- Use team colors as primary palette.
+- Include logo (sponsor or team crest).
+- Match date/time format to local conventions.
+
+### 5.3 VS Layouts (Matchday)
+
+- Two athletes facing each other.
+- "VS" in the center, largest element.
+- Date/Time at bottom.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use "Low angle" (Frog's eye view) to make the athlete look heroic/larger than life
-- ✅ Add texture keywords like "Canvas texture," "Gritty," or "Distressed" for a "street" sports look
-- ✅ Prompt for specific equipment details (e.g., "Carbon fiber texture on jersey")
-- ✅ Use high-contrast color grading (Deep blacks, vibrant highlights)
-- ✅ Focus on the eyes and facial expression of the athlete for emotional impact
+- ✅ **Use High-Res Athlete Photos**: Low-res cutouts look amateur.
+- ✅ **Match Lighting Direction**: If light comes from left on athlete, background should match.
+- ✅ **Add Subtle Texture**: Grunge/noise overlay adds grit.
 
 ### ❌ Avoid This
 
-- ❌ Don't use "Static" or "Standing" poses unless it's a formal portrait
-- ❌ Avoid flat lighting—it kills the energy of a sports poster
-- ❌ Don't forget the environment (The court, the field, the ring)
-- ❌ Avoid generic "sport" prompts—be specific (e.g., "Left hook boxing punch")
+- ❌ **Clashing Colors**: Team colors vs background should have contrast.
+- ❌ **Overcrowded Layouts**: One hero athlete/moment per poster.
+- ❌ **Static Poses**: Action sports need action.
+
+---
 
 ## Related Skills
 
-- `@ai-poster-designer` - Layout foundation
-- `@photography-specialist` - Lighting and angles
-- `@motion-designer` - For animated sports graphics
+- `@ai-image-prompt-engineer` - Generating action shots
+- `@motion-designer` - Adding animated versions
+- `@social-media-marketer` - Distribution strategy

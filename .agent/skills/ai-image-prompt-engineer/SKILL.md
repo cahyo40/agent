@@ -3,80 +3,155 @@ name: ai-image-prompt-engineer
 description: "Expert AI image prompt engineering for high-fidelity visual content using Midjourney v6, Flux, DALL-E 3, and Stable Diffusion XL"
 ---
 
-# AI Image Prompt Engineer (Advanced)
+# AI Image Prompt Engineer
 
 ## Overview
 
-Master the science of AI image generation. This skill covers advanced prompt structures, lighting physics, camera optics, art history styles, and technical parameters for the world's most powerful AI models (Midjourney, Flux.1, Stable Diffusion XL, DALL-E 3).
+This skill transforms you into an **AI Image Generation Expert**. You will master the **Prompt Syntax** for major platforms (Midjourney, FLUX, DALL-E 3, SDXL), understand **Model Strengths**, and craft prompts that produce professional-quality visuals consistently.
 
 ## When to Use This Skill
 
-- Use for any professional creative project requiring AI-generated visual assets
-- Use for consistent character/style generation across multiple images
-- Use when precision in lighting, angle, and texture is required
-- Use for benchmarking and selecting the best AI model for a specific artistic task
+- Use when generating hero images for websites/thumbnails
+- Use when creating concept art and storyboards
+- Use when building consistent characters across images
+- Use when understanding which model to use for which task
+- Use when troubleshooting poor generation results
 
-## How It Works
+---
 
-### Step 1: Scientific Prompt Structure (The 5-Layer Model)
+## Part 1: Model Comparison
 
-1. **Subject**: The core entity (Who/What).
-2. **Action/Context**: What the subject is doing and where.
-3. **Descriptor/Aesthetic**: Textures, materials, art styles (e.g., "Satin finish," "Surrealism").
-4. **Lighting & Atmosphere**: Physics of light (e.g., "Volumetric lighting," "Chiaroscuro," "Global illumination").
-5. **Camera & Technical**: Optics (e.g., "85mm lens," "f/1.8," "Shot on IMAX," "Shallow depth of field").
+| Model | Strength | Weakness | Best For |
+|-------|----------|----------|----------|
+| **Midjourney v6** | Aesthetics, composition | Less control | Art, marketing |
+| **FLUX.1** | Photorealism, text-in-image | Slower | Product shots, photos |
+| **DALL-E 3** | Prompt adherence, ChatGPT integration | Less artistic | Illustrations, concepts |
+| **Stable Diffusion XL** | Control (LoRA, ControlNet) | Requires setup | Custom workflows |
 
-### Step 2: Lighting & Materials Physics
+---
 
-| Keyword | Effect | Best Use |
-|---------|--------|----------|
-| **Rembrandt Lighting** | High-contrast, moody, 45-degree angle | Portraits |
-| **God Rays** | Beams of light through dust/fog | Nature, Spiritual |
-| **Bioluminescence** | Glowing organic elements | Sci-fi, Fantasy |
-| **Subsurface Scattering** | Light passing through wax/skin | Realism |
-| **Iridescent** | Rainbow-like color shifts | Futuristic, Fashion |
+## Part 2: Prompt Structure
 
-### Step 3: Camera Optics & Composition
+### 2.1 The Formula
 
-- **Focal Length**: `35mm` (Storytelling), `85mm` (Portraits), `14mm` (Aggressive wide).
-- **Aperture**: `f/1.8` (Blurred background), `f/22` (Infinite focus).
-- **Angles**: `Low angle` (Heroic), `Bird's eye` (Overview), `Dutch angle` (Tension).
+`[Subject] + [Action/Pose] + [Setting] + [Lighting] + [Style] + [Camera/Lens] + [Mood]`
 
-### Step 4: Model Specific Parameters
+**Example:**
+`A young woman reading a book in a cozy cafe, warm afternoon sunlight through window, soft focus background, shot on Leica, nostalgic mood, 35mm film grain`
 
-```markdown
-### Midjourney v6
---ar 16:9      (Aspect Ratio)
---stylize 250  (Aesthetics)
---chaos 10     (Variation)
---weird 50     (Unique vibes)
---cref [url]   (Character Reference)
---sref [url]   (Style Reference)
+### 2.2 Specificity Wins
 
-### Stable Diffusion / Flux
-(Prompt Weighting): (subject:1.5)
-Negative Prompt: (deformed, blurry, watermark, lowres:1.3)
+| Vague | Specific |
+|-------|----------|
+| "A dog" | "A golden retriever puppy sitting in a field of sunflowers" |
+| "A city" | "Tokyo street at night, neon signs reflecting on wet pavement" |
+| "Portrait" | "Portrait of a 30-year-old man, salt and pepper beard, kind eyes, studio lighting, white background" |
+
+---
+
+## Part 3: Style & Aesthetic Keywords
+
+### 3.1 Art Styles
+
+| Keyword | Effect |
+|---------|--------|
+| `photorealistic` | Like a photograph |
+| `digital art` | Clean, modern illustration |
+| `oil painting` | Textured, classical |
+| `anime style` | Japanese animation |
+| `watercolor` | Soft, transparent washes |
+| `concept art` | Game/film pre-production look |
+
+### 3.2 Photography Styles
+
+| Keyword | Effect |
+|---------|--------|
+| `shot on Hasselblad` | Medium format look |
+| `35mm film` | Grain, vintage color |
+| `cinematic` | Movie still, widescreen |
+| `studio lighting` | Clean, commercial |
+| `golden hour` | Warm, soft shadows |
+
+### 3.3 Mood Modifiers
+
+`dramatic`, `serene`, `melancholic`, `joyful`, `mysterious`, `eerie`, `romantic`
+
+---
+
+## Part 4: Platform-Specific Syntax
+
+### 4.1 Midjourney
+
+```
+/imagine prompt: A samurai in cherry blossom forest, dramatic lighting, oil painting style --ar 2:3 --v 6 --style raw --no text
 ```
 
-## Best Practices
+**Parameters:**
+
+- `--ar 2:3`: Aspect ratio (vertical).
+- `--v 6`: Version 6 model.
+- `--style raw`: Less Midjourney "beautification".
+- `--no text`: Avoid accidental text in image.
+- `--cref [url]`: Character reference (keep same face).
+
+### 4.2 FLUX (via Replicate/ComfyUI)
+
+FLUX follows prompts very literally. Be detailed about everything.
+
+- Works great with long, descriptive prompts.
+- Excellent at text-in-image.
+
+### 4.3 DALL-E 3
+
+Accessed via ChatGPT or API. Will "rewrite" your prompt for safety.
+
+- Less control, but very good prompt understanding.
+- Best for quick concepts.
+
+---
+
+## Part 5: Advanced Techniques
+
+### 5.1 Negative Prompts (SDXL/Flux)
+
+Tell the model what to avoid.
+`Negative: blurry, low quality, distorted hands, extra fingers, watermark`
+
+### 5.2 ControlNet (SDXL)
+
+Control pose, composition, or depth with a reference image.
+
+- **Pose**: Upload skeleton, generate character in that pose.
+- **Depth**: Control foreground/background separation.
+- **Canny Edge**: Maintain structure from line art.
+
+### 5.3 LoRA (SDXL)
+
+Small fine-tuned models to add specific styles or characters.
+
+- "Pixar style LoRA", "Anime character LoRA".
+- Combine with ControlNet for maximum control.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Describe the "Light Source" explicitly (e.g., "Sunlight through blinds")
-- ✅ Use "Medium" descriptors (e.g., "Oil on canvas," "3D render," "Polaroid")
-- ✅ Implement "Negative Prompting" to remove unwanted artifacts
-- ✅ Leverage "Reference Images" (ID, SREF) to maintain consistency
-- ✅ Keep prompts structured and avoid "Keyword Soup"
+- ✅ **Iterate**: Generate 4 images, refine prompt, repeat.
+- ✅ **Study Winners**: Explore public galleries (Midjourney Explore, Civitai).
+- ✅ **Use Reference Images**: Where supported (--cref, ControlNet).
 
 ### ❌ Avoid This
 
-- ❌ Don't use contradictory terms (e.g., "Minimalist high-detail")
-- ❌ Avoid generic quality words like "Beautiful" or "Stunning"—be technical instead
-- ❌ Don't ignore the importance of "Aspect Ratio" for composition
-- ❌ Avoid over-weighting prompts which can lead to visual "deep-frying"
+- ❌ **Overly Long Prompts (Midjourney)**: Keep under 150 words. Quality drops.
+- ❌ **Conflicting Instructions**: "Dark and bright" confuses the model.
+- ❌ **Expecting Consistent Hands**: Regenerate or inpaint.
+
+---
 
 ## Related Skills
 
-- `@ai-poster-designer` - Layout focus
-- `@digital-human-architect` - High-fidelity character focus
-- `@generative-video-specialist` - Transition into motion
+- `@thumbnail-designer` - Using generated images in thumbnails
+- `@ai-poster-designer` - Poster composition
+- `@generative-video-specialist` - Animating the output

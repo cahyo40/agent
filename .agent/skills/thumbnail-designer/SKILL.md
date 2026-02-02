@@ -7,56 +7,134 @@ description: "Specialist in high-CTR (Click-Through Rate) thumbnail design using
 
 ## Overview
 
-Master the art of the "Click." This skill focuses on the psychology of attention—using high-contrast colors, expressive AI-generated faces, "Z-Pattern" layouts, and bold, readable typography to maximize Click-Through Rate (CTR) for video content.
+This skill transforms you into a **YouTube Thumbnail Specialist**. You will move beyond "Put text on image" to mastering **Psychological Hooks**, **Color Psychology**, **Facial Expression Science**, and **AI Image Generation** for maximum Click-Through Rate (CTR).
 
 ## When to Use This Skill
 
-- Use when creating thumbnails for YouTube, TikTok, or Reels
-- Use for A/B testing different visual hooks with AI-generated variations
-- Use when you need to "Stop the Scroll" in a crowded feed
-- Use for designing branding for video series with AI consistency
+- Use when designing thumbnails for YouTube/TikTok
+- Use when A/B testing thumbnail variations
+- Use when generating AI images for thumbnails (Midjourney/Flux)
+- Use when optimizing for mobile viewability
+- Use when analyzing competitor thumbnails
 
-## How It Works
+---
 
-### Step 1: Eye-Catching AI Imagery
+## Part 1: The Anatomy of a High-CTR Thumbnail
 
-- **Expressive Faces**: Prompting AI for "exaggerated facial expressions" (Shock, Awe, Success) to create an immediate emotional connection.
-- **Micro-Detailing**: Using keywords like "8k," "highly detailed texture," or "macro photography" to make the subject "Pop" on small screens.
+### 1.1 The 3-Second Rule
 
-### Step 2: The "Z-Pattern" Layout
+Viewers decide in 3 seconds. Your thumbnail must communicate:
 
-- Placing the most important element (Face/Product) where the eye starts (top-left/right), and the "Value Prop" (Text) in the remaining focal path.
+1. **Emotion**: What will I feel?
+2. **Value**: What will I learn?
+3. **Curiosity**: What's the twist?
 
-### Step 3: Contrast & Color Theory for CTR
+### 1.2 Core Elements
 
-```text
-PROMPT STRATEGY:
-"Main subject in foreground, highly detailed, vibrant colors, bokeh background in complementary color (e.g., Orange vs Blue), neon rim light, sharp focus, 8k --ar 16:9"
-```
+| Element | Purpose | Example |
+|---------|---------|---------|
+| **Face** | Human connection | Exaggerated expression (Shock, Joy) |
+| **Text** | Value proposition | 3-4 words MAX. Bold, readable |
+| **Arrow/Circle** | Direct attention | Point to the "thing" |
+| **Contrast** | Pop from feed | Bright colors, dark backgrounds |
 
-### Step 4: Text Overlay Strategy
+---
 
-- Using bold, high-contrast typography (3-4 words max) that complements the AI-generated imagery.
+## Part 2: Psychological Hooks
 
-## Best Practices
+### 2.1 Curiosity Gap
+
+Show *enough* to intrigue, not enough to satisfy.
+
+- **Bad**: "How I Made $10,000" (Full answer)
+- **Good**: "This Made Me $10,000" + Image of mysterious object (What is it?)
+
+### 2.2 Facial Expressions (Ekman's 7)
+
+Exaggerated faces outperform neutral by 30%+.
+
+- **Surprise**: Wide eyes, open mouth.
+- **Disgust/Shock**: Pulled-back head, squinted eyes.
+- **Joy**: Genuine smile (Duchenne smile with crow's feet).
+
+### 2.3 Color Psychology
+
+| Color | Emotion | Use Case |
+|-------|---------|----------|
+| Red | Urgency, Danger | "STOP Doing This!" |
+| Yellow | Energy, Attention | Highlight text |
+| Blue | Trust, Calm | "Explained" videos |
+| Green | Money, Growth | Finance content |
+
+---
+
+## Part 3: AI Image Generation for Thumbnails
+
+### 3.1 Midjourney/Flux Prompts
+
+**Structure:** `[Subject], [Action], [Expression], [Lighting], [Style], [Camera Angle]`
+
+**Example:**
+`A surprised man pointing at a glowing laptop screen, dramatic lighting, photorealistic, close-up portrait, 16:9 aspect ratio --ar 16:9 --v 6`
+
+### 3.2 Common Modifiers
+
+- `--ar 16:9`: YouTube aspect ratio.
+- `photorealistic`: Human faces.
+- `bold colors, high contrast`: Pop from feed.
+- `shallow depth of field`: Focus on subject.
+
+---
+
+## Part 4: Text Design Rules
+
+### 4.1 Typography
+
+- **Font**: Sans-serif, bold (Impact, Bebas Neue, Montserrat Black).
+- **Size**: Must be readable on mobile (50px+ at 1280x720).
+- **Stroke/Shadow**: Black outline for contrast on any background.
+
+### 4.2 Placement
+
+- **Rule of Thirds**: Text on left 2/3, Face on right 1/3.
+- **Avoid Bottom Right**: YouTube timestamp overlay covers it.
+
+---
+
+## Part 5: A/B Testing & Analytics
+
+### 5.1 YouTube Analytics
+
+- **CTR**: % of impressions that clicked. Aim for 5-10%.
+- **Impressions**: How often your thumbnail was shown.
+
+### 5.2 Testing Strategy
+
+1. Create 2-3 variations.
+2. Use TubeBuddy/VidIQ to schedule thumbnail A/B tests.
+3. Run for 48 hours minimum.
+4. Keep the winner.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use "Complementary Colors" for the subject vs. background (e.g., Blue background for an Orange subject)
-- ✅ Ensure the subject occupies at least 40% of the thumbnail frame
-- ✅ Test visibility at 10% size to ensure readability on mobile devices
-- ✅ Use "Neon Rim Lights" in prompts to separate the subject from the background
-- ✅ Keep the right-center area clear (where the timestamp/duration often covers)
+- ✅ **Mobile First**: Preview at 100px width. If you can't read text, it's too small.
+- ✅ **Consistent Branding**: Same font, same color palette across videos.
+- ✅ **Study Competitors**: Screenshot top 10 videos in your niche. Find patterns.
 
 ### ❌ Avoid This
 
-- ❌ Don't use small text—it becomes unreadable on mobile
-- ❌ Avoid "False Advertising" (Clickbait that doesn't deliver) to maintain viewer trust
-- ❌ Don't clutter the image with too many competing elements
-- ❌ Don't use low-contrast color schemes (e.g., Grey on Black)
+- ❌ **Clickbait without Delivery**: If thumbnail promises something the video doesn't deliver, expect dislikes.
+- ❌ **Too Much Text**: 3-4 words max. This is not a blog title.
+- ❌ **Low-Res Faces**: Blurry or AI-artifact faces kill trust.
+
+---
 
 ## Related Skills
 
-- `@ai-image-prompt-engineer` - Base prompting foundation
-- `@senior-youtube-content-creator` - Platform strategy
-- `@short-form-video-creator` - For TikTok/Reels context
+- `@ai-image-prompt-engineer` - Generating the image
+- `@senior-youtube-content-creator` - Content strategy
+- `@copywriting` - Writing the hook
