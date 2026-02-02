@@ -17,9 +17,9 @@ Skill ini menjadikan AI Agent Anda sebagai spesialis pengembangan sistem penjadw
 - Use when designing course registration systems
 - Use when building exam scheduling applications
 
-## How It Works
+## Core Concepts
 
-### Step 1: Core Components
+### System Components
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
@@ -35,360 +35,209 @@ Skill ini menjadikan AI Agent Anda sebagai spesialis pengembangan sistem penjadw
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Step 2: Data Models
+### Data Schema (ERD)
 
-```dart
-// Core entities
-class Course {
-  final String id;
-  final String code;
-  final String name;
-  final int credits;
-  final int hoursPerWeek;
-  final List<String> requiredRoomTypes; // lab, lecture, studio
-  final int maxStudents;
-  final List<String> prerequisiteIds;
-}
-
-class ClassSession {
-  final String id;
-  final String courseId;
-  final String teacherId;
-  final String roomId;
-  final DayOfWeek day;
-  final TimeSlot timeSlot;
-  final SessionType type; // lecture, lab, tutorial
-}
-
-class TimeSlot {
-  final TimeOfDay startTime;
-  final TimeOfDay endTime;
-  final int periodNumber;
-  
-  bool overlaps(TimeSlot other) {
-    return startTime.isBefore(other.endTime) && 
-           endTime.isAfter(other.startTime);
-  }
-}
-
-class Room {
-  final String id;
-  final String name;
-  final String building;
-  final int capacity;
-  final RoomType type;
-  final List<String> facilities; // projector, whiteboard, computers
-}
-
-class Teacher {
-  final String id;
-  final String name;
-  final List<String> subjectExpertise;
-  final List<TimeSlot> availableSlots;
-  final int maxHoursPerWeek;
-}
-
-class Student {
-  final String id;
-  final String name;
-  final String programId;
-  final int semester;
-  final List<String> enrolledCourseIds;
-}
-
-// Timetable
-class Timetable {
-  final String id;
-  final String academicYear;
-  final String semester;
-  final List<ClassSession> sessions;
-  
-  List<ClassSession> getSessionsForDay(DayOfWeek day) {
-    return sessions.where((s) => s.day == day).toList();
-  }
-  
-  List<ClassSession> getSessionsForRoom(String roomId) {
-    return sessions.where((s) => s.roomId == roomId).toList();
-  }
-  
-  List<ClassSession> getSessionsForTeacher(String teacherId) {
-    return sessions.where((s) => s.teacherId == teacherId).toList();
-  }
-}
+```text
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   COURSE     │     │   TEACHER    │     │    ROOM      │
+├──────────────┤     ├──────────────┤     ├──────────────┤
+│ id           │     │ id           │     │ id           │
+│ code         │     │ name         │     │ name         │
+│ name         │     │ expertise[]  │     │ building     │
+│ credits      │     │ max_hours    │     │ capacity     │
+│ hours_week   │     │ available[]  │     │ type         │
+│ max_students │     └──────────────┘     │ facilities[] │
+│ room_type    │                          └──────────────┘
+│ prereqs[]    │                                │
+└──────────────┘                                │
+       │                                        │
+       │         ┌──────────────┐              │
+       └────────►│ CLASS_SESSION│◄─────────────┘
+                 ├──────────────┤
+                 │ id           │
+                 │ course_id    │◄── FK
+                 │ teacher_id   │◄── FK
+                 │ room_id      │◄── FK
+                 │ day_of_week  │
+                 │ start_time   │
+                 │ end_time     │
+                 │ session_type │
+                 └──────────────┘
+                        ▲
+                        │
+┌──────────────┐    ┌───┴──────────┐
+│   STUDENT    │    │  ENROLLMENT  │
+├──────────────┤    ├──────────────┤
+│ id           │───►│ student_id   │
+│ name         │    │ course_id    │
+│ program_id   │    │ semester     │
+│ semester     │    │ status       │
+└──────────────┘    └──────────────┘
 ```
 
-### Step 3: Conflict Detection
+### Time Slot Structure
 
-```dart
-class ConflictDetector {
-  // Check all types of conflicts
-  List<ScheduleConflict> detectConflicts(Timetable timetable) {
-    final conflicts = <ScheduleConflict>[];
-    
-    conflicts.addAll(_detectRoomConflicts(timetable));
-    conflicts.addAll(_detectTeacherConflicts(timetable));
-    conflicts.addAll(_detectStudentConflicts(timetable));
-    
-    return conflicts;
-  }
-  
-  // Room double-booking
-  List<ScheduleConflict> _detectRoomConflicts(Timetable timetable) {
-    final conflicts = <ScheduleConflict>[];
-    final sessions = timetable.sessions;
-    
-    for (int i = 0; i < sessions.length; i++) {
-      for (int j = i + 1; j < sessions.length; j++) {
-        final a = sessions[i];
-        final b = sessions[j];
-        
-        if (a.roomId == b.roomId &&
-            a.day == b.day &&
-            a.timeSlot.overlaps(b.timeSlot)) {
-          conflicts.add(ScheduleConflict(
-            type: ConflictType.roomDoubleBooking,
-            sessionA: a,
-            sessionB: b,
-            message: 'Room ${a.roomId} is double-booked',
-          ));
-        }
-      }
-    }
-    return conflicts;
-  }
-  
-  // Teacher teaching two classes at same time
-  List<ScheduleConflict> _detectTeacherConflicts(Timetable timetable) {
-    final conflicts = <ScheduleConflict>[];
-    final sessions = timetable.sessions;
-    
-    for (int i = 0; i < sessions.length; i++) {
-      for (int j = i + 1; j < sessions.length; j++) {
-        final a = sessions[i];
-        final b = sessions[j];
-        
-        if (a.teacherId == b.teacherId &&
-            a.day == b.day &&
-            a.timeSlot.overlaps(b.timeSlot)) {
-          conflicts.add(ScheduleConflict(
-            type: ConflictType.teacherConflict,
-            sessionA: a,
-            sessionB: b,
-            message: 'Teacher ${a.teacherId} has overlapping classes',
-          ));
-        }
-      }
-    }
-    return conflicts;
-  }
-  
-  // Student enrolled in overlapping classes
-  List<ScheduleConflict> _detectStudentConflicts(
-    Timetable timetable,
-    Student student,
-  ) {
-    final conflicts = <ScheduleConflict>[];
-    final studentSessions = timetable.sessions
-      .where((s) => student.enrolledCourseIds.contains(s.courseId))
-      .toList();
-    
-    for (int i = 0; i < studentSessions.length; i++) {
-      for (int j = i + 1; j < studentSessions.length; j++) {
-        final a = studentSessions[i];
-        final b = studentSessions[j];
-        
-        if (a.day == b.day && a.timeSlot.overlaps(b.timeSlot)) {
-          conflicts.add(ScheduleConflict(
-            type: ConflictType.studentConflict,
-            sessionA: a,
-            sessionB: b,
-            message: 'Student has overlapping classes',
-          ));
-        }
-      }
-    }
-    return conflicts;
-  }
-}
+```text
+Weekly Schedule Grid:
+┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+│  Time   │   Mon   │   Tue   │   Wed   │   Thu   │   Fri   │
+├─────────┼─────────┼─────────┼─────────┼─────────┼─────────┤
+│ 07:00   │ Slot 1  │ Slot 1  │ Slot 1  │ Slot 1  │ Slot 1  │
+│ 08:00   │ Slot 2  │ Slot 2  │ Slot 2  │ Slot 2  │ Slot 2  │
+│ 09:00   │ Slot 3  │ Slot 3  │ Slot 3  │ Slot 3  │ Slot 3  │
+│ 10:00   │ Slot 4  │ Slot 4  │ Slot 4  │ Slot 4  │ Slot 4  │
+│ 11:00   │ Slot 5  │ Slot 5  │ Slot 5  │ Slot 5  │ Slot 5  │
+│ 12:00   │  BREAK  │  BREAK  │  BREAK  │  BREAK  │  BREAK  │
+│ 13:00   │ Slot 6  │ Slot 6  │ Slot 6  │ Slot 6  │ Slot 6  │
+│ ...     │   ...   │   ...   │   ...   │   ...   │   ...   │
+└─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
 ```
 
-### Step 4: Automatic Timetable Generation
+## Algorithms
 
-```dart
-class TimetableGenerator {
-  final List<Course> courses;
-  final List<Room> rooms;
-  final List<Teacher> teachers;
-  final List<TimeSlot> availableSlots;
+### Conflict Detection Rules
+
+```text
+CONFLICT TYPES:
+├── Room Double-Booking
+│   Rule: Same room + Same day + Overlapping time = CONFLICT
+│
+├── Teacher Double-Booking  
+│   Rule: Same teacher + Same day + Overlapping time = CONFLICT
+│
+├── Student Course Conflict
+│   Rule: Student enrolled in both courses + Same day + Overlapping time = CONFLICT
+│
+└── Resource Conflict
+    Rule: Same resource (projector, lab) + Same day + Overlapping time = CONFLICT
+
+TIME OVERLAP CHECK:
+  Session A: start_A, end_A
+  Session B: start_B, end_B
   
-  // Genetic Algorithm approach
-  Future<Timetable> generateOptimalTimetable() async {
-    // Initialize population
-    var population = _initializePopulation(50);
-    
-    for (int generation = 0; generation < 1000; generation++) {
-      // Evaluate fitness
-      population.sort((a, b) => 
-        _calculateFitness(b).compareTo(_calculateFitness(a)));
-      
-      // Check if optimal solution found
-      if (_calculateFitness(population.first) >= 0.95) {
-        break;
-      }
-      
-      // Selection, crossover, mutation
-      population = _evolvePopulation(population);
-    }
-    
-    return population.first;
-  }
-  
-  double _calculateFitness(Timetable timetable) {
-    double fitness = 1.0;
-    final conflicts = ConflictDetector().detectConflicts(timetable);
-    
-    // Penalize conflicts heavily
-    fitness -= conflicts.length * 0.1;
-    
-    // Reward good distribution
-    fitness += _evaluateDistribution(timetable) * 0.2;
-    
-    // Reward room utilization
-    fitness += _evaluateRoomUtilization(timetable) * 0.1;
-    
-    return fitness.clamp(0.0, 1.0);
-  }
-  
-  // Greedy algorithm for simpler cases
-  Timetable generateGreedyTimetable() {
-    final sessions = <ClassSession>[];
-    
-    for (final course in courses) {
-      final teacher = _findAvailableTeacher(course, sessions);
-      final slots = _findAvailableSlots(course, teacher, sessions);
-      
-      for (final slot in slots.take(course.hoursPerWeek)) {
-        final room = _findSuitableRoom(course, slot, sessions);
-        
-        if (room != null) {
-          sessions.add(ClassSession(
-            id: _uuid.v4(),
-            courseId: course.id,
-            teacherId: teacher.id,
-            roomId: room.id,
-            day: slot.day,
-            timeSlot: slot.timeSlot,
-            type: SessionType.lecture,
-          ));
-        }
-      }
-    }
-    
-    return Timetable(sessions: sessions);
-  }
-}
+  Overlaps if: start_A < end_B AND end_A > start_B
 ```
 
-### Step 5: Course Registration System
+### Timetable Generation Algorithms
 
-```dart
-class CourseRegistrationService {
-  // Check prerequisites before enrollment
-  Future<EnrollmentResult> enrollStudent(
-    String studentId,
-    String courseId,
-  ) async {
-    final student = await _studentRepo.get(studentId);
-    final course = await _courseRepo.get(courseId);
-    
-    // Check prerequisites
-    for (final prereqId in course.prerequisiteIds) {
-      if (!student.completedCourseIds.contains(prereqId)) {
-        return EnrollmentResult.failure(
-          'Missing prerequisite: ${prereqId}',
-        );
-      }
-    }
-    
-    // Check capacity
-    final enrolledCount = await _getEnrolledCount(courseId);
-    if (enrolledCount >= course.maxStudents) {
-      return EnrollmentResult.failure('Course is full');
-    }
-    
-    // Check schedule conflicts
-    final conflicts = await _checkScheduleConflicts(student, courseId);
-    if (conflicts.isNotEmpty) {
-      return EnrollmentResult.failure(
-        'Schedule conflict with: ${conflicts.join(", ")}',
-      );
-    }
-    
-    // Check credit limit
-    final currentCredits = _calculateCurrentCredits(student);
-    if (currentCredits + course.credits > student.maxCreditsPerSemester) {
-      return EnrollmentResult.failure('Credit limit exceeded');
-    }
-    
-    // Enroll
-    await _enrollmentRepo.create(studentId, courseId);
-    return EnrollmentResult.success();
-  }
-}
+```text
+ALGORITHM 1: GREEDY APPROACH
+─────────────────────────────
+1. Sort courses by constraint level (most constrained first)
+2. For each course:
+   a. Find available teacher
+   b. Find available time slots
+   c. Find suitable room (capacity, type)
+   d. If no conflict → assign
+   e. If conflict → try next slot
+3. Repeat until all courses scheduled or failure
+
+ALGORITHM 2: GENETIC ALGORITHM
+──────────────────────────────
+1. Initialize population of random valid timetables
+2. Evaluate fitness (fewer conflicts = higher fitness)
+3. Selection: Keep best individuals
+4. Crossover: Combine two schedules
+5. Mutation: Randomly swap time slots
+6. Repeat for N generations
+7. Return best solution
+
+FITNESS FUNCTION:
+  fitness = 1.0
+  fitness -= (num_conflicts * 0.2)
+  fitness += (good_distribution * 0.1)
+  fitness += (teacher_preference_met * 0.05)
+
+ALGORITHM 3: CONSTRAINT SATISFACTION (CSP)
+──────────────────────────────────────────
+Variables: Each class session
+Domains: All possible (day, time, room) combinations
+Constraints: No conflicts
+
+Use backtracking with:
+- Forward checking
+- Arc consistency (AC-3)
+- Variable ordering heuristics
 ```
 
-### Step 6: UI Components
+### Room Allocation Logic
 
-```dart
-// Weekly timetable view
-class WeeklyTimetableWidget extends StatelessWidget {
-  final Timetable timetable;
-  final String? highlightCourseId;
-  
-  @override
-  Widget build(BuildContext context) {
-    return Table(
-      border: TableBorder.all(color: Colors.grey.shade300),
-      children: [
-        // Header row with days
-        TableRow(
-          children: [
-            _buildHeaderCell('Time'),
-            ...DayOfWeek.values.map((d) => _buildHeaderCell(d.name)),
-          ],
-        ),
-        // Time slot rows
-        ...timeSlots.map((slot) => TableRow(
-          children: [
-            _buildTimeCell(slot),
-            ...DayOfWeek.values.map((day) => 
-              _buildSessionCell(day, slot)),
-          ],
-        )),
-      ],
-    );
-  }
-  
-  Widget _buildSessionCell(DayOfWeek day, TimeSlot slot) {
-    final session = timetable.sessions.firstWhereOrNull(
-      (s) => s.day == day && s.timeSlot == slot,
-    );
-    
-    if (session == null) return const SizedBox.shrink();
-    
-    return Container(
-      padding: const EdgeInsets.all(8),
-      color: _getCourseColor(session.courseId),
-      child: Column(
-        children: [
-          Text(session.courseName, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(session.roomName),
-          Text(session.teacherName, style: TextStyle(fontSize: 12)),
-        ],
-      ),
-    );
-  }
-}
+```text
+ROOM MATCHING CRITERIA:
+1. Room type must match course requirement
+   - Lecture → Lecture Hall
+   - Lab → Computer Lab, Science Lab
+   - Tutorial → Seminar Room
+   
+2. Capacity must be sufficient
+   - room.capacity >= course.enrolled_students
+   
+3. Required facilities available
+   - course.needs_projector → room.has_projector
+   - course.needs_computers → room.type = "Computer Lab"
+
+ALLOCATION PRIORITY:
+1. Exact capacity match (avoid waste)
+2. Prefer same building for consecutive classes
+3. Consider accessibility requirements
+```
+
+### Course Registration Validation
+
+```text
+ENROLLMENT CHECK SEQUENCE:
+┌─────────────────────────────────────────┐
+│ 1. Check Prerequisites                  │
+│    └── Student completed required courses?
+│                                         │
+│ 2. Check Quota                          │
+│    └── Course capacity not exceeded?    │
+│                                         │
+│ 3. Check Schedule Conflicts             │
+│    └── No overlap with enrolled courses?│
+│                                         │
+│ 4. Check Credit Limit                   │
+│    └── Within max credits per semester? │
+│                                         │
+│ 5. Check Academic Standing              │
+│    └── GPA requirement met?             │
+│                                         │
+│ ✓ All passed → ENROLL                   │
+│ ✗ Any failed → REJECT with reason       │
+└─────────────────────────────────────────┘
+```
+
+## API Design
+
+### Endpoints Structure
+
+```text
+/api/v1/
+├── /courses
+│   ├── GET    /              - List all courses
+│   ├── POST   /              - Create course
+│   └── GET    /:id/schedule  - Get course schedule
+│
+├── /schedules
+│   ├── GET    /              - Get master timetable
+│   ├── POST   /generate      - Generate new timetable
+│   └── GET    /conflicts     - List all conflicts
+│
+├── /rooms
+│   ├── GET    /              - List rooms
+│   └── GET    /:id/availability - Room availability
+│
+├── /teachers
+│   ├── GET    /:id/schedule  - Teacher's schedule
+│   └── PUT    /:id/preferences - Update preferences
+│
+├── /students
+│   ├── GET    /:id/schedule  - Student's schedule
+│   └── POST   /:id/enroll    - Enroll in course
+│
+└── /enrollments
+    ├── POST   /              - Create enrollment
+    └── DELETE /:id           - Drop course
 ```
 
 ## Best Practices
@@ -397,9 +246,10 @@ class WeeklyTimetableWidget extends StatelessWidget {
 
 - ✅ Validate all constraints before saving schedules
 - ✅ Provide clear conflict resolution suggestions
-- ✅ Allow manual overrides with warning logs
+- ✅ Allow manual overrides with audit logs
 - ✅ Support multiple views (student, teacher, room, course)
 - ✅ Implement undo/redo for schedule changes
+- ✅ Cache computed schedules for performance
 
 ### ❌ Avoid This
 
@@ -407,12 +257,12 @@ class WeeklyTimetableWidget extends StatelessWidget {
 - ❌ Don't ignore room capacity constraints
 - ❌ Don't forget teacher availability preferences
 - ❌ Don't make bulk changes without confirmation
-- ❌ Don't skip exam scheduling edge cases
+- ❌ Don't hardcode time slot durations
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Mobile app development
 - `@senior-backend-developer` - API development
 - `@senior-database-engineer-sql` - Database design
+- `@senior-software-architect` - System design
 - `@e-learning-developer` - LMS integration
 - `@senior-ui-ux-designer` - Timetable UI design

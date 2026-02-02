@@ -17,9 +17,9 @@ Skill ini menjadikan AI Agent Anda sebagai spesialis pengembangan sistem manajem
 - Use when the user asks about fixture generation algorithms
 - Use when building live scoring applications
 
-## How It Works
+## Core Concepts
 
-### Step 1: Core Components
+### System Components
 
 ```text
 ┌─────────────────────────────────────────────────────────┐
@@ -35,413 +35,299 @@ Skill ini menjadikan AI Agent Anda sebagai spesialis pengembangan sistem manajem
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Step 2: Data Models
+### Data Schema (ERD)
 
-```dart
-// Core entities
-class Team {
-  final String id;
-  final String name;
-  final String logoUrl;
-  final String homeVenue;
-  final List<String> playerIds;
-  final String managerId;
-}
-
-class Player {
-  final String id;
-  final String name;
-  final String teamId;
-  final int jerseyNumber;
-  final PlayerPosition position;
-  final DateTime dateOfBirth;
-}
-
-class Match {
-  final String id;
-  final String homeTeamId;
-  final String awayTeamId;
-  final DateTime scheduledDate;
-  final String venueId;
-  final MatchStatus status; // scheduled, live, completed, postponed
-  final int? homeScore;
-  final int? awayScore;
-  final List<MatchEvent> events;
-  final int? attendance;
-  final String? refereeId;
-  
-  String? get winnerId {
-    if (homeScore == null || awayScore == null) return null;
-    if (homeScore! > awayScore!) return homeTeamId;
-    if (awayScore! > homeScore!) return awayTeamId;
-    return null; // draw
-  }
-}
-
-class MatchEvent {
-  final String id;
-  final String matchId;
-  final EventType type; // goal, yellowCard, redCard, substitution
-  final int minute;
-  final String playerId;
-  final String? assistPlayerId;
-  final String teamId;
-}
-
-class Season {
-  final String id;
-  final String leagueId;
-  final String name; // "2025/2026"
-  final DateTime startDate;
-  final DateTime endDate;
-  final SeasonFormat format; // league, knockout, groupStage
-}
-
-class Standing {
-  final String teamId;
-  final String seasonId;
-  final int played;
-  final int won;
-  final int drawn;
-  final int lost;
-  final int goalsFor;
-  final int goalsAgainst;
-  final int points;
-  
-  int get goalDifference => goalsFor - goalsAgainst;
-  
-  double get pointsPerGame => played > 0 ? points / played : 0;
-}
+```text
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│    LEAGUE    │     │    SEASON    │     │    TEAM      │
+├──────────────┤     ├──────────────┤     ├──────────────┤
+│ id           │────►│ id           │     │ id           │
+│ name         │     │ league_id    │◄────│ name         │
+│ sport_type   │     │ name         │     │ logo_url     │
+│ country      │     │ start_date   │     │ home_venue   │
+└──────────────┘     │ end_date     │     │ founded_year │
+                     │ format       │     └──────────────┘
+                     └──────────────┘            │
+                            │                   │
+                            ▼                   ▼
+                     ┌──────────────┐     ┌──────────────┐
+                     │    MATCH     │     │   PLAYER     │
+                     ├──────────────┤     ├──────────────┤
+                     │ id           │     │ id           │
+                     │ season_id    │     │ team_id      │
+                     │ home_team_id │     │ name         │
+                     │ away_team_id │     │ position     │
+                     │ matchday     │     │ jersey_num   │
+                     │ scheduled_at │     │ nationality  │
+                     │ venue_id     │     └──────────────┘
+                     │ status       │            │
+                     │ home_score   │            │
+                     │ away_score   │            ▼
+                     └──────────────┘     ┌──────────────┐
+                            │            │ MATCH_EVENT  │
+                            │            ├──────────────┤
+                            └───────────►│ id           │
+                                         │ match_id     │
+                                         │ player_id    │
+                                         │ event_type   │
+                                         │ minute       │
+                                         │ details      │
+                                         └──────────────┘
 ```
 
-### Step 3: Fixture Generation
+## Tournament Formats
 
-```dart
-class FixtureGenerator {
-  // Round-robin algorithm (berger tables)
-  List<Matchday> generateRoundRobin(List<Team> teams, {bool doubleRound = true}) {
-    final matchdays = <Matchday>[];
-    var teamList = [...teams];
-    
-    // Add dummy team if odd number
-    if (teamList.length % 2 != 0) {
-      teamList.add(Team.bye());
-    }
-    
-    final n = teamList.length;
-    final rounds = n - 1;
-    final matchesPerRound = n ~/ 2;
-    
-    for (int round = 0; round < rounds; round++) {
-      final matches = <Match>[];
-      
-      for (int match = 0; match < matchesPerRound; match++) {
-        final home = (round + match) % (n - 1);
-        var away = (n - 1 - match + round) % (n - 1);
-        
-        // Last team stays fixed
-        if (match == 0) {
-          away = n - 1;
-        }
-        
-        // Skip bye matches
-        if (!teamList[home].isBye && !teamList[away].isBye) {
-          matches.add(Match(
-            homeTeamId: teamList[home].id,
-            awayTeamId: teamList[away].id,
-            matchday: round + 1,
-          ));
-        }
-      }
-      
-      matchdays.add(Matchday(round: round + 1, matches: matches));
-    }
-    
-    // Generate second leg (reverse home/away)
-    if (doubleRound) {
-      final secondLeg = matchdays.map((md) => Matchday(
-        round: md.round + rounds,
-        matches: md.matches.map((m) => Match(
-          homeTeamId: m.awayTeamId,
-          awayTeamId: m.homeTeamId,
-          matchday: md.round + rounds,
-        )).toList(),
-      )).toList();
-      
-      matchdays.addAll(secondLeg);
-    }
-    
-    return matchdays;
-  }
-  
-  // Knockout bracket generation
-  Bracket generateKnockoutBracket(List<Team> teams, {bool seeded = true}) {
-    var seededTeams = [...teams];
-    
-    if (seeded) {
-      seededTeams.sort((a, b) => b.ranking.compareTo(a.ranking));
-    } else {
-      seededTeams.shuffle();
-    }
-    
-    // Pad to power of 2
-    final bracketSize = _nextPowerOf2(seededTeams.length);
-    final byes = bracketSize - seededTeams.length;
-    
-    final rounds = <BracketRound>[];
-    var currentMatches = <BracketMatch>[];
-    
-    // First round with byes
-    for (int i = 0; i < bracketSize ~/ 2; i++) {
-      final team1 = i < seededTeams.length ? seededTeams[i] : null;
-      final team2Index = bracketSize - 1 - i;
-      final team2 = team2Index < seededTeams.length ? seededTeams[team2Index] : null;
-      
-      currentMatches.add(BracketMatch(
-        position: i,
-        team1Id: team1?.id,
-        team2Id: team2?.id,
-        // Auto-advance if bye
-        winnerId: team2 == null ? team1?.id : null,
-      ));
-    }
-    
-    rounds.add(BracketRound(name: 'Round of ${bracketSize}', matches: currentMatches));
-    
-    // Generate subsequent rounds
-    while (currentMatches.length > 1) {
-      final nextMatches = <BracketMatch>[];
-      for (int i = 0; i < currentMatches.length ~/ 2; i++) {
-        nextMatches.add(BracketMatch(
-          position: i,
-          feedsFrom: [currentMatches[i * 2], currentMatches[i * 2 + 1]],
-        ));
-      }
-      
-      final roundName = switch (nextMatches.length) {
-        1 => 'Final',
-        2 => 'Semi-finals',
-        4 => 'Quarter-finals',
-        _ => 'Round of ${nextMatches.length * 2}',
-      };
-      
-      rounds.add(BracketRound(name: roundName, matches: nextMatches));
-      currentMatches = nextMatches;
-    }
-    
-    return Bracket(rounds: rounds);
-  }
-  
-  int _nextPowerOf2(int n) {
-    int power = 1;
-    while (power < n) power *= 2;
-    return power;
-  }
-}
+### 1. Round-Robin (Liga)
+
+```text
+ROUND-ROBIN FORMULA:
+─────────────────────
+Teams: N
+Rounds: N - 1 (single) or 2(N-1) (double/home-away)
+Matches per round: N / 2
+Total matches: N(N-1) / 2 (single) or N(N-1) (double)
+
+Example: 8 teams, double round-robin
+- Rounds: 14 (7 + 7)
+- Matches per round: 4
+- Total matches: 56
+
+BERGER TABLE ALGORITHM:
+1. If N is odd, add dummy team (bye)
+2. Fix last team in position
+3. Rotate other teams clockwise each round
+4. Match: position[i] vs position[N-1-i]
+
+Round 1:  1-8  2-7  3-6  4-5
+Round 2:  8-5  6-4  7-3  1-2
+Round 3:  2-8  3-1  4-7  5-6
+...
 ```
 
-### Step 4: Standings Calculation
+### 2. Knockout Bracket
 
-```dart
-class StandingsService {
-  // Calculate standings with tiebreakers
-  Future<List<Standing>> calculateStandings(String seasonId) async {
-    final matches = await _matchRepo.getCompletedMatches(seasonId);
-    final standings = <String, Standing>{};
-    
-    for (final match in matches) {
-      // Update home team
-      standings.putIfAbsent(match.homeTeamId, () => Standing.empty(match.homeTeamId));
-      standings.putIfAbsent(match.awayTeamId, () => Standing.empty(match.awayTeamId));
-      
-      final home = standings[match.homeTeamId]!;
-      final away = standings[match.awayTeamId]!;
-      
-      // Update stats
-      home.played++;
-      away.played++;
-      home.goalsFor += match.homeScore!;
-      home.goalsAgainst += match.awayScore!;
-      away.goalsFor += match.awayScore!;
-      away.goalsAgainst += match.homeScore!;
-      
-      // Points (3-1-0 system)
-      if (match.homeScore! > match.awayScore!) {
-        home.won++;
-        home.points += 3;
-        away.lost++;
-      } else if (match.homeScore! < match.awayScore!) {
-        away.won++;
-        away.points += 3;
-        home.lost++;
-      } else {
-        home.drawn++;
-        away.drawn++;
-        home.points += 1;
-        away.points += 1;
-      }
-    }
-    
-    // Sort with tiebreakers
-    final sortedStandings = standings.values.toList();
-    sortedStandings.sort((a, b) {
-      // 1. Points
-      if (a.points != b.points) return b.points.compareTo(a.points);
-      // 2. Goal difference
-      if (a.goalDifference != b.goalDifference) {
-        return b.goalDifference.compareTo(a.goalDifference);
-      }
-      // 3. Goals scored
-      if (a.goalsFor != b.goalsFor) return b.goalsFor.compareTo(a.goalsFor);
-      // 4. Head-to-head (simplified)
-      return _headToHead(a.teamId, b.teamId, matches);
-    });
-    
-    return sortedStandings;
-  }
-  
-  int _headToHead(String teamA, String teamB, List<Match> matches) {
-    int pointsA = 0;
-    int pointsB = 0;
-    
-    for (final match in matches) {
-      if ((match.homeTeamId == teamA && match.awayTeamId == teamB) ||
-          (match.homeTeamId == teamB && match.awayTeamId == teamA)) {
-        final scoreA = match.homeTeamId == teamA ? match.homeScore! : match.awayScore!;
-        final scoreB = match.homeTeamId == teamB ? match.homeScore! : match.awayScore!;
-        
-        if (scoreA > scoreB) pointsA += 3;
-        else if (scoreB > scoreA) pointsB += 3;
-        else { pointsA++; pointsB++; }
-      }
-    }
-    
-    return pointsB.compareTo(pointsA);
-  }
-}
+```text
+SINGLE ELIMINATION:
+                    ┌─── Team A ───┐
+              ┌─────┤              ├─────┐
+              │     └─── Team B ───┘     │
+        ┌─────┤                          ├─────┐
+        │     │     ┌─── Team C ───┐     │     │
+        │     └─────┤              ├─────┘     │
+        │           └─── Team D ───┘           │
+  ┌─────┤                                      ├─────┐ FINAL
+        │           ┌─── Team E ───┐           │
+        │     ┌─────┤              ├─────┐     │
+        │     │     └─── Team F ───┘     │     │
+        └─────┤                          ├─────┘
+              │     ┌─── Team G ───┐     │
+              └─────┤              ├─────┘
+                    └─── Team H ───┘
+
+BRACKET SIZE: Must be power of 2 (4, 8, 16, 32, 64)
+If teams < bracket size, add BYEs
+
+SEEDING: Top seeds avoid each other until later rounds
+  Seed 1 vs Seed 16
+  Seed 8 vs Seed 9
+  ...etc
+
+DOUBLE ELIMINATION: Losers get second chance in losers bracket
 ```
 
-### Step 5: Player Statistics
+### 3. Group Stage + Knockout
 
-```dart
-class PlayerStatsService {
-  Future<PlayerSeasonStats> getPlayerStats(String playerId, String seasonId) async {
-    final events = await _eventRepo.getPlayerEvents(playerId, seasonId);
-    final matches = await _matchRepo.getPlayerMatches(playerId, seasonId);
-    
-    int goals = 0;
-    int assists = 0;
-    int yellowCards = 0;
-    int redCards = 0;
-    int minutesPlayed = 0;
-    
-    for (final event in events) {
-      switch (event.type) {
-        case EventType.goal:
-          goals++;
-          break;
-        case EventType.assist:
-          assists++;
-          break;
-        case EventType.yellowCard:
-          yellowCards++;
-          break;
-        case EventType.redCard:
-          redCards++;
-          break;
-        default:
-          break;
-      }
-    }
-    
-    return PlayerSeasonStats(
-      playerId: playerId,
-      seasonId: seasonId,
-      appearances: matches.length,
-      goals: goals,
-      assists: assists,
-      yellowCards: yellowCards,
-      redCards: redCards,
-      minutesPlayed: minutesPlayed,
-      goalsPerGame: matches.isNotEmpty ? goals / matches.length : 0,
-    );
-  }
-  
-  // Top scorers leaderboard
-  Future<List<PlayerSeasonStats>> getTopScorers(String seasonId, {int limit = 10}) async {
-    final allStats = await _getAllPlayerStats(seasonId);
-    allStats.sort((a, b) => b.goals.compareTo(a.goals));
-    return allStats.take(limit).toList();
-  }
-}
+```text
+GROUP STAGE:
+┌───────────────────────────────────────────────┐
+│ Group A      │ Group B      │ Group C        │
+├──────────────┼──────────────┼────────────────┤
+│ Team 1       │ Team 5       │ Team 9         │
+│ Team 2       │ Team 6       │ Team 10        │
+│ Team 3       │ Team 7       │ Team 11        │
+│ Team 4       │ Team 8       │ Team 12        │
+└──────────────┴──────────────┴────────────────┘
+
+Within each group: Round-robin
+Top N teams advance to knockout phase
+
+ADVANCEMENT CRITERIA:
+1. Points
+2. Goal difference
+3. Goals scored
+4. Head-to-head
+5. Fair play points
+6. Drawing of lots
 ```
 
-### Step 6: UI Components
+## Standings Calculation
 
-```dart
-// Standings table widget
-class StandingsTableWidget extends StatelessWidget {
-  final List<Standing> standings;
-  
-  @override
-  Widget build(BuildContext context) {
-    return DataTable(
-      columns: const [
-        DataColumn(label: Text('#')),
-        DataColumn(label: Text('Team')),
-        DataColumn(label: Text('P'), numeric: true),
-        DataColumn(label: Text('W'), numeric: true),
-        DataColumn(label: Text('D'), numeric: true),
-        DataColumn(label: Text('L'), numeric: true),
-        DataColumn(label: Text('GF'), numeric: true),
-        DataColumn(label: Text('GA'), numeric: true),
-        DataColumn(label: Text('GD'), numeric: true),
-        DataColumn(label: Text('Pts'), numeric: true),
-      ],
-      rows: standings.asMap().entries.map((entry) {
-        final position = entry.key + 1;
-        final s = entry.value;
-        return DataRow(
-          color: MaterialStateProperty.resolveWith((states) {
-            if (position <= 4) return Colors.green.withOpacity(0.1); // CL
-            if (position >= standings.length - 2) return Colors.red.withOpacity(0.1); // Relegation
-            return null;
-          }),
-          cells: [
-            DataCell(Text('$position')),
-            DataCell(_TeamCell(teamId: s.teamId)),
-            DataCell(Text('${s.played}')),
-            DataCell(Text('${s.won}')),
-            DataCell(Text('${s.drawn}')),
-            DataCell(Text('${s.lost}')),
-            DataCell(Text('${s.goalsFor}')),
-            DataCell(Text('${s.goalsAgainst}')),
-            DataCell(Text('${s.goalDifference}')),
-            DataCell(Text('${s.points}', style: TextStyle(fontWeight: FontWeight.bold))),
-          ],
-        );
-      }).toList(),
-    );
-  }
-}
+### Point Systems
 
-// Knockout bracket widget
-class BracketWidget extends StatelessWidget {
-  final Bracket bracket;
-  
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: bracket.rounds.map((round) => 
-          _BracketRoundColumn(round: round)
-        ).toList(),
-      ),
-    );
-  }
-}
+```text
+FOOTBALL/SOCCER (3-1-0):
+- Win:  3 points
+- Draw: 1 point
+- Loss: 0 points
+
+HOCKEY (3-2-1-0):
+- Win:           3 points
+- OT/SO Win:     2 points
+- OT/SO Loss:    1 point
+- Regulation Loss: 0 points
+
+BASKETBALL (2-1-0):
+- Win:  2 points (or 1)
+- Loss: 1 point (or 0)
+```
+
+### Standings Table Structure
+
+```text
+┌───┬──────────────┬────┬───┬───┬───┬────┬────┬─────┬─────┐
+│ # │ Team         │ P  │ W │ D │ L │ GF │ GA │ GD  │ Pts │
+├───┼──────────────┼────┼───┼───┼───┼────┼────┼─────┼─────┤
+│ 1 │ Team A       │ 10 │ 8 │ 1 │ 1 │ 25 │ 8  │ +17 │ 25  │
+│ 2 │ Team B       │ 10 │ 7 │ 2 │ 1 │ 20 │ 10 │ +10 │ 23  │
+│ 3 │ Team C       │ 10 │ 6 │ 2 │ 2 │ 18 │ 12 │ +6  │ 20  │
+│...│ ...          │... │...│...│...│... │... │ ... │ ... │
+└───┴──────────────┴────┴───┴───┴───┴────┴────┴─────┴─────┘
+
+LEGEND:
+P = Played, W = Won, D = Drawn, L = Lost
+GF = Goals For, GA = Goals Against
+GD = Goal Difference (GF - GA)
+Pts = Points
+```
+
+### Tiebreaker Rules
+
+```text
+TIEBREAKER HIERARCHY (FIFA/UEFA Style):
+1. Points
+2. Goal Difference
+3. Goals Scored
+4. Head-to-Head Points
+5. Head-to-Head Goal Difference
+6. Head-to-Head Goals Scored
+7. Away Goals (if applicable)
+8. Fair Play Points
+9. Drawing of Lots
+
+HEAD-TO-HEAD CALCULATION:
+- Only matches between tied teams
+- Create mini-table with same criteria
+```
+
+## Statistics Tracking
+
+### Player Statistics
+
+```text
+OFFENSIVE STATS:
+├── Goals
+├── Assists
+├── Shots (on target / off target)
+├── Conversion Rate (goals / shots)
+├── Minutes Per Goal
+└── Hat-tricks
+
+DEFENSIVE STATS:
+├── Tackles
+├── Interceptions
+├── Clearances
+├── Blocks
+└── Clean Sheets (goalkeepers)
+
+DISCIPLINE:
+├── Yellow Cards
+├── Red Cards
+├── Fouls Committed
+└── Fouls Suffered
+
+GENERAL:
+├── Appearances
+├── Minutes Played
+├── Starts vs Substitute
+└── Man of the Match Awards
+```
+
+### Team Statistics
+
+```text
+PERFORMANCE:
+├── Win Rate %
+├── Draw Rate %
+├── Home Record vs Away Record
+├── Form (last 5 matches: WWDLW)
+├── Longest Win Streak
+└── Clean Sheet %
+
+SCORING:
+├── Goals Scored (total, home, away)
+├── Goals Conceded
+├── Average Goals Per Game
+├── First Half vs Second Half Goals
+└── Scoring Minutes Distribution
+```
+
+## API Design
+
+### Endpoints Structure
+
+```text
+/api/v1/
+├── /leagues
+│   ├── GET    /                    - List leagues
+│   └── GET    /:id/standings       - Current standings
+│
+├── /seasons
+│   ├── GET    /:id/fixtures        - Season fixtures
+│   ├── GET    /:id/results         - Completed matches
+│   └── POST   /:id/generate        - Generate fixtures
+│
+├── /matches
+│   ├── GET    /:id                 - Match details
+│   ├── PUT    /:id/score           - Update score
+│   ├── POST   /:id/events          - Add match event
+│   └── GET    /:id/timeline        - Match timeline
+│
+├── /teams
+│   ├── GET    /:id/stats           - Team statistics
+│   ├── GET    /:id/fixtures        - Team fixtures
+│   └── GET    /:id/players         - Team roster
+│
+├── /players
+│   ├── GET    /:id/stats           - Player statistics
+│   └── GET    /top-scorers         - Leaderboard
+│
+└── /brackets
+    ├── GET    /:tournament_id      - Get bracket
+    └── PUT    /:match_id/advance   - Advance winner
+```
+
+## Real-Time Features
+
+```text
+LIVE SCORING WEBSOCKET EVENTS:
+─────────────────────────────
+Event: match.started
+Data: { match_id, kickoff_time }
+
+Event: match.goal
+Data: { match_id, team, player, minute, score }
+
+Event: match.card
+Data: { match_id, player, card_type, minute }
+
+Event: match.substitution
+Data: { match_id, player_out, player_in, minute }
+
+Event: match.ended
+Data: { match_id, final_score, stats }
+
+Event: standings.updated
+Data: { league_id, standings[] }
 ```
 
 ## Best Practices
@@ -453,6 +339,7 @@ class BracketWidget extends StatelessWidget {
 - ✅ Handle postponed and rescheduled matches gracefully
 - ✅ Provide real-time updates via WebSockets
 - ✅ Support historical data and season archives
+- ✅ Allow custom point systems per sport
 
 ### ❌ Avoid This
 
@@ -460,12 +347,12 @@ class BracketWidget extends StatelessWidget {
 - ❌ Don't forget extra-time and penalties for knockout matches
 - ❌ Don't ignore timezone handling for international leagues
 - ❌ Don't skip validation when recording match events
-- ❌ Don't make standings recalculation expensive
+- ❌ Don't make standings recalculation expensive (cache!)
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Mobile app development
-- `@senior-firebase-developer` - Real-time database
 - `@senior-backend-developer` - API development
+- `@senior-database-engineer-sql` - Database design
+- `@senior-software-architect` - System design
 - `@analytics-engineer` - Sports analytics
 - `@senior-ui-ux-designer` - Dashboard design
