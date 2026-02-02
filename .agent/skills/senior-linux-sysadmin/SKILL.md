@@ -1,246 +1,221 @@
 ---
 name: senior-linux-sysadmin
-description: "Expert Linux system administration including VPS setup, server security, user management, service configuration, and system monitoring"
+description: "Expert Linux system administration including kernel tuning, security hardening, eBPF monitoring, and production server management"
 ---
 
-# Senior Linux System Administrator
+# Senior Linux Sysadmin
 
 ## Overview
 
-This skill transforms you into an experienced Linux Sysadmin who manages servers, secures systems, and maintains reliable infrastructure. You'll configure VPS instances, manage users, and ensure system health.
+This skill transforms you into a **Senior Linux Systems Engineer**. You will move beyond basic user management (`useradd`, `chmod`) to mastering Kernel Tuning (`sysctl`), advanced storage (LVM/ZFS), security hardening (SELinux/AppArmor), and modern eBPF-based observability.
 
 ## When to Use This Skill
 
-- Use when setting up VPS servers
-- Use when configuring Linux systems
-- Use when securing servers
-- Use when troubleshooting system issues
-- Use when the user asks about Linux administration
+- Use when debugging system performance (CPU, Memory, I/O)
+- Use when hardening servers for production (CIS Benchmarks)
+- Use when configuring high-throughput networking
+- Use when managing storage volumes (Resize, Snapshot)
+- Use when troubleshooting boot issues or kernel panics
 
-## How It Works
+---
 
-### Step 1: Initial VPS Setup
+## Part 1: Kernel Tuning (sysctl)
 
-```bash
-# Update system
-sudo apt update && sudo apt upgrade -y
+Defaults are often for desktop usage. Servers need tuning.
 
-# Set timezone
-sudo timedatectl set-timezone Asia/Jakarta
+### 1.1 High-Performance Networking
 
-# Create non-root user
-sudo adduser deploy
-sudo usermod -aG sudo deploy
+**File: `/etc/sysctl.d/99-performance.conf`**
 
-# Setup SSH key authentication
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-# Add your public key
-echo "ssh-rsa YOUR_PUBLIC_KEY" >> ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
+```ini
+# Increase connection tracking table (prevent dropped packets)
+net.netfilter.nf_conntrack_max = 524288
 
-# Disable root login and password auth
-sudo nano /etc/ssh/sshd_config
-# Set: PermitRootLogin no
-# Set: PasswordAuthentication no
-sudo systemctl restart sshd
+# TCP Window Scaling (For high throughput on high latency links)
+net.ipv4.tcp_window_scaling = 1
+
+# Max open files (file descriptors)
+fs.file-max = 2097152
+
+# Increase backlog for incoming connections (Handle request spikes)
+net.core.netdev_max_backlog = 16384
+net.core.somaxconn = 8192
+
+# Reuse TIME_WAIT sockets (Short-lived connections)
+net.ipv4.tcp_tw_reuse = 1
+
+# Keepalive settings (Detect dead peers faster)
+net.ipv4.tcp_keepalive_time = 300
+net.ipv4.tcp_keepalive_intvl = 75
+net.ipv4.tcp_keepalive_probes = 9
 ```
 
-### Step 2: Firewall Configuration
+**Apply changes:** `sysctl -p /etc/sysctl.d/99-performance.conf`
 
-```bash
-# UFW (Uncomplicated Firewall)
-sudo apt install ufw -y
+---
 
-# Default policies
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
+## Part 2: Security Hardening
 
-# Allow essential ports
-sudo ufw allow 22/tcp      # SSH
-sudo ufw allow 80/tcp      # HTTP
-sudo ufw allow 443/tcp     # HTTPS
+### 2.1 SSH Hardening
 
-# Enable firewall
-sudo ufw enable
-sudo ufw status verbose
+**File: `/etc/ssh/sshd_config`**
 
-# Rate limiting for SSH
-sudo ufw limit ssh
+```config
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+X11Forwarding no
+MaxAuthTries 3
+Protocol 2
+AllowUsers deploy-user
 ```
 
-### Step 3: Essential Services
+### 2.2 UFW (Uncomplicated Firewall)
+
+Always default deny.
 
 ```bash
-# Install common tools
-sudo apt install -y \
-    htop \
-    curl \
-    wget \
-    git \
-    vim \
-    unzip \
-    fail2ban \
-    logrotate
-
-# Configure Fail2Ban
-sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sudo nano /etc/fail2ban/jail.local
-# Set: bantime = 1h
-# Set: maxretry = 3
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
-
-# Check banned IPs
-sudo fail2ban-client status sshd
-```
-
-### Step 4: System Monitoring
-
-```bash
-# Check system resources
-htop                    # Interactive process viewer
-df -h                   # Disk usage
-free -m                 # Memory usage
-uptime                  # System uptime and load
-
-# Check logs
-sudo journalctl -f                    # Follow system logs
-sudo tail -f /var/log/syslog          # System log
-sudo tail -f /var/log/auth.log        # Auth log
-
-# Monitor network
-sudo netstat -tulpn     # Open ports
-ss -tulpn               # Socket statistics
-```
-
-### Step 5: User Management
-
-```bash
-# Create user with specific home
-sudo useradd -m -s /bin/bash -d /home/appuser appuser
-
-# Add to groups
-sudo usermod -aG www-data appuser
-sudo usermod -aG docker appuser
-
-# Set password
-sudo passwd appuser
-
-# Create system user (no login)
-sudo useradd -r -s /usr/sbin/nologin serviceuser
-
-# Delete user
-sudo userdel -r username
-
-# List all users
-cat /etc/passwd | grep -v nologin
-```
-
-## Examples
-
-### Example 1: Automated Security Setup Script
-
-```bash
-#!/bin/bash
-# secure-vps.sh - Initial VPS security setup
-
-set -e
-
-echo "=== VPS Security Setup ==="
-
-# Update system
-echo "[1/5] Updating system..."
-apt update && apt upgrade -y
-
-# Install security tools
-echo "[2/5] Installing security tools..."
-apt install -y ufw fail2ban unattended-upgrades
-
-# Configure firewall
-echo "[3/5] Configuring firewall..."
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow 22/tcp
 ufw allow 80/tcp
 ufw allow 443/tcp
-ufw --force enable
-
-# Configure fail2ban
-echo "[4/5] Configuring fail2ban..."
-cat > /etc/fail2ban/jail.local << EOF
-[DEFAULT]
-bantime = 3600
-maxretry = 3
-
-[sshd]
-enabled = true
-EOF
-systemctl restart fail2ban
-
-# Enable auto updates
-echo "[5/5] Enabling automatic updates..."
-dpkg-reconfigure -f noninteractive unattended-upgrades
-
-echo "=== Setup Complete ==="
-echo "Remember to:"
-echo "  - Add SSH keys"
-echo "  - Disable root login"
-echo "  - Disable password auth"
+ufw enable
 ```
 
-### Example 2: Cron Jobs
+### 2.3 Filesystem Permissions
+
+Prevent users from seeing other users' processes.
 
 ```bash
-# Edit crontab
-crontab -e
-
-# Cron format: minute hour day month weekday command
-
-# Daily backup at 2 AM
-0 2 * * * /home/deploy/scripts/backup.sh
-
-# Weekly cleanup on Sunday midnight
-0 0 * * 0 /usr/bin/apt autoremove -y
-
-# Every 5 minutes health check
-*/5 * * * * /home/deploy/scripts/healthcheck.sh
-
-# List cron jobs
-crontab -l
+mount -o remount,rw,hidepid=2 /proc
 ```
 
-## Best Practices
+---
+
+## Part 3: Advanced Storage (LVM)
+
+Logical Volume Manager allows resizing disks without downtime.
+
+```bash
+# 1. Initialize physical disk
+pvcreate /dev/sdb
+
+# 2. Creating a Volume Group (VG)
+vgcreate data_vg /dev/sdb
+
+# 3. Create Logical Volume (LV)
+lvcreate -L 50G -n db_data data_vg
+
+# 4. Format and Mount
+mkfs.ext4 /dev/data_vg/db_data
+mount /dev/data_vg/db_data /mnt/db
+
+# 5. RESIZE ON THE FLY (The Magic)
+lvextend -L +10G /dev/data_vg/db_data
+resize2fs /dev/data_vg/db_data
+# Done! No reboot. No unmount.
+```
+
+---
+
+## Part 4: Modern Observability
+
+### 4.1 Traditional Tools (Legacy)
+
+- **CPU**: `htop`, `mpstat -P ALL`
+- **Memory**: `free -h`, `vmstat 1`
+- **Disk I/O**: `iostat -xz 1`
+- **Network**: `iftop`, `ss -tulpn`
+
+### 4.2 Modern Tools (eBPF) - `bcc-tools`
+
+eBPF allows safe, low-overhead kernel tracing.
+
+```bash
+# Installation
+apt install bpfcc-tools linux-headers-$(uname -r)
+
+# 1. execsnoop
+# Trace new processes (Detect short-lived cron jobs or malware)
+execsnoop-bpfcc
+
+# 2. opensnoop
+# Trace file opens (Who is touching that config file?)
+opensnoop-bpfcc
+
+# 3. biolatency
+# Histogram of disk I/O latency (Is disk slow or app slow?)
+biolatency-bpfcc -m
+
+# 4. tcptop
+# Top active TCP sessions by bandwidth
+tcptop-bpfcc
+```
+
+---
+
+## Part 5: Systemd Service Management
+
+Don't run scripts in `screen` or `nohup`. Create proper services.
+
+**File: `/etc/systemd/system/myapp.service`**
+
+```ini
+[Unit]
+Description=My Critical App
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=appuser
+Group=appgroup
+WorkingDirectory=/opt/app
+ExecStart=/usr/bin/python3 app.py
+Restart=always
+RestartSec=5
+
+# Security Hardening (Sandboxing)
+ProtectSystem=full
+PrivateTmp=true
+NoNewPrivileges=true
+
+# Resource Limits
+MemoryLimit=1G
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+systemctl daemon-reload
+systemctl enable --now myapp
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Always use SSH keys, not passwords
-- ✅ Keep system updated
-- ✅ Use fail2ban for brute force protection
-- ✅ Regular backups
-- ✅ Monitor logs and resources
-- ✅ Use non-root user for daily tasks
+- ✅ **Use `sudo`**: Disable root account password. Use sudoers.
+- ✅ **Automate Updates**: Enable `unattended-upgrades` (security patches only).
+- ✅ **Centralize Logs**: Ship `/var/log` to ELK/Loki. Disk full of logs = Outage.
+- ✅ **Monitor Inodes**: `df -i`. Full inodes causes "No space left on device" even if disk has GBs free.
+- ✅ **Use NTP**: Ensure clocks are synced (`chronyd` or `systemd-timesyncd`). Critical for distributed systems (Auth/DBs).
 
 ### ❌ Avoid This
 
-- ❌ Don't run services as root
-- ❌ Don't leave unnecessary ports open
-- ❌ Don't ignore security updates
-- ❌ Don't use weak passwords
+- ❌ **`chmod 777`**: Never. Fix ownership (`chown`) or group permissions (`chmod 770`).
+- ❌ **Editing files directly**: Use configuration management (Ansible).
+- ❌ **Disabling SELinux**: Learn to configure it (`audit2allow`). Disabling it removes your last line of defense.
+- ❌ **Ignoring Zombie Processes**: Check `top` for `Z` state. It means parent process is buggy.
 
-## Common Pitfalls
-
-**Problem:** Locked out of SSH
-**Solution:** Use VPS console access, check iptables/ufw rules.
-
-**Problem:** Disk full
-**Solution:** `df -h`, clean logs, remove old packages.
-
-**Problem:** High CPU/memory
-**Solution:** `htop`, identify process, optimize or scale.
+---
 
 ## Related Skills
 
-- `@senior-devops-engineer` - For automation
-- `@senior-web-deployment-specialist` - For web hosting
-- `@senior-cybersecurity-engineer` - For security hardening
+- `@ansible-specialist` - Automating all of this
+- `@docker-containerization-specialist` - Running apps in isolation
+- `@senior-devops-engineer` - Pipeline integration

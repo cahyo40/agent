@@ -7,182 +7,267 @@ description: "Expert Kubernetes including deployments, services, ingress, Helm c
 
 ## Overview
 
-Master Kubernetes orchestration including deployments, services, ingress, Helm, horizontal scaling, and production-grade cluster management.
+This skill transforms you into a **Certified Kubernetes Administrator (CKA/CKAD)** level expert. You will move beyond basic `kubectl apply` to mastering Helm Charts, GitOps (ArgoCD), Ingress Controllers, Horizontal Pod Autoscaling (HPA), and robust observability stacks (Prometheus/Grafana).
 
 ## When to Use This Skill
 
-- Use when deploying to Kubernetes
-- Use when managing K8s clusters
-- Use when creating Helm charts
-- Use when scaling applications
+- Use when deploying applications to Kubernetes clusters
+- Use when designing microservices networking (Service Mesh)
+- Use when automating deployments (Helm, Kustomize)
+- Use when debugging CrashLoopBackOff or Pending pods
+- Use when securing clusters (RBAC, Network Policies)
 
-## How It Works
+---
 
-### Step 1: Core Resources
+## Part 1: Production Manifests
+
+Don't just run pods. Use Deployments with proper probes and resources.
+
+### 1.1 Deployment Best Practices
 
 ```yaml
-# deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: backend-api
+  namespace: production
   labels:
-    app: my-app
+    app: backend-api
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: my-app
+      app: backend-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1       # Add 1 pod at a time
+      maxUnavailable: 0 # Zero downtime
   template:
     metadata:
       labels:
-        app: my-app
+        app: backend-api
     spec:
       containers:
-      - name: my-app
-        image: my-app:1.0.0
+      - name: api
+        image: my-registry/api:v1.2.0
         ports:
-        - containerPort: 3000
+        - containerPort: 8080
+        
+        # KEY: Resource Limits (Prevent OOMKilled & Node Starvation)
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "100m"
+            memory: "256Mi" # Guaranteed
+            cpu: "250m"
           limits:
-            memory: "256Mi"
+            memory: "512Mi" # Hard limit (throttles CPU, kills Mem)
             cpu: "500m"
-        livenessProbe:
+            
+        # KEY: Probes (Self-Healing)
+        livenessProbe:  # "Am I dead? Restart me."
           httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
           periodSeconds: 10
-        readinessProbe:
+          
+        readinessProbe: # "Can I take traffic? Don't send requests yet."
           httpGet:
             path: /ready
-            port: 3000
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: database-url
+          
+        envFrom:
+        - configMapRef:
+            name: api-config
+        - secretRef:
+            name: api-secrets
 ```
 
-### Step 2: Services & Ingress
+---
+
+## Part 2: Networking & Ingress
+
+Exposing services to the world.
+
+### 2.1 Service & Ingress (Nginx)
 
 ```yaml
-# service.yaml
+# Internal Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app
+  name: backend-svc
 spec:
   selector:
-    app: my-app
+    app: backend-api
   ports:
   - port: 80
-    targetPort: 3000
-  type: ClusterIP
+    targetPort: 8080
+  type: ClusterIP # Default (Internal only)
+
 ---
-# ingress.yaml
+# Public Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-app
+  name: backend-ingress
   annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
-  ingressClassName: nginx
   tls:
   - hosts:
-    - myapp.example.com
-    secretName: myapp-tls
+    - api.example.com
+    secretName: api-tls-cert # Created by cert-manager
   rules:
-  - host: myapp.example.com
+  - host: api.example.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: my-app
+            name: backend-svc
             port:
               number: 80
 ```
 
-### Step 3: Scaling
+---
+
+## Part 3: Package Management with Helm
+
+Don't manage 100 YAML files manually. Use Helm.
+
+### 3.1 Helm Chart Structure
+
+```text
+mychart/
+├── Chart.yaml          # Metadata
+├── values.yaml         # Default configuration
+├── templates/          # YAML templates with {{ .Values.key }}
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── ingress.yaml
+└── charts/             # Dependencies (e.g., redis, postgres)
+```
+
+### 3.2 Values.yaml Pattern
 
 ```yaml
-# hpa.yaml (Horizontal Pod Autoscaler)
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: my-app
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: my-app
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+# values.yaml
+replicaCount: 3
+
+image:
+  repository: my-app
+  tag: "1.0.0"
+
+service:
+  port: 80
+
+ingress:
+  enabled: true
+  hostname: api.example.com
 ```
 
-### Step 4: Essential Commands
+### 3.3 Dynamic Template
+
+```yaml
+# templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+spec:
+  replicas: {{ .Values.replicaCount }}
+  ...
+```
+
+---
+
+## Part 4: GitOps with ArgoCD
+
+Push-based deployment (CI pipeline runs `kubectl`) is fragile. Use Pull-based GitOps.
+
+1. **Repo 1 (App Code)**: Build Docker image -> Push to Registry.
+2. **Repo 2 (Manifests)**: CI updates `deployment.yaml` with new image tag.
+3. **ArgoCD (In-Cluster)**: Detects change in Repo 2 -> Syncs cluster state.
+
+**Application CRD for ArgoCD:**
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: guestbook
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: guestbook
+  syncPolicy:
+    automated:
+      prune: true    # Delete resources removed from Git
+      selfHeal: true # Fix manual changes in cluster
+```
+
+---
+
+## Part 5: Debugging Cheat Sheet
+
+### 5.1 Pod Status Meanings
+
+- **Pending**: No node has enough CPU/RAM to fit the pod (Check `kubectl describe pod`).
+- **CrashLoopBackOff**: App started, crashed, restarted, crashed again (Check `kubectl logs`).
+- **ImagePullBackOff**: Docker image name/tag is wrong or authentication failed.
+- **Evicted**: Node ran out of disk/memory.
+
+### 5.2 Essential Commands
 
 ```bash
-# Cluster Info
-kubectl cluster-info
-kubectl get nodes
+# Get logs from previous instance (after crash)
+kubectl logs my-pod --previous
 
-# Deployments
-kubectl apply -f deployment.yaml
-kubectl rollout status deployment/my-app
-kubectl rollout undo deployment/my-app
+# Interactive shell
+kubectl exec -it my-pod -- /bin/sh
 
-# Debugging
-kubectl get pods -o wide
-kubectl describe pod <pod-name>
-kubectl logs <pod-name> -f
-kubectl exec -it <pod-name> -- /bin/sh
+# Explain manifest fields (Documentation)
+kubectl explain deployment.spec.strategy
 
-# Scaling
-kubectl scale deployment my-app --replicas=5
+# Use ephemeral debug container (if shell missing in image)
+kubectl debug -it my-pod --image=busybox --target=main-container
 ```
 
-## Best Practices
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Set resource requests/limits
-- ✅ Use liveness/readiness probes
-- ✅ Use Secrets for sensitive data
-- ✅ Use namespaces for isolation
-- ✅ Implement HPA for scaling
-- ✅ Use rolling updates
+- ✅ **Set Requests/Limits**: Mandatory. Without them, scheduler is blind.
+- ✅ **Use Namespaces**: Separate `dev`, `staging`, `prod`. Isolate resources.
+- ✅ **Use Health Probes**: Liveness (Internal error) and Readiness (Traffic ready).
+- ✅ **Label Everything**: Standard labels (`app.kubernetes.io/name`) help observability.
+- ✅ **GitOps**: Source of truth is Git, not what you ran manually.
 
 ### ❌ Avoid This
 
-- ❌ Don't run as root
-- ❌ Don't hardcode configs
-- ❌ Don't skip health checks
-- ❌ Don't use :latest tags
+- ❌ **`latest` tag**: Moving target. Use semantic versioning (`v1.0.2`) or SHA.
+- ❌ **Privileged Containers**: `securityContext: privileged: true` is a major security risk.
+- ❌ **Secrets in Env Vars**: Use Kubernetes Secrets, backed by Vault/SealedSecrets if possible.
+- ❌ **LoadBalancer per Service**: Expensive. Use one Ingress Controller + Ingress resources.
+
+---
 
 ## Related Skills
 
-- `@docker-containerization-specialist` - Container basics
-- `@senior-devops-engineer` - DevOps practices
+- `@docker-containerization-specialist` - Building the images K8s runs
+- `@terraform-specialist` - Provisioning the EKS/GKE cluster itself
+- `@devsecops-specialist` - Cluster security hardening

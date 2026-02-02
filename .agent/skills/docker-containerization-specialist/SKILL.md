@@ -7,176 +7,196 @@ description: "Expert Docker including containerization, Dockerfile optimization,
 
 ## Overview
 
-Master Docker containerization including optimized Dockerfiles, multi-stage builds, Docker Compose orchestration, and container security best practices.
+This skill transforms you into a **Containerization Expert**. You will move beyond basic `docker run` to mastering Multi-Stage Builds for tiny images, securing containers (non-root), optimizing layer caching for fast CI builds, and managing multi-container environments with Compose.
 
 ## When to Use This Skill
 
-- Use when containerizing applications
-- Use when optimizing Docker images
-- Use when setting up Docker Compose
-- Use when securing containers
+- Use when writing `Dockerfiles` for applications
+- Use when optimizing image size (Alpine/Distroless distros)
+- Use when establishing local development environments
+- Use when debugging container networking or storage
+- Use when auditing container security (CVE scanning)
 
-## How It Works
+---
 
-### Step 1: Dockerfile Best Practices
+## Part 1: Advanced Dockerfile Patterns
+
+### 1.1 Multi-Stage Builds (The Golden Standard)
+
+Drastically reduce image size by discarding build tools.
+
+**Example: Go Application (1.5GB -> 20MB)**
 
 ```dockerfile
-# Multi-stage build for Node.js
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
+# Stage 1: Builder (Contains Compiler, Headers, Tools)
+FROM golang:1.22-alpine AS builder
 
-FROM node:20-alpine AS runner
 WORKDIR /app
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-USER nextjs
-EXPOSE 3000
-CMD ["node", "dist/main.js"]
+
+# Cache dependencies (Layer caching)
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Build binary
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o myapp ./cmd/api
+
+# Stage 2: Runner (Minimal Runtime)
+# 'distroless/static' has NO shell, NO package manager. Secure & Tiny.
+FROM gcr.io/distroless/static-debian12:nonroot AS runner
+
+WORKDIR /
+COPY --from=builder /app/myapp .
+
+USER nonroot:nonroot
+
+ENTRYPOINT ["/myapp"]
 ```
 
-### Step 2: Docker Compose
+### 1.2 Layer Caching Optimization
+
+Order matters! Changing a line invalidates cache for all subsequent lines.
+
+**bad:**
+
+```dockerfile
+COPY . .         # Code changes frequently -> Invalidates cache
+RUN npm install  # Slow step runs every time code changes
+```
+
+**good:**
+
+```dockerfile
+COPY package.json .
+RUN npm install  # Cached unless package.json changes
+COPY . .         # Only this layer rebuilds on code change
+```
+
+---
+
+## Part 2: Security Best Practices
+
+### 2.1 Running as Non-Root
+
+By default, Docker runs as root inside the container. If escaped, attacker has root on host.
+
+```dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Create user group
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Set permissions
+COPY . .
+RUN chown -R appuser:appgroup /app
+
+# Switch user
+USER appuser
+
+CMD ["node", "index.js"]
+```
+
+### 2.2 Image Scanning (Trivy/Grype)
+
+Scanning for CVEs in base images.
+
+```bash
+# Scan image for High/Critical vulnerabilities
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+  aquasec/trivy image my-app:latest
+```
+
+---
+
+## Part 3: Docker Compose for Development
+
+Orchestrating local dev stacks (App + DB + Redis).
 
 ```yaml
-# docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
-  app:
-    build:
+  api:
+    build: 
       context: .
-      dockerfile: Dockerfile
+      target: dev # Target specific stage in Dockerfile
     ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgres://user:pass@db:5432/mydb
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: unless-stopped
-
-  db:
-    image: postgres:15-alpine
+      - "8080:8080"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - .:/app          # Hot Reloading (bind mount code)
+      - /app/node_modules # Prevent host node_modules overriding container
+    environment:
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      postgres:
+        condition: service_healthy # Wait for DB healthcheck
+
+  postgres:
+    image: postgres:15-alpine
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persistence
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - app-network
 
   redis:
     image: redis:7-alpine
-    command: redis-server --appendonly yes
-    volumes:
-      - redis_data:/data
-    networks:
-      - app-network
 
 volumes:
-  postgres_data:
-  redis_data:
-
-networks:
-  app-network:
-    driver: bridge
+  pgdata:
 ```
 
-### Step 3: Image Optimization
+---
 
-```
-OPTIMIZATION TECHNIQUES
-├── Use Alpine/Slim base images
-├── Multi-stage builds
-├── Layer caching (.dockerignore)
-├── Combine RUN commands
-├── Remove unnecessary files
-└── Use specific version tags
+## Part 4: Networking & Storage
 
-SIZE COMPARISON
-├── node:20 → 1.1GB
-├── node:20-slim → 200MB
-├── node:20-alpine → 140MB
-└── distroless → 80MB
-```
+### 4.1 Networking Modes
 
-### Step 4: Security Best Practices
+- **Bridge (Default)**: Containers talk via IP on private subnet `172.18.0.x`.
+- **Host (`--network host`)**: Shares host's network stack. Fast, but port conflicts possible. Linux only.
+- **None**: No networking. Secure batch jobs.
+- **Overlay**: Multi-host networking (Swarm/K8s).
 
-```dockerfile
-# Security hardened Dockerfile
-FROM node:20-alpine
+### 4.2 Storage Drivers (Overlay2)
 
-# Don't run as root
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+Docker uses Copy-on-Write (CoW).
 
-# Set secure permissions
-WORKDIR /app
-COPY --chown=appuser:appgroup . .
+- **Image Layers**: Read-only.
+- **Container Interface**: Read/Write layer on top.
+- **Bind Mounts**: Maps host file -> container file (Great for dev).
+- **Volumes**: Managed by Docker in `/var/lib/docker/volumes` (Great for DBs).
 
-# Remove unnecessary tools
-RUN apk del curl wget && \
-    rm -rf /var/cache/apk/*
+---
 
-USER appuser
-
-# Read-only filesystem
-# Use: docker run --read-only
-```
-
-## Examples
-
-### .dockerignore
-
-```
-node_modules
-npm-debug.log
-Dockerfile*
-docker-compose*
-.git
-.gitignore
-.env*
-*.md
-```
-
-### Health Check
-
-```dockerfile
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
-```
-
-## Best Practices
+## Part 5: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use multi-stage builds
-- ✅ Use specific image tags
-- ✅ Run as non-root user
-- ✅ Use .dockerignore
-- ✅ Scan for vulnerabilities
-- ✅ Set resource limits
+- ✅ **Use `.dockerignore`**: Exclude `.git`, `node_modules`, `secrets` from build context. Speed up build & security.
+- ✅ **Pin Base Images**: Use `node:20.11.0-alpine` instead of `node:latest`. Predictability.
+- ✅ **One Process Per Container**: Use specific containers for specific tasks (Microservices).
+- ✅ **Handle PID 1**: Application should handle SIGTERM to shut down gracefully. Use explicit `ENTRYPOINT`.
+- ✅ **Linting**: Use `hadolint` to check Dockerfile quality.
 
 ### ❌ Avoid This
 
-- ❌ Don't use :latest tag
-- ❌ Don't run as root
-- ❌ Don't store secrets in image
-- ❌ Don't install unnecessary packages
+- ❌ **Secrets in Dockerfile**: `ENV PASSWORD=secret` is visible in `docker history`. Use build arguments or runtime secrets.
+- ❌ **Bloated Images**: Don't leave `apt-get` cache. Clean up in same RUN instruction: `apt-get install -y && rm -rf /var/lib/apt/lists/*`.
+- ❌ **"latest" tag in Prod**: You don't know what you are running.
+
+---
 
 ## Related Skills
 
-- `@senior-devops-engineer` - DevOps practices
-- `@kubernetes-specialist` - K8s orchestration
+- `@kubernetes-specialist` - Orchestrating these containers
+- `@senior-linux-sysadmin` - Host OS tuning for containers
+- `@github-actions-specialist` - Building images in CI

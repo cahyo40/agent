@@ -7,120 +7,171 @@ description: "Expert Infrastructure as Code (IaC) using Terraform including HCL 
 
 ## Overview
 
-Master Infrastructure as Code (IaC) with Terraform. Handle HCL syntax, provider configurations, resource management, state files, and building reusable modules.
+This skill transforms you into a **Terraform Infrastructure Architect**. You will move beyond simple resource creation to designing modular, scalable, and secure infrastructure. You will master state management, module composition, multi-environment architecture (workspaces vs directories), and CI/CD integration.
 
 ## When to Use This Skill
 
-- Use when provisioning cloud infrastructure
-- Use when automating infrastructure setup
-- Use when managing multi-cloud resources
-- Use when implementing IaC best practices
+- Use when provisioning cloud infrastructure (AWS, GCP, Azure)
+- Use when designing reusable infrastructure modules
+- Use when managing state (S3 backend, locking)
+- Use when implementing GitOps for infrastructure
+- Use when auditing infrastructure changes (`terraform plan`)
 
-## How It Works
+---
 
-### Step 1: Terraform Basics (HCL)
+## Part 1: Production Project Structure
+
+A monolithic `main.tf` is an anti-pattern. Use a directory-based environment structure.
+
+```text
+infrastructure/
+├── modules/                 # Reusable internal modules
+│   ├── networking/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── database/
+├── environments/            # Live environments
+│   ├── dev/
+│   │   ├── main.tf          # Calls modules
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   ├── backend.tf       # State config
+│   │   └── terraform.tfvars # Environment specific values
+│   ├── staging/
+│   └── prod/
+└── scripts/                 # Bootstrap scripts
+```
+
+---
+
+## Part 2: Module Development
+
+Modules are functions for infrastructure. Input Variables = Arguments. Outputs = Return Values.
+
+### 2.1 Creating a Module (e.g., S3 Bucket)
 
 ```hcl
-# main.tf
-
-# Provider configuration
-provider "aws" {
-  region = var.aws_region
+# modules/secure_bucket/main.tf
+resource "aws_s3_bucket" "this" {
+  bucket = var.bucket_name
+  tags   = var.tags
 }
 
-# Resource definition
-resource "aws_instance" "web_server" {
-  ami           = "ami-0c55b159cbfafe1f0"
-  instance_type = "t2.micro"
-
-  tags = {
-    Name = "Terraform-Instance"
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.this.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
-# Variable definition
-variable "aws_region" {
-  type    = string
-  default = "us-east-1"
-}
-
-# Output definition
-output "instance_ip" {
-  value = aws_instance.web_server.public_ip
+resource "aws_s3_bucket_server_side_encryption_configuration" "encrypt" {
+  bucket = aws_s3_bucket.this.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 ```
 
-### Step 2: State Management
+```hcl
+# modules/secure_bucket/variables.tf
+variable "bucket_name" {
+  description = "Unique name of the bucket"
+  type        = string
+}
 
-```bash
-# Initialize Terraform (downloads providers)
-terraform init
+variable "tags" {
+  description = "Resource tags"
+  type        = map(string)
+  default     = {}
+}
+```
 
-# Plan changes (dry-run)
-terraform plan -out=tfplan
+### 2.2 Consuming a Module
 
-# Apply changes
-terraform apply tfplan
+```hcl
+# environments/prod/main.tf
+module "log_bucket" {
+  source      = "../../modules/secure_bucket"
+  bucket_name = "my-app-logs-prod"
+  tags = {
+    Environment = "Production"
+    Owner       = "DevOps"
+  }
+}
+```
 
-# Inspect state
-terraform show
-terraform state list
+---
 
-# Using remote state (S3 example)
-# backend.tf
+## Part 3: State Management & Locking
+
+**Never** store logic state locally in a team environment.
+
+### 3.1 Remote Backend (AWS S3 + DynamoDB)
+
+```hcl
+# environments/prod/backend.tf
 terraform {
   backend "s3" {
-    bucket = "my-terraform-state"
-    key    = "prod/terraform.tfstate"
-    region = "us-east-1"
+    bucket         = "my-org-tfstate"
+    key            = "prod/app.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "terraform-locks" # Prevents concurrent applies
   }
 }
 ```
 
-### Step 3: Modules & Reusability
+- **S3**: Stores the JSON state file.
+- **DynamoDB**: Handles locking. If User A is running `apply`, User B waits.
+
+---
+
+## Part 4: Advanced Patterns
+
+### 4.1 Loops and Logic (`for_each`)
+
+Use `for_each` over `count` for lists of resources. `count` destroys/recreates if list order changes.
 
 ```hcl
-# modules/vpc/main.tf
-resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
+variable "subnets" {
+  type = map(object({
+    cidr = string
+    zone = string
+  }))
+  default = {
+    "public-1" = { cidr = "10.0.1.0/24", zone = "us-east-1a" }
+    "public-2" = { cidr = "10.0.2.0/24", zone = "us-east-1b" }
+  }
 }
 
-# Root configuration calling the module
-module "network" {
-  source   = "./modules/vpc"
-  vpc_cidr = "10.0.0.0/16"
-}
-
-# Referencing module outputs
 resource "aws_subnet" "public" {
-  vpc_id     = module.network.vpc_id
-  cidr_block = "10.0.1.0/24"
+  for_each          = var.subnets
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = each.value.cidr
+  availability_zone = each.value.zone
+  
+  tags = {
+    Name = each.key
+  }
 }
 ```
 
-### Step 4: Advanced Patterns (Loops & Conditionals)
+### 4.2 Dynamic Blocks
+
+Generate nested blocks dynamically.
 
 ```hcl
-# Count for loops
-resource "aws_iam_user" "users" {
-  count = length(var.user_names)
-  name  = var.user_names[count.index]
-}
-
-# for_each for maps/sets
-resource "aws_s3_bucket" "buckets" {
-  for_each = var.bucket_configs
-  bucket   = each.value.name
-  acl      = each.value.acl
-}
-
-# Dynamic blocks
-resource "aws_security_group" "allow_web" {
+resource "aws_security_group" "web" {
+  name = "web-sg"
+  
   dynamic "ingress" {
-    for_each = var.ingress_rules
+    for_each = var.allowed_ports
     content {
-      from_port   = ingress.value.port
-      to_port     = ingress.value.port
+      from_port   = ingress.value
+      to_port     = ingress.value
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
     }
@@ -128,25 +179,63 @@ resource "aws_security_group" "allow_web" {
 }
 ```
 
-## Best Practices
+---
+
+## Part 5: Deployment & CI/CD
+
+### 5.1 Terraform Workflow
+
+1. **Format**: `terraform fmt -recursive` (Pre-commit)
+2. **Validate**: `terraform validate` (CI)
+3. **Plan**: `terraform plan -out=tfplan` (CI - Pull Request)
+    - Review the plan output carefully.
+4. **Apply**: `terraform apply tfplan` (CD - Merge to Main)
+
+### 5.2 Secret Management
+
+Do not put secrets in `.tfvars`.
+
+- Use `ENV` variables: `TF_VAR_db_password="..."`
+- Use Cloud Secret Manager:
+
+```hcl
+data "aws_secretsmanager_secret_version" "creds" {
+  secret_id = "db-creds"
+}
+
+locals {
+  db_creds = jsondecode(data.aws_secretsmanager_secret_version.creds.secret_string)
+}
+
+resource "aws_db_instance" "default" {
+  username = local.db_creds.username
+  password = local.db_creds.password
+}
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use remote state with locking (e.g., S3 + DynamoDB)
-- ✅ Use modules for repeated infrastructure
-- ✅ Use meaningful variable names and descriptions
-- ✅ Keep secrets out of code (use environment variables or Vault)
-- ✅ Run `terraform fmt` routinely
+- ✅ **Pin Provider Versions**: Always set `required_providers { aws = { version = "~> 5.0" } }` to avoid breaking changes.
+- ✅ **Use strict formatting**: Run `terraform fmt` automatically.
+- ✅ **Tag Everything**: Use `default_tags` in the provider config to tag all resources cost allocation.
+- ✅ **Use Data Sources**: Query existing infrastructure (`data "aws_vpc" "default" {}`) instead of hardcoding IDs.
+- ✅ **Separate State**: Use different state files for different environments (prod vs dev) to limit blast radius.
 
 ### ❌ Avoid This
 
-- ❌ Don't commit `.terraform` directory or state files to VCS
-- ❌ Don't hardcode sensitive values
-- ❌ Don't skip the `terraform plan` step
-- ❌ Don't manually edit the state file
+- ❌ **Hardcoding IDs**: Don't put `"vpc-12345"` in code. Use input variables or data sources.
+- ❌ **Commiting `.tfstate`**: Add `*.tfstate` to `.gitignore`. It contains secrets!
+- ❌ **Huge Modules**: Keep modules focused (e.g., "Networking", "Database"). Don't make a "Everything" module.
+- ❌ **`resource` for existing infra**: Use `terraform import` effectively first.
+
+---
 
 ## Related Skills
 
-- `@senior-devops-engineer` - Infrastructure automation
-- `@senior-cloud-architect` - Cloud design
-- `@ansible-specialist` - Configuration management
+- `@ansible-specialist` - Configuration Management after provisioning
+- `@docker-containerization-specialist` - Container infrastructure
+- `@github-actions-specialist` - Automating Terraform CI/CD
