@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-275-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.4.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-300-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.5.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 275+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 300+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **275 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **300 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -164,14 +164,14 @@ rm -rf temp-skills
 | 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, Architecture |
-| 💼 Industry Apps | 21 | Healthcare, Trading, ERP, Fleet, BI, Travel, Logistics, Marketplace, Gig Economy |
+| 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Fleet, Ride-Hailing, Dating, Social |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 11 | VR/AR, Quantum, Web3, Biometrics, Digital Human |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
 | 🎨 Creative Arts | 1 | Creative Coding Artist |
-| 📚 Others | 26 | Various specialized |
+| 📚 Others | 38 | Various specialized |
 
 ---
 
@@ -219,12 +219,12 @@ buatkan script dan ide thumbnail untuk video YouTube
 - `@content-repurposer` - 1 content → 10 formats
 - `@copywriting` - Marketing copy
 
-### Business
+### Business & Industry
 
 - `@e-commerce-developer` - Online stores
 - `@saas-product-developer` - SaaS applications
-- `@payment-integration-specialist` - Stripe, payments
-- `@crm-developer` - Customer management
+- `@indonesia-payment-integration` - Midtrans, Xendit, GoPay, OVO
+- `@ride-hailing-developer` - Gojek/Grab style apps
 
 ---
 
@@ -233,7 +233,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 ```text
 agents/
 ├── .agent/
-│   └── skills/          # 275 skill folders
+│   └── skills/          # 300 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/

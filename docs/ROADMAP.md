@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.4.0  
-> **Total Skills:** 275
+> **Current Version:** v6.5.0  
+> **Total Skills:** 300
 
 ---
 
@@ -10,16 +10,16 @@
 
 ```text
 ████████████████████████████████████████ 100%
-275/275 Skills Complete ✅
+300/300 Skills Complete ✅ (Milestone!)
 ```
 
 ---
 
 ## ✅ Completed Milestones
 
-### v6.4.0 - Hacking & Security Expansion (Feb 2026) ✅
+### v6.5.0 - 300 Skills Milestone (Feb 2026) ✅
 
-**Goal:** 275 Skills + Offensive Security Focus
+**Goal:** 300 Skills + Indonesia Payment + Specialized Apps
 
 | Category | Skills | Status |
 |----------|--------|--------|
@@ -30,19 +30,48 @@
 | UI/UX & Design | 14 | ✅ Complete |
 | Cloud & DevOps | 17 | ✅ Complete |
 | Data & Databases | 16 | ✅ Complete |
-| **Security** | **14** | ✅ Complete |
+| Security | 14 | ✅ Complete |
 | Testing & QA | 6 | ✅ Complete |
 | Content Creation | 24 | ✅ Complete |
 | Marketing & Business | 14 | ✅ Complete |
 | Documentation | 7 | ✅ Complete |
-| Industry Apps | 21 | ✅ Complete |
+| **Industry Apps** | **40** | ✅ Complete |
 | Desktop & Games | 11 | ✅ Complete |
 | Emerging Tech | 16 | ✅ Complete |
 | Bots & Automation | 7 | ✅ Complete |
 | Media Processing | 2 | ✅ Complete |
 | Industrial Tech | 3 | ✅ Complete |
 | Creative Arts | 1 | ✅ Complete |
-| Others | 23 | ✅ Complete |
+| Others | 29 | ✅ Complete |
+
+**New in v6.5.0:**
+
+- 🆕 `indonesia-payment-integration` - Midtrans, Xendit, DOKU, GoPay, OVO, DANA, QRIS
+- 🆕 `geolocation-specialist` - GPS tracking, geofencing, mapping APIs
+- 🆕 `pdf-document-specialist` - PDF generation, form filling, digital signatures
+- 🆕 `dating-app-developer` - Matching algorithms, swipe mechanics, safety
+- 🆕 `social-network-developer` - Feed algorithms, stories, friend systems
+- 🆕 `ride-hailing-developer` - Driver matching, tracking, fare calculation (Gojek/Grab)
+- 🆕 `inventory-management-developer` - Stock tracking, warehouse, barcode/QR
+- 🆕 `notification-system-architect` - Push notifications, FCM, APNS
+- 🆕 `multi-tenant-architect` - SaaS database strategies, tenant isolation
+- 🆕 `real-time-collaboration` - CRDT, operational transform
+- 🆕 `queue-system-specialist` - RabbitMQ, SQS, job queues
+- 🆕 `restaurant-system-developer` - POS, kitchen display, reservations
+- 🆕 `hotel-booking-developer` - Room management, rates, OTA integration
+- 🆕 `parking-management-developer` - Parking lots, LPR, payment
+- 🆕 `ticketing-system-developer` - Events, seat selection, QR validation
+- 🆕 `rental-system-developer` - Equipment, vehicles, subscription rentals
+- 🆕 `voice-assistant-developer` - Alexa Skills, Google Actions
+- 🆕 `wearable-app-developer` - Apple Watch, Wear OS
+- 🆕 `smart-home-developer` - Matter, HomeKit, Zigbee
+- 🆕 `drone-software-developer` - Flight controllers, mapping
+
+---
+
+### v6.4.0 - Hacking & Security Expansion (Feb 2026) ✅
+
+**Goal:** 275 Skills + Offensive Security Focus
 
 **New in v6.4.0:**
 
@@ -58,29 +87,6 @@
 ### v6.3.0 - Multi-Platform & Flutter Integration (Feb 2026) ✅
 
 **Goal:** 269 Skills + Multi-AI Model Support
-
-| Category | Skills | Status |
-|----------|--------|--------|
-| AI & Machine Learning | 20 | ✅ Complete |
-| Backend Development | 26 | ✅ Complete |
-| Mobile Development | 17 | ✅ Complete |
-| Frontend Development | 16 | ✅ Complete |
-| UI/UX & Design | 14 | ✅ Complete |
-| Cloud & DevOps | 17 | ✅ Complete |
-| Data & Databases | 16 | ✅ Complete |
-| Security | 8 | ✅ Complete |
-| Testing & QA | 6 | ✅ Complete |
-| Content Creation | 24 | ✅ Complete |
-| Marketing & Business | 14 | ✅ Complete |
-| Documentation | 7 | ✅ Complete |
-| Industry Apps | 21 | ✅ Complete |
-| Desktop & Games | 11 | ✅ Complete |
-| Emerging Tech | 16 | ✅ Complete |
-| Bots & Automation | 7 | ✅ Complete |
-| Media Processing | 2 | ✅ Complete |
-| Industrial Tech | 3 | ✅ Complete |
-| Creative Arts | 1 | ✅ Complete |
-| Others | 23 | ✅ Complete |
 
 **New in v6.3.0:**
 
@@ -99,29 +105,6 @@
 ### v6.2.0 - Creative AI Expansion (Feb 2026) ✅
 
 **Goal:** 261 Skills
-
-| Category | Skills | Status |
-|----------|--------|--------|
-| AI & Machine Learning | 20 | ✅ Complete |
-| Backend Development | 26 | ✅ Complete |
-| Mobile Development | 14 | ✅ Complete |
-| Frontend Development | 16 | ✅ Complete |
-| UI/UX & Design | 14 | ✅ Complete |
-| Cloud & DevOps | 17 | ✅ Complete |
-| Data & Databases | 16 | ✅ Complete |
-| Security | 8 | ✅ Complete |
-| Testing & QA | 6 | ✅ Complete |
-| Content Creation | 24 | ✅ Complete |
-| Marketing & Business | 14 | ✅ Complete |
-| Documentation | 7 | ✅ Complete |
-| Industry Apps | 21 | ✅ Complete |
-| Desktop & Games | 11 | ✅ Complete |
-| Emerging Tech | 11 | ✅ Complete |
-| Bots & Automation | 7 | ✅ Complete |
-| Media Processing | 2 | ✅ Complete |
-| Industrial Tech | 3 | ✅ Complete |
-| Creative Arts | 1 | ✅ Complete |
-| Others | 23 | ✅ Complete |
 
 ### v5.0.0 New Skills Added
 
@@ -143,24 +126,14 @@
 
 ## 🚀 Future Roadmap
 
-### v5.1.0 - Quality Improvements (Q2 2026)
+### v7.0.0 - Quality & Localization (Q2 2026)
 
 | Feature | Description | Priority |
 |---------|-------------|----------|
 | 📖 Enhanced Examples | More code examples per skill | High |
 | 🔗 Skill Linking | Better cross-references | Medium |
-| 🌐 Localization | Indonesian language support | Medium |
+| 🌐 Full Indonesian | Complete Indonesian language | Medium |
 | 📊 Usage Analytics | Track most used skills | Low |
-
-### v6.0.0 - 250 Skills Target (Q3 2026)
-
-├── README.md
-└── LICENSE
-
-```
-
-(Archive containing 250 skills)
-
 
 ---
 
@@ -232,7 +205,7 @@ What this skill does and when to use it.
 | v6.2.0 | Feb 2026 | 261 | +2.3% |
 | v6.3.0 | Feb 2026 | 269 | +3% |
 | v6.4.0 | Feb 2026 | 275 | +2% |
-| v7.0.0 | 2027 | 300 | +9% (planned) |
+| **v6.5.0** | **Feb 2026** | **300** | **+9%** 🎉 |
 
 ---
 

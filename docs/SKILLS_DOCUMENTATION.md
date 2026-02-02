@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.4.0  
+> **Version:** 6.5.0  
 > **Last Updated:** 2026-02-02  
-> **Total Skills:** 275
+> **Total Skills:** 300
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **275 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **300 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -53,14 +53,14 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 | 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
-| 💼 Industry Apps | 21 | Healthcare, Trading, ERP, Fleet, BI, Travel, Logistics, Marketplace, Gig Economy |
+| 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Ride-Hailing, Dating, Social |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 16 | VR/AR, quantum, Web3, Tech Trends, Innovation Scout |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
 | 🎨 Creative Arts | 1 | Creative Coding Artist |
-| 📚 Others | 26 | Various specialized skills |
+| 📚 Others | 30 | Various specialized skills |
 
 ---
 
@@ -146,167 +146,46 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 | Skill | Description |
 |-------|-------------|
-| `senior-flutter-developer` | Expert Flutter development dengan clean architecture, performance optimization |
-| `flutter-riverpod-specialist` | State management dengan Riverpod, providers, code generation |
-| `flutter-bloc-specialist` | 🆕 BLoC pattern, Cubit, event-driven state management |
-| `flutter-getx-specialist` | GetX state management, routing, dependency injection |
-| `flutter-firebase-developer` | 🆕 Firebase Auth, Firestore, FCM, Storage, Crashlytics |
-| `flutter-supabase-developer` | 🆕 Supabase Auth, PostgreSQL, Realtime, RLS, Edge Functions |
-| `flutter-testing-specialist` | Unit tests, widget tests, integration tests, golden tests |
-| `flutter-package-developer` | Package creation, platform channels, pub.dev publishing |
-| `flutter-ci-cd` | GitHub Actions, Codemagic, Fastlane automation |
-| `senior-ios-developer` | Swift, SwiftUI, UIKit, Combine, async/await |
-| `senior-android-developer` | Kotlin, Jetpack Compose, MVVM, coroutines |
-| `react-native-developer` | React Native, Expo, cross-platform mobile |
-| `fitness-app-developer` | Workout tracking, health metrics integration |
-| `senior-firebase-developer` | Advanced Firebase patterns, multi-platform |
-| `senior-supabase-developer` | Advanced Supabase, PostgreSQL optimization |
-| `dapp-mobile-developer` | Flutter + Web3, WalletConnect, token/NFT |
-| `mobile-app-designer` | iOS/Android design patterns, HIG/Material |
+| `senior-flutter-developer` | Expert Flutter development dengan clean architecture |
+| `flutter-riverpod-specialist` | State management dengan Riverpod |
+| `flutter-bloc-specialist` | BLoC pattern, Cubit, event-driven |
+| `flutter-getx-specialist` | GetX state management, routing |
+| `flutter-firebase-developer` | Firebase Auth, Firestore, FCM, Storage |
+| `flutter-supabase-developer` | Supabase Auth, PostgreSQL, Realtime |
+| `flutter-testing-specialist` | Unit tests, widget tests, integration tests |
+| `flutter-package-developer` | Package creation, platform channels |
+| `flutter-ci-cd` | GitHub Actions, Codemagic, Fastlane |
+| `senior-ios-developer` | Swift, SwiftUI, UIKit, Combine |
+| `senior-android-developer` | Kotlin, Jetpack Compose, MVVM |
+| `react-native-developer` | React Native, Expo, cross-platform |
+| `fitness-app-developer` | Workout tracking, health metrics |
+| `senior-firebase-developer` | Advanced Firebase patterns |
+| `senior-supabase-developer` | Advanced Supabase, PostgreSQL |
+| `dapp-mobile-developer` | Flutter + Web3, WalletConnect |
+| `mobile-app-designer` | iOS/Android design patterns |
 
 ---
 
-### 🎨 Frontend Development (12 Skills)
+### 💼 Industry Apps (40 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-react-developer` | React hooks, state management |
-| `senior-vue-developer` | Vue 3, Composition API, Pinia |
-| `senior-nextjs-developer` | App Router, RSC, SSR/SSG |
-| `senior-tailwindcss-developer` | Utility-first styling |
-| `senior-typescript-developer` | Advanced types, generics |
-| `3d-web-experience` | Three.js, React Three Fiber |
-| `pwa-developer` | Service workers, offline-first |
-| `web-animation-specialist` | GSAP, Framer Motion |
-| `senior-webperf-engineer` | Core Web Vitals, Lighthouse |
-| `headless-cms-specialist` | Contentful, Sanity, Strapi |
-| `ui-kit-developer` | Component libraries |
-| `stitch-react-components` | Stitch to React conversion |
-
----
-
-### ☁️ Cloud & DevOps (12 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `senior-cloud-architect` | AWS, GCP, Azure, serverless |
-| `senior-devops-engineer` | CI/CD, Kubernetes, Docker |
-| `senior-site-reliability-engineer` | SLO/SLI, observability |
-| `senior-linux-sysadmin` | VPS setup, server security |
-| `senior-web-deployment-specialist` | Nginx, SSL, Docker |
-| `github-actions-specialist` | CI/CD workflows, automation |
-| `docker-containerization-specialist` | Dockerfile, multi-stage builds |
-| `docker-compose-orchestrator` | Multi-container applications |
-| `kubernetes-specialist` | Deployments, Helm charts |
-| `git-workflow-specialist` | Branching, PR practices |
-| `git-commit-specialist` | Conventional commits |
-| `open-source-maintainer` | Community, contributions |
-
----
-
-### 💾 Data & Databases (16 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `senior-data-engineer` | ETL/ELT, Spark, Delta Lake |
-| `senior-data-analyst` | Statistical analysis, SQL, pandas |
-| `senior-database-engineer-sql` | Schema design, PostgreSQL |
-| `senior-database-engineer-nosql` | MongoDB, document design |
-| `mongodb-developer` | Aggregation, indexing |
-| `postgresql-specialist` | JSONB, CTEs, partitioning |
-| `database-modeling-specialist` | ER diagrams, normalization |
-| `redis-specialist` | Caching, rate limiting |
-| `elasticsearch-developer` | Full-text search, indexing |
-| `analytics-engineer` | Event tracking, dashboards |
-| `r-data-scientist` | tidyverse, ggplot2, ML |
-| `r-statistician` | Hypothesis testing, Bayesian |
-| `spreadsheet-expert` | Excel, Google Sheets |
-| `gis-specialist` | PostGIS, mapping, spatial data |
-| `big-data-engineer` | Spark, Hadoop, Delta Lake, Airflow |
-| `kafka-developer` | Event streaming, Kafka Streams |
-
----
-
-### 🔐 Security & Hacking (14 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `senior-cybersecurity-engineer` | Application security, zero trust architecture |
-| `senior-api-security-specialist` | OWASP Top 10, OAuth 2.0, JWT, API gateway security |
-| `senior-penetration-tester` | Comprehensive vulnerability assessment, ethical hacking |
-| `bug-bounty-hunter` | 🆕 Vulnerability hunting on HackerOne, Bugcrowd, report writing |
-| `ctf-competitor` | 🆕 CTF challenges: Web, Pwn, Crypto, Forensics, Reversing |
-| `red-team-operator` | 🆕 Adversary simulation, social engineering, C2 operations |
-| `malware-analyst` | 🆕 Static/dynamic analysis, YARA rules, IOC extraction |
-| `network-security-specialist` | 🆕 Network pen testing, Wireshark, IDS/IPS, firewall config |
-| `forensic-investigator` | 🆕 Digital forensics, memory analysis, incident response |
-| `web3-smart-contract-auditor` | Smart contract security, Solidity vulnerabilities |
-| `llm-security-specialist` | Prompt injection defense, LLM red teaming |
-| `devsecops-specialist` | Security in CI/CD pipeline, SAST/DAST |
-| `privacy-engineering-specialist` | Differential privacy, zero-knowledge proofs |
-| `debugging-specialist` | Root cause analysis, systematic debugging |
-
----
-
-### 🧪 Testing & QA (6 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `playwright-specialist` | E2E testing, cross-browser |
-| `performance-testing-specialist` | k6, JMeter, load testing |
-| `api-testing-specialist` | Postman, REST API testing |
-| `tdd-workflow` | RED-GREEN-REFACTOR |
-| `senior-code-reviewer` | Systematic review, feedback |
-| `python-testing-specialist` | pytest, mocking, TDD |
-
----
-
-### 📝 Content Creation & Video (16 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `senior-youtube-content-creator` | Video strategy, SEO |
-| `youtube-shorts-strategist` | Shorts optimization |
-| `short-form-video-creator` | TikTok, Reels, Shorts |
-| `tiktok-content-strategist` | TikTok algorithm, trends |
-| `instagram-content-strategist` | Instagram marketing |
-| `twitter-x-strategist` | Twitter/X growth |
-| `linkedin-content-strategist` | LinkedIn personal branding |
-| `video-editor-automation` | FFmpeg, batch processing |
-| `podcast-producer` | Recording, editing |
-| `livestream-producer` | OBS, streaming |
-| `script-writer` | Video scripts, hooks |
-| `content-repurposer` | 1 content → 10 formats |
-| `remotion-developer` | Programmatic video React |
-| `blog-content-writer` | SEO articles, long-form |
-| `newsletter-writer` | Email content, Substack |
-| `viral-content-creator` | Trends, hooks, virality |
-
----
-
-### 📊 Marketing & Business (12 Skills)
-
-| Skill | Description |
-|-------|-------------|
-| `copywriting` | Marketing copy, CTAs |
-| `social-media-marketer` | Content strategy, paid ads |
-| `marketing-strategist` | Pricing, launch, growth |
-| `startup-growth-hacking` | Viral loops, experiments |
-| `startup-pitch-deck` | Investor presentations |
-| `startup-fundraising` | Investor targeting, term sheets |
-| `startup-mvp-builder` | Rapid MVP development |
-| `startup-analyst` | Market sizing, metrics |
-| `senior-seo-auditor` | Technical SEO, audits |
-| `seo-content-writer` | Keyword-optimized content |
-| `seo-keyword-research` | Keyword analysis |
-| `digital-ads-specialist` | Google Ads, Meta Ads |
-
----
-
-### 💼 Industry Apps (12 Skills)
-
-| Skill | Description |
-|-------|-------------|
+| `indonesia-payment-integration` | 🆕 Midtrans, Xendit, DOKU, GoPay, OVO, DANA, QRIS |
+| `ride-hailing-developer` | 🆕 Driver matching, tracking, fare (Gojek/Grab) |
+| `dating-app-developer` | 🆕 Matching algorithms, swipe mechanics, safety |
+| `social-network-developer` | 🆕 Feed algorithms, stories, friend systems |
+| `geolocation-specialist` | 🆕 GPS tracking, geofencing, mapping APIs |
+| `pdf-document-specialist` | 🆕 PDF generation, forms, digital signatures |
+| `inventory-management-developer` | 🆕 Stock tracking, warehouse, barcode/QR |
+| `notification-system-architect` | 🆕 Push notifications, FCM, APNS |
+| `multi-tenant-architect` | 🆕 SaaS database strategies, tenant isolation |
+| `real-time-collaboration` | 🆕 CRDT, operational transform |
+| `queue-system-specialist` | 🆕 RabbitMQ, SQS, job queues |
+| `restaurant-system-developer` | 🆕 POS, kitchen display, reservations |
+| `hotel-booking-developer` | 🆕 Room management, rates, OTA integration |
+| `parking-management-developer` | 🆕 Parking lots, LPR, payment |
+| `ticketing-system-developer` | 🆕 Events, seat selection, QR validation |
+| `rental-system-developer` | 🆕 Equipment, vehicles, subscription rentals |
 | `healthcare-app-developer` | HIPAA, telemedicine, HL7 FHIR |
 | `trading-app-developer` | Real-time market data, orders |
 | `edtech-developer` | LMS, courses, gamification |
@@ -319,29 +198,68 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `hr-payroll-developer` | HR systems, payroll |
 | `booking-system-developer` | Appointments, reservations |
 | `saas-product-developer` | Multi-tenant SaaS |
+| `saas-billing-specialist` | Stripe subscriptions |
+| `erp-developer` | Enterprise resource planning |
+| `bi-dashboard-developer` | Business intelligence |
+| `fleet-management-developer` | GPS tracking, telematics |
+| `logistics-software-developer` | WMS, inventory optimization |
+| `marketplace-architect` | Multi-vendor, commissions |
+| `gig-economy-expert` | On-demand platforms |
+| `travel-tech-developer` | GDS, OTA, booking engines |
+| `insurtech-developer` | Claims, underwriting |
+| `personal-finance-app-developer` | Budgeting, expense tracking |
+| `sports-league-developer` | Fixtures, brackets, standings |
+| `academic-scheduling-developer` | Timetables, room allocation |
 
 ---
 
-### 🔮 Emerging Tech & Innovation (16 Skills)
+### 🔮 Emerging Tech & IoT (22 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-spatial-computing-developer` | VR/AR development, Apple visionOS, Meta Quest |
-| `senior-quantum-computing-developer` | Qiskit, quantum algorithms, hybrid systems |
-| `senior-robotics-engineer` | ROS2, SLAM, motion planning, autonomous systems |
-| `expert-web3-blockchain` | Smart contracts, DeFi, NFTs, security-first |
-| `senior-web3-developer` | Web3 frontend integration, wagmi/viem |
-| `web3-defi-developer` | AMM, lending protocols, yield farming |
-| `tech-trend-analyst` | 🆕 Analyze GitHub Trending, StackOverflow surveys, Technology Radar |
-| `emerging-tech-specialist` | 🆕 Track bleeding-edge tech before mainstream adoption |
-| `open-source-evaluator` | 🆕 Assess OSS project health, maintainer activity, licensing risks |
-| `market-innovation-scout` | 🆕 Discover trending products on ProductHunt/IndieHackers |
-| `tech-stack-architect` | 🆕 Recommend cohesive tech stacks based on requirements |
-| `gis-specialist` | PostGIS, Leaflet, Mapbox, spatial analysis |
-| `iot-developer` | Arduino, Raspberry Pi, MQTT, sensors |
-| `biometric-system-architect` | FaceID, TouchID, multi-modal biometrics |
-| `digital-human-architect` | Digital humans, virtual influencers, AI avatars |
-| `autonomous-vehicle-engineer` | Sensor fusion, path planning, safety-critical |
+| `voice-assistant-developer` | 🆕 Alexa Skills, Google Actions |
+| `wearable-app-developer` | 🆕 Apple Watch, Wear OS |
+| `smart-home-developer` | 🆕 Matter, HomeKit, Zigbee |
+| `drone-software-developer` | 🆕 Flight controllers, mapping |
+| `senior-spatial-computing-developer` | VR/AR, Apple visionOS, Meta Quest |
+| `senior-quantum-computing-developer` | Qiskit, quantum algorithms |
+| `senior-robotics-engineer` | ROS2, SLAM, motion planning |
+| `expert-web3-blockchain` | Smart contracts, DeFi, NFTs |
+| `senior-web3-developer` | Web3 frontend, wagmi/viem |
+| `web3-defi-developer` | AMM, lending protocols |
+| `tech-trend-analyst` | GitHub Trending, Technology Radar |
+| `emerging-tech-specialist` | Bleeding-edge tech tracking |
+| `open-source-evaluator` | OSS project health evaluation |
+| `market-innovation-scout` | ProductHunt/IndieHackers discovery |
+| `tech-stack-architect` | Stack recommendations |
+| `gis-specialist` | PostGIS, Leaflet, Mapbox |
+| `iot-developer` | Arduino, Raspberry Pi, MQTT |
+| `biometric-system-architect` | FaceID, TouchID, multi-modal |
+| `digital-human-architect` | Digital humans, AI avatars |
+| `autonomous-vehicle-engineer` | Sensor fusion, path planning |
+| `industrial-iot-developer` | MQTT, Modbus, OPC UA |
+| `scada-specialist` | HMI, PLC, industrial protocols |
+
+---
+
+### 🔐 Security & Hacking (14 Skills)
+
+| Skill | Description |
+|-------|-------------|
+| `senior-cybersecurity-engineer` | Application security, zero trust |
+| `senior-api-security-specialist` | OWASP Top 10, OAuth 2.0, JWT |
+| `senior-penetration-tester` | Vulnerability assessment, ethical hacking |
+| `bug-bounty-hunter` | HackerOne, Bugcrowd, report writing |
+| `ctf-competitor` | CTF challenges: Web, Pwn, Crypto, Forensics |
+| `red-team-operator` | Adversary simulation, social engineering |
+| `malware-analyst` | Static/dynamic analysis, YARA rules |
+| `network-security-specialist` | Network pen testing, IDS/IPS |
+| `forensic-investigator` | Digital forensics, incident response |
+| `web3-smart-contract-auditor` | Smart contract security |
+| `llm-security-specialist` | Prompt injection defense |
+| `devsecops-specialist` | Security in CI/CD pipeline |
+| `privacy-engineering-specialist` | Differential privacy, ZKP |
+| `mobile-security-tester` | iOS/Android pen testing |
 
 ---
 
@@ -357,20 +275,48 @@ buatkan script dan ide thumbnail untuk video YouTube
 | Create REST API (Go) | `@senior-backend-engineer-golang` |
 | Setup CI/CD | `@github-actions-specialist` |
 | MongoDB development | `@mongodb-developer` |
-| PostgreSQL advanced features | `@postgresql-specialist` |
 | Load testing | `@performance-testing-specialist` |
 | Build AI agent | `@senior-ai-agent-developer` |
 | Build RAG system | `@senior-rag-engineer` |
 | Healthcare app | `@healthcare-app-developer` |
-| Trading/fintech app | `@trading-app-developer` |
-| Food delivery app | `@food-delivery-developer` |
-| Real estate app | `@proptech-developer` |
-| E-learning platform | `@edtech-developer` |
-| API security | `@senior-api-security-specialist` |
+| Ride-hailing app (Gojek/Grab) | `@ride-hailing-developer` |
+| Dating app | `@dating-app-developer` |
+| Social network | `@social-network-developer` |
+| Indonesian payments | `@indonesia-payment-integration` |
+| GPS tracking / geofencing | `@geolocation-specialist` |
+| PDF generation | `@pdf-document-specialist` |
 
 ---
 
 ## Changelog
+
+### v6.5.0 (2026-02-02) 🎉
+
+- 🎉 **300 Skills** - Major milestone reached!
+- ✨ New Indonesia Payment & Specialized App Skills:
+  - `indonesia-payment-integration` - Midtrans, Xendit, DOKU, e-wallets, QRIS
+  - `ride-hailing-developer` - Gojek/Grab style apps
+  - `dating-app-developer` - Matching, swipe, safety
+  - `social-network-developer` - Feed, stories, relationships
+  - `geolocation-specialist` - GPS, geofencing, maps
+  - `pdf-document-specialist` - PDF generation, forms, signatures
+- ✨ New System & Architecture Skills:
+  - `inventory-management-developer` - Stock, warehouse, barcode
+  - `notification-system-architect` - Push, FCM, APNS
+  - `multi-tenant-architect` - SaaS database strategies
+  - `real-time-collaboration` - CRDT, OT
+  - `queue-system-specialist` - RabbitMQ, SQS
+- ✨ New Industry Apps:
+  - `restaurant-system-developer` - POS, kitchen display
+  - `hotel-booking-developer` - Room management, OTA
+  - `parking-management-developer` - Lots, LPR, payment
+  - `ticketing-system-developer` - Events, seats, QR
+  - `rental-system-developer` - Equipment, vehicles
+- ✨ New IoT & Emerging Tech:
+  - `voice-assistant-developer` - Alexa, Google Actions
+  - `wearable-app-developer` - Watch apps
+  - `smart-home-developer` - Matter, HomeKit
+  - `drone-software-developer` - Flight controllers
 
 ### v6.4.0 (2026-02-02)
 
@@ -417,17 +363,6 @@ buatkan script dan ide thumbnail untuk video YouTube
   - **Testing**: `performance-testing-specialist`
   - **GIS**: `gis-specialist`
   - **Web3**: `web3-smart-contract-auditor`, `web3-defi-developer`
-
-### v4.0.0 (2026-01-30)
-
-- 🎉 **156 Skills** - Total skills increased from 118 to 156
-- ✨ New categories: Business Systems, Bots & Automation
-- ➕ Added 38 new skills
-
-### v3.0.0 (2026-01-30)
-
-- 🎉 **118 Skills**
-- ✨ Added Content Creation & Video category
 
 ---
 
