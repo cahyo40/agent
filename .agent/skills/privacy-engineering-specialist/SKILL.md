@@ -7,61 +7,174 @@ description: "Expert in privacy-by-design including differential privacy, zero-k
 
 ## Overview
 
-Master the integration of privacy into technical systems. Expertise in Privacy-by-Design, Differential Privacy, Zero-Knowledge Proofs (ZKP), homomorphic encryption, and building automated compliance-as-code (GDPR, CCPA).
+This skill transforms you into a **Privacy-First Systems Designer**. You will master **Differential Privacy**, **Zero-Knowledge Proofs (ZKP)**, **Data Anonymization**, and **Compliance Automation** for building privacy-preserving systems.
 
 ## When to Use This Skill
 
-- Use when handling sensitive user data (Financial, Healthcare, PII)
-- Use when designing systems requiring "Need-to-Know" data access
-- Use for implementing cryptographic proofs without revealing data
-- Use when automating privacy impact assessments (PIA) in the dev lifecycle
+- Use when implementing GDPR/CCPA compliance
+- Use when anonymizing datasets for analytics
+- Use when building privacy-preserving authentication
+- Use when understanding zero-knowledge proofs
+- Use when designing data minimization architectures
 
-## How It Works
+---
 
-### Step 1: Differential Privacy
+## Part 1: Privacy by Design Principles
 
-- **Noise Injection**: Adding mathematical noise to datasets so individual records cannot be identified while maintaining statistical accuracy.
-- **ε-Differential Privacy**: Measuring the privacy guarantee of a query.
+### 1.1 The 7 Principles (Cavoukian)
 
-### Step 2: Zero-Knowledge Proofs (ZKP)
+1. **Proactive, not Reactive**: Build in privacy from the start.
+2. **Privacy as Default**: Collect minimum necessary data.
+3. **Privacy Embedded**: Not an add-on, core to design.
+4. **Full Functionality**: Privacy AND security, not trade-offs.
+5. **End-to-End Security**: Protect throughout lifecycle.
+6. **Visibility/Transparency**: Users know what happens to data.
+7. **User-Centric**: Give users control.
 
-```text
-USE CASE:
-A user can prove they are over 18 without 
-revealing their actual birthdate to the application.
+### 1.2 Data Minimization
+
+| Principle | Action |
+|-----------|--------|
+| **Collect Less** | Only request necessary fields |
+| **Retain Less** | Delete after purpose fulfilled |
+| **Access Less** | Least privilege for employees |
+
+---
+
+## Part 2: Differential Privacy
+
+### 2.1 What Is It?
+
+Add calibrated noise to query results so individual records can't be identified.
+
+**Definition**: A mechanism M provides ε-differential privacy if for any two datasets D1 and D2 differing by one record:
+`P(M(D1) = O) ≤ e^ε * P(M(D2) = O)`
+
+### 2.2 Laplace Mechanism
+
+Add Laplace noise proportional to sensitivity / ε.
+
+```python
+import numpy as np
+
+def laplace_mechanism(true_value, sensitivity, epsilon):
+    scale = sensitivity / epsilon
+    noise = np.random.laplace(0, scale)
+    return true_value + noise
+
+# Example: Count query (sensitivity = 1)
+noisy_count = laplace_mechanism(1000, sensitivity=1, epsilon=0.1)
 ```
 
-- **zk-SNARKs/zk-STARKs**: High-performance proofs for blockchain and identity systems.
+### 2.3 Tools
 
-### Step 3: Anonymization & Pseudonymization
+- **Google DP**: github.com/google/differential-privacy
+- **OpenDP**: opendp.org
+- **PyDP**: Python library for differential privacy.
 
-- **K-Anonymity**: Ensuring a record is indistinguishable from at least k-1 other records.
-- **Tokenization**: Replacing sensitive data with non-sensitive identifiers.
+---
 
-### Step 4: Compliance-as-Code
+## Part 3: Zero-Knowledge Proofs (ZKP)
 
-- **Privacy Linting**: Automatically detecting PII in logs or code.
-- **Data Subject Access Request (DSAR) Automation**: Building systems that can instantly delete or export a user's entire data history on demand.
+### 3.1 What Is It?
 
-## Best Practices
+Prove you know something without revealing the thing itself.
+
+**Example**: Prove you're over 18 without revealing your birthdate.
+
+### 3.2 Types
+
+| Type | Use Case |
+|------|----------|
+| **zkSNARK** | Blockchain scaling (zk-Rollups) |
+| **zkSTARK** | Post-quantum secure |
+| **Bulletproofs** | Range proofs (Monero) |
+
+### 3.3 Use Cases
+
+- **Age Verification**: Prove > 18 without DOB.
+- **Credential Verification**: Prove employee status without revealing ID.
+- **Voting**: Prove valid vote without revealing choice.
+
+### 3.4 Tools
+
+- **Circom**: ZKP circuit compiler.
+- **snarkjs**: JavaScript implementation.
+- **ZoKrates**: Toolbox for zkSNARKs.
+
+---
+
+## Part 4: Data Anonymization
+
+### 4.1 Techniques
+
+| Technique | Description |
+|-----------|-------------|
+| **Generalization** | Replace exact values with ranges (Age: 30 → 25-35) |
+| **Suppression** | Remove identifying fields |
+| **k-Anonymity** | At least k records with same quasi-identifiers |
+| **l-Diversity** | At least l distinct sensitive values per group |
+| **Pseudonymization** | Replace identifiers with tokens (reversible with key) |
+
+### 4.2 Quasi-Identifiers
+
+Fields that alone are not identifying but together are.
+
+- Zip + DOB + Gender can identify 87% of US population.
+
+### 4.3 Python Example (k-Anonymity Check)
+
+```python
+def check_k_anonymity(df, quasi_identifiers, k):
+    grouped = df.groupby(quasi_identifiers).size()
+    return (grouped >= k).all()
+```
+
+---
+
+## Part 5: Compliance Automation
+
+### 5.1 GDPR Rights
+
+| Right | Implementation |
+|-------|----------------|
+| **Access (DSAR)** | Export user data on request |
+| **Erasure (Right to be Forgotten)** | Delete user data |
+| **Portability** | Provide data in machine-readable format |
+| **Rectification** | Allow users to correct data |
+
+### 5.2 Consent Management
+
+- **Granular Consent**: Separate toggles for marketing, analytics, etc.
+- **Audit Trail**: Log when consent was given/withdrawn.
+- **CMP Integration**: OneTrust, Cookiebot, Osano.
+
+### 5.3 Tools
+
+- **OneTrust**: Privacy management platform.
+- **BigID**: Data discovery and classification.
+- **Transcend**: Automated DSARs.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Default to data minimization (collect only what is strictly necessary)
-- ✅ Encrypt data at rest, in transit, and ideally in use (Homomorphic)
-- ✅ Maintain a centralized "Data Map" of where user data lives
-- ✅ Regularly perform "Privacy Red Teaming" (Re-identification attacks)
-- ✅ Provide clear, granular privacy controls to end-users
+- ✅ **Privacy Impact Assessment (PIA)**: Before launching any new feature.
+- ✅ **Data Inventory**: Know what you collect, where it's stored.
+- ✅ **Encryption**: At rest (AES-256), in transit (TLS 1.3).
 
 ### ❌ Avoid This
 
-- ❌ Don't rely on simple "Hashing" as anonymization (it's easily reversed)
-- ❌ Don't store encryption keys in the same location as the data
-- ❌ Don't share sensitive raw datasets with third-party analytics
-- ❌ Don't ignore "Shadow Data" (backups, logs, temporary files)
+- ❌ **Storing More Than Needed**: "We might need it later" is not a valid reason.
+- ❌ **Dark Patterns**: Tricking users into consent is illegal under GDPR.
+- ❌ **Ignoring Sub-Processors**: You're responsible for third-party data handling.
+
+---
 
 ## Related Skills
 
-- `@senior-cybersecurity-engineer` - Security overlap
-- `@expert-web3-blockchain` - For ZKP applications
-- `@senior-data-engineer` - Safe data pipelines
+- `@senior-api-security-specialist` - Authentication security
+- `@senior-database-engineer-sql` - Data storage patterns
+- `@expert-web3-blockchain` - ZKP in blockchain

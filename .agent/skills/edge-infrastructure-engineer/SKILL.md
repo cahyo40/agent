@@ -7,70 +7,162 @@ description: "Expert in edge computing infrastructure including 5G MEC, CDN deli
 
 ## Overview
 
-Master the distribution of computing at the edge of the network. Expertise in Multi-access Edge Computing (MEC), 5G infrastructure, CDN (Content Delivery Network) architecture, and building globally distributed, low-latency applications.
+This skill transforms you into an **Edge Computing Specialist**. You will master **Multi-Access Edge Computing (MEC)**, **CDN Architecture**, **Low-Latency Deployments**, and **Edge-Cloud Orchestration** for distributed, latency-sensitive applications.
 
 ## When to Use This Skill
 
-- Use when building apps requiring sub-10ms latency (Gaming, XR)
-- Use for distributed processing of IoT data before cloud ingestion
-- Use when architecting global high-availability websites or APIs
-- Use when implementing "Function-at-Edge" logic (Cloudflare Workers, Lambda@Edge)
+- Use when building latency-sensitive applications (< 50ms)
+- Use when deploying compute at cell tower sites (5G MEC)
+- Use when designing CDN and caching strategies
+- Use when implementing edge AI inference
+- Use when orchestrating workloads across edge and cloud
 
-## How It Works
+---
 
-### Step 1: Deployment Topologies
+## Part 1: Edge Computing Concepts
 
-- **Global Core**: Centralized cloud (AWS/GCP/Azure).
-- **Regional Edge**: PoPs (Points of Presence) in major cities.
-- **Last Mile Edge**: 5G base stations or in-building gateways.
+### 1.1 Why Edge?
 
-### Step 2: Edge Computing Platforms
+| Benefit | Explanation |
+|---------|-------------|
+| **Latency** | Process data closer to user (< 10ms vs 100ms+ to cloud) |
+| **Bandwidth** | Filter data locally, send only insights |
+| **Reliability** | Works when cloud connectivity is intermittent |
+| **Privacy** | Sensitive data stays local |
+
+### 1.2 Edge vs Cloud vs Fog
+
+| Layer | Location | Latency |
+|-------|----------|---------|
+| **Device** | On the sensor/device | < 1ms |
+| **Edge** | Local gateway, cell tower | 1-10ms |
+| **Fog** | Regional data center | 10-50ms |
+| **Cloud** | Centralized data center | 50-200ms |
+
+---
+
+## Part 2: 5G Multi-Access Edge Computing (MEC)
+
+### 2.1 What Is MEC?
+
+Compute resources at the edge of the mobile network (cell tower, base station).
+
+### 2.2 Use Cases
+
+| Use Case | Requirement |
+|----------|-------------|
+| **AR/VR** | < 20ms motion-to-photon |
+| **Autonomous Vehicles** | Real-time V2X communication |
+| **Gaming** | Cloud gaming without lag |
+| **Industrial IoT** | Real-time machine control |
+
+### 2.3 Providers
+
+| Provider | Offering |
+|----------|----------|
+| **AWS Wavelength** | EC2 at 5G edge (Verizon, Vodafone) |
+| **Azure Edge Zones** | Azure at operator edge |
+| **Google Distributed Cloud Edge** | GCP at edge locations |
+
+---
+
+## Part 3: CDN Architecture
+
+### 3.1 How CDNs Work
+
+1. User requests content.
+2. DNS routes to nearest **Point of Presence (PoP)**.
+3. PoP serves cached content (hit) or fetches from origin (miss).
+
+### 3.2 Cache Strategies
+
+| Strategy | Use Case |
+|----------|----------|
+| **TTL (Time to Live)** | Static assets (images, CSS) |
+| **Stale-While-Revalidate** | Fresh enough + background refresh |
+| **Edge-Side Includes (ESI)** | Personalized fragments |
+| **Purge on Publish** | Invalidate on content update |
+
+### 3.3 Major CDNs
+
+| CDN | Strength |
+|-----|----------|
+| **Cloudflare** | Global, DDoS protection, Workers |
+| **Fastly** | Instant purge, VCL edge logic |
+| **AWS CloudFront** | AWS integration, Lambda@Edge |
+| **Akamai** | Enterprise, massive network |
+
+---
+
+## Part 4: Edge Compute Platforms
+
+### 4.1 Cloudflare Workers
+
+JavaScript at edge. Cold start < 5ms.
 
 ```javascript
-// Cloudflare Worker example (Edge JS)
 export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-    if (url.pathname === "/api/geo") {
-      return new Response(JSON.stringify({
-        country: request.cf.country,
-        city: request.cf.city
-      }));
-    }
-    return fetch(request);
-  },
-};
+  async fetch(request) {
+    const country = request.cf.country;
+    return new Response(`Hello from ${country}`);
+  }
+}
 ```
 
-### Step 3: State Management at the Edge
+### 4.2 AWS Lambda@Edge
 
-- **Durability**: Using CRDTs (Conflict-free Replicated Data Types) for eventual consistency.
-- **Key-Value Stores**: Using globally replicated KV stores with low propagation delay.
+Run Lambda functions on CloudFront PoPs.
 
-### Step 4: Networking & Optimization
+Use cases: A/B testing, auth at edge, header manipulation.
 
-- **Anycast**: Routing traffic to the nearest healthy server IP.
-- **Quic/HTTP3**: Reducing 0-RTT handshakes for faster first-byte delivery.
+### 4.3 Fastly Compute@Edge
 
-## Best Practices
+WebAssembly-based edge compute. Rust, Go, AssemblyScript.
+
+---
+
+## Part 5: Edge AI Inference
+
+### 5.1 Why Run Inference at Edge?
+
+- **Latency**: No round-trip to cloud.
+- **Privacy**: Data never leaves device.
+- **Bandwidth**: Send results, not raw data.
+
+### 5.2 Optimization
+
+| Technique | Benefit |
+|-----------|---------|
+| **Quantization** | INT8 instead of FP32, 4x smaller |
+| **Pruning** | Remove unimportant weights |
+| **Distillation** | Train smaller model to mimic larger |
+
+### 5.3 Frameworks
+
+- **TensorFlow Lite**: Mobile and edge.
+- **ONNX Runtime**: Cross-platform inference.
+- **NVIDIA DeepStream**: Video analytics at edge.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Minimize payload size for edge functions (keep bundles small)
-- ✅ Use Anycast to simplify global routing
-- ✅ Prioritize local state over central databases where possible
-- ✅ Implement robust failover to central cloud for edge outages
-- ✅ Use regional caching for static assets
+- ✅ **Measure Latency From User**: Not from your office.
+- ✅ **Graceful Degradation**: Edge fails? Fall back to cloud.
+- ✅ **Automate Deployment**: GitOps for edge fleet.
 
 ### ❌ Avoid This
 
-- ❌ Don't perform heavy long-running computations on the edge
-- ❌ Don't rely on synchronous calls to a centralized database (creates latency)
-- ❌ Don't ignore cold start times for edge functions
-- ❌ Don't store sensitive unencrypted data at the edge
+- ❌ **Assuming Homogeneous Edge**: Hardware varies by location.
+- ❌ **Ignoring Updates**: Edge devices need remote patching.
+- ❌ **Storing Secrets on Edge**: Use secure enclaves or fetch on boot.
+
+---
 
 ## Related Skills
 
-- `@senior-cloud-architect` - General cloud logic
-- `@industrial-iot-developer` - Industrial edge
-- `@senior-webperf-engineer` - Delivery speed optimization
+- `@industrial-iot-developer` - Edge + OT integration
+- `@senior-devops-engineer` - Edge deployment pipelines
+- `@computer-vision-specialist` - Edge AI models
