@@ -7,64 +7,195 @@ description: "Expert in software architecture patterns including Monolithic, Mic
 
 ## Overview
 
-Master the high-level structure of software systems. Expertise in Monolithic, Microservices, Event-Driven, Serverless, SOA (Service-Oriented Architecture), and Layered (N-Tier) patterns.
+This skill transforms you into a **Systems Architect**. You will master **Monolithic**, **Microservices**, **Event-Driven**, **Serverless**, and **Layered Architectures** for designing scalable, maintainable systems.
 
 ## When to Use This Skill
 
-- Use when designing the blueprint for a new system
-- Use when deciding how to scale an existing application
-- Use when evaluating trade-offs between different system structures
-- Use when choosing how services should communicate
+- Use when designing system architecture from scratch
+- Use when evaluating trade-offs between patterns
+- Use when planning migrations (monolith → microservices)
+- Use when choosing between sync vs async communication
+- Use when scaling existing systems
 
-## How It Works
+---
 
-### Step 1: Classical Patterns
+## Part 1: Architectural Patterns Overview
 
-- **Monolithic**: Single unit, easy to deploy initially, hard to scale.
-- **Layered (N-Tier)**: Presentation → Business → Data. Great for separation of concerns.
-- **SOA (Service-Oriented)**: Discrete services sharing a common bus (ESB).
+### 1.1 Pattern Comparison
 
-### Step 2: Modern Distributed Patterns
+| Pattern | Complexity | Scalability | Best For |
+|---------|------------|-------------|----------|
+| **Monolith** | Low | Vertical | Startups, MVPs |
+| **Modular Monolith** | Medium | Vertical | Growing teams |
+| **Microservices** | High | Horizontal | Large teams, scale |
+| **Event-Driven** | High | Horizontal | Real-time, async |
+| **Serverless** | Medium | Auto | Variable load |
 
-- **Microservices**: Fine-grained, independently deployable services. Extreme scalability.
-- **Event-Driven (EDA)**: Services communicate through events (Kafka, RabbitMQ). High decoupling.
-- **Serverless (FaaS)**: Functions trigger on events, no infrastructure management.
+---
 
-### Step 3: Inter-Service Communication
+## Part 2: Monolithic Architecture
 
-| Method | Characteristic | Use Case |
-|--------|----------------|----------|
-| **REST** | Synchronous, stateless | Standard web APIs |
-| **gRPC** | Synch, high perf (Binary) | Internal microservices |
-| **Pub/Sub** | Asynchronous, decoupled | High scale, event log |
-| **WebSockets**| Bidirectional | Real-time chat/notifs |
+### 2.1 When to Use
 
-### Step 4: Key Principles
+- Small team (< 10 engineers).
+- Rapid iteration/MVP.
+- Simple domain.
 
-- **Single Source of Truth**: Data consistency across services.
-- **Loose Coupling**: Minimizing service dependencies.
-- **High Cohesion**: Keeping related logic together.
-- **CAP Theorem**: Balancing Consistency, Availability, and Partition Tolerance.
+### 2.2 Structure
 
-## Best Practices
+```
+monolith/
+├── controllers/     # HTTP handlers
+├── services/        # Business logic
+├── repositories/    # Data access
+├── models/          # Domain entities
+└── main.go          # Entry point
+```
+
+### 2.3 Modular Monolith
+
+Split by bounded contexts, but single deployment.
+
+```
+monolith/
+├── modules/
+│   ├── users/
+│   │   ├── controller.go
+│   │   ├── service.go
+│   │   └── repository.go
+│   ├── orders/
+│   └── payments/
+└── main.go
+```
+
+---
+
+## Part 3: Microservices
+
+### 3.1 When to Use
+
+- Large team (> 20 engineers).
+- Independent deployment needed.
+- Different scaling requirements.
+
+### 3.2 Key Principles
+
+| Principle | Meaning |
+|-----------|---------|
+| **Single Responsibility** | One service, one domain |
+| **Database per Service** | No shared databases |
+| **API Gateway** | Single entry point |
+| **Service Discovery** | Dynamic location finding |
+| **Circuit Breaker** | Prevent cascade failures |
+
+### 3.3 Communication
+
+| Pattern | Use Case |
+|---------|----------|
+| **Sync (REST/gRPC)** | Request-response, queries |
+| **Async (Events)** | Commands, notifications |
+| **Saga** | Distributed transactions |
+
+---
+
+## Part 4: Event-Driven Architecture
+
+### 4.1 When to Use
+
+- Real-time requirements.
+- Decoupled systems.
+- Event sourcing needs.
+
+### 4.2 Patterns
+
+| Pattern | Description |
+|---------|-------------|
+| **Pub/Sub** | Publisher → Topic → Subscribers |
+| **Event Sourcing** | Store events, derive state |
+| **CQRS** | Separate read/write models |
+
+### 4.3 Example Flow
+
+```
+Order Created → [Kafka] → Inventory Service
+                       → Payment Service
+                       → Notification Service
+```
+
+---
+
+## Part 5: Layered Architecture
+
+### 5.1 Classic Layers
+
+```
+┌─────────────────────┐
+│   Presentation      │  (Controllers, API)
+├─────────────────────┤
+│   Business Logic    │  (Services)
+├─────────────────────┤
+│   Data Access       │  (Repositories)
+├─────────────────────┤
+│   Database          │  (PostgreSQL, etc.)
+└─────────────────────┘
+```
+
+### 5.2 Hexagonal / Clean Architecture
+
+```
+┌─────────────────────────────────────┐
+│            Adapters                 │
+│  (HTTP, gRPC, CLI, DB, External)    │
+├─────────────────────────────────────┤
+│          Application                │
+│  (Use Cases, Application Services)  │
+├─────────────────────────────────────┤
+│            Domain                   │
+│  (Entities, Value Objects, Repos)   │
+└─────────────────────────────────────┘
+```
+
+**Dependency Rule**: Inner layers don't know outer layers.
+
+---
+
+## Part 6: Decision Framework
+
+### 6.1 Questions to Ask
+
+1. **Team Size?** Small → Monolith. Large → Microservices.
+2. **Deployment Frequency?** High → Microservices.
+3. **Domain Complexity?** Complex → Modular Monolith or Microservices.
+4. **Latency Requirements?** Real-time → Event-Driven.
+
+### 6.2 Migration Path
+
+```
+Monolith → Modular Monolith → Microservices
+              ↓
+        Strangler Fig Pattern
+```
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Start with a monolith if the project is small/new (avoid "premature decomposition")
-- ✅ Design for failure (Retries, Circuit breakers)
-- ✅ Document with C4 models or UML diagrams
-- ✅ Prioritize observable systems (Logging, Tracing)
-- ✅ Choose the pattern based on the business problem, not trends
+- ✅ **Start Simple**: Monolith first, split later.
+- ✅ **Define Boundaries Early**: Use Domain-Driven Design.
+- ✅ **Document Decisions**: ADRs (Architecture Decision Records).
 
 ### ❌ Avoid This
 
-- ❌ Don't build distributed monoliths (tightly coupled microservices)
-- ❌ Don't ignore latency in distributed systems
-- ❌ Don't skip data consistency planning
-- ❌ Don't use a pattern just because a Tech Giant uses it
+- ❌ **Distributed Monolith**: Microservices with tight coupling.
+- ❌ **Premature Optimization**: Don't over-engineer for scale you don't have.
+- ❌ **Shared Databases**: Defeats the purpose of microservices.
+
+---
 
 ## Related Skills
 
-- `@senior-software-architect` - Implementation guidance
-- `@microservices-architect` - Detailed service design
-- `@uml-specialist` - Design visualization
+- `@microservices-architect` - Microservices deep dive
+- `@senior-software-architect` - System design
+- `@senior-backend-developer` - Implementation

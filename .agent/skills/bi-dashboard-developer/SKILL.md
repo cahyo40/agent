@@ -3,74 +3,200 @@ name: bi-dashboard-developer
 description: "Expert in Business Intelligence (BI) and dashboard development including data visualization, ETL, and interactive analytics"
 ---
 
-# BI & Dashboard Developer
+# BI Dashboard Developer
 
 ## Overview
 
-Master Business Intelligence (BI). Expertise in interactive dashboard design, data visualization principles (Tufte, Few), ETL (Extract, Transform, Load) pipelines, and using tools like Power BI, Tableau, or custom D3.js/Chart.js solutions.
+This skill transforms you into a **Business Intelligence Developer**. You will master **Dashboard Design**, **Data Visualization**, **ETL Pipelines**, and **BI Tool Integration** for building actionable analytics systems.
 
 ## When to Use This Skill
 
-- Use when building executive dashboards or analytical reports
-- Use to simplify complex data sets into actionable visual insights
-- Use when designing real-time monitoring systems for business KPIs
-- Use when integrating various data sources into a unified analytical view
+- Use when building executive dashboards
+- Use when creating data visualizations
+- Use when connecting multiple data sources
+- Use when designing KPI monitoring systems
+- Use when implementing self-service analytics
 
-## How It Works
+---
 
-### Step 1: Data Preparation (ETL)
+## Part 1: Dashboard Design Principles
 
-- **Extraction**: Gathering data from SQL, NoSQL, and external APIs.
-- **Cleaning**: Handling missing values, outliers, and type normalization.
-- **Modeling**: Creating Star or Snowflake schemas for efficient querying.
+### 1.1 Dashboard Types
 
-### Step 2: Data Visualization Design
+| Type | Audience | Purpose |
+|------|----------|---------|
+| **Operational** | Front-line staff | Real-time monitoring |
+| **Tactical** | Managers | Weekly/monthly trends |
+| **Strategic** | Executives | High-level KPIs |
+| **Analytical** | Analysts | Deep-dive exploration |
 
-- **Hierarchy**: Most important KPIs at the top (F-pattern).
-- **Chart Selection**: Bar charts for comparisons, Line for trends, Scatter for correlation.
-- **UX**: Drill-down capabilities, tooltips, and dynamic filtering.
+### 1.2 Layout Principles
 
-### Step 3: Tools & Integration
+- **Top-Left Priority**: Most important metrics.
+- **Visual Hierarchy**: Size = Importance.
+- **White Space**: Don't overcrowd.
+- **Consistency**: Same chart types for similar data.
 
-```javascript
-// Chart.js snippet for a professional line chart
-new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Quarterly Revenue' }
-        }
-    }
-});
+### 1.3 The "5-Second Rule"
+
+User should understand key insight within 5 seconds.
+
+---
+
+## Part 2: Data Visualization
+
+### 2.1 Chart Selection
+
+| Data Type | Chart |
+|-----------|-------|
+| **Trend over time** | Line chart |
+| **Comparison** | Bar chart |
+| **Part of whole** | Pie/Donut (max 5) |
+| **Relationship** | Scatter plot |
+| **Distribution** | Histogram |
+| **Geographic** | Map |
+| **KPI** | Scorecard/Number |
+
+### 2.2 Best Practices
+
+| Do | Don't |
+|----|-------|
+| Label directly | Rely on legends |
+| Use color meaningfully | Rainbow gradients |
+| Start Y-axis at 0 | Truncate to exaggerate |
+| Show context (targets, benchmarks) | Raw numbers only |
+
+---
+
+## Part 3: BI Tools
+
+### 3.1 Tool Comparison
+
+| Tool | Best For | Pricing |
+|------|----------|---------|
+| **Tableau** | Enterprise, complex viz | Paid |
+| **Power BI** | Microsoft ecosystem | Free/Paid |
+| **Looker Studio** | Google ecosystem, free | Free |
+| **Metabase** | Open source, self-host | Free/Paid |
+| **Superset** | Open source, SQL-heavy | Free |
+| **Preset** | Managed Superset | Paid |
+
+### 3.2 Key Features
+
+- **Drill-Down**: Click to see details.
+- **Filters**: Slice data by dimension.
+- **Alerting**: Notify on threshold breach.
+- **Scheduling**: Email reports.
+- **Embedding**: Integrate into apps.
+
+---
+
+## Part 4: Data Architecture
+
+### 4.1 ETL/ELT Flow
+
+```
+Sources (APIs, DBs, Files)
+    ↓
+Extract
+    ↓
+Transform (dbt, SQL)
+    ↓
+Load (Data Warehouse)
+    ↓
+BI Tool
 ```
 
-### Step 4: Real-time Analytics
+### 4.2 Data Modeling
 
-- **Streaming**: Connecting to Kafka or WebSockets for live updates.
-- **Caching**: Using materialized views or Redis for fast load times.
+| Approach | Description |
+|----------|-------------|
+| **Star Schema** | Fact table + dimension tables |
+| **Snowflake** | Normalized dimensions |
+| **Wide Table** | Denormalized single table |
 
-## Best Practices
+### 4.3 Common Warehouse
+
+- **BigQuery**: Google Cloud.
+- **Snowflake**: Multi-cloud.
+- **Redshift**: AWS.
+- **PostgreSQL**: Small-medium scale.
+
+---
+
+## Part 5: KPIs & Metrics
+
+### 5.1 Metric Design
+
+| Element | Example |
+|---------|---------|
+| **Name** | Monthly Active Users (MAU) |
+| **Definition** | Unique users with ≥1 session/month |
+| **Formula** | `COUNT(DISTINCT user_id) WHERE sessions >= 1` |
+| **Target** | 100,000 |
+| **Owner** | Product Team |
+
+### 5.2 Common Business KPIs
+
+| Domain | KPIs |
+|--------|------|
+| **Sales** | Revenue, Conversion Rate, AOV |
+| **Marketing** | CAC, LTV, ROAS |
+| **Product** | DAU/MAU, Retention, Churn |
+| **Support** | CSAT, Response Time, Ticket Volume |
+
+---
+
+## Part 6: Implementation Example
+
+### 6.1 SQL for Dashboard
+
+```sql
+-- Daily Revenue by Category
+SELECT 
+    DATE(created_at) AS date,
+    category,
+    SUM(revenue) AS total_revenue
+FROM orders
+WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY date, category
+ORDER BY date DESC;
+```
+
+### 6.2 dbt Model
+
+```sql
+-- models/daily_revenue.sql
+{{ config(materialized='table') }}
+
+SELECT 
+    DATE(created_at) AS date,
+    category,
+    SUM(revenue) AS total_revenue
+FROM {{ ref('stg_orders') }}
+GROUP BY 1, 2
+```
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Keep the "Data-to-Ink" ratio high (avoid chart junk)
-- ✅ Use color purposefully (avoid red/green for non-performance data)
-- ✅ Ensure dashboards are responsive and mobile-friendly
-- ✅ Always provide context (benchmarks, previous periods)
-- ✅ Optimize queries to ensure fast initial dashboard load
+- ✅ **Define Data Definitions**: Single source of truth.
+- ✅ **Version Control Queries**: Git for SQL/dbt.
+- ✅ **Document Everything**: What does each metric mean?
 
 ### ❌ Avoid This
 
-- ❌ Don't use 3D pie charts or misleading axes
-- ❌ Don't clutter a single screen with too many widgets (use multiple tabs)
-- ❌ Don't ignore slow loading times for large datasets
-- ❌ Don't design without knowing the end-user's intent (CEO vs. Operations)
+- ❌ **Too Many Metrics**: Focus on 5-7 key KPIs.
+- ❌ **Vanity Metrics**: Page views without context.
+- ❌ **Manual Refreshes**: Automate data pipelines.
+
+---
 
 ## Related Skills
 
-- `@senior-data-analyst` - Data modeling
-- `@analytics-engineer` - Measuring events
-- `@ui-kit-developer` - Reusable visual components
+- `@senior-data-analyst` - Data analysis
+- `@senior-data-engineer` - ETL pipelines
+- `@infographic-creator` - Visualization design
