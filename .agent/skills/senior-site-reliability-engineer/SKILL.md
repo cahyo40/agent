@@ -3,132 +3,124 @@ name: senior-site-reliability-engineer
 description: "Expert SRE practices including observability, incident management, chaos engineering, SLOs/SLIs, and reliability automation"
 ---
 
-# Senior Site Reliability Engineer
+# Senior Site Reliability Engineer (SRE)
 
 ## Overview
 
-This skill transforms you into an experienced SRE who ensures system reliability through observability, incident response, and proactive reliability engineering.
+This skill transforms you into an **SRE**. You will move beyond "fixing servers" to **Engineering Reliability**. You will master **Service Level Objectives (SLOs)**, **Error Budgets**, **Incident Command**, and **Chaos Engineering**.
 
 ## When to Use This Skill
 
-- Use when implementing monitoring/alerting
-- Use when defining SLOs and SLIs
-- Use when handling incidents
-- Use when improving system reliability
+- Use when defining "What does 'Available' mean?" (SLIs)
+- Use when setting up On-Call rotations and Alerting
+- Use when debugging a production outage (Incident Management)
+- Use when conducting a Post-Mortem (Root Cause Analysis - RCA)
+- Use when testing system resilience (Chaos)
 
-## How It Works
+---
 
-### Step 1: SLO/SLI Framework
+## Part 1: SLOs, SLIs, and Error Budgets
 
-```
-SLO/SLI FRAMEWORK
-├── SLI (Service Level Indicator)
-│   ├── Availability = successful requests / total requests
-│   ├── Latency = requests < threshold / total requests
-│   └── Error Rate = errors / total requests
-│
-├── SLO (Service Level Objective)
-│   ├── Availability: 99.9% (8.76h downtime/year)
-│   ├── P95 Latency: < 200ms
-│   └── Error Rate: < 0.1%
-│
-└── Error Budget
-    └── Budget = 100% - SLO (e.g., 0.1% for 99.9% SLO)
-```
+The Core of SRE (Google Methodology).
 
-### Step 2: Observability Stack
+### 1.1 Service Level Indicator (SLI)
 
-```yaml
-# Prometheus alerting rules
-groups:
-- name: slo-alerts
-  rules:
-  - alert: HighErrorRate
-    expr: |
-      sum(rate(http_requests_total{status=~"5.."}[5m]))
-      / sum(rate(http_requests_total[5m])) > 0.001
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      summary: "Error rate exceeds SLO threshold"
+A metric that tells you how well your service is doing.
+*Example*: "Ratio of successful HTTP 200 responses to total requests."
 
-  - alert: HighLatency
-    expr: |
-      histogram_quantile(0.95, 
-        sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
-      ) > 0.2
-    for: 5m
-    labels:
-      severity: warning
-```
+### 1.2 Service Level Objective (SLO)
 
-### Step 3: Incident Management
+The goal. "We promise 99.9% success rate".
+*Formula*: `1 - (Error Budget)`
 
-```
-INCIDENT RESPONSE PROCESS
-┌─────────────────────────────────────────────────────────┐
-│ 1. DETECT     → Automated alerts, user reports         │
-│ 2. TRIAGE     → Assess severity, assign IC             │
-│ 3. MITIGATE   → Restore service first                  │
-│ 4. RESOLVE    → Find and fix root cause                │
-│ 5. POSTMORTEM → Blameless analysis, action items       │
-└─────────────────────────────────────────────────────────┘
+### 1.3 Error Budget
 
-SEVERITY LEVELS
-├── SEV1: Complete outage, revenue impact
-├── SEV2: Major feature down, degraded experience
-├── SEV3: Minor feature issue, workaround exists
-└── SEV4: Low priority, no immediate impact
-```
+The allowed failure rate.
+*If SLO is 99.9%*: You can be down for **43 minutes per month**.
+*Rule*: If Error Budget is exhausted -> **Freeze Deployments**. Start Reliability Sprint.
 
-### Step 4: Chaos Engineering
+---
 
-```python
-# Chaos experiment with Chaos Toolkit
-experiment = {
-    "title": "API resilience under database failure",
-    "steady-state-hypothesis": {
-        "title": "API remains available",
-        "probes": [{
-            "type": "probe",
-            "name": "api-responds",
-            "tolerance": {"status": 200},
-            "provider": {
-                "type": "http",
-                "url": "http://api/health"
-            }
-        }]
-    },
-    "method": [{
-        "type": "action",
-        "name": "kill-database",
-        "provider": {
-            "type": "process",
-            "path": "docker",
-            "arguments": ["stop", "postgres"]
-        }
-    }]
-}
-```
+## Part 2: Observability (The Three Pillars)
 
-## Best Practices
+Monitoring tells you "System is down". Observability tells you "Why".
+
+1. **Metrics** (Prometheus/Grafana): "CPU is 90%". Aggregatable integers.
+2. **Logs** (ELK/Loki): "Error: Database connection timeout". Detailed text events.
+3. **Traces** (Jaeger/Tempo): "Request took 5s: 1s in Gateway, 4s in DB". Lifecycle.
+
+**Golden Signals**: Latency, Traffic, Errors, Saturation.
+
+---
+
+## Part 3: Incident Management
+
+When the pager goes off.
+
+### 3.1 Roles
+
+- **Incident Commander (IC)**: Runs the show. Decisions only. No keyboard.
+- **Ops Lead**: Touches the servers.
+- **Comms Lead**: Updates Status Page / Stakeholders.
+
+### 3.2 The Process
+
+1. **Detect**: Alert fires.
+2. **Triaging**: Impact assessment. Severity 1 (Global) or Severity 3 (Minor)?
+3. **Mitigate**: Stop the bleeding. (Rollback, Scale Up, Block Traffic). **Do not look for Root Cause yet.**
+4. **Resolve**: Restore full service.
+
+### 3.3 Post-Mortem (RCA)
+
+Blameless. Focus on System Checks.
+
+- **Bad**: "John deployed a bad config."
+- **Good**: "The CI pipeline allowed a bad config to be deployed without validation."
+
+---
+
+## Part 4: Chaos Engineering
+
+Break things on purpose (in Staging first).
+
+**Experiments:**
+
+1. **Kill a Pod**: Does K8s restart it? Does traffic failover?
+2. **Add Latency**: Inject 500ms delay to DB. Does app timeout gracefully or hang?
+3. **Fill Disk**: What happens when logs fill 100% disk?
+
+**Tools**: Chaos Mesh, Gremlin, AWS Fault Injection Simulator.
+
+---
+
+## Part 5: Automation (Toil Reduction)
+
+**Toil**: Manual, repetitive, non-strategic work (e.g., Manually restarting a server every day).
+**SRE Rule**: SREs should spend max 50% time on Ops, 50% on Engineering (Coding automation).
+
+**Solution**: Write an Ansible Playbook or a K8s Operator to fix the issue automatically.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Define SLOs before building
-- ✅ Use error budgets for release decisions
-- ✅ Automate incident response
-- ✅ Practice chaos engineering
-- ✅ Write blameless postmortems
+- ✅ **Define SLOs First**: Before building alerts, agree on what "Broken" means with Product Owners.
+- ✅ **Alert on Symptoms**: Alert on "High Error Rate" (User Pain), not "High CPU" (Cause).
+- ✅ **Automate Runbooks**: If the runbook says "Run command X", put command X in a script.
+- ✅ **Practice Drills**: "Game Days" where you simulate an outage.
 
 ### ❌ Avoid This
 
-- ❌ Don't alert on everything
-- ❌ Don't skip postmortems
-- ❌ Don't ignore error budget burn
+- ❌ **Alert Fatigue**: If you get 100 emails a day, you ignore them. Delete noisy alerts.
+- ❌ **Hero Culture**: Don't praise the person who stays up all night fixing the server. Fix the system so they can sleep.
+- ❌ **Manual Deployments**: Humans make typos. CI/CD is mandatory.
+
+---
 
 ## Related Skills
 
-- `@senior-devops-engineer` - For infrastructure
-- `@senior-cloud-architect` - For cloud design
+- `@devsecops-specialist` - Pipeline automation
+- `@kubernetes-specialist` - Platform reliability
+- `@senior-linux-sysadmin` - OS level debugging

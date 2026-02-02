@@ -7,152 +7,110 @@ description: "Expert code review including systematic review process, constructi
 
 ## Overview
 
-This skill helps you conduct thorough, constructive code reviews that improve code quality and help developers grow.
+This skill transforms you into a **Staff+ Engineer Code Reviewer**. You will move beyond "Looks good to me" or "Fix typo" to providing high-leverage feedback on **Architecture**, **Testability**, **Reliability**, and **Maintainability**.
 
 ## When to Use This Skill
 
-- Use when reviewing pull requests
-- Use when providing code feedback
-- Use when mentoring through code
-- Use when establishing review standards
-
-## How It Works
-
-### Step 1: Review Checklist
-
-```
-CODE REVIEW CHECKLIST
-├── FUNCTIONALITY
-│   ├── Does it work as intended?
-│   ├── Edge cases handled?
-│   └── Error handling present?
-│
-├── CODE QUALITY
-│   ├── Readable and clear?
-│   ├── DRY (no duplication)?
-│   ├── Proper naming?
-│   └── Functions small and focused?
-│
-├── ARCHITECTURE
-│   ├── Right abstraction level?
-│   ├── Follows project patterns?
-│   └── Maintainable long-term?
-│
-├── SECURITY
-│   ├── Input validation?
-│   ├── No sensitive data exposed?
-│   └── Proper authentication/authorization?
-│
-├── PERFORMANCE
-│   ├── No obvious bottlenecks?
-│   ├── Efficient algorithms?
-│   └── No memory leaks?
-│
-└── TESTING
-    ├── Tests included?
-    ├── Tests meaningful?
-    └── Edge cases covered?
-```
-
-### Step 2: Comment Types
-
-```markdown
-## Comment Prefixes
-
-**[MUST]** - Required change, blocks merge
-"[MUST] This SQL query is vulnerable to injection. Use parameterized queries."
-
-**[SHOULD]** - Strong suggestion, discuss if disagree
-"[SHOULD] Consider extracting this into a separate function for reusability."
-
-**[NIT]** - Minor suggestion, optional
-"[NIT] Typo in variable name: `recieve` → `receive`"
-
-**[QUESTION]** - Need clarification
-"[QUESTION] Why did we choose approach A over B here?"
-
-**[PRAISE]** - Positive feedback
-"[PRAISE] Great use of the strategy pattern here! 👏"
-```
-
-### Step 3: Constructive Feedback
-
-```markdown
-## Feedback Formula
-
-### ❌ Bad Feedback
-- "This is wrong"
-- "Why did you do it this way?"
-- "This code is messy"
-
-### ✅ Good Feedback
-
-**Structure:** Observation + Reason + Suggestion
-
-"This function is 80 lines long, which makes it hard to test.
-Consider breaking it into smaller functions:
-- `validateInput()`
-- `processData()`
-- `formatOutput()`
-This would improve testability and readability."
+- Use when reviewing Pull Requests (PRs)
+- Use when setting up team review guidelines
+- Use when mentoring junior engineers via code comments
+- Use when automating CI checks to reduce review noise
+- Use when resolving conflicts in opinionated discussions
 
 ---
 
-### Ask, Don't Tell
-❌ "You should use map() here"
-✅ "What do you think about using map() here? It might be more readable."
+## Part 1: The Pyramid of Review Importance
 
-### Explain Why
-❌ "Add null check"
-✅ "Add null check here—this can be null when user hasn't completed onboarding"
-```
+Focus your energy where it matters.
 
-### Step 4: PR Description Template
+1. **Correctness**: Does it actually works? Is there a bug? (Highest Priority)
+2. **Security**: Are there vulnerabilities? (SQLi, XSS, Permission checks)
+3. **Design/Architecture**: Is this the right solution? Is it scalable?
+4. **Readability/Maintainability**: Can I understand this in 6 months?
+5. **Style/Formatting**: Nitpicks (Should be automated).
 
-```markdown
-## PR Title
-feat(auth): add password reset functionality
+---
 
-## Description
-Adds the ability for users to reset their password via email.
+## Part 2: Review Process Methodology
 
-## Changes
-- Added `PasswordResetService`
-- Created new email template
-- Added rate limiting (3 attempts/hour)
+### 2.1 The Two-Pass Approach
 
-## Testing
-- [x] Unit tests added
-- [x] Tested on staging
-- [x] Verified email delivery
+1. **Pass 1 (High Level)**: Read the PR Description. Look at the file list. Understand the *Goal*.
+    - "Is this change even necessary?"
+    - "Does it touch critical paths (Payments, Auth)?"
+2. **Pass 2 (Line by Line)**: specific implementation details.
 
-## Screenshots
-[If UI changes]
+### 2.2 Providing Feedback (Conventional Comments)
 
-## Checklist
-- [x] Self-reviewed
-- [x] Tests pass
-- [x] Docs updated
-```
+Use labels to clarify intent.
 
-## Best Practices
+- **[BLOCKING]**: "This will cause a production crash. Must fix."
+- **[NIT]**: "Variable name could be better, but I won't block merge."
+- **[QUESTION]**: "I don't understand this logic, can you explain?"
+- **[SUGGESTION]**: "Here is a code snippet that might be cleaner."
+- **[PRAISE]**: "This is a really clever solution! Nice work."
+
+---
+
+## Part 3: Architecture Patterns in Review
+
+### 3.1 Detecting Anti-Patterns
+
+- **God Classes**: "This `UserService` is 4000 lines long. Can we split `UserBilling` logic out?"
+- **Leaky Abstractions**: "Why does the Frontend know about SQL error codes?"
+- **Tight Coupling**: "This API handler calls the 3rd party Stripe API directly. Please wrap it in a Service Interface so we can mock it."
+
+### 3.2 Thread Safety & Performance
+
+- **Race Conditions**: "What happens if two requests hit this `updateBalance` line at the same time?"
+- **N+1 Queries**: "This loop executes a SQL query in every iteration. Please batch it."
+- **Memory Leaks**: "This event listener is added but never removed on unmount."
+
+---
+
+## Part 4: The Human Element
+
+Code review is a conversation, not a lecture.
+
+**Bad:**
+"You broke the build. Fix this." (Accusatory)
+"This code is messy." (Subjective)
+
+**Good:**
+"The build seems to fail on CI. Let's verify the inputs?" (Collaborative)
+"I find this function hard to parse. Maybe extracting the loop body would improve readability?" (Objective)
+
+---
+
+## Part 5: Automation (Reducing Noise)
+
+Don't waste human time on machines' jobs.
+
+1. **Linters/Formatters**: Prettier/ESLint/Black. If it's not formatted, CI fails. No comments needed.
+2. **Static Analysis**: SonarQube/CodeClimate. Detects cognitive complexity.
+3. **Test Coverage**: Require X% coverage on *new* code.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Review within 24 hours
-- ✅ Start with positive feedback
-- ✅ Be specific and actionable
-- ✅ Offer solutions, not just problems
-- ✅ Use prefixes for severity
+- ✅ **Test the Code**: Actually pull the branch and run it if it's complex.
+- ✅ **Review Small Batches**: If a PR > 400 lines, ask to split it. Review quality drops vertically after 400 lines.
+- ✅ **Explain "Why"**: Don't just say "Change X to Y". Say "Change X to Y because it reduces memory usage".
+- ✅ **Approve Quickly**: Unblocking teammates is high leverage.
 
 ### ❌ Avoid This
 
-- ❌ Don't make it personal
-- ❌ Don't nitpick excessively
-- ❌ Don't approve without reading
-- ❌ Don't block on style preferences
+- ❌ **"LGTM" on huge PRs**: It means you didn't read it. It's dangerous.
+- ❌ **Bikeshedding**: Arguing for days about variable names while the feature is delayed. Call a video meeting.
+- ❌ **Reviewing your own code**: Even if you are a senior, you have blind spots.
+
+---
 
 ## Related Skills
 
-- `@senior-software-engineer` - Code quality
-- `@senior-programming-mentor` - Teaching
+- `@senior-software-architect` - Identifying design issues
+- `@devsecops-specialist` - Automating checks
+- `@senior-technical-writer` - Reviewing documentation

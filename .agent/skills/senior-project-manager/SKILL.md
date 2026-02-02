@@ -7,276 +7,124 @@ description: "Expert project management including project briefs, PRD documents,
 
 ## Overview
 
-This skill transforms you into an experienced Project Manager who creates comprehensive project documentation, manages timelines, and ensures successful project delivery through effective planning and communication.
+This skill transforms you into a **Technical Program Manager (TPM)**. You will move beyond "Jira Ticket Mover" to **Strategic Planning**. You will master **Agile Estimation (Points vs Hours)**, writing **Product Requirement Documents (PRDs)**, managing **Stakeholder Expectations**, and handling **Scope Creep**.
 
 ## When to Use This Skill
 
-- Use when creating project briefs
-- Use when writing PRD documents
-- Use when planning project timelines
-- Use when managing stakeholder communication
-- Use when the user asks about project planning
-
-## How It Works
-
-### Step 1: Project Brief Template
-
-```markdown
-# Project Brief: [Project Name]
-
-## Executive Summary
-One paragraph overview of the project, its goals, and expected outcomes.
-
-## Problem Statement
-What problem are we solving? Who is affected? What's the impact?
-
-## Project Goals
-1. **Primary Goal:** [Specific, measurable outcome]
-2. **Secondary Goal:** [Supporting outcome]
-3. **Success Metrics:** How will we measure success?
-
-## Scope
-
-### In Scope
-- Feature/deliverable 1
-- Feature/deliverable 2
-- Feature/deliverable 3
-
-### Out of Scope
-- What we are NOT doing (important to clarify)
-
-## Timeline
-
-| Phase | Duration | Deliverables |
-|-------|----------|--------------|
-| Discovery | 1 week | Requirements doc |
-| Design | 2 weeks | Wireframes, mockups |
-| Development | 4 weeks | Working software |
-| Testing | 1 week | QA sign-off |
-| Launch | 1 week | Production deployment |
-
-## Team & Resources
-
-| Role | Person | Responsibility |
-|------|--------|----------------|
-| Project Manager | [Name] | Overall coordination |
-| Tech Lead | [Name] | Technical decisions |
-| Designer | [Name] | UI/UX design |
-| Developer | [Name] | Implementation |
-
-## Budget
-Estimated budget: [Amount]
-- Development: X%
-- Design: X%
-- Infrastructure: X%
-
-## Risks & Mitigation
-
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| Scope creep | High | High | Clear scope doc, change process |
-| Resource unavailable | Medium | Medium | Cross-training, backup resources |
-
-## Approval
-- [ ] Stakeholder A
-- [ ] Stakeholder B
-- [ ] Budget approved
-```
-
-### Step 2: PRD (Product Requirements Document)
-
-```markdown
-# PRD: [Feature Name]
-
-**Author:** [Name]  
-**Last Updated:** [Date]  
-**Status:** Draft | Review | Approved
+- Use when starting a new Feature/Epic (Planning)
+- Use when the project is delayed (Risk Management)
+- Use when requirements change mid-sprint (Agile Adaptation)
+- Use when negotiating priorities with Stakeholders
+- Use when defining "Done" (Definition of Done - DoD)
 
 ---
 
-## Overview
+## Part 1: Product Requirement Document (PRD)
 
-### Problem
-Describe the user problem or business need.
+The Bible of the project. If it's not written down, it doesn't exist.
 
-### Solution
-High-level description of the proposed solution.
+### 1.1 Key Sections
 
-### Goals
-- Goal 1: [Measurable outcome]
-- Goal 2: [Measurable outcome]
+1. **Problem Statement**: Why are we doing this? (Business Value).
+2. **User Stories**: "As a [User], I want to [Action], so that [Benefit]."
+3. **Scope (In/Out)**: Explicitly state what we are *NOT* building.
+4. **Success Metrics**: "Reduce login time by 20%".
+5. **Technical Constraints**: "Must run on iOS 15+".
 
-### Non-Goals
-What this feature will NOT do (equally important).
+### 1.2 RFCs (Request for Comments)
 
----
-
-## User Stories
-
-### Epic: [Epic Name]
-
-**As a** [user type]  
-**I want** [functionality]  
-**So that** [benefit]
-
-#### Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
+For technical decisions, use RFCs before writing code.
+"We propose using Redis for caching because..." -> Team comments -> Consensus.
 
 ---
 
-## Requirements
+## Part 2: Agile & Estimation
 
-### Functional Requirements
+Stop lying about timelines.
 
-| ID | Requirement | Priority | Notes |
-|----|-------------|----------|-------|
-| FR-001 | User can create account | Must Have | Email verification required |
-| FR-002 | User can reset password | Must Have | Link expires in 24h |
-| FR-003 | User can enable 2FA | Should Have | Support TOTP apps |
+### 2.1 Points vs Hours
 
-### Non-Functional Requirements
+- **Hours**: "This takes 4 hours". (Fragile. Interruptions happen).
+- **Points (Complexity)**: "This is a 5-point story". (Robust. Velocity averages out).
+  - 1: Typo fix.
+  - 3: Standard feature.
+  - 8: Risky/Unknowns. Needs breakdown.
 
-| ID | Requirement | Target |
-|----|-------------|--------|
-| NFR-001 | Page load time | < 2 seconds |
-| NFR-002 | Uptime | 99.9% |
-| NFR-003 | Concurrent users | 10,000 |
+### 2.2 Cone of Uncertainty
 
----
-
-## Design
-
-### User Flow
-[Link to Figma/design files]
-
-### Wireframes
-[Embed or link to wireframes]
+At the start, estimates are ±400% wrong. As you build, variance drops.
+*Communication*: "We are 60% confident this will land in Q3." (Don't promise dates early).
 
 ---
 
-## Technical Considerations
+## Part 3: Stakeholder Management
 
-- API changes required
-- Database schema updates
-- Third-party integrations
-- Security considerations
+Managing upwards.
 
----
+### 3.1 The "Iron Triangle"
 
-## Launch Plan
+Quality, Speed, Cost. Pick two.
+"We can ship by Friday (Speed), but we have to cut the Reporting Feature (Scope/Cost), or risking bugs (Quality)."
 
-### Rollout Strategy
-- [ ] Internal testing
-- [ ] Beta users (10%)
-- [ ] Gradual rollout (50%)
-- [ ] Full launch (100%)
+### 3.2 Status Reports (Weekly)
 
-### Success Metrics
-- Metric 1: [Target]
-- Metric 2: [Target]
+Don't just list tasks. List Risks and Blockers.
+
+- **Green**: On track.
+- **Yellow**: Risk identified (e.g., API dependency delayed).
+- **Red**: Blocked. Will miss deadline unless action taken.
 
 ---
 
-## Open Questions
-1. Question that needs stakeholder input?
-2. Technical decision pending?
-```
+## Part 4: Managing Scope Creep
 
-### Step 3: Timeline & Milestones
+Stakeholder: "Can we just add a small chat feature?"
 
-```
-PROJECT TIMELINE (Gantt-style)
+**The Response:**
+"Yes, we can add Chat. However, that adds 13 points to the scope. To keep the Deadline, we need to remove 13 points elsewhere. Which feature should we cut?"
 
-Week 1-2: Discovery & Planning
-├── Kickoff meeting
-├── Requirements gathering
-├── Technical assessment
-└── 🎯 Milestone: Requirements signed off
+**MoSCoW Method:**
 
-Week 3-4: Design
-├── Wireframes
-├── UI mockups
-├── Design review
-└── 🎯 Milestone: Design approved
+- **Must Have**: Login, Payment.
+- **Should Have**: Email Receipt.
+- **Could Have**: Dark Mode.
+- **Won't Have**: VR Support.
 
-Week 5-8: Development
-├── Sprint 1: Core features
-├── Sprint 2: Integration
-├── Sprint 3: Polish & testing
-└── 🎯 Milestone: Feature complete
+---
 
-Week 9: QA & Testing
-├── Integration testing
-├── UAT
-├── Bug fixes
-└── 🎯 Milestone: QA sign-off
+## Part 5: The Definition of Done (DoD)
 
-Week 10: Launch
-├── Staging deployment
-├── Production deployment
-├── Monitoring setup
-└── 🎯 Milestone: Go live ✅
-```
+Prevents "It's done but logic is broken" state.
 
-### Step 4: Status Report Template
+**A ticket is DONE when:**
 
-```markdown
-# Weekly Status Report
+1. Code is merged to `main`.
+2. Unit Tests pass.
+3. QA verified on `staging`.
+4. Feature Flag enabled.
+5. Docs updated.
 
-**Project:** [Name]  
-**Date:** [Date]  
-**Status:** 🟢 On Track | 🟡 At Risk | 🔴 Blocked
+---
 
-## Summary
-One paragraph summary of progress this week.
-
-## Completed This Week
-- ✅ Task 1
-- ✅ Task 2
-- ✅ Task 3
-
-## In Progress
-- 🔄 Task 4 (80% complete)
-- 🔄 Task 5 (50% complete)
-
-## Planned Next Week
-- Task 6
-- Task 7
-
-## Blockers & Risks
-| Issue | Impact | Owner | ETA |
-|-------|--------|-------|-----|
-| Waiting for API access | Delays integration | John | Jan 31 |
-
-## Key Decisions Made
-- Decision 1: [Rationale]
-
-## Metrics
-- Sprint velocity: X points
-- Bugs open: X
-- Test coverage: X%
-```
-
-## Best Practices
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Define clear success metrics
-- ✅ Document scope AND out-of-scope
-- ✅ Regular status updates
-- ✅ Identify risks early
-- ✅ Get sign-offs in writing
+- ✅ **Protect the Team**: Shield engineers from random external requests. "Put it in the backlog."
+- ✅ **Facilitate, Don't Dictate**: In Retrospectives, let the team speak first.
+- ✅ **Break it Down**: If a ticket is > 3 days, it's too big. Split it.
+- ✅ **Communicate Bad News Early**: "We will be late" is forgiven if said 2 weeks prior. It's fatal if said on due day.
 
 ### ❌ Avoid This
 
-- ❌ Don't skip requirements phase
-- ❌ Don't ignore stakeholder concerns
-- ❌ Don't commit without team input
-- ❌ Don't forget change management
+- ❌ **Micromanagement**: Asking "Is it done?" every 2 hours. Trust the Daily Standup.
+- ❌ **Output over Outcome**: Measuring "Lines of Code" or "Tickets Closed". Measure "User Value Delivered".
+- ❌ **Endless Meetings**: If a meeting has no agenda, cancel it.
+
+---
 
 ## Related Skills
 
-- `@senior-system-analyst` - For requirements
-- `@senior-technical-writer` - For documentation
+- `@senior-software-architect` - Technical feasibility
+- `@senior-technical-writer` - Documentation quality
+- `@senior-code-reviewer` - Quality assurance

@@ -7,270 +7,127 @@ description: "Expert technical writing including API documentation, user guides,
 
 ## Overview
 
-This skill transforms you into an experienced Technical Writer who creates clear, comprehensive documentation that developers and users love. You'll write API docs, user guides, tutorials, and maintain documentation systems.
+This skill transforms you into a **Docs-as-Code Practitioner**. You will move beyond Word documents to treating documentation like software (Markdown, Git, CI/CD). You will master the **Diátaxis Framework**, write **OpenAPI** references, and create clear **Information Architecture**.
 
 ## When to Use This Skill
 
-- Use when writing API documentation
-- Use when creating README files
-- Use when documenting code or systems
-- Use when writing user guides or tutorials
-- Use when the user asks about documentation
+- Use when documenting a new API endpoint (Reference)
+- Use when writing a "Getting Started" guide (Tutorial)
+- Use when explaining a complex concept (Explanation)
+- Use when creating a `README.md` for an Open Source project
+- Use when maintaining a Changelog (`KEEP A CHANGELOG`)
 
-## How It Works
+---
 
-### Step 1: Documentation Types
+## Part 1: The Diátaxis Framework
 
-```
-DOCUMENTATION TYPES
-├── API REFERENCE
-│   ├── Endpoint descriptions
-│   ├── Request/Response examples
-│   ├── Authentication guides
-│   └── Error codes
-│
-├── USER GUIDES
-│   ├── Getting started
-│   ├── Installation
-│   ├── Configuration
-│   └── Troubleshooting
-│
-├── TUTORIALS
-│   ├── Step-by-step guides
-│   ├── Use case examples
-│   └── Best practices
-│
-├── REFERENCE DOCS
-│   ├── Architecture overview
-│   ├── Data models
-│   └── Glossary
-│
-└── CHANGELOGS
-    ├── Version history
-    ├── Breaking changes
-    └── Migration guides
-```
+Structure your docs by *User Intent*.
 
-### Step 2: README Template
+1. **Tutorials** (Learning-oriented): "Getting Started". Step-by-step. specific goal. No choices. "Do this, then this."
+2. **How-to Guides** (Problem-oriented): "How to configure CORS". User has a specific problem to solve. Steps + Context.
+3. **Reference** (Information-oriented): "API Endpoint /users". Facts. Signatures. Types. No opinions.
+4. **Explanations** (Understanding-oriented): "How Auth works". Architecture. Concepts. No code steps.
 
-```markdown
-# Project Name
+---
 
-Brief description of what this project does and who it's for.
+## Part 2: Docs-as-Code
 
-## Features
+Documentation lives with the code.
 
-- ✅ Feature 1 with brief explanation
-- ✅ Feature 2 with brief explanation
-- ✅ Feature 3 with brief explanation
+1. **Format**: Markdown (`.md`) or AsciiDoc (`.adoc`).
+2. **Versioning**: Git. Branches match software versions.
+3. **Testing**: CI pipeline checks for broken links (`markdown-link-check`) and spelling (`cspell`).
+4. **Generation**: Static Site Generators (Docusaurus, MkDocs, Hugo).
 
-## Installation
+### 2.1 Tooling
 
-\`\`\`bash
-npm install project-name
-\`\`\`
+- **Docusaurus**: React-based. Standard for JS/TS projects.
+- **MkDocs (Material)**: Python-based. Beautiful default theme.
+- **Swagger UI**: For API references (OpenAPI).
 
-## Quick Start
+---
 
-\`\`\`javascript
-import { Client } from 'project-name';
+## Part 3: API Documentation (OpenAPI/Swagger)
 
-const client = new Client({ apiKey: 'your-key' });
-const result = await client.doSomething();
-\`\`\`
+Don't write API docs manually. Generate them or write the Spec first.
 
-## Configuration
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `apiKey` | string | - | Your API key (required) |
-| `timeout` | number | 5000 | Request timeout in ms |
-
-## API Reference
-
-### `client.doSomething(options)`
-
-Does something amazing.
-
-**Parameters:**
-- `options.param1` (string): Description of param1
-- `options.param2` (number, optional): Description of param2
-
-**Returns:** `Promise<Result>`
-
-**Example:**
-\`\`\`javascript
-const result = await client.doSomething({ param1: 'value' });
-\`\`\`
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## License
-
-MIT © [Your Name]
+```yaml
+paths:
+  /users:
+    get:
+      summary: List all users
+      description: Returns a paginated list of users.
+      parameters:
+        - name: limit
+          in: query
+          description: Max number of results (default 10)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
 ```
 
-### Step 3: API Documentation
+---
 
-```markdown
-## Create User
+## Part 4: Writing Style Guide
 
-Creates a new user account.
+### 4.1 Clarity & Conciseness
 
-### Endpoint
+- **Bad**: "The user should ideally try to click the button in order to proceed."
+- **Good**: "Click the button to proceed."
 
-\`POST /api/v1/users\`
+### 4.2 Voice & Tone
 
-### Authentication
+- **Voice**: Professional, Helpful, Authoritative.
+- **Tone**: Varies.
+  - *Error Message*: Calm, precise. "Payment failed." (Not: "Oops! You broke it.")
+  - *Tutorial*: Encouraging. "Great! You built your first app."
 
-Requires Bearer token with `users:write` scope.
+### 4.3 Coding Standards in Docs
 
-### Request
+- All code blocks must specific the language (` ```python `).
+- All code examples must be *copy-pasteable* and *working*.
+- Use comments to explain the *why*, not the *what*.
 
-**Headers:**
-| Header | Value |
-|--------|-------|
-| Authorization | Bearer {token} |
-| Content-Type | application/json |
+---
 
-**Body:**
-\`\`\`json
-{
-  "email": "user@example.com",
-  "name": "John Doe",
-  "role": "member"
-}
-\`\`\`
+## Part 5: The Perfect README
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| email | string | Yes | Valid email address |
-| name | string | Yes | User's full name (2-100 chars) |
-| role | string | No | One of: admin, member, guest |
+The "Home Page" of your repo.
 
-### Response
+1. **Title & One-Liner**: What is this?
+2. **Badges**: CI Status, NPM Version, License.
+3. **Features**: Bullet points.
+4. **Installation**: `npm install my-lib`
+5. **Usage**: minimal Example.
+6. **Contributing**: Link to `.github/CONTRIBUTING.md`.
 
-**Success (201 Created):**
-\`\`\`json
-{
-  "id": "usr_abc123",
-  "email": "user@example.com",
-  "name": "John Doe",
-  "role": "member",
-  "created_at": "2025-01-30T10:00:00Z"
-}
-\`\`\`
+---
 
-**Errors:**
-| Code | Description |
-|------|-------------|
-| 400 | Invalid request body |
-| 401 | Missing or invalid token |
-| 409 | Email already exists |
-```
-
-### Step 4: Changelog Format
-
-```markdown
-# Changelog
-
-All notable changes documented following [Keep a Changelog](https://keepachangelog.com/).
-
-## [2.0.0] - 2025-01-30
-
-### ⚠️ Breaking Changes
-- Removed deprecated `oldMethod()` - use `newMethod()` instead
-- Changed `config.timeout` from seconds to milliseconds
-
-### Added
-- New `client.stream()` method for real-time data
-- Support for custom retry strategies
-
-### Changed
-- Improved error messages with more context
-- Updated dependencies to latest versions
-
-### Fixed
-- Fixed memory leak in long-running connections
-- Fixed race condition in concurrent requests
-
-### Migration Guide
-\`\`\`javascript
-// Before (v1.x)
-client.oldMethod({ timeout: 5 }); // seconds
-
-// After (v2.x)
-client.newMethod({ timeout: 5000 }); // milliseconds
-\`\`\`
-```
-
-## Examples
-
-### Example 1: Error Documentation
-
-```markdown
-## Error Handling
-
-All errors follow this structure:
-
-\`\`\`json
-{
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Invalid email format",
-    "details": [
-      { "field": "email", "issue": "Must be valid email" }
-    ]
-  }
-}
-\`\`\`
-
-### Common Error Codes
-
-| Code | HTTP Status | Description | Resolution |
-|------|-------------|-------------|------------|
-| AUTH_REQUIRED | 401 | Missing auth token | Include Bearer token |
-| RATE_LIMITED | 429 | Too many requests | Wait and retry with backoff |
-| NOT_FOUND | 404 | Resource doesn't exist | Check resource ID |
-```
-
-## Best Practices
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use clear, concise language
-- ✅ Include working code examples
-- ✅ Keep docs up-to-date with code
-- ✅ Use tables for structured data
-- ✅ Add "copy" buttons to code blocks
-- ✅ Include error scenarios
+- ✅ **Audience Analysis**: Who is reading this? Junior Dev? CTO? Adjust technical depth accordingly.
+- ✅ **Use Visuals**: A Mermaid diagram is worth 1000 words.
+- ✅ **Keep existing content up to date**: Stale docs are worse than no docs.
+- ✅ **Use "You"**: Address the reader directly. "Run the command" (Imperative).
 
 ### ❌ Avoid This
 
-- ❌ Don't use jargon without explanation
-- ❌ Don't assume prior knowledge
-- ❌ Don't leave placeholders
-- ❌ Don't skip edge cases
+- ❌ **Passive Voice**: "The button is clicked by the user". -> "Click the button".
+- ❌ **Wall of Text**: Break it up with headers, lists, and code blocks.
+- ❌ **Assuming Knowledge**: Link to prerequisites. Don't assume they know Docker.
 
-## Common Pitfalls
-
-**Problem:** Documentation out of sync with code
-**Solution:** Generate docs from code comments, add docs to PR checklist.
-
-**Problem:** Users can't find what they need
-**Solution:** Good navigation, search, and clear headings.
-
-## Tools
-
-| Category | Tools |
-|----------|-------|
-| Static Site | Docusaurus, MkDocs, GitBook |
-| API Docs | Swagger/OpenAPI, Redoc, Stoplight |
-| README | readme.so, Make a README |
+---
 
 ## Related Skills
 
-- `@senior-software-engineer` - For code documentation
-- `@senior-developer-advocate` - For tutorials
+- `@senior-software-architect` - Source of Explanations
+- `@senior-code-reviewer` - Reviewing the Markdown
+- `@github-actions-specialist` - Automating Doc Builds
