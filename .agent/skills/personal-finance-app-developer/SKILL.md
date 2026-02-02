@@ -7,366 +7,421 @@ description: "Expert personal finance app development including budgeting, expen
 
 ## Overview
 
-Skill ini menjadikan AI Agent Anda sebagai spesialis pengembangan aplikasi personal finance. Agent akan mampu membangun fitur budgeting, expense tracking, savings goals, financial analytics, dan integrasi dengan bank/payment services.
+This skill transforms you into a **Personal Finance App Expert**. You will master **Expense Tracking**, **Budgeting**, **Savings Goals**, **Bank Integration**, and **Financial Analytics** for building production-ready personal finance applications.
 
 ## When to Use This Skill
 
-- Use when building budgeting or expense tracking apps
-- Use when implementing savings goals and financial planning features
-- Use when the user asks about personal finance app architecture
-- Use when designing financial dashboards and analytics
-- Use when integrating with Open Banking APIs
+- Use when building budgeting apps
+- Use when implementing expense tracking
+- Use when creating savings goals
+- Use when integrating bank accounts
+- Use when building financial dashboards
 
-## How It Works
+---
 
-### Step 1: Core Features
+## Part 1: Personal Finance Architecture
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│           PERSONAL FINANCE APP FEATURES                 │
-├─────────────────────────────────────────────────────────┤
-│ 💰 Expense Tracking    - Categorize, tag, receipt scan  │
-│ 📊 Budgeting           - Category budgets, alerts       │
-│ 🎯 Savings Goals       - Target tracking, milestones    │
-│ 📈 Analytics           - Trends, insights, reports      │
-│ 🏦 Bank Sync           - Plaid, Open Banking APIs       │
-│ 🔔 Notifications       - Bill reminders, budget alerts  │
-│ 📱 Multi-platform      - Mobile, web, sync across       │
-└─────────────────────────────────────────────────────────┘
+### 1.1 System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   Personal Finance App                       │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Accounts   │ Transactions│ Budgets     │ Goals              │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Bank Integration (Plaid)                       │
+├─────────────────────────────────────────────────────────────┤
+│              Analytics & Insights                            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Step 2: Data Models
+### 1.2 Key Concepts
 
-```dart
-// Transaction model
-class Transaction {
-  final String id;
-  final double amount;
-  final TransactionType type; // income, expense
-  final String categoryId;
-  final DateTime date;
-  final String description;
-  final String? notes;
-  final String? receiptUrl;
-  final List<String> tags;
-  final bool isRecurring;
-  final String? recurringId;
-  
-  // Computed
-  bool get isExpense => type == TransactionType.expense;
-  bool get isIncome => type == TransactionType.income;
-}
+| Concept | Description |
+|---------|-------------|
+| **Account** | Bank account, credit card, cash |
+| **Transaction** | Income or expense |
+| **Category** | Spending classification |
+| **Budget** | Spending limit per category |
+| **Goal** | Savings target |
+| **Net Worth** | Assets minus liabilities |
 
-// Budget model
-class Budget {
-  final String id;
-  final String categoryId;
-  final double limit;
-  final BudgetPeriod period; // weekly, monthly, yearly
-  final DateTime startDate;
-  final double spent;
-  
-  double get remaining => limit - spent;
-  double get percentUsed => (spent / limit) * 100;
-  bool get isOverBudget => spent > limit;
-}
+---
 
-// Savings Goal model
-class SavingsGoal {
-  final String id;
-  final String name;
-  final double targetAmount;
-  final double currentAmount;
-  final DateTime? targetDate;
-  final String? iconUrl;
-  final Color color;
-  
-  double get progress => (currentAmount / targetAmount) * 100;
-  double get remaining => targetAmount - currentAmount;
-  bool get isCompleted => currentAmount >= targetAmount;
-}
+## Part 2: Database Schema
 
-// Category with budget
-class Category {
-  final String id;
-  final String name;
-  final String icon;
-  final Color color;
-  final CategoryType type; // income, expense
-  final Budget? budget;
-}
+### 2.1 Core Tables
+
+```sql
+-- Accounts
+CREATE TABLE accounts (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    name VARCHAR(100),
+    type VARCHAR(50),  -- 'checking', 'savings', 'credit_card', 'cash', 'investment'
+    institution VARCHAR(100),
+    balance DECIMAL(15, 2) DEFAULT 0,
+    currency VARCHAR(3) DEFAULT 'USD',
+    is_asset BOOLEAN DEFAULT TRUE,  -- FALSE for credit cards/loans
+    is_linked BOOLEAN DEFAULT FALSE,
+    plaid_account_id VARCHAR(100),
+    last_synced_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Categories
+CREATE TABLE categories (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    name VARCHAR(100),
+    icon VARCHAR(50),
+    color VARCHAR(7),
+    parent_id UUID REFERENCES categories(id),
+    type VARCHAR(20),  -- 'income', 'expense'
+    is_system BOOLEAN DEFAULT FALSE
+);
+
+-- Transactions
+CREATE TABLE transactions (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    account_id UUID REFERENCES accounts(id),
+    category_id UUID REFERENCES categories(id),
+    amount DECIMAL(15, 2) NOT NULL,  -- Positive = income, Negative = expense
+    type VARCHAR(20),  -- 'income', 'expense', 'transfer'
+    description VARCHAR(255),
+    merchant VARCHAR(255),
+    date DATE NOT NULL,
+    notes TEXT,
+    is_recurring BOOLEAN DEFAULT FALSE,
+    recurring_id UUID,
+    plaid_transaction_id VARCHAR(100),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Budgets
+CREATE TABLE budgets (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    category_id UUID REFERENCES categories(id),
+    amount DECIMAL(15, 2),
+    period VARCHAR(20) DEFAULT 'monthly',  -- 'weekly', 'monthly', 'yearly'
+    start_date DATE,
+    end_date DATE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Goals
+CREATE TABLE goals (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    name VARCHAR(100),
+    target_amount DECIMAL(15, 2),
+    current_amount DECIMAL(15, 2) DEFAULT 0,
+    deadline DATE,
+    icon VARCHAR(50),
+    color VARCHAR(7),
+    status VARCHAR(20) DEFAULT 'active',  -- 'active', 'completed', 'cancelled'
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Recurring Transactions
+CREATE TABLE recurring_transactions (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    account_id UUID REFERENCES accounts(id),
+    category_id UUID REFERENCES categories(id),
+    amount DECIMAL(15, 2),
+    description VARCHAR(255),
+    frequency VARCHAR(20),  -- 'daily', 'weekly', 'monthly', 'yearly'
+    next_date DATE,
+    end_date DATE,
+    is_active BOOLEAN DEFAULT TRUE
+);
 ```
 
-### Step 3: Budget Calculation Logic
+---
 
-```dart
-class BudgetService {
-  // Calculate spending by category for period
-  Future<Map<String, double>> getCategorySpending({
-    required DateTime startDate,
-    required DateTime endDate,
-  }) async {
-    final transactions = await _repository.getTransactions(
-      startDate: startDate,
-      endDate: endDate,
-      type: TransactionType.expense,
-    );
-    
-    final spending = <String, double>{};
-    for (final tx in transactions) {
-      spending[tx.categoryId] = 
-        (spending[tx.categoryId] ?? 0) + tx.amount;
-    }
-    return spending;
+## Part 3: Expense Tracking
+
+### 3.1 Add Transaction
+
+```typescript
+async function addTransaction(
+  userId: string,
+  data: {
+    accountId: string;
+    categoryId: string;
+    amount: number;
+    type: 'income' | 'expense' | 'transfer';
+    description: string;
+    date: Date;
+    merchant?: string;
   }
+): Promise<Transaction> {
+  // Ensure amount sign matches type
+  const amount = data.type === 'expense' ? -Math.abs(data.amount) : Math.abs(data.amount);
+  
+  const transaction = await db.transactions.create({
+    data: {
+      userId,
+      accountId: data.accountId,
+      categoryId: data.categoryId,
+      amount,
+      type: data.type,
+      description: data.description,
+      date: data.date,
+      merchant: data.merchant,
+    },
+  });
+  
+  // Update account balance
+  await db.accounts.update({
+    where: { id: data.accountId },
+    data: { balance: { increment: amount } },
+  });
   
   // Check budget alerts
-  Future<List<BudgetAlert>> checkBudgetAlerts() async {
-    final budgets = await _repository.getAllBudgets();
-    final alerts = <BudgetAlert>[];
-    
-    for (final budget in budgets) {
-      if (budget.percentUsed >= 100) {
-        alerts.add(BudgetAlert(
-          type: AlertType.exceeded,
-          budget: budget,
-          message: 'Budget exceeded by ${budget.spent - budget.limit}',
-        ));
-      } else if (budget.percentUsed >= 80) {
-        alerts.add(BudgetAlert(
-          type: AlertType.warning,
-          budget: budget,
-          message: '${budget.percentUsed.toInt()}% of budget used',
-        ));
-      }
-    }
-    return alerts;
-  }
+  await checkBudgetAlerts(userId, data.categoryId);
   
-  // Calculate monthly summary
-  Future<MonthlySummary> getMonthlySummary(DateTime month) async {
-    final start = DateTime(month.year, month.month, 1);
-    final end = DateTime(month.year, month.month + 1, 0);
-    
-    final transactions = await _repository.getTransactions(
-      startDate: start,
-      endDate: end,
-    );
-    
-    double totalIncome = 0;
-    double totalExpense = 0;
-    
-    for (final tx in transactions) {
-      if (tx.isIncome) {
-        totalIncome += tx.amount;
-      } else {
-        totalExpense += tx.amount;
-      }
-    }
-    
-    return MonthlySummary(
-      month: month,
-      totalIncome: totalIncome,
-      totalExpense: totalExpense,
-      netSavings: totalIncome - totalExpense,
-      savingsRate: totalIncome > 0 
-        ? ((totalIncome - totalExpense) / totalIncome) * 100 
-        : 0,
-    );
-  }
+  return transaction;
 }
 ```
 
-### Step 4: Recurring Transactions
+### 3.2 Auto-Categorization
 
-```dart
-class RecurringTransactionService {
-  // Process recurring transactions
-  Future<void> processRecurringTransactions() async {
-    final recurring = await _repository.getRecurringTransactions();
-    final now = DateTime.now();
-    
-    for (final template in recurring) {
-      if (_shouldCreateTransaction(template, now)) {
-        await _repository.createTransaction(
-          Transaction(
-            id: _uuid.v4(),
-            amount: template.amount,
-            type: template.type,
-            categoryId: template.categoryId,
-            date: now,
-            description: template.description,
-            isRecurring: true,
-            recurringId: template.id,
-          ),
-        );
-        
-        await _repository.updateLastProcessed(template.id, now);
-      }
+```typescript
+const MERCHANT_CATEGORIES: Record<string, string> = {
+  'starbucks': 'food_coffee',
+  'uber': 'transportation',
+  'netflix': 'entertainment',
+  'spotify': 'entertainment',
+  'amazon': 'shopping',
+};
+
+async function autoCategorize(merchant: string, userId: string): Promise<string | null> {
+  // Check merchant mapping
+  const normalizedMerchant = merchant.toLowerCase();
+  for (const [pattern, categoryKey] of Object.entries(MERCHANT_CATEGORIES)) {
+    if (normalizedMerchant.includes(pattern)) {
+      const category = await db.categories.findFirst({
+        where: { userId, name: categoryKey },
+      });
+      if (category) return category.id;
     }
   }
   
-  bool _shouldCreateTransaction(
-    RecurringTemplate template,
-    DateTime now,
-  ) {
-    final lastProcessed = template.lastProcessed;
-    
-    switch (template.frequency) {
-      case Frequency.daily:
-        return now.difference(lastProcessed).inDays >= 1;
-      case Frequency.weekly:
-        return now.difference(lastProcessed).inDays >= 7;
-      case Frequency.monthly:
-        return now.month != lastProcessed.month;
-      case Frequency.yearly:
-        return now.year != lastProcessed.year;
-    }
-  }
+  // Check user's previous categorization for same merchant
+  const previousTx = await db.transactions.findFirst({
+    where: {
+      userId,
+      merchant: { contains: merchant, mode: 'insensitive' },
+      categoryId: { not: null },
+    },
+    orderBy: { date: 'desc' },
+  });
+  
+  return previousTx?.categoryId || null;
 }
 ```
 
-### Step 5: Bank Integration (Plaid)
+---
 
-```dart
-// Plaid integration for bank sync
-class PlaidService {
-  final String _clientId;
-  final String _secret;
+## Part 4: Budgeting
+
+### 4.1 Budget Tracking
+
+```typescript
+interface BudgetStatus {
+  categoryId: string;
+  categoryName: string;
+  budgetAmount: number;
+  spentAmount: number;
+  remainingAmount: number;
+  percentUsed: number;
+  status: 'on_track' | 'warning' | 'exceeded';
+}
+
+async function getBudgetStatus(userId: string, month: Date): Promise<BudgetStatus[]> {
+  const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+  const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
   
-  // Create link token for Plaid Link
-  Future<String> createLinkToken(String userId) async {
-    final response = await _dio.post(
-      'https://sandbox.plaid.com/link/token/create',
-      data: {
-        'client_id': _clientId,
-        'secret': _secret,
-        'user': {'client_user_id': userId},
-        'client_name': 'MyFinanceApp',
-        'products': ['transactions'],
-        'country_codes': ['US'],
-        'language': 'en',
+  const budgets = await db.budgets.findMany({
+    where: { userId, period: 'monthly' },
+    include: { category: true },
+  });
+  
+  const results: BudgetStatus[] = [];
+  
+  for (const budget of budgets) {
+    const spent = await db.transactions.aggregate({
+      where: {
+        userId,
+        categoryId: budget.categoryId,
+        date: { gte: startOfMonth, lte: endOfMonth },
+        type: 'expense',
       },
-    );
-    return response.data['link_token'];
-  }
-  
-  // Exchange public token for access token
-  Future<String> exchangePublicToken(String publicToken) async {
-    final response = await _dio.post(
-      'https://sandbox.plaid.com/item/public_token/exchange',
-      data: {
-        'client_id': _clientId,
-        'secret': _secret,
-        'public_token': publicToken,
-      },
-    );
-    return response.data['access_token'];
-  }
-  
-  // Sync transactions from bank
-  Future<List<Transaction>> syncTransactions(
-    String accessToken, {
-    DateTime? startDate,
-    DateTime? endDate,
-  }) async {
-    final response = await _dio.post(
-      'https://sandbox.plaid.com/transactions/get',
-      data: {
-        'client_id': _clientId,
-        'secret': _secret,
-        'access_token': accessToken,
-        'start_date': startDate?.toIso8601String().split('T')[0],
-        'end_date': endDate?.toIso8601String().split('T')[0],
-      },
-    );
+      _sum: { amount: true },
+    });
     
-    return (response.data['transactions'] as List)
-      .map((tx) => Transaction.fromPlaid(tx))
-      .toList();
+    const spentAmount = Math.abs(spent._sum.amount || 0);
+    const remainingAmount = budget.amount - spentAmount;
+    const percentUsed = (spentAmount / budget.amount) * 100;
+    
+    results.push({
+      categoryId: budget.categoryId,
+      categoryName: budget.category.name,
+      budgetAmount: budget.amount,
+      spentAmount,
+      remainingAmount,
+      percentUsed,
+      status: percentUsed >= 100 ? 'exceeded' : percentUsed >= 80 ? 'warning' : 'on_track',
+    });
+  }
+  
+  return results;
+}
+```
+
+### 4.2 Budget Alerts
+
+```typescript
+async function checkBudgetAlerts(userId: string, categoryId: string) {
+  const budgetStatus = await getBudgetStatus(userId, new Date());
+  const categoryStatus = budgetStatus.find(b => b.categoryId === categoryId);
+  
+  if (!categoryStatus) return;
+  
+  if (categoryStatus.percentUsed >= 80 && categoryStatus.percentUsed < 100) {
+    await sendNotification(userId, {
+      title: 'Budget Warning',
+      body: `You've used ${Math.round(categoryStatus.percentUsed)}% of your ${categoryStatus.categoryName} budget.`,
+    });
+  } else if (categoryStatus.percentUsed >= 100) {
+    await sendNotification(userId, {
+      title: 'Budget Exceeded',
+      body: `You've exceeded your ${categoryStatus.categoryName} budget by ${formatCurrency(Math.abs(categoryStatus.remainingAmount))}.`,
+    });
   }
 }
 ```
 
-### Step 6: Analytics & Insights
+---
 
-```dart
-class FinancialAnalyticsService {
-  // Spending trends over months
-  Future<List<MonthlyTrend>> getSpendingTrends(int months) async {
-    final trends = <MonthlyTrend>[];
-    final now = DateTime.now();
-    
-    for (int i = 0; i < months; i++) {
-      final month = DateTime(now.year, now.month - i, 1);
-      final summary = await _budgetService.getMonthlySummary(month);
-      trends.add(MonthlyTrend(
-        month: month,
-        income: summary.totalIncome,
-        expense: summary.totalExpense,
-        savings: summary.netSavings,
-      ));
-    }
-    
-    return trends.reversed.toList();
-  }
+## Part 5: Savings Goals
+
+### 5.1 Goal Progress
+
+```typescript
+async function contributeToGoal(userId: string, goalId: string, amount: number) {
+  const goal = await db.goals.findUnique({ where: { id: goalId } });
   
-  // Generate insights
-  Future<List<Insight>> generateInsights() async {
-    final insights = <Insight>[];
-    final lastMonth = await _budgetService.getMonthlySummary(
-      DateTime(DateTime.now().year, DateTime.now().month - 1, 1),
-    );
-    final thisMonth = await _budgetService.getMonthlySummary(
-      DateTime.now(),
-    );
-    
-    // Spending comparison
-    if (thisMonth.totalExpense > lastMonth.totalExpense * 1.2) {
-      insights.add(Insight(
-        type: InsightType.warning,
-        title: 'Spending Up',
-        message: 'Your spending is 20% higher than last month',
-        actionable: true,
-      ));
-    }
-    
-    // Savings opportunity
-    if (thisMonth.savingsRate < 20) {
-      insights.add(Insight(
-        type: InsightType.tip,
-        title: 'Savings Opportunity',
-        message: 'Try to save at least 20% of your income',
-      ));
-    }
-    
-    return insights;
+  const newAmount = goal.currentAmount + amount;
+  const isCompleted = newAmount >= goal.targetAmount;
+  
+  await db.goals.update({
+    where: { id: goalId },
+    data: {
+      currentAmount: newAmount,
+      status: isCompleted ? 'completed' : 'active',
+    },
+  });
+  
+  if (isCompleted) {
+    await sendNotification(userId, {
+      title: '🎉 Goal Achieved!',
+      body: `Congratulations! You've reached your "${goal.name}" savings goal!`,
+    });
   }
+}
+
+async function getGoalProgress(goalId: string) {
+  const goal = await db.goals.findUnique({ where: { id: goalId } });
+  
+  const percentComplete = (goal.currentAmount / goal.targetAmount) * 100;
+  const remaining = goal.targetAmount - goal.currentAmount;
+  
+  // Calculate monthly saving needed to reach goal
+  const monthsRemaining = goal.deadline
+    ? differenceInMonths(goal.deadline, new Date())
+    : null;
+  
+  const monthlyNeeded = monthsRemaining && monthsRemaining > 0
+    ? remaining / monthsRemaining
+    : null;
+  
+  return {
+    ...goal,
+    percentComplete,
+    remaining,
+    monthsRemaining,
+    monthlyNeeded,
+  };
 }
 ```
 
-## Best Practices
+---
+
+## Part 6: Analytics
+
+### 6.1 Spending Insights
+
+```typescript
+async function getSpendingInsights(userId: string, months = 3) {
+  const startDate = subMonths(new Date(), months);
+  
+  // Spending by category
+  const byCategory = await db.transactions.groupBy({
+    by: ['categoryId'],
+    where: {
+      userId,
+      type: 'expense',
+      date: { gte: startDate },
+    },
+    _sum: { amount: true },
+    orderBy: { _sum: { amount: 'asc' } },
+  });
+  
+  // Month-over-month comparison
+  const thisMonth = await getMonthlySpending(userId, new Date());
+  const lastMonth = await getMonthlySpending(userId, subMonths(new Date(), 1));
+  
+  const monthChange = thisMonth - lastMonth;
+  const monthChangePercent = lastMonth > 0 ? (monthChange / lastMonth) * 100 : 0;
+  
+  return {
+    byCategory: byCategory.map(c => ({
+      categoryId: c.categoryId,
+      amount: Math.abs(c._sum.amount),
+    })),
+    thisMonth,
+    lastMonth,
+    monthChange,
+    monthChangePercent,
+  };
+}
+```
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use local-first architecture with cloud sync
-- ✅ Implement proper data encryption for financial data
-- ✅ Provide clear budget visualizations (charts, progress bars)
-- ✅ Send proactive budget alerts and bill reminders
-- ✅ Support multiple currencies and localization
+- ✅ **Secure Bank Credentials**: Use Plaid/Yodlee.
+- ✅ **Auto-Sync Transactions**: Background sync.
+- ✅ **Flexible Categories**: Let users customize.
 
 ### ❌ Avoid This
 
-- ❌ Don't store sensitive bank credentials in plain text
-- ❌ Don't skip transaction categorization—it's key to insights
-- ❌ Don't ignore recurring transaction patterns
-- ❌ Don't make data export difficult—users own their data
-- ❌ Don't overcomplicate the UI—simplicity wins
+- ❌ **Store Bank Passwords**: Use OAuth tokens.
+- ❌ **Hard-Code Categories**: Users have different needs.
+- ❌ **Ignore Data Privacy**: Encrypt sensitive data.
+
+---
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Mobile app development
-- `@fintech-developer` - Banking API integration
-- `@payment-integration-specialist` - Payment processing
-- `@senior-firebase-developer` - Backend and sync
-- `@analytics-engineer` - Financial analytics
+- `@fintech-developer` - Financial systems
+- `@trading-app-developer` - Investment tracking
+- `@analytics-engineer` - Data analysis

@@ -7,376 +7,420 @@ description: "Expert React.js development including hooks, state management, com
 
 ## Overview
 
-This skill transforms you into an **expert React engineer** capable of building scalable, maintainable, and high-performance frontend applications. You will master advanced patterns, state management strategies, performance tuning, and strict TypeScript integration.
+This skill transforms you into an **Expert React Engineer** capable of building scalable, maintainable, and high-performance frontend applications. You will master advanced component patterns, state management strategies, performance optimization, and production-ready architecture.
 
 ## When to Use This Skill
 
 - Use when building enterprise-grade React applications
-- Use when designing complex component architectures
+- Use when designing component architectures
 - Use when optimizing render performance
-- Use when implementing advanced state management (Redux Toolkit, TanStack Query)
+- Use when implementing state management
 - Use when reviewing React code quality
 
 ---
 
-## Part 1: Advanced Component Patterns
+## Part 1: React Fundamentals & Evolution
 
-### 1.1 Atomic Design & Directory Structure
+### 1.1 React's Core Philosophy
 
-Scalable structure for large applications.
+React is built on several key principles:
 
-```text
-src/
-├── assets/                 # Static assets
-├── components/             # Shared components
-│   ├── ui/                 # Atoms (Button, Input) - shadcn/ui style
-│   ├── layout/             # Organisms (Navbar, Sidebar)
-│   └── forms/              # Form-specific components
-├── features/               # Feature-based architecture (Vertical Slices)
-│   ├── auth/
-│   │   ├── api/            # API hooks (useLogin)
-│   │   ├── components/     # Feature-specific components
-│   │   ├── routes/         # Feature routes
-│   │   └── types/          # Feature types
-│   └── dashboard/
-├── hooks/                  # Global hooks
-├── lib/                    # Utils & configuration (axios, dayjs)
-├── stores/                 # Global state stores
-└── types/                  # Global types
+| Principle | Description |
+|-----------|-------------|
+| **Declarative UI** | Describe what UI should look like, not how to build it |
+| **Component-Based** | Build encapsulated components that manage their own state |
+| **Unidirectional Data Flow** | Data flows from parent to child via props |
+| **Virtual DOM** | Efficient diffing algorithm for minimal DOM updates |
+| **Composition over Inheritance** | Prefer composing components over class inheritance |
+
+### 1.2 React 18+ Features Overview
+
+| Feature | Description | Use Case |
+|---------|-------------|----------|
+| **Concurrent Rendering** | Non-blocking UI updates | Large lists, complex UIs |
+| **Automatic Batching** | Groups state updates | Multiple `setState` calls |
+| **Transitions** | Mark non-urgent updates | Tab switching, navigation |
+| **Suspense for Data** | Declarative loading states | Data fetching with libraries |
+| **Server Components** | Zero-bundle server rendering | Next.js App Router |
+
+### 1.3 Rendering Strategies Comparison
+
 ```
-
-### 1.2 Compound Components
-
-Great for UI libraries (Select, Tabs, Accordion).
-
-```tsx
-// Example: Accessible Tabs Component
-import React, { createContext, useContext, useState } from 'react';
-
-type TabsContextType = {
-  activeTab: string;
-  setActiveTab: (id: string) => void;
-};
-
-const TabsContext = createContext<TabsContextType | undefined>(undefined);
-
-export const Tabs = ({ children, defaultValue }: { children: React.ReactNode, defaultValue: string }) => {
-  const [activeTab, setActiveTab] = useState(defaultValue);
-  return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
-      <div className="tabs-root">{children}</div>
-    </TabsContext.Provider>
-  );
-};
-
-export const TabsList = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex space-x-2 border-b">{children}</div>
-);
-
-export const TabsTrigger = ({ value, children }: { value: string, children: React.ReactNode }) => {
-  const context = useContext(TabsContext);
-  if (!context) throw new Error("TabsTrigger must be used within Tabs");
-  
-  const isActive = context.activeTab === value;
-  return (
-    <button
-      onClick={() => context.setActiveTab(value)}
-      className={`px-4 py-2 ${isActive ? 'border-b-2 border-blue-500 font-bold' : ''}`}
-    >
-      {children}
-    </button>
-  );
-};
-
-export const TabsContent = ({ value, children }: { value: string, children: React.ReactNode }) => {
-  const context = useContext(TabsContext);
-  if (!context) throw new Error("TabsContent must be used within Tabs");
-  
-  if (context.activeTab !== value) return null;
-  return <div className="p-4">{children}</div>;
-};
-
-// Usage:
-// <Tabs defaultValue="account">
-//   <TabsList>
-//     <TabsTrigger value="account">Account</TabsTrigger>
-//     <TabsTrigger value="password">Password</TabsTrigger>
-//   </TabsList>
-//   <TabsContent value="account">Account settings...</TabsContent>
-//   <TabsContent value="password">Password inputs...</TabsContent>
-// </Tabs>
-```
-
-### 1.3 Higher-Order Components (HOC) vs Custom Hooks
-
-Prefer Hooks for logic reuse, HOCs for injecting props or layout wrappers.
-
-**Hook Architecture (Preferred):**
-
-```tsx
-const useAuthGuard = () => {
-  const { user, isLoading } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !user) router.push('/login');
-  }, [user, isLoading]);
-
-  return { user, isLoading };
-};
+┌─────────────────────────────────────────────────────────────┐
+│                    React Rendering                           │
+├────────────────────┬────────────────────┬───────────────────┤
+│ Client-Side (CSR)  │ Server-Side (SSR)  │ Static (SSG)      │
+│ SPA, dynamic data  │ SEO, personalized  │ Blog, docs        │
+├────────────────────┴────────────────────┴───────────────────┤
+│              Hybrid: React Server Components                 │
+│         (Server + Client components in same tree)            │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Part 2: State Management Mastery
+## Part 2: Project Architecture
 
-### 2.1 Server State (TanStack Query / React Query)
+### 2.1 Feature-Based Structure (Recommended)
 
-Separate server state from client state. This is critical for modern React.
+```text
+src/
+├── components/             # Shared UI components
+│   ├── ui/                 # Primitives (Button, Input, Modal)
+│   └── layout/             # Layout components (Header, Footer)
+├── features/               # Feature modules (domain-driven)
+│   ├── auth/
+│   │   ├── api/            # API hooks (useLogin, useLogout)
+│   │   ├── components/     # Feature-specific components
+│   │   ├── hooks/          # Feature hooks
+│   │   └── types.ts        # Feature types
+│   └── dashboard/
+├── hooks/                  # Global custom hooks
+├── lib/                    # Utilities, axios config, helpers
+├── stores/                 # Global state (Zustand/Redux)
+├── types/                  # Global TypeScript types
+└── App.tsx
+```
+
+### 2.2 When to Use Each Architecture
+
+| Project Size | Recommendation |
+|--------------|----------------|
+| **Small** (< 10 pages) | Flat structure, components folder |
+| **Medium** (10-50 pages) | Feature-based, modular structure |
+| **Large** (50+ pages) | Monorepo with shared packages |
+| **Enterprise** | Micro-frontends, Module Federation |
+
+---
+
+## Part 3: State Management Decision Guide
+
+### 3.1 State Categories
+
+| Category | Location | Examples | Solution |
+|----------|----------|----------|----------|
+| **Local UI** | Component | Form inputs, toggles | `useState` |
+| **Lifted** | Parent | Sibling communication | Props, `useState` |
+| **Derived** | Computed | Filtered list, totals | `useMemo`, no state |
+| **Server** | Remote | API data | TanStack Query |
+| **Global** | App-wide | User, theme, cart | Zustand, Redux |
+| **URL** | Router | Filters, pagination | URL params |
+
+### 3.2 Server State with TanStack Query
+
+**Why TanStack Query?**
+
+- Automatic caching and background refetching
+- Loading/error states built-in
+- Optimistic updates
+- Cache invalidation
 
 ```tsx
-// features/users/api/getUsers.ts
-import { useQuery } from '@tanstack/react-query';
-import { axios } from '@/lib/axios';
-import { User } from '../types';
+// features/users/api/useUsers.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useUsers = (page: number) => {
   return useQuery({
     queryKey: ['users', page],
-    queryFn: async (): Promise<User[]> => {
-      const { data } = await axios.get(`/users?page=${page}`);
-      return data;
+    queryFn: () => api.getUsers(page),
+    staleTime: 5 * 60 * 1000,  // Fresh for 5 minutes
+  });
+};
+
+export const useCreateUser = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (data: CreateUserDto) => api.createUser(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
-    staleTime: 5 * 60 * 1000, // Data fresh for 5 mins
-    keepPreviousData: true,    // Smoother pagination
   });
 };
 ```
 
-### 2.2 Global Client State (Zustand)
+### 3.3 Global State with Zustand
 
-Simple, performant replacement for Context API/Redux.
+**Why Zustand over Redux?**
+
+- Less boilerplate
+- No providers needed
+- Better TypeScript support
+- Built-in middleware (persist, devtools)
 
 ```tsx
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type ThemeStore = {
-  mode: 'light' | 'dark';
-  toggleTheme: () => void;
-};
+interface CartStore {
+  items: CartItem[];
+  addItem: (product: Product) => void;
+  removeItem: (id: string) => void;
+  clearCart: () => void;
+  total: () => number;
+}
 
-export const useThemeStore = create<ThemeStore>()(
+export const useCartStore = create<CartStore>()(
   persist(
-    (set) => ({
-      mode: 'light',
-      toggleTheme: () => set((state) => ({ 
-        mode: state.mode === 'light' ? 'dark' : 'light' 
+    (set, get) => ({
+      items: [],
+      addItem: (product) => set((state) => ({
+        items: [...state.items, { ...product, quantity: 1 }],
       })),
+      removeItem: (id) => set((state) => ({
+        items: state.items.filter((item) => item.id !== id),
+      })),
+      clearCart: () => set({ items: [] }),
+      total: () => get().items.reduce((sum, item) => 
+        sum + item.price * item.quantity, 0
+      ),
     }),
-    { name: 'theme-storage' }
+    { name: 'cart-storage' }
   )
 );
 ```
 
 ---
 
-## Part 3: Performance Optimization
+## Part 4: Component Patterns
 
-### 3.1 Memoization (useMemo, useCallback)
+### 4.1 Compound Components
 
-Only use when expensive calculations or stability of references is required (e.g., dependency in useEffect).
+Use for complex UI components with shared state (Tabs, Accordion, Select).
 
 ```tsx
-const ExpensiveComponent = React.memo(({ data, onClick }: Props) => {
-  console.log("Rendered");
-  return <button onClick={onClick}>Process {data.length} items</button>;
-});
+const TabsContext = createContext<TabsContextType | null>(null);
 
-const Parent = () => {
-  const [count, setCount] = useState(0);
-  const data = useMemo(() => heavyComputation(), []); // Run once
+export const Tabs = ({ children, defaultValue }: TabsProps) => {
+  const [activeTab, setActiveTab] = useState(defaultValue);
   
-  // Stable function reference prevents re-render of Child
-  const handleClick = useCallback(() => {
-    console.log("Clicked");
-  }, []);
-
   return (
-    <>
-      <ExpensiveComponent data={data} onClick={handleClick} />
-      <button onClick={() => setCount(c => c + 1)}>Re-render Parent ({count})</button>
-    </>
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <div className="tabs">{children}</div>
+    </TabsContext.Provider>
   );
 };
-```
 
-### 3.2 Code Splitting & Lazy Loading
-
-Break bundles to improve Initial Load Time (LCP).
-
-```tsx
-import React, { Suspense } from 'react';
-
-// Lazy load heavy components (e.g., Charts, Editors)
-const HeavyChart = React.lazy(() => import('./HeavyChart'));
-
-const Dashboard = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <Suspense fallback={<div className="animate-pulse h-64 bg-gray-200" />}>
-        <HeavyChart />
-      </Suspense>
-    </div>
-  );
-};
-```
-
-### 3.3 Virtualization (TanStack Virtual)
-
-Rendering large lists efficiently.
-
-```tsx
-import { useVirtualizer } from '@tanstack/react-virtual';
-
-const Row = ({ index, style }) => (
-  <div style={style} className="row">Row {index}</div>
+export const TabsList = ({ children }: { children: ReactNode }) => (
+  <div className="flex border-b" role="tablist">{children}</div>
 );
 
-const List = () => {
-  const parentRef = useRef(null);
-  
-  const rowVirtualizer = useVirtualizer({
-    count: 10000,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 35,
-  });
-
+export const TabsTrigger = ({ value, children }: TabsTriggerProps) => {
+  const { activeTab, setActiveTab } = useContext(TabsContext)!;
   return (
-    <div ref={parentRef} className="h-[400px] overflow-auto">
-      <div style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: 'relative' }}>
-        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
-          <Row 
-            key={virtualRow.key}
-            index={virtualRow.index}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: `${virtualRow.size}px`,
-              transform: `translateY(${virtualRow.start}px)`,
-            }}
-          />
-        ))}
-      </div>
-    </div>
+    <button
+      role="tab"
+      aria-selected={activeTab === value}
+      onClick={() => setActiveTab(value)}
+      className={activeTab === value ? 'border-b-2 border-blue-500' : ''}
+    >
+      {children}
+    </button>
   );
+};
+
+// Usage:
+// <Tabs defaultValue="account">
+//   <TabsList>
+//     <TabsTrigger value="account">Account</TabsTrigger>
+//     <TabsTrigger value="settings">Settings</TabsTrigger>
+//   </TabsList>
+//   <TabsContent value="account">...</TabsContent>
+// </Tabs>
+```
+
+### 4.2 Render Props vs Custom Hooks
+
+| Pattern | Use Case | Example |
+|---------|----------|---------|
+| **Custom Hook** | Share logic, caller controls UI | `useAuth()`, `useForm()` |
+| **Render Props** | Share logic + partial UI control | `<DataTable render={...} />` |
+| **HOC** | Cross-cutting concerns | `withAuth()`, `withAnalytics()` |
+
+**Modern approach: Prefer Custom Hooks**
+
+```tsx
+// Custom Hook (preferred)
+const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const login = async (credentials: Credentials) => { ... };
+  const logout = () => { ... };
+  return { user, login, logout };
 };
 ```
 
 ---
 
-## Part 4: Strict TypeScript Patterns
+## Part 5: Performance Optimization
 
-### 4.1 Discriminated Unions for State
+### 5.1 Performance Checklist
 
-Eliminate impossible states.
+| Issue | Solution | Tool |
+|-------|----------|------|
+| Unnecessary re-renders | `React.memo`, `useMemo`, `useCallback` | React DevTools Profiler |
+| Large bundle | Code splitting, `React.lazy` | Bundle analyzer |
+| Slow lists | Virtualization | TanStack Virtual |
+| Layout shifts | Reserved space, skeleton | Lighthouse CLS |
+| Memory leaks | Cleanup in `useEffect` | Chrome DevTools |
+
+### 5.2 Memoization Guidelines
+
+**When to use `useMemo` / `useCallback`:**
+
+- ✅ Expensive calculations
+- ✅ Stable reference needed for deps
+- ✅ Props to memoized children
+
+**When NOT to use:**
+
+- ❌ Simple primitives
+- ❌ Every callback (premature optimization)
+- ❌ Small arrays/objects
 
 ```tsx
-type State = 
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'success'; data: User }
-  | { status: 'error'; error: Error };
+// ✅ Good: Expensive filter
+const expensiveList = useMemo(
+  () => items.filter(complexFilter).sort(complexSort),
+  [items]
+);
 
-const UserProfile = ({ state }: { state: State }) => {
-  // TypeScript narrows type automatically
-  if (state.status === 'loading') return <Spinner />;
-  if (state.status === 'error') return <Alert>{state.error.message}</Alert>;
-  if (state.status === 'success') return <div>{state.data.name}</div>;
-  return null;
-};
+// ✅ Good: Stable callback for memoized child
+const handleClick = useCallback(() => doSomething(id), [id]);
+
+// ❌ Bad: Simple value
+const doubled = useMemo(() => count * 2, [count]); // Just use: count * 2
 ```
 
-### 4.2 Generic Components
-
-Reusable components with type safety.
+### 5.3 Code Splitting
 
 ```tsx
-type ListProps<T> = {
-  items: T[];
-  renderItem: (item: T) => React.ReactNode;
-};
+// Lazy load routes/heavy components
+const Dashboard = lazy(() => import('./features/dashboard/Dashboard'));
+const Analytics = lazy(() => import('./features/analytics/Analytics'));
 
-const List = <T extends { id: string | number }>({ items, renderItem }: ListProps<T>) => {
+function App() {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/analytics" element={<Analytics />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+---
+
+## Part 6: TypeScript Patterns
+
+### 6.1 Discriminated Unions for State
+
+```tsx
+type AsyncState<T> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error };
+
+function UserProfile({ state }: { state: AsyncState<User> }) {
+  switch (state.status) {
+    case 'loading': return <Spinner />;
+    case 'error': return <Alert>{state.error.message}</Alert>;
+    case 'success': return <div>{state.data.name}</div>;
+    default: return null;
+  }
+}
+```
+
+### 6.2 Generic Components
+
+```tsx
+interface ListProps<T> {
+  items: T[];
+  renderItem: (item: T) => ReactNode;
+  keyExtractor: (item: T) => string;
+}
+
+function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
   return (
     <ul>
       {items.map((item) => (
-        <li key={item.id}>{renderItem(item)}</li>
+        <li key={keyExtractor(item)}>{renderItem(item)}</li>
       ))}
     </ul>
   );
-};
+}
 
-// Usage
-// <List<User> items={users} renderItem={(user) => <span>{user.name}</span>} />
+// Usage with type inference
+<List items={users} renderItem={(user) => user.name} keyExtractor={(u) => u.id} />
 ```
 
 ---
 
-## Part 5: Testing Strategy
+## Part 7: Testing Strategy
 
-### 5.1 React Testing Library (RTL)
+### 7.1 Testing Pyramid
 
-Test behavior, not implementation details.
-
-```tsx
-// UserForm.test.tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { UserForm } from './UserForm';
-
-test('submits form with correct data', async () => {
-  const handleSubmit = jest.fn();
-  render(<UserForm onSubmit={handleSubmit} />);
-
-  // User interactions
-  await userEvent.type(screen.getByLabelText(/email/i), 'test@example.com');
-  await userEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-  // Assertions
-  await waitFor(() => {
-    expect(handleSubmit).toHaveBeenCalledWith({ email: 'test@example.com' });
-  });
-});
 ```
+        ┌─────────┐
+        │   E2E   │  Playwright/Cypress (few, critical paths)
+       ─┴─────────┴─
+      ┌─────────────┐
+      │ Integration │  React Testing Library (component + hooks)
+     ─┴─────────────┴─
+    ┌─────────────────┐
+    │     Unit        │  Vitest/Jest (utils, pure functions)
+   ─┴─────────────────┴─
+```
+
+### 7.2 Testing Best Practices
+
+| Test Type | Focus | Tools |
+|-----------|-------|-------|
+| Unit | Pure functions, utils | Vitest, Jest |
+| Integration | User interactions | RTL, userEvent |
+| E2E | Critical flows | Playwright |
 
 ---
 
-## Part 6: Best Practices Summary
+## Part 8: Best Practices Summary
 
 ### ✅ Do This
 
-- ✅ **Use TanStack Query** for ALL async data fetching. Avoid `useEffect` for data fetching.
-- ✅ **Use React Hook Form** for forms (avoids re-renders).
-- ✅ **Use Error Boundaries** to catch crashes in component subtrees.
-- ✅ **Colocate state**. Keep state as close to where it's used as possible. Move down before moving up (Context/Zustand).
-- ✅ **Use absolute imports**. `import Button from '@/components/ui/Button'` instead of `../../`.
+- ✅ **Separate server state (TanStack Query) from client state (Zustand)**
+- ✅ **Colocate state** - Keep state close to where it's used
+- ✅ **Use absolute imports** - `@/components/Button`
+- ✅ **Error Boundaries** - Catch component errors gracefully
+- ✅ **Suspense** - Show loading states declaratively
 
 ### ❌ Avoid This
 
-- ❌ **Prop Drilling**: Don't pass props down > 2 levels. Use Composition or Context.
-- ❌ **Huge Components**: Split specific logic into custom hooks.
-- ❌ **useEffect for derived data**: Calculate values during render instead. `const fullName = firstName + lastName` vs `useEffect(() => setFullName(...))`.
-- ❌ **Index as key**: Avoid `map((item, index) => <li key={index}>)`. Use unique IDs.
+- ❌ **Prop drilling** - Use composition or context after 2 levels
+- ❌ **useEffect for derived data** - Calculate during render
+- ❌ **Index as key** - Use unique IDs
+- ❌ **Huge components** - Extract to custom hooks
+- ❌ **Premature optimization** - Profile first, optimize second
+
+---
+
+## Quick Reference
+
+| Task | Solution |
+|------|----------|
+| Fetch API data | TanStack Query |
+| Global state | Zustand |
+| Form handling | React Hook Form + Zod |
+| Routing | React Router / TanStack Router |
+| UI Components | shadcn/ui, Radix |
+| Virtualized lists | TanStack Virtual |
+| E2E Testing | Playwright |
 
 ---
 
 ## Related Skills
 
-- `@senior-typescript-developer` - Deep type system mastery
-- `@senior-nextjs-developer` - SSR/ISR patterns
-- `@senior-ui-ux-designer` - Design system implementation
-- `@senior-webperf-engineer` - Core Web Vitals optimization
+- `@senior-typescript-developer` - Type system mastery
+- `@senior-nextjs-developer` - SSR/RSC patterns
+- `@senior-webperf-engineer` - Core Web Vitals
+- `@senior-ui-ux-designer` - Design systems

@@ -7,126 +7,195 @@ description: "Expert Bun runtime development including fast JavaScript/TypeScrip
 
 ## Overview
 
-Build fast applications with Bun runtime including native TypeScript support, built-in bundler, package manager, and high-performance server APIs.
+This skill transforms you into an **Expert Bun Developer** capable of building high-performance applications using Bun's all-in-one JavaScript runtime, bundler, test runner, and package manager.
 
 ## When to Use This Skill
 
-- Use when maximum JS performance needed
-- Use when native TypeScript preferred
-- Use when fast bundling required
-- Use when replacing Node.js
+- Use when maximum JavaScript performance needed
+- Use when native TypeScript execution preferred
+- Use when fast bundling and package management required
+- Use when building APIs with minimal overhead
 
-## How It Works
+---
 
-### Step 1: Bun Basics
+## Part 1: Understanding Bun
+
+### 1.1 Bun vs Node.js vs Deno
+
+| Feature | Node.js | Deno | Bun |
+|---------|---------|------|-----|
+| **Engine** | V8 | V8 | JavaScriptCore |
+| **TypeScript** | Requires bundler | Native | Native |
+| **Package Manager** | npm/yarn/pnpm | URL imports | bun (fastest) |
+| **Bundler** | Webpack/Vite | deno bundle | Built-in |
+| **Test Runner** | Jest/Vitest | Built-in | Built-in |
+| **Speed** | Baseline | ~2x | ~3-5x |
+| **Node Compatibility** | 100% | ~90% | ~95% |
+
+### 1.2 Bun Architecture
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                        Bun Runtime                          │
+├────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
+│  │ JavaScriptCore│ │ Zig Runtime  │  │  Native APIs     │  │
+│  │ (from Safari) │ │ (Fast I/O)   │  │  (SQLite, HTTP)  │  │
+│  └──────────────┘  └──────────────┘  └──────────────────┘  │
+│                           │                                 │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │               Built-in Tools                         │   │
+│  ├──────────┬───────────┬───────────┬─────────────────┤   │
+│  │ Bundler  │ Test Runner│ PM (bun) │ TypeScript      │   │
+│  └──────────┴───────────┴───────────┴─────────────────┘   │
+└────────────────────────────────────────────────────────────┘
+```
+
+### 1.3 When to Choose Bun
+
+| Use Case | Recommendation |
+|----------|---------------|
+| New greenfield projects | ✅ Recommended |
+| Maximum API performance | ✅ Recommended |
+| SQLite-backed apps | ✅ Built-in, fast |
+| Complex Node ecosystem | ⚠️ Check compatibility |
+| Production-critical | ⚠️ Test thoroughly |
+| Edge functions | ✅ Excellent |
+
+---
+
+## Part 2: Getting Started
+
+### 2.1 Installation & Project Setup
 
 ```bash
 # Install Bun
 curl -fsSL https://bun.sh/install | bash
 
-# Create project
+# Create new project
 bun init
 
-# Install packages (faster than npm)
-bun add express zod
-bun add -d typescript @types/express
+# Install packages (10-25x faster than npm)
+bun add express zod drizzle-orm
+bun add -d typescript @types/node
 
-# Run TypeScript directly
+# Run TypeScript directly (no compilation)
 bun run server.ts
 
-# Build for production
-bun build ./src/index.ts --outdir ./dist
+# Watch mode
+bun --watch run server.ts
 ```
 
+### 2.2 Package.json Scripts
+
+```json
+{
+  "name": "my-bun-app",
+  "scripts": {
+    "dev": "bun --watch run src/index.ts",
+    "start": "bun run src/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist --target node",
+    "test": "bun test",
+    "lint": "bunx eslint ."
+  },
+  "dependencies": {
+    "hono": "^4.0.0"
+  }
+}
+```
+
+---
+
+## Part 3: HTTP Server
+
+### 3.1 Native Bun.serve()
+
 ```typescript
-// server.ts - Native TypeScript
+// server.ts
 import { serve } from "bun";
 
 const server = serve({
   port: 3000,
-  fetch(request: Request): Response {
+  fetch(request: Request): Response | Promise<Response> {
     const url = new URL(request.url);
+    
+    // Routing
+    if (url.pathname === "/") {
+      return new Response("Hello from Bun!");
+    }
     
     if (url.pathname === "/api/users") {
       return Response.json([
         { id: 1, name: "John" },
-        { id: 2, name: "Jane" }
+        { id: 2, name: "Jane" },
       ]);
     }
     
+    if (url.pathname.startsWith("/api/users/")) {
+      const id = url.pathname.split("/").pop();
+      return Response.json({ id, name: `User ${id}` });
+    }
+    
     return new Response("Not Found", { status: 404 });
-  }
+  },
+  
+  // Error handling
+  error(error: Error): Response {
+    console.error(error);
+    return new Response("Server Error", { status: 500 });
+  },
 });
 
 console.log(`Server running at http://localhost:${server.port}`);
 ```
 
-### Step 2: HTTP Server & Routing
+### 3.2 Using Hono Framework
+
+Hono is the recommended framework for Bun (optimized for edge):
 
 ```typescript
-import { serve, file } from "bun";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 
-type Handler = (req: Request, params: Record<string, string>) => Response | Promise<Response>;
+const app = new Hono();
 
-const routes: Map<string, Handler> = new Map();
+// Middleware
+app.use("*", logger());
+app.use("/api/*", cors());
 
-function get(path: string, handler: Handler) {
-  routes.set(`GET:${path}`, handler);
-}
+// Routes
+app.get("/", (c) => c.text("Hello Hono!"));
 
-function post(path: string, handler: Handler) {
-  routes.set(`POST:${path}`, handler);
-}
-
-// Define routes
-get("/api/users", async (req) => {
-  const users = await db.getUsers();
-  return Response.json(users);
+app.get("/api/users", async (c) => {
+  const users = await db.query.users.findMany();
+  return c.json(users);
 });
 
-get("/api/users/:id", async (req, params) => {
-  const user = await db.getUser(params.id);
-  if (!user) return new Response("Not found", { status: 404 });
-  return Response.json(user);
+// Validation with Zod
+const CreateUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
 });
 
-post("/api/users", async (req) => {
-  const body = await req.json();
-  const user = await db.createUser(body);
-  return Response.json(user, { status: 201 });
+app.post("/api/users", zValidator("json", CreateUserSchema), async (c) => {
+  const data = c.req.valid("json");
+  const user = await db.insert(users).values(data).returning();
+  return c.json(user, 201);
 });
 
-// Server
-serve({
-  port: 3000,
-  async fetch(req) {
-    const url = new URL(req.url);
-    const method = req.method;
-    
-    // Route matching with params
-    for (const [pattern, handler] of routes) {
-      const [routeMethod, routePath] = pattern.split(":");
-      if (routeMethod !== method) continue;
-      
-      const params = matchRoute(routePath, url.pathname);
-      if (params) return handler(req, params);
-    }
-    
-    return new Response("Not Found", { status: 404 });
-  }
-});
+export default app; // Bun will serve this automatically
 ```
 
-### Step 3: File I/O & SQLite
+---
+
+## Part 4: Database (Built-in SQLite)
+
+### 4.1 Native SQLite API
 
 ```typescript
-// Fast file operations
-const content = await Bun.file("data.json").text();
-const data = JSON.parse(content);
-
-await Bun.write("output.json", JSON.stringify(data, null, 2));
-
-// Built-in SQLite
 import { Database } from "bun:sqlite";
 
 const db = new Database("mydb.sqlite");
@@ -141,99 +210,244 @@ db.run(`
   )
 `);
 
-// Prepared statements
+// Prepared statements (fastest)
 const insertUser = db.prepare(
-  "INSERT INTO users (name, email) VALUES ($name, $email)"
+  "INSERT INTO users (name, email) VALUES ($name, $email) RETURNING *"
 );
 
-const getUser = db.prepare(
-  "SELECT * FROM users WHERE id = ?"
-);
-
-const getAllUsers = db.prepare(
-  "SELECT * FROM users ORDER BY created_at DESC"
-);
+const getUser = db.prepare("SELECT * FROM users WHERE id = ?");
+const getAllUsers = db.prepare("SELECT * FROM users ORDER BY created_at DESC");
 
 // Usage
-insertUser.run({ $name: "John", $email: "john@example.com" });
+const newUser = insertUser.get({ 
+  $name: "John", 
+  $email: "john@example.com" 
+});
+
 const user = getUser.get(1);
 const users = getAllUsers.all();
 
-// Transaction
-db.transaction(() => {
-  insertUser.run({ $name: "Alice", $email: "alice@example.com" });
-  insertUser.run({ $name: "Bob", $email: "bob@example.com" });
-})();
-```
-
-### Step 4: Bundling & Testing
-
-```typescript
-// Build configuration
-await Bun.build({
-  entrypoints: ["./src/index.ts"],
-  outdir: "./dist",
-  target: "browser", // or "bun", "node"
-  minify: true,
-  splitting: true,
-  sourcemap: "external",
-  external: ["lodash"], // Don't bundle
+// Transactions
+const insertMany = db.transaction((users: UserInput[]) => {
+  for (const user of users) {
+    insertUser.run({ $name: user.name, $email: user.email });
+  }
 });
 
-// Testing (built-in)
-import { describe, expect, test, beforeAll, afterAll } from "bun:test";
+insertMany([
+  { name: "Alice", email: "alice@example.com" },
+  { name: "Bob", email: "bob@example.com" },
+]);
+```
+
+### 4.2 With Drizzle ORM
+
+```typescript
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import { Database } from "bun:sqlite";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+
+// Schema
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  email: text("email").unique(),
+});
+
+// Database instance
+const sqlite = new Database("mydb.sqlite");
+export const db = drizzle(sqlite);
+
+// Queries
+const allUsers = await db.select().from(users);
+const user = await db.select().from(users).where(eq(users.id, 1));
+
+await db.insert(users).values({ name: "John", email: "john@example.com" });
+```
+
+---
+
+## Part 5: File I/O
+
+### 5.1 Bun File APIs
+
+```typescript
+// Read file (returns BunFile, not string)
+const file = Bun.file("data.json");
+
+// Check if exists
+if (await file.exists()) {
+  const content = await file.text();
+  const data = JSON.parse(content);
+}
+
+// Stream large files
+const stream = file.stream();
+
+// Write file
+await Bun.write("output.json", JSON.stringify(data, null, 2));
+
+// Write from stream
+await Bun.write("copy.json", file);
+
+// Read as different types
+const text = await file.text();
+const buffer = await file.arrayBuffer();
+const bytes = await file.bytes();
+```
+
+### 5.2 Glob Pattern
+
+```typescript
+import { Glob } from "bun";
+
+const glob = new Glob("**/*.ts");
+
+for await (const file of glob.scan(".")) {
+  console.log(file);
+}
+```
+
+---
+
+## Part 6: Testing
+
+### 6.1 Built-in Test Runner
+
+```typescript
+// user.test.ts
+import { describe, expect, test, beforeAll, afterAll, mock } from "bun:test";
 
 describe("User API", () => {
-  let server: Server;
+  let server: ReturnType<typeof Bun.serve>;
   
   beforeAll(() => {
-    server = startServer();
+    server = Bun.serve({ port: 3001, fetch: app.fetch });
   });
   
   afterAll(() => {
     server.stop();
   });
-
-  test("GET /api/users returns users", async () => {
-    const response = await fetch("http://localhost:3000/api/users");
+  
+  test("GET /api/users returns array", async () => {
+    const response = await fetch("http://localhost:3001/api/users");
     const users = await response.json();
     
     expect(response.status).toBe(200);
     expect(Array.isArray(users)).toBe(true);
   });
-
+  
   test("POST /api/users creates user", async () => {
-    const response = await fetch("http://localhost:3000/api/users", {
+    const response = await fetch("http://localhost:3001/api/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "Test", email: "test@example.com" })
+      body: JSON.stringify({ name: "Test", email: "test@example.com" }),
     });
     
     expect(response.status).toBe(201);
+    const user = await response.json();
+    expect(user.name).toBe("Test");
   });
 });
 
-// Run tests: bun test
+// Mocking
+test("mocked fetch", async () => {
+  const mockFetch = mock(() => Promise.resolve({ json: () => ({ id: 1 }) }));
+  
+  const result = await mockFetch();
+  expect(mockFetch).toHaveBeenCalled();
+});
 ```
 
-## Best Practices
+Run tests:
+
+```bash
+bun test
+bun test --watch
+bun test --coverage
+```
+
+---
+
+## Part 7: Bundling
+
+### 7.1 Build Configuration
+
+```typescript
+// Build for production
+await Bun.build({
+  entrypoints: ["./src/index.ts"],
+  outdir: "./dist",
+  target: "bun",       // "bun" | "node" | "browser"
+  minify: true,
+  splitting: true,     // Code splitting
+  sourcemap: "external",
+  external: ["better-sqlite3"], // Don't bundle
+  define: {
+    "process.env.NODE_ENV": JSON.stringify("production"),
+  },
+});
+```
+
+### 7.2 Build Script
+
+```typescript
+// scripts/build.ts
+const result = await Bun.build({
+  entrypoints: ["./src/index.ts"],
+  outdir: "./dist",
+  target: "bun",
+  minify: true,
+});
+
+if (!result.success) {
+  console.error("Build failed:");
+  for (const log of result.logs) {
+    console.error(log);
+  }
+  process.exit(1);
+}
+
+console.log("Build completed:", result.outputs);
+```
+
+---
+
+## Part 8: Best Practices Summary
 
 ### ✅ Do This
 
-- ✅ Use native Bun APIs
-- ✅ Leverage built-in SQLite
-- ✅ Use Bun.file for I/O
-- ✅ Use bun:test for testing
+- ✅ Use native Bun APIs (`Bun.serve`, `Bun.file`, etc.)
+- ✅ Leverage built-in SQLite for simple apps
+- ✅ Use Hono for web frameworks
+- ✅ Use prepared statements for database queries
 - ✅ Enable TypeScript strict mode
+- ✅ Use `bun:test` for testing
 
 ### ❌ Avoid This
 
-- ❌ Don't use Node-only APIs
-- ❌ Don't ignore compatibility
+- ❌ Don't assume 100% Node.js compatibility
+- ❌ Don't use Node-specific APIs without checking
 - ❌ Don't skip error handling
-- ❌ Don't block main thread
+- ❌ Don't block the main thread with sync I/O
+
+---
+
+## Quick Reference
+
+| Task | Solution |
+|------|----------|
+| HTTP Server | `Bun.serve()` or Hono |
+| Database | Built-in SQLite or Drizzle |
+| File I/O | `Bun.file()`, `Bun.write()` |
+| Testing | `bun:test` |
+| Bundling | `Bun.build()` |
+| Package Management | `bun add`, `bun install` |
+
+---
 
 ## Related Skills
 
 - `@senior-nodejs-developer` - Node.js patterns
 - `@senior-typescript-developer` - TypeScript
+- `@deno-developer` - Alternative runtime

@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.5.0  
+> **Version:** 6.6.0  
 > **Last Updated:** 2026-02-02  
-> **Total Skills:** 300
+> **Total Skills:** 304
 
 ---
 
@@ -42,7 +42,7 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 | Category | Count | Description |
 |----------|-------|-------------|
 | 🤖 AI & Machine Learning | 20 | LLM, agents, RAG, NLP, CV, OCR |
-| 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
+| 🔧 Backend Development | 27 | Python, Go, Rust, PHP, Elixir, C++, Appwrite |
 | 📱 Mobile Development | 17 | Flutter, iOS, Android, BLoC, Firebase, Supabase |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
@@ -50,17 +50,18 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 | 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Big Data |
 | 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Forensics |
 | 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
-| 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
+| 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Thumbnails |
 | 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
-| 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Ride-Hailing, Dating, Social |
+| 💼 Industry Apps | 41 | Healthcare, Trading, ERP, Library Systems |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
-| 🔮 Emerging Tech | 16 | VR/AR, quantum, Web3, Tech Trends, Innovation Scout |
+| 🔮 Emerging Tech | 16 | VR/AR, quantum, Web3, Tech Trends |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
 | 🎨 Creative Arts | 1 | Creative Coding Artist |
-| 📚 Others | 30 | Various specialized skills |
+| 📚 Education | 1 | MIT CS Professor |
+| 📚 Others | 31 | Various specialized skills |
 
 ---
 

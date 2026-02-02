@@ -7,308 +7,421 @@ description: "Expert ride-hailing application development including driver match
 
 ## Overview
 
-Skill ini menjadikan AI Agent sebagai spesialis pengembangan aplikasi ride-hailing seperti Gojek, Grab, Maxim. Agent akan mampu membangun driver matching, real-time tracking, fare calculation, surge pricing, dan multi-service platforms.
+This skill transforms you into a **Ride-Hailing Expert**. You will master **Driver Matching**, **Real-Time Tracking**, **Fare Calculation**, **Surge Pricing**, and **Multi-Service Integration** for building production-ready ride-hailing platforms.
 
 ## When to Use This Skill
 
-- Use when building ride-hailing applications
-- Use when implementing driver-passenger matching
-- Use when designing real-time tracking systems
-- Use when creating multi-service super apps
+- Use when building ride-hailing apps
+- Use when implementing driver matching
+- Use when creating fare calculation engines
+- Use when building real-time tracking
+- Use when implementing surge pricing
 
-## Core Concepts
+---
 
-### System Architecture
+## Part 1: Ride-Hailing Architecture
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│           RIDE-HAILING PLATFORM                         │
-├─────────────────────────────────────────────────────────┤
-│ 🚗 Ride Services     - Car, bike, taxi                 │
-│ 🍔 Food Delivery     - Restaurant orders               │
-│ 📦 Package Delivery  - Send packages                   │
-│ 🛒 Mart/Shopping     - Grocery, essentials             │
-│ 💳 Payments          - Wallet, cards, cash             │
-│ 📍 Location          - Real-time tracking              │
-│ 💰 Pricing           - Dynamic, surge                  │
-│ ⭐ Ratings            - Driver & passenger             │
-└─────────────────────────────────────────────────────────┘
+### 1.1 System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   Ride-Hailing Platform                      │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Rider App  │ Driver App  │ Matching    │ Pricing            │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Real-Time Location & Tracking                  │
+├─────────────────────────────────────────────────────────────┤
+│              Payments & Driver Payouts                       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Data Schema
+### 1.2 Key Concepts
 
-```text
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│    USER      │     │   DRIVER     │     │   VEHICLE    │
-├──────────────┤     ├──────────────┤     ├──────────────┤
-│ id           │     │ id           │────►│ id           │
-│ phone        │     │ user_id      │     │ driver_id    │
-│ name         │     │ status       │     │ type         │
-│ email        │     │ rating       │     │ plate_number │
-│ wallet_bal   │     │ total_trips  │     │ brand        │
-│ saved_places │     │ current_loc  │     │ color        │
-└──────────────┘     │ heading      │     │ year         │
-                     │ is_online    │     │ photo        │
-                     │ vehicle_id   │     └──────────────┘
-                     └──────────────┘
+| Concept | Description |
+|---------|-------------|
+| **Ride Request** | Customer booking request |
+| **Dispatch** | Assigning driver to ride |
+| **ETA** | Estimated time of arrival |
+| **Surge** | Dynamic pricing multiplier |
+| **Acceptance Rate** | Driver's request acceptance % |
+| **Completion Rate** | Finished rides % |
 
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│    RIDE      │     │   LOCATION   │     │   PAYMENT    │
-├──────────────┤     │   LOG        │     ├──────────────┤
-│ id           │     ├──────────────┤     │ id           │
-│ passenger_id │────►│ ride_id      │     │ ride_id      │
-│ driver_id    │     │ driver_id    │◄────│ amount       │
-│ status       │     │ lat          │     │ method       │
-│ pickup_loc   │     │ lng          │     │ status       │
-│ dropoff_loc  │     │ speed        │     │ created_at   │
-│ distance     │     │ timestamp    │     └──────────────┘
-│ duration     │     └──────────────┘
-│ fare         │
-│ surge_mult   │
-│ created_at   │
-│ accepted_at  │
-│ pickup_at    │
-│ dropoff_at   │
-│ cancelled_at │
-│ cancel_by    │
-│ rating       │
-└──────────────┘
+---
 
-RIDE STATUS: searching, accepted, arriving, picked_up, 
-             in_progress, completed, cancelled
-DRIVER STATUS: offline, online, busy
-PAYMENT METHOD: cash, wallet, card
-```
+## Part 2: Database Schema
 
-### Driver Matching Algorithm
+### 2.1 Core Tables
 
-```text
-MATCHING SYSTEM:
-────────────────
-
-REQUEST FLOW:
-┌─────────────┐   ┌─────────────┐   ┌─────────────┐
-│ Passenger   │──►│ Find Nearby │──►│   Score &   │
-│ Request     │   │   Drivers   │   │    Rank     │
-└─────────────┘   └─────────────┘   └─────────────┘
-                                           │
-                                           ▼
-                                    ┌─────────────┐
-                                    │  Dispatch   │
-                                    │  to Top N   │
-                                    └─────────────┘
-                                           │
-                         ┌─────────────────┼─────────────────┐
-                         ▼                 ▼                 ▼
-                  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
-                  │  Driver 1   │   │  Driver 2   │   │  Driver 3   │
-                  │  Accept?    │   │  Accept?    │   │  Accept?    │
-                  └─────────────┘   └─────────────┘   └─────────────┘
-
-MATCHING SCORE:
-score = (w1 × distance_score) + 
-        (w2 × eta_score) + 
-        (w3 × rating_score) + 
-        (w4 × acceptance_rate) +
-        (w5 × heading_score)
-
-FACTORS:
-├── Distance: Closer drivers score higher
-├── ETA: Account for traffic, route
-├── Rating: Higher rated drivers preferred
-├── Acceptance Rate: Reliable drivers
-├── Heading: Driver already moving toward pickup
-└── Driver Type: Match vehicle type request
-
-DISPATCH METHODS:
-├── BROADCAST: Send to multiple, first accept wins
-├── CASCADE: Send to one, timeout → next driver
-└── NEAREST: Always pick closest available
-```
-
-### Fare Calculation
-
-```text
-FARE STRUCTURE:
-───────────────
-
-base_fare = BASE_RATE
-distance_fare = distance_km × RATE_PER_KM
-time_fare = duration_min × RATE_PER_MIN
-surge = surge_multiplier (1.0 - 3.0)
-
-total = (base_fare + distance_fare + time_fare) × surge
-      + booking_fee
-      + tolls
-      - promo_discount
-
-EXAMPLE (GoCar Jakarta):
-┌─────────────────────────────────────────┐
-│ Base Fare              Rp  10,000       │
-│ Distance (8.5 km)      Rp  34,000       │
-│   @ Rp 4,000/km                         │
-│ Time (25 min)          Rp   5,000       │
-│   @ Rp 200/min                          │
-├─────────────────────────────────────────┤
-│ Subtotal               Rp  49,000       │
-│ Surge (1.5x)           Rp  73,500       │
-│ Platform Fee           Rp   2,000       │
-│ Promo (DISKON20)      -Rp  14,700       │
-├─────────────────────────────────────────┤
-│ TOTAL                  Rp  60,800       │
-└─────────────────────────────────────────┘
-
-SURGE PRICING:
-├── Demand-based (more requests = higher surge)
-├── Supply-based (fewer drivers = higher surge)
-├── Time-based (peak hours: 7-9am, 5-8pm)
-├── Weather (rain = higher surge)
-└── Events (concerts, matches)
-
-SURGE ZONES:
-Calculate per geographic zone
-Hexagonal grid (H3) or custom polygons
-```
-
-### Real-Time Tracking
-
-```text
-TRACKING ARCHITECTURE:
-──────────────────────
-
-Driver App              Server                 Passenger App
-    │                     │                        │
-    │ GPS update (5s)     │                        │
-    ├────────────────────►│                        │
-    │                     │ Store & broadcast      │
-    │                     ├───────────────────────►│
-    │                     │       WebSocket        │
-    │                     │                        │
-    │ GPS update          │                        │
-    ├────────────────────►│                        │
-    │                     ├───────────────────────►│
-    │                     │                        │
+```sql
+-- Drivers
+CREATE TABLE drivers (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    vehicle_type VARCHAR(50),  -- 'car', 'motorcycle', 'bicycle'
+    vehicle_make VARCHAR(100),
+    vehicle_model VARCHAR(100),
+    vehicle_year INTEGER,
+    vehicle_color VARCHAR(50),
+    license_plate VARCHAR(20),
+    driver_license VARCHAR(100),
+    phone VARCHAR(20),
     
-LOCATION PAYLOAD:
-{
-  "driver_id": "D123",
-  "ride_id": "R456",
-  "location": {
-    "lat": -6.200000,
-    "lng": 106.816666,
-    "accuracy": 10,
-    "speed": 35,
-    "heading": 90
-  },
-  "timestamp": "2026-02-02T08:00:00Z"
+    -- Status
+    status VARCHAR(50) DEFAULT 'offline',  -- 'offline', 'online', 'busy', 'on_trip'
+    current_latitude DECIMAL(10, 8),
+    current_longitude DECIMAL(11, 8),
+    current_heading DECIMAL(5, 2),  -- Direction in degrees
+    last_location_update TIMESTAMPTZ,
+    
+    -- Metrics
+    rating DECIMAL(2, 1) DEFAULT 5.0,
+    total_trips INTEGER DEFAULT 0,
+    acceptance_rate DECIMAL(5, 2) DEFAULT 100,
+    completion_rate DECIMAL(5, 2) DEFAULT 100,
+    
+    is_verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Ride Requests
+CREATE TABLE ride_requests (
+    id UUID PRIMARY KEY,
+    rider_id UUID REFERENCES users(id),
+    driver_id UUID REFERENCES drivers(id),
+    
+    -- Locations
+    pickup_latitude DECIMAL(10, 8),
+    pickup_longitude DECIMAL(11, 8),
+    pickup_address TEXT,
+    dropoff_latitude DECIMAL(10, 8),
+    dropoff_longitude DECIMAL(11, 8),
+    dropoff_address TEXT,
+    
+    -- Trip Details
+    vehicle_type VARCHAR(50),
+    distance_km DECIMAL(10, 2),
+    duration_minutes INTEGER,
+    
+    -- Pricing
+    base_fare DECIMAL(10, 2),
+    distance_fare DECIMAL(10, 2),
+    time_fare DECIMAL(10, 2),
+    surge_multiplier DECIMAL(3, 2) DEFAULT 1.0,
+    total_fare DECIMAL(10, 2),
+    
+    -- Status
+    status VARCHAR(50) DEFAULT 'searching',  -- 'searching', 'driver_assigned', 'driver_arriving', 'in_progress', 'completed', 'cancelled'
+    
+    -- Timestamps
+    requested_at TIMESTAMPTZ DEFAULT NOW(),
+    accepted_at TIMESTAMPTZ,
+    arrived_at TIMESTAMPTZ,
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    cancelled_at TIMESTAMPTZ,
+    cancelled_by VARCHAR(20)  -- 'rider', 'driver', 'system'
+);
+
+-- Driver Offers (when searching for driver)
+CREATE TABLE driver_offers (
+    id UUID PRIMARY KEY,
+    ride_request_id UUID REFERENCES ride_requests(id),
+    driver_id UUID REFERENCES drivers(id),
+    distance_to_pickup DECIMAL(10, 2),
+    eta_minutes INTEGER,
+    offered_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ,
+    response VARCHAR(20)  -- 'pending', 'accepted', 'declined', 'expired'
+);
+
+-- Trip Locations (real-time tracking)
+CREATE TABLE trip_locations (
+    id UUID PRIMARY KEY,
+    ride_request_id UUID REFERENCES ride_requests(id),
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    heading DECIMAL(5, 2),
+    speed DECIMAL(5, 2),
+    recorded_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## Part 3: Driver Matching
+
+### 3.1 Find Nearest Drivers
+
+```typescript
+async function findNearestDrivers(
+  pickupLat: number,
+  pickupLng: number,
+  vehicleType: string,
+  limit = 10
+): Promise<Driver[]> {
+  return await db.$queryRaw`
+    SELECT 
+      d.*,
+      ST_Distance(
+        ST_SetSRID(ST_MakePoint(d.current_longitude, d.current_latitude), 4326)::geography,
+        ST_SetSRID(ST_MakePoint(${pickupLng}, ${pickupLat}), 4326)::geography
+      ) / 1000 AS distance_km
+    FROM drivers d
+    WHERE 
+      d.status = 'online'
+      AND d.vehicle_type = ${vehicleType}
+      AND d.is_verified = TRUE
+      AND d.acceptance_rate >= 70
+      AND d.last_location_update > NOW() - INTERVAL '2 minutes'
+      AND ST_DWithin(
+        ST_SetSRID(ST_MakePoint(d.current_longitude, d.current_latitude), 4326)::geography,
+        ST_SetSRID(ST_MakePoint(${pickupLng}, ${pickupLat}), 4326)::geography,
+        5000  -- 5km radius
+      )
+    ORDER BY distance_km
+    LIMIT ${limit}
+  `;
+}
+```
+
+### 3.2 Dispatch Algorithm
+
+```typescript
+async function dispatchRide(rideRequestId: string): Promise<Driver | null> {
+  const ride = await db.rideRequests.findUnique({ where: { id: rideRequestId } });
+  
+  const drivers = await findNearestDrivers(
+    ride.pickupLatitude,
+    ride.pickupLongitude,
+    ride.vehicleType
+  );
+  
+  // Try each driver in order
+  for (const driver of drivers) {
+    const eta = await calculateETA(
+      { lat: driver.currentLatitude, lng: driver.currentLongitude },
+      { lat: ride.pickupLatitude, lng: ride.pickupLongitude }
+    );
+    
+    // Create offer
+    const offer = await db.driverOffers.create({
+      data: {
+        rideRequestId,
+        driverId: driver.id,
+        distanceToPickup: driver.distance_km,
+        etaMinutes: eta,
+        expiresAt: addSeconds(new Date(), 30),  // 30 second timeout
+      },
+    });
+    
+    // Send push notification
+    await sendPushToDriver(driver.id, {
+      type: 'ride_request',
+      rideRequestId,
+      pickupAddress: ride.pickupAddress,
+      dropoffAddress: ride.dropoffAddress,
+      fare: ride.totalFare,
+      distance: ride.distanceKm,
+    });
+    
+    // Wait for response
+    const response = await waitForDriverResponse(offer.id, 30000);
+    
+    if (response === 'accepted') {
+      await db.$transaction([
+        db.rideRequests.update({
+          where: { id: rideRequestId },
+          data: {
+            driverId: driver.id,
+            status: 'driver_assigned',
+            acceptedAt: new Date(),
+          },
+        }),
+        db.drivers.update({
+          where: { id: driver.id },
+          data: { status: 'busy' },
+        }),
+      ]);
+      
+      // Notify rider
+      await notifyRider(ride.riderId, 'driver_found', {
+        driver,
+        eta,
+      });
+      
+      return driver;
+    }
+    
+    // Update acceptance rate if declined
+    if (response === 'declined') {
+      await updateAcceptanceRate(driver.id, false);
+    }
+  }
+  
+  // No driver found
+  return null;
+}
+```
+
+---
+
+## Part 4: Fare Calculation
+
+### 4.1 Calculate Fare
+
+```typescript
+interface FareConfig {
+  baseFare: number;
+  perKm: number;
+  perMinute: number;
+  minimumFare: number;
+  bookingFee: number;
 }
 
-ETA CALCULATION:
-├── Use routing API (Google, Mapbox, HERE)
-├── Account for real-time traffic
-├── Update ETA every location update
-└── Show on map with polyline route
+const FARE_CONFIG: Record<string, FareConfig> = {
+  car: { baseFare: 2.0, perKm: 1.5, perMinute: 0.3, minimumFare: 5.0, bookingFee: 1.0 },
+  motorcycle: { baseFare: 1.0, perKm: 0.8, perMinute: 0.15, minimumFare: 3.0, bookingFee: 0.5 },
+};
 
-OPTIMIZATIONS:
-├── Batch location updates
-├── Reduce frequency when stationary
-├── Use efficient protocols (WebSocket, MQTT)
-└── Geohash for driver indexing
+async function calculateFare(
+  vehicleType: string,
+  distanceKm: number,
+  durationMinutes: number,
+  surgeMultiplier = 1.0
+): Promise<FareBreakdown> {
+  const config = FARE_CONFIG[vehicleType];
+  
+  const baseFare = config.baseFare;
+  const distanceFare = distanceKm * config.perKm;
+  const timeFare = durationMinutes * config.perMinute;
+  
+  let subtotal = baseFare + distanceFare + timeFare;
+  subtotal = Math.max(subtotal, config.minimumFare);
+  
+  const surgeFare = subtotal * (surgeMultiplier - 1);
+  const totalFare = subtotal + surgeFare + config.bookingFee;
+  
+  return {
+    baseFare,
+    distanceFare,
+    timeFare,
+    surgeFare,
+    surgeMultiplier,
+    bookingFee: config.bookingFee,
+    subtotal,
+    totalFare: Math.round(totalFare * 100) / 100,
+  };
+}
 ```
 
-### Multi-Service Platform
+### 4.2 Surge Pricing
 
-```text
-SUPER APP SERVICES:
-───────────────────
-
-┌─────────────────────────────────────────┐
-│              HOME SCREEN                │
-├────────┬────────┬────────┬─────────────┤
-│  🚗    │  🛵    │  🍔    │    📦      │
-│ GoCar  │ GoBike │ GoFood │ GoSend     │
-├────────┼────────┼────────┼─────────────┤
-│  🛒    │  💊    │  💆    │    🎫      │
-│ GoMart │ GoMed  │ GoMass │ GoTix      │
-├────────┼────────┼────────┼─────────────┤
-│  💳    │  🔌    │  🎮    │    📱      │
-│ GoPay  │ GoPlus │ GoGame │ GoCom      │
-└────────┴────────┴────────┴─────────────┘
-
-SHARED INFRASTRUCTURE:
-├── Authentication (single login)
-├── Payment wallet (GoPay, OVO)
-├── Location services
-├── Notification system
-├── Rating system
-└── Customer support
-
-SERVICE TYPES:
-├── TRANSPORT: Driver moves passenger
-├── DELIVERY: Driver moves items
-├── ON-DEMAND: Service at location
-└── MARKETPLACE: In-app purchases
+```typescript
+async function getSurgeMultiplier(lat: number, lng: number): Promise<number> {
+  const gridCell = getGridCell(lat, lng);
+  
+  // Count recent requests in area
+  const recentRequests = await db.rideRequests.count({
+    where: {
+      pickupLatitude: { gte: gridCell.minLat, lte: gridCell.maxLat },
+      pickupLongitude: { gte: gridCell.minLng, lte: gridCell.maxLng },
+      requestedAt: { gte: subMinutes(new Date(), 10) },
+    },
+  });
+  
+  // Count available drivers in area
+  const availableDrivers = await db.drivers.count({
+    where: {
+      status: 'online',
+      currentLatitude: { gte: gridCell.minLat, lte: gridCell.maxLat },
+      currentLongitude: { gte: gridCell.minLng, lte: gridCell.maxLng },
+      lastLocationUpdate: { gte: subMinutes(new Date(), 2) },
+    },
+  });
+  
+  // Calculate demand/supply ratio
+  const ratio = availableDrivers > 0 ? recentRequests / availableDrivers : 5;
+  
+  // Convert ratio to surge multiplier
+  if (ratio < 1) return 1.0;
+  if (ratio < 2) return 1.2;
+  if (ratio < 3) return 1.5;
+  if (ratio < 5) return 2.0;
+  return 2.5;  // Max surge
+}
 ```
 
-### Driver App Features
+---
 
-```text
-DRIVER APP:
-───────────
+## Part 5: Real-Time Tracking
 
-┌─────────────────────────────────────────┐
-│ ONLINE/OFFLINE TOGGLE                   │
-│ [========●============] ONLINE          │
-├─────────────────────────────────────────┤
-│ TODAY'S STATS                           │
-│ 12 trips  │  Rp 450,000  │  ⭐ 4.9     │
-├─────────────────────────────────────────┤
-│ NEW ORDER!                              │
-│ ┌───────────────────────────────────┐   │
-│ │ 🚗 GoCar                          │   │
-│ │ Pickup: Jl. Sudirman No. 1        │   │
-│ │ Dropoff: Mall Grand Indonesia     │   │
-│ │ Distance: 3.2 km                  │   │
-│ │ Est. Fare: Rp 25,000              │   │
-│ │                                   │   │
-│ │ [DECLINE]         [ACCEPT]        │   │
-│ └───────────────────────────────────┘   │
-│                                         │
-│ Accept in: 15s ████████████░░░░░       │
-└─────────────────────────────────────────┘
+### 5.1 Location Updates
 
-FEATURES:
-├── Online/offline status
-├── Order acceptance (with timeout)
-├── Navigation to pickup/dropoff
-├── Contact passenger (call/chat)
-├── SOS emergency button
-├── Earnings dashboard
-├── Trip history
-├── Performance metrics
-└── Document management
+```typescript
+// Driver app sends location every 3 seconds during trip
+async function updateDriverLocation(driverId: string, location: Location) {
+  await db.drivers.update({
+    where: { id: driverId },
+    data: {
+      currentLatitude: location.lat,
+      currentLongitude: location.lng,
+      currentHeading: location.heading,
+      lastLocationUpdate: new Date(),
+    },
+  });
+  
+  // If on trip, record and broadcast
+  const activeRide = await db.rideRequests.findFirst({
+    where: { driverId, status: { in: ['driver_arriving', 'in_progress'] } },
+  });
+  
+  if (activeRide) {
+    // Record trip location
+    await db.tripLocations.create({
+      data: {
+        rideRequestId: activeRide.id,
+        latitude: location.lat,
+        longitude: location.lng,
+        heading: location.heading,
+        speed: location.speed,
+      },
+    });
+    
+    // Broadcast to rider
+    broadcastToRider(activeRide.riderId, {
+      type: 'driver_location',
+      location,
+      eta: await calculateETA(
+        location,
+        activeRide.status === 'driver_arriving'
+          ? { lat: activeRide.pickupLatitude, lng: activeRide.pickupLongitude }
+          : { lat: activeRide.dropoffLatitude, lng: activeRide.dropoffLongitude }
+      ),
+    });
+  }
+}
 ```
 
-## Best Practices
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Implement driver/passenger verification
-- ✅ Build robust cancellation policies
-- ✅ Add emergency/SOS features
-- ✅ Cache routes for common trips
-- ✅ Handle poor connectivity gracefully
+- ✅ **Driver Timeout**: Don't wait forever for response.
+- ✅ **Battery Optimization**: Reduce location update frequency.
+- ✅ **Surge Transparency**: Show multiplier to riders.
 
 ### ❌ Avoid This
 
-- ❌ Don't allow rides without phone verification
-- ❌ Don't show exact driver location when far
-- ❌ Don't ignore driver fatigue (max hours)
-- ❌ Don't skip fraud detection
+- ❌ **Single Point of Failure**: Use distributed matching.
+- ❌ **Skip Driver Verification**: Always verify documents.
+- ❌ **Ignore Cancellation Abuse**: Track and penalize.
+
+---
 
 ## Related Skills
 
-- `@geolocation-specialist` - GPS tracking
-- `@indonesia-payment-integration` - Payments
-- `@notification-system-architect` - Push notifications
-- `@gig-economy-expert` - Platform economics
+- `@food-delivery-developer` - Delivery logistics
+- `@fleet-management-developer` - Vehicle tracking
+- `@geolocation-specialist` - Maps and routing

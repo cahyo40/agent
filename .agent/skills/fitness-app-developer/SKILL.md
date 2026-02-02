@@ -7,259 +7,443 @@ description: "Expert fitness and workout app development including exercise trac
 
 ## Overview
 
-Build fitness and workout tracking apps with exercise logs, progress tracking, and health integration.
+This skill transforms you into a **Fitness App Expert**. You will master **Workout Tracking**, **Exercise Libraries**, **Training Programs**, **Health Metrics**, and **Progress Analytics** for building production-ready fitness applications.
 
 ## When to Use This Skill
 
-- Use when building fitness apps
-- Use when tracking workouts and health
+- Use when building workout tracking apps
+- Use when implementing exercise libraries
+- Use when creating training programs
+- Use when integrating health data
+- Use when building progress analytics
 
-## How It Works
+---
 
-### Step 1: Data Models
+## Part 1: Fitness App Architecture
 
-```typescript
-// Workout Models
-interface Exercise {
-  id: string;
-  name: string;
-  category: 'strength' | 'cardio' | 'flexibility' | 'sports';
-  muscleGroups: string[];
-  equipment: string[];
-  instructions: string[];
-  videoUrl?: string;
-}
+### 1.1 System Components
 
-interface WorkoutSet {
-  id: string;
-  exerciseId: string;
-  reps?: number;
-  weight?: number;        // kg
-  duration?: number;      // seconds
-  distance?: number;      // meters
-  restAfter: number;      // seconds
-  completed: boolean;
-}
-
-interface Workout {
-  id: string;
-  userId: string;
-  name: string;
-  date: Date;
-  duration: number;       // total minutes
-  sets: WorkoutSet[];
-  caloriesBurned: number;
-  notes?: string;
-}
-
-interface UserStats {
-  totalWorkouts: number;
-  totalMinutes: number;
-  totalCalories: number;
-  currentStreak: number;
-  longestStreak: number;
-  personalRecords: Record<string, number>;
-}
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Fitness Platform                         │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Exercises  │ Workouts    │ Programs    │ Progress           │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Health Integration (HealthKit/Fit)             │
+├─────────────────────────────────────────────────────────────┤
+│              Analytics & Recommendations                     │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Step 2: Workout Tracker UI
+### 1.2 Key Concepts
 
-```tsx
-// React Native / Flutter style
-function WorkoutScreen() {
-  const [currentExercise, setCurrentExercise] = useState(0);
-  const [sets, setSets] = useState<WorkoutSet[]>([]);
-  const [timer, setTimer] = useState(0);
-  const [isResting, setIsResting] = useState(false);
+| Concept | Description |
+|---------|-------------|
+| **Exercise** | Single movement (squat, bench press) |
+| **Set** | Group of reps |
+| **Rep** | Single exercise repetition |
+| **Workout** | Collection of exercises |
+| **Program** | Multi-week training plan |
+| **1RM** | One rep max (strength indicator) |
 
-  const logSet = (reps: number, weight: number) => {
-    const newSet: WorkoutSet = {
-      id: generateId(),
-      exerciseId: exercises[currentExercise].id,
-      reps,
-      weight,
-      restAfter: 90,
-      completed: true
-    };
+---
+
+## Part 2: Database Schema
+
+### 2.1 Core Tables
+
+```sql
+-- Exercises
+CREATE TABLE exercises (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100),
+    description TEXT,
+    category VARCHAR(50),  -- 'strength', 'cardio', 'flexibility', 'sports'
+    muscle_groups VARCHAR(50)[],  -- ['chest', 'triceps', 'shoulders']
+    equipment VARCHAR(50)[],  -- ['barbell', 'dumbbell', 'machine']
+    difficulty VARCHAR(20),  -- 'beginner', 'intermediate', 'advanced'
+    instructions TEXT[],
+    video_url VARCHAR(500),
+    thumbnail_url VARCHAR(500),
+    met_value DECIMAL(4, 2),  -- Metabolic Equivalent for calorie calculation
+    is_compound BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Workout Templates
+CREATE TABLE workout_templates (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),  -- NULL for system templates
+    name VARCHAR(100),
+    description TEXT,
+    category VARCHAR(50),
+    estimated_duration_minutes INTEGER,
+    difficulty VARCHAR(20),
+    is_public BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Template Exercises
+CREATE TABLE template_exercises (
+    id UUID PRIMARY KEY,
+    template_id UUID REFERENCES workout_templates(id),
+    exercise_id UUID REFERENCES exercises(id),
+    position INTEGER,
+    sets INTEGER,
+    reps VARCHAR(20),  -- '8-12' or '10' or 'AMRAP'
+    rest_seconds INTEGER,
+    notes TEXT
+);
+
+-- Logged Workouts
+CREATE TABLE workout_logs (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    template_id UUID REFERENCES workout_templates(id),
+    name VARCHAR(100),
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    duration_seconds INTEGER,
+    total_volume DECIMAL(10, 2),  -- Total weight lifted
+    calories_burned INTEGER,
+    notes TEXT,
+    rating INTEGER,  -- 1-5 stars
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Exercise Logs (sets within a workout)
+CREATE TABLE exercise_logs (
+    id UUID PRIMARY KEY,
+    workout_log_id UUID REFERENCES workout_logs(id),
+    exercise_id UUID REFERENCES exercises(id),
+    position INTEGER,
+    notes TEXT
+);
+
+-- Set Logs
+CREATE TABLE set_logs (
+    id UUID PRIMARY KEY,
+    exercise_log_id UUID REFERENCES exercise_logs(id),
+    set_number INTEGER,
+    reps INTEGER,
+    weight DECIMAL(8, 2),
+    weight_unit VARCHAR(10) DEFAULT 'kg',
+    duration_seconds INTEGER,  -- For timed exercises
+    distance_meters INTEGER,  -- For cardio
+    rpe INTEGER,  -- Rate of Perceived Exertion (1-10)
+    is_warmup BOOLEAN DEFAULT FALSE,
+    is_dropset BOOLEAN DEFAULT FALSE,
+    is_failure BOOLEAN DEFAULT FALSE,
+    completed_at TIMESTAMPTZ
+);
+
+-- Personal Records
+CREATE TABLE personal_records (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    exercise_id UUID REFERENCES exercises(id),
+    record_type VARCHAR(20),  -- '1rm', '5rm', '10rm', 'max_reps', 'max_weight'
+    value DECIMAL(10, 2),
+    unit VARCHAR(10),
+    achieved_at DATE,
+    set_log_id UUID REFERENCES set_logs(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, exercise_id, record_type)
+);
+
+-- Training Programs
+CREATE TABLE training_programs (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100),
+    description TEXT,
+    goal VARCHAR(50),  -- 'strength', 'hypertrophy', 'endurance', 'weight_loss'
+    duration_weeks INTEGER,
+    days_per_week INTEGER,
+    difficulty VARCHAR(20),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Program Weeks
+CREATE TABLE program_weeks (
+    id UUID PRIMARY KEY,
+    program_id UUID REFERENCES training_programs(id),
+    week_number INTEGER,
+    focus VARCHAR(100),
+    deload BOOLEAN DEFAULT FALSE
+);
+
+-- Program Workouts (specific workout for each day)
+CREATE TABLE program_workouts (
+    id UUID PRIMARY KEY,
+    program_week_id UUID REFERENCES program_weeks(id),
+    day_number INTEGER,
+    workout_template_id UUID REFERENCES workout_templates(id),
+    name VARCHAR(100)
+);
+```
+
+---
+
+## Part 3: Workout Tracking
+
+### 3.1 Log Workout
+
+```typescript
+interface WorkoutLogInput {
+  templateId?: string;
+  name: string;
+  exercises: {
+    exerciseId: string;
+    sets: {
+      reps: number;
+      weight: number;
+      weightUnit: 'kg' | 'lb';
+      rpe?: number;
+      isWarmup?: boolean;
+    }[];
+  }[];
+}
+
+async function logWorkout(userId: string, input: WorkoutLogInput): Promise<WorkoutLog> {
+  const startedAt = new Date();
+  
+  const workout = await db.$transaction(async (tx) => {
+    // Calculate totals
+    let totalVolume = 0;
+    const exerciseLogs = [];
     
-    setSets([...sets, newSet]);
-    startRestTimer(90);
-  };
-
-  const startRestTimer = (seconds: number) => {
-    setIsResting(true);
-    setTimer(seconds);
-    
-    const interval = setInterval(() => {
-      setTimer(t => {
-        if (t <= 1) {
-          clearInterval(interval);
-          setIsResting(false);
-          vibrate();
-          return 0;
+    for (const exercise of input.exercises) {
+      const setLogs = [];
+      
+      for (let i = 0; i < exercise.sets.length; i++) {
+        const set = exercise.sets[i];
+        if (!set.isWarmup) {
+          totalVolume += set.reps * set.weight;
         }
-        return t - 1;
+        
+        setLogs.push({
+          setNumber: i + 1,
+          reps: set.reps,
+          weight: set.weight,
+          weightUnit: set.weightUnit,
+          rpe: set.rpe,
+          isWarmup: set.isWarmup || false,
+          completedAt: new Date(),
+        });
+      }
+      
+      exerciseLogs.push({ exerciseId: exercise.exerciseId, sets: setLogs });
+    }
+    
+    // Estimate calories burned
+    const caloriesBurned = await estimateCalories(userId, exerciseLogs);
+    
+    // Create workout log
+    const workoutLog = await tx.workoutLogs.create({
+      data: {
+        userId,
+        templateId: input.templateId,
+        name: input.name,
+        startedAt,
+        completedAt: new Date(),
+        durationSeconds: Math.floor((Date.now() - startedAt.getTime()) / 1000),
+        totalVolume,
+        caloriesBurned,
+      },
+    });
+    
+    // Create exercise and set logs
+    for (let i = 0; i < exerciseLogs.length; i++) {
+      const exerciseLog = await tx.exerciseLogs.create({
+        data: {
+          workoutLogId: workoutLog.id,
+          exerciseId: exerciseLogs[i].exerciseId,
+          position: i + 1,
+        },
       });
-    }, 1000);
-  };
-
-  return (
-    <View>
-      <ExerciseCard exercise={exercises[currentExercise]} />
       
-      {isResting ? (
-        <RestTimer seconds={timer} onSkip={() => setIsResting(false)} />
-      ) : (
-        <SetLogger onLog={logSet} previousSets={sets} />
-      )}
-      
-      <WorkoutProgress 
-        current={currentExercise + 1} 
-        total={exercises.length} 
-      />
-    </View>
-  );
+      for (const set of exerciseLogs[i].sets) {
+        await tx.setLogs.create({
+          data: { exerciseLogId: exerciseLog.id, ...set },
+        });
+      }
+    }
+    
+    // Check for PRs
+    await checkAndUpdatePRs(tx, userId, exerciseLogs);
+    
+    return workoutLog;
+  });
+  
+  return workout;
 }
 ```
 
-### Step 3: Calorie Calculator
+### 3.2 Calculate Estimated 1RM
 
 ```typescript
-// MET-based calorie calculation
-const MET_VALUES: Record<string, number> = {
-  'walking': 3.5,
-  'running': 9.8,
-  'cycling': 7.5,
-  'swimming': 8.0,
-  'weight_training': 6.0,
-  'yoga': 2.5,
-  'hiit': 12.0,
+// Epley/Brzycki formula for 1RM estimation
+function estimate1RM(weight: number, reps: number): number {
+  if (reps === 1) return weight;
+  if (reps > 12) return weight;  // Less accurate above 12 reps
+  
+  // Epley formula: weight * (1 + reps/30)
+  const epley = weight * (1 + reps / 30);
+  
+  // Brzycki formula: weight / (1.0278 - 0.0278 * reps)
+  const brzycki = weight / (1.0278 - 0.0278 * reps);
+  
+  // Average of both formulas
+  return Math.round((epley + brzycki) / 2);
+}
+
+async function checkAndUpdatePRs(tx: any, userId: string, exerciseLogs: ExerciseLogData[]) {
+  for (const exercise of exerciseLogs) {
+    const heaviestSet = exercise.sets
+      .filter(s => !s.isWarmup)
+      .sort((a, b) => b.weight - a.weight)[0];
+    
+    if (!heaviestSet) continue;
+    
+    const estimated1RM = estimate1RM(heaviestSet.weight, heaviestSet.reps);
+    
+    // Check current PR
+    const currentPR = await tx.personalRecords.findFirst({
+      where: { userId, exerciseId: exercise.exerciseId, recordType: '1rm' },
+    });
+    
+    if (!currentPR || estimated1RM > currentPR.value) {
+      await tx.personalRecords.upsert({
+        where: { userId_exerciseId_recordType: { userId, exerciseId: exercise.exerciseId, recordType: '1rm' } },
+        create: {
+          userId,
+          exerciseId: exercise.exerciseId,
+          recordType: '1rm',
+          value: estimated1RM,
+          unit: heaviestSet.weightUnit,
+          achievedAt: new Date(),
+        },
+        update: {
+          value: estimated1RM,
+          achievedAt: new Date(),
+        },
+      });
+    }
+  }
+}
+```
+
+---
+
+## Part 4: Progress Analytics
+
+### 4.1 Get Progress Stats
+
+```typescript
+interface ProgressStats {
+  totalWorkouts: number;
+  totalVolume: number;
+  totalCalories: number;
+  avgWorkoutDuration: number;
+  currentStreak: number;
+  personalRecords: PersonalRecord[];
+}
+
+async function getProgressStats(userId: string, days = 30): Promise<ProgressStats> {
+  const since = subDays(new Date(), days);
+  
+  const workouts = await db.workoutLogs.findMany({
+    where: { userId, completedAt: { gte: since } },
+    orderBy: { completedAt: 'desc' },
+  });
+  
+  const totalWorkouts = workouts.length;
+  const totalVolume = workouts.reduce((sum, w) => sum + w.totalVolume, 0);
+  const totalCalories = workouts.reduce((sum, w) => sum + w.caloriesBurned, 0);
+  const avgWorkoutDuration = totalWorkouts > 0
+    ? workouts.reduce((sum, w) => sum + w.durationSeconds, 0) / totalWorkouts
+    : 0;
+  
+  // Calculate streak
+  const currentStreak = calculateStreak(workouts);
+  
+  // Recent PRs
+  const personalRecords = await db.personalRecords.findMany({
+    where: { userId, achievedAt: { gte: since } },
+    include: { exercise: true },
+    orderBy: { achievedAt: 'desc' },
+    take: 10,
+  });
+  
+  return {
+    totalWorkouts,
+    totalVolume,
+    totalCalories,
+    avgWorkoutDuration,
+    currentStreak,
+    personalRecords,
+  };
+}
+```
+
+---
+
+## Part 5: Health Integration
+
+### 5.1 Apple HealthKit (React Native)
+
+```typescript
+import AppleHealthKit, { HealthKitPermissions, HealthValue } from 'react-native-health';
+
+const permissions: HealthKitPermissions = {
+  permissions: {
+    read: ['ActiveEnergyBurned', 'HeartRate', 'StepCount', 'Workout'],
+    write: ['Workout', 'ActiveEnergyBurned'],
+  },
 };
 
-function calculateCalories(
-  activity: string,
-  durationMinutes: number,
-  weightKg: number
-): number {
-  const met = MET_VALUES[activity] || 5.0;
-  // Formula: Calories = MET × weight (kg) × duration (hours)
-  const hours = durationMinutes / 60;
-  return Math.round(met * weightKg * hours);
+async function initHealthKit(): Promise<boolean> {
+  return new Promise((resolve) => {
+    AppleHealthKit.initHealthKit(permissions, (error) => {
+      resolve(!error);
+    });
+  });
 }
 
-// Strength training calories
-function calculateStrengthCalories(
-  sets: WorkoutSet[],
-  weightKg: number
-): number {
-  const totalSeconds = sets.reduce((sum, set) => {
-    const setTime = (set.reps || 0) * 3; // ~3 sec per rep
-    const restTime = set.restAfter || 60;
-    return sum + setTime + restTime;
-  }, 0);
+async function saveWorkoutToHealthKit(workout: WorkoutLog): Promise<void> {
+  const options = {
+    type: 'TraditionalStrengthTraining',
+    startDate: workout.startedAt.toISOString(),
+    endDate: workout.completedAt.toISOString(),
+    energyBurned: workout.caloriesBurned,
+  };
   
-  const minutes = totalSeconds / 60;
-  return calculateCalories('weight_training', minutes, weightKg);
+  AppleHealthKit.saveWorkout(options, (error, result) => {
+    if (error) console.error('Failed to save to HealthKit:', error);
+  });
 }
 ```
 
-### Step 4: Progress Tracking
+---
 
-```typescript
-// Personal Records
-function checkPersonalRecord(
-  exercise: string,
-  weight: number,
-  reps: number,
-  currentPRs: Record<string, { weight: number; reps: number }>
-): boolean {
-  const key = exercise;
-  const oneRepMax = weight * (1 + reps / 30); // Epley formula
-  
-  if (!currentPRs[key]) {
-    return true;
-  }
-  
-  const previousMax = currentPRs[key].weight * (1 + currentPRs[key].reps / 30);
-  return oneRepMax > previousMax;
-}
+## Part 6: Best Practices Checklist
 
-// Streak calculation
-function calculateStreak(workoutDates: Date[]): number {
-  const sorted = workoutDates
-    .map(d => new Date(d).toDateString())
-    .sort()
-    .reverse();
-  
-  let streak = 0;
-  let checkDate = new Date();
-  
-  for (const dateStr of sorted) {
-    const workoutDate = new Date(dateStr).toDateString();
-    const expected = checkDate.toDateString();
-    
-    if (workoutDate === expected) {
-      streak++;
-      checkDate.setDate(checkDate.getDate() - 1);
-    } else {
-      break;
-    }
-  }
-  
-  return streak;
-}
-```
+### ✅ Do This
 
-### Step 5: Health API Integration
+- ✅ **Sync with Health Apps**: HealthKit, Google Fit.
+- ✅ **Offline Support**: Log workouts without internet.
+- ✅ **Rest Timers**: Include rest period tracking.
 
-```swift
-// Apple HealthKit (iOS)
-import HealthKit
+### ❌ Avoid This
 
-let healthStore = HKHealthStore()
+- ❌ **Complex UI During Workout**: Keep it simple.
+- ❌ **Skip Warmup Sets**: Track but exclude from volume.
+- ❌ **Ignore Form**: Provide exercise instructions.
 
-func requestAuthorization() {
-    let typesToShare: Set = [
-        HKObjectType.workoutType(),
-        HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!
-    ]
-    
-    let typesToRead: Set = [
-        HKQuantityType.quantityType(forIdentifier: .heartRate)!,
-        HKQuantityType.quantityType(forIdentifier: .stepCount)!
-    ]
-    
-    healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
-        // Handle result
-    }
-}
-
-func saveWorkout(duration: TimeInterval, calories: Double) {
-    let workout = HKWorkout(
-        activityType: .traditionalStrengthTraining,
-        start: Date().addingTimeInterval(-duration),
-        end: Date(),
-        duration: duration,
-        totalEnergyBurned: HKQuantity(unit: .kilocalorie(), doubleValue: calories),
-        totalDistance: nil,
-        metadata: nil
-    )
-    
-    healthStore.save(workout) { success, error in
-        // Handle result
-    }
-}
-```
-
-## Best Practices
-
-- ✅ Sync with health platforms
-- ✅ Offline-first for gym usage
-- ✅ Celebrate achievements
-- ❌ Don't skip rest timer
-- ❌ Don't ignore form guidance
+---
 
 ## Related Skills
 
-- `@senior-flutter-developer`
-- `@senior-ios-developer`
+- `@healthcare-app-developer` - Health data
+- `@wearable-app-developer` - Watch apps
+- `@gamification-specialist` - Engagement

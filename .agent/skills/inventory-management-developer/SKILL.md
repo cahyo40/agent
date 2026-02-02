@@ -7,201 +7,432 @@ description: "Expert inventory management system development including stock tra
 
 ## Overview
 
-Skill ini menjadikan AI Agent sebagai spesialis pengembangan sistem manajemen inventori. Agent akan mampu membangun fitur stock tracking, warehouse management, barcode/QR scanning, reorder points, dan inventory analytics.
+This skill transforms you into an **Inventory Management Expert**. You will master **Stock Tracking**, **Warehouse Management**, **Barcode/QR Scanning**, **Stock Movements**, and **Inventory Analytics** for building production-ready inventory systems.
 
 ## When to Use This Skill
 
-- Use when building inventory or stock management systems
-- Use when implementing warehouse management features
-- Use when designing barcode/QR code scanning solutions
-- Use when building supply chain tracking applications
+- Use when building inventory tracking systems
+- Use when implementing warehouse management
+- Use when creating barcode/QR scanning features
+- Use when handling stock movements
+- Use when building inventory analytics
 
-## Core Concepts
+---
 
-### System Components
+## Part 1: Inventory Architecture
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│           INVENTORY MANAGEMENT SYSTEM                   │
-├─────────────────────────────────────────────────────────┤
-│ 📦 Stock Tracking      - Real-time quantity updates     │
-│ 🏭 Warehouse Mgmt      - Locations, zones, bins         │
-│ 📱 Barcode/QR Scan     - SKU lookup, receiving, picking │
-│ 🔄 Stock Movements     - In/Out, transfers, adjustments │
-│ ⚠️ Reorder Alerts      - Low stock, auto-reorder        │
-│ 📊 Analytics           - Turnover, dead stock, trends   │
-│ 📋 Audit Trail         - Complete movement history      │
-└─────────────────────────────────────────────────────────┘
+### 1.1 System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Inventory System                          │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Products   │ Stock Levels│ Movements   │ Warehouses         │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Barcode/QR Scanner Integration                 │
+├─────────────────────────────────────────────────────────────┤
+│                  Alerts & Analytics                          │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Data Schema
+### 1.2 Key Concepts
 
-```text
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   PRODUCT    │     │  WAREHOUSE   │     │   LOCATION   │
-├──────────────┤     ├──────────────┤     ├──────────────┤
-│ id           │     │ id           │     │ id           │
-│ sku          │     │ name         │     │ warehouse_id │
-│ name         │     │ address      │     │ zone         │
-│ barcode      │     │ type         │     │ aisle        │
-│ category_id  │     └──────────────┘     │ rack         │
-│ unit_cost    │            │             │ bin          │
-│ sell_price   │            ▼             └──────────────┘
-└──────────────┘     ┌──────────────┐            │
-       │             │    STOCK     │◄───────────┘
-       └────────────►├──────────────┤
-                     │ id           │
-                     │ product_id   │
-                     │ location_id  │
-                     │ quantity     │
-                     │ batch_no     │
-                     │ expiry_date  │
-                     │ updated_at   │
-                     └──────────────┘
-                            │
-                            ▼
-                     ┌──────────────┐
-                     │  MOVEMENT    │
-                     ├──────────────┤
-                     │ id           │
-                     │ type         │ ← IN/OUT/TRANSFER/ADJUST
-                     │ product_id   │
-                     │ from_loc     │
-                     │ to_loc       │
-                     │ quantity     │
-                     │ reference    │
-                     │ created_by   │
-                     │ created_at   │
-                     └──────────────┘
+| Concept | Description |
+|---------|-------------|
+| **SKU** | Stock Keeping Unit - unique product ID |
+| **Bin Location** | Physical storage location |
+| **Stock Movement** | Any change in quantity |
+| **Reorder Point** | Threshold to trigger reorder |
+| **Safety Stock** | Buffer inventory level |
+| **Lead Time** | Days from order to receipt |
+| **FIFO/LIFO** | First/Last In First Out |
+
+---
+
+## Part 2: Database Schema
+
+### 2.1 Core Tables
+
+```sql
+-- Products
+CREATE TABLE products (
+    id UUID PRIMARY KEY,
+    sku VARCHAR(50) UNIQUE,
+    barcode VARCHAR(50) UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    category_id UUID REFERENCES categories(id),
+    unit VARCHAR(20) DEFAULT 'pcs',  -- 'pcs', 'kg', 'liter', 'box'
+    cost DECIMAL(12, 2),
+    price DECIMAL(12, 2),
+    weight_kg DECIMAL(10, 3),
+    dimensions JSONB,  -- { length, width, height }
+    image_url VARCHAR(500),
+    active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Warehouses
+CREATE TABLE warehouses (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100),
+    code VARCHAR(20) UNIQUE,
+    address TEXT,
+    is_default BOOLEAN DEFAULT FALSE,
+    active BOOLEAN DEFAULT TRUE
+);
+
+-- Bin Locations
+CREATE TABLE bin_locations (
+    id UUID PRIMARY KEY,
+    warehouse_id UUID REFERENCES warehouses(id),
+    code VARCHAR(50),  -- A-01-01 (Aisle-Rack-Shelf)
+    zone VARCHAR(50),  -- 'receiving', 'storage', 'picking', 'shipping'
+    max_capacity INTEGER,
+    UNIQUE(warehouse_id, code)
+);
+
+-- Stock Levels (current inventory)
+CREATE TABLE stock_levels (
+    id UUID PRIMARY KEY,
+    product_id UUID REFERENCES products(id),
+    warehouse_id UUID REFERENCES warehouses(id),
+    bin_location_id UUID REFERENCES bin_locations(id),
+    quantity DECIMAL(15, 3) DEFAULT 0,
+    reserved_quantity DECIMAL(15, 3) DEFAULT 0,
+    available_quantity DECIMAL(15, 3) GENERATED ALWAYS AS (quantity - reserved_quantity) STORED,
+    reorder_point DECIMAL(15, 3),
+    reorder_quantity DECIMAL(15, 3),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(product_id, warehouse_id, bin_location_id)
+);
+
+-- Stock Movements
+CREATE TABLE stock_movements (
+    id UUID PRIMARY KEY,
+    product_id UUID REFERENCES products(id),
+    warehouse_id UUID REFERENCES warehouses(id),
+    bin_location_id UUID REFERENCES bin_locations(id),
+    type VARCHAR(50),  -- 'receive', 'issue', 'transfer', 'adjustment', 'return'
+    quantity DECIMAL(15, 3) NOT NULL,  -- positive for in, negative for out
+    reference_type VARCHAR(50),  -- 'purchase_order', 'sales_order', 'transfer', 'adjustment'
+    reference_id UUID,
+    batch_number VARCHAR(50),
+    expiry_date DATE,
+    unit_cost DECIMAL(12, 2),
+    notes TEXT,
+    created_by UUID REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Stock Adjustments
+CREATE TABLE stock_adjustments (
+    id UUID PRIMARY KEY,
+    warehouse_id UUID REFERENCES warehouses(id),
+    adjustment_number VARCHAR(50) UNIQUE,
+    reason VARCHAR(100),  -- 'cycle_count', 'damage', 'theft', 'expiry'
+    status VARCHAR(50) DEFAULT 'draft',  -- 'draft', 'approved', 'cancelled'
+    approved_by UUID REFERENCES users(id),
+    approved_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE stock_adjustment_lines (
+    id UUID PRIMARY KEY,
+    adjustment_id UUID REFERENCES stock_adjustments(id),
+    product_id UUID REFERENCES products(id),
+    bin_location_id UUID REFERENCES bin_locations(id),
+    system_quantity DECIMAL(15, 3),
+    counted_quantity DECIMAL(15, 3),
+    variance DECIMAL(15, 3) GENERATED ALWAYS AS (counted_quantity - system_quantity) STORED
+);
 ```
 
-### Stock Movement Types
+---
 
-```text
-MOVEMENT TYPES:
-├── RECEIVE (IN)
-│   Source: Purchase Order, Production
-│   Effect: +quantity at destination
-│
-├── ISSUE (OUT)
-│   Source: Sales Order, Consumption
-│   Effect: -quantity from source
-│
-├── TRANSFER
-│   Source: Internal movement
-│   Effect: -source, +destination
-│
-├── ADJUSTMENT
-│   Source: Physical count, damage, loss
-│   Effect: +/- to match physical count
-│
-└── RETURN
-    Source: Customer return, supplier return
-    Effect: +/- depending on direction
+## Part 3: Stock Operations
+
+### 3.1 Receive Stock
+
+```typescript
+interface ReceiveItem {
+  productId: string;
+  quantity: number;
+  binLocationId?: string;
+  batchNumber?: string;
+  expiryDate?: Date;
+  unitCost?: number;
+}
+
+async function receiveStock(
+  warehouseId: string,
+  items: ReceiveItem[],
+  referenceType: string,
+  referenceId: string
+): Promise<void> {
+  await db.$transaction(async (tx) => {
+    for (const item of items) {
+      // Create movement record
+      await tx.stockMovements.create({
+        data: {
+          productId: item.productId,
+          warehouseId,
+          binLocationId: item.binLocationId,
+          type: 'receive',
+          quantity: item.quantity,
+          referenceType,
+          referenceId,
+          batchNumber: item.batchNumber,
+          expiryDate: item.expiryDate,
+          unitCost: item.unitCost,
+          createdBy: getCurrentUserId(),
+        },
+      });
+      
+      // Update stock level
+      await tx.stockLevels.upsert({
+        where: {
+          productId_warehouseId_binLocationId: {
+            productId: item.productId,
+            warehouseId,
+            binLocationId: item.binLocationId || null,
+          },
+        },
+        create: {
+          productId: item.productId,
+          warehouseId,
+          binLocationId: item.binLocationId,
+          quantity: item.quantity,
+        },
+        update: {
+          quantity: { increment: item.quantity },
+          updatedAt: new Date(),
+        },
+      });
+    }
+  });
+}
 ```
 
-### Inventory Valuation Methods
+### 3.2 Issue Stock (Reserve & Fulfill)
 
-```text
-FIFO (First In, First Out):
-- Oldest stock sold first
-- Cost = earliest purchase price
-- Common for perishables
+```typescript
+async function reserveStock(
+  productId: string,
+  warehouseId: string,
+  quantity: number
+): Promise<boolean> {
+  const stockLevel = await db.stockLevels.findFirst({
+    where: { productId, warehouseId },
+  });
+  
+  if (!stockLevel || stockLevel.availableQuantity < quantity) {
+    return false;
+  }
+  
+  await db.stockLevels.update({
+    where: { id: stockLevel.id },
+    data: { reservedQuantity: { increment: quantity } },
+  });
+  
+  return true;
+}
 
-LIFO (Last In, First Out):
-- Newest stock sold first
-- Cost = latest purchase price
-- Tax advantages in inflation
-
-WEIGHTED AVERAGE:
-- Cost = Total value / Total quantity
-- Recalculate after each purchase
-- Simple, consistent
-
-SPECIFIC IDENTIFICATION:
-- Track actual cost per unit
-- Used for high-value items
-- Requires detailed tracking
+async function fulfillReservation(
+  productId: string,
+  warehouseId: string,
+  quantity: number,
+  referenceType: string,
+  referenceId: string
+): Promise<void> {
+  await db.$transaction(async (tx) => {
+    // Reduce stock
+    await tx.stockLevels.updateMany({
+      where: { productId, warehouseId },
+      data: {
+        quantity: { decrement: quantity },
+        reservedQuantity: { decrement: quantity },
+      },
+    });
+    
+    // Create movement record
+    await tx.stockMovements.create({
+      data: {
+        productId,
+        warehouseId,
+        type: 'issue',
+        quantity: -quantity,
+        referenceType,
+        referenceId,
+        createdBy: getCurrentUserId(),
+      },
+    });
+  });
+}
 ```
 
-### Reorder Point Formula
+---
 
-```text
-REORDER POINT CALCULATION:
-──────────────────────────
-ROP = (Average Daily Sales × Lead Time) + Safety Stock
+## Part 4: Barcode/QR Scanning
 
-Where:
-- Average Daily Sales = Units sold / days in period
-- Lead Time = Days from order to delivery
-- Safety Stock = Buffer for demand variability
+### 4.1 React Native Scanner
 
-Example:
-- Daily Sales: 10 units
-- Lead Time: 7 days
-- Safety Stock: 20 units
-- ROP = (10 × 7) + 20 = 90 units
+```typescript
+import { useCameraDevice, useCodeScanner } from 'react-native-vision-camera';
 
-ECONOMIC ORDER QUANTITY (EOQ):
-──────────────────────────────
-EOQ = √(2DS / H)
-
-Where:
-- D = Annual demand
-- S = Order cost per order
-- H = Holding cost per unit per year
+function BarcodeScanner({ onScan }: { onScan: (code: string) => void }) {
+  const device = useCameraDevice('back');
+  
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13', 'ean-8', 'code-128', 'code-39'],
+    onCodeScanned: (codes) => {
+      if (codes.length > 0) {
+        onScan(codes[0].value);
+      }
+    },
+  });
+  
+  return (
+    <Camera
+      device={device}
+      isActive={true}
+      codeScanner={codeScanner}
+      style={StyleSheet.absoluteFill}
+    />
+  );
+}
 ```
 
-### API Design
+### 4.2 Web Scanner with QuaggaJS
 
-```text
-/api/v1/
-├── /products
-│   ├── GET    /                  - List products
-│   ├── GET    /:id/stock         - Stock levels
-│   └── GET    /:sku/lookup       - Barcode lookup
-│
-├── /stock
-│   ├── GET    /                  - All stock
-│   ├── GET    /low-stock         - Below reorder point
-│   └── POST   /take              - Reserve stock
-│
-├── /movements
-│   ├── POST   /receive           - Goods receipt
-│   ├── POST   /issue             - Stock issue
-│   ├── POST   /transfer          - Internal transfer
-│   └── POST   /adjust            - Inventory adjustment
-│
-├── /locations
-│   ├── GET    /:id/stock         - Location inventory
-│   └── GET    /:id/available     - Available capacity
-│
-└── /reports
-    ├── GET    /valuation         - Inventory value
-    ├── GET    /turnover          - Stock turnover
-    └── GET    /aging             - Stock aging report
+```typescript
+import Quagga from 'quagga';
+
+function initScanner(containerId: string, onDetect: (code: string) => void) {
+  Quagga.init({
+    inputStream: {
+      type: 'LiveStream',
+      target: document.getElementById(containerId),
+    },
+    decoder: {
+      readers: ['ean_reader', 'code_128_reader', 'code_39_reader'],
+    },
+  }, (err) => {
+    if (err) console.error(err);
+    else Quagga.start();
+  });
+  
+  Quagga.onDetected((result) => {
+    onDetect(result.codeResult.code);
+  });
+}
 ```
 
-## Best Practices
+---
+
+## Part 5: Low Stock Alerts
+
+### 5.1 Check Reorder Points
+
+```typescript
+async function checkLowStock(): Promise<LowStockAlert[]> {
+  const lowStock = await db.stockLevels.findMany({
+    where: {
+      quantity: { lte: db.stockLevels.fields.reorderPoint },
+      product: { active: true },
+    },
+    include: { product: true, warehouse: true },
+  });
+  
+  return lowStock.map(stock => ({
+    productId: stock.productId,
+    productName: stock.product.name,
+    sku: stock.product.sku,
+    warehouseName: stock.warehouse.name,
+    currentQuantity: stock.quantity,
+    reorderPoint: stock.reorderPoint,
+    reorderQuantity: stock.reorderQuantity,
+  }));
+}
+
+// Scheduled job
+async function sendLowStockAlerts() {
+  const alerts = await checkLowStock();
+  
+  if (alerts.length > 0) {
+    await sendEmail({
+      to: 'inventory@company.com',
+      subject: `Low Stock Alert: ${alerts.length} products`,
+      template: 'low-stock-alert',
+      data: { alerts },
+    });
+  }
+}
+```
+
+---
+
+## Part 6: Cycle Counting
+
+### 6.1 Create Count Sheet
+
+```typescript
+async function createCycleCount(warehouseId: string, productIds?: string[]) {
+  const adjustment = await db.stockAdjustments.create({
+    data: {
+      warehouseId,
+      adjustmentNumber: generateAdjustmentNumber(),
+      reason: 'cycle_count',
+      status: 'draft',
+    },
+  });
+  
+  // Get products to count
+  const stockLevels = await db.stockLevels.findMany({
+    where: {
+      warehouseId,
+      productId: productIds ? { in: productIds } : undefined,
+    },
+    include: { product: true, binLocation: true },
+  });
+  
+  // Create count lines
+  for (const stock of stockLevels) {
+    await db.stockAdjustmentLines.create({
+      data: {
+        adjustmentId: adjustment.id,
+        productId: stock.productId,
+        binLocationId: stock.binLocationId,
+        systemQuantity: stock.quantity,
+        countedQuantity: null,  // To be filled during count
+      },
+    });
+  }
+  
+  return adjustment;
+}
+```
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Always log stock movements with user and timestamp
-- ✅ Implement real-time stock updates
-- ✅ Use batch/lot tracking for traceability
-- ✅ Support multiple units of measure (UoM)
-- ✅ Regular cycle counts vs annual inventory
+- ✅ **Audit Trail**: Log all stock movements.
+- ✅ **Real-Time Updates**: WebSocket for dashboard.
+- ✅ **Batch Tracking**: For expiry and recalls.
 
 ### ❌ Avoid This
 
-- ❌ Don't allow negative stock without explicit override
-- ❌ Don't skip validation on stock movements
-- ❌ Don't ignore FIFO/LIFO for perishables
-- ❌ Don't forget expiry date management
+- ❌ **Direct Stock Edits**: Always use movements.
+- ❌ **Negative Stock**: Validate before deducting.
+- ❌ **Skip Cycle Counts**: Regular audits prevent errors.
+
+---
 
 ## Related Skills
 
-- `@senior-backend-developer` - API development
-- `@pos-developer` - Point of sale integration
-- `@e-commerce-developer` - Online store stock
-- `@logistics-software-developer` - Supply chain
+- `@pos-developer` - Retail inventory
+- `@e-commerce-developer` - Online stock sync
+- `@logistics-software-developer` - Warehouse operations

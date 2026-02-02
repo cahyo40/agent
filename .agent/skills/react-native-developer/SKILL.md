@@ -7,41 +7,361 @@ description: "Expert React Native development including New Architecture (Fabric
 
 ## Overview
 
-This skill transforms you into an **Expert React Native Engineer**. You will move beyond "bridged" JS threads to mastering the **New Architecture (Fabric/TurboModules)**, handling complex animations with **Reanimated 3**, integrating Native Modules (JSI), and optimizing performance (FlatList, Hermes).
+This skill transforms you into an **Expert React Native Engineer**. You will master the **New Architecture (Fabric/TurboModules)**, handle complex animations with **Reanimated 3**, integrate native modules, and optimize performance for production mobile apps.
 
 ## When to Use This Skill
 
-- Use when building high-performance cross-platform apps
-- Use when integrating platform-specific APIs (Camera, Bluetooth)
+- Use when building cross-platform mobile apps
+- Use when integrating platform-specific APIs
 - Use when optimizing animation framerates (60/120fps)
 - Use when debugging startup time or memory usage
-- Use when implementing OTA updates (CodePush/EAS)
+- Use when implementing OTA updates
 
 ---
 
-## Part 1: The New Architecture (Fabric & TurboModules)
+## Part 1: React Native Architecture
 
-The bridge is dead. Synchronous communication is key.
+### 1.1 Old vs New Architecture
 
-### 1.1 Enabling New Architecture
+| Aspect | Old Architecture | New Architecture |
+|--------|------------------|------------------|
+| **Communication** | JSON Bridge (async) | JSI (synchronous) |
+| **Rendering** | Shadow Tree + Yoga | Fabric (C++ Renderer) |
+| **Native Modules** | Bridge-based | TurboModules (JSI) |
+| **Performance** | ~60fps limited | Near-native speeds |
+| **Type Safety** | Manual | Codegen (TypeScript) |
 
-In `android/gradle.properties`:
+### 1.2 Architecture Diagram
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                    React Native App                             │
+├────────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌───────────────┐  ┌───────────────────┐   │
+│  │ JavaScript   │  │  Hermes/JSC   │  │   Native Layer    │   │
+│  │ (React Code) │◄─┤  (JS Engine)  ├─►│  (iOS/Android)    │   │
+│  └──────────────┘  └───────────────┘  └───────────────────┘   │
+│         │                  │                    │               │
+│         ▼                  ▼                    ▼               │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                         JSI                              │   │
+│  │              (JavaScript Interface)                      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│         │                  │                    │               │
+│  ┌──────┴──────┐  ┌────────┴────────┐  ┌───────┴──────────┐   │
+│  │   Fabric    │  │  TurboModules   │  │     Codegen      │   │
+│  │ (Renderer)  │  │ (Native Modules)│  │ (Type Generation)│   │
+│  └─────────────┘  └─────────────────┘  └──────────────────┘   │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### 1.3 Enabling New Architecture
+
+**Android** (`android/gradle.properties`):
 
 ```properties
 newArchEnabled=true
 ```
 
-In `ios/Podfile`:
+**iOS** (`ios/Podfile`):
 
 ```ruby
 ENV['RCT_NEW_ARCH_ENABLED'] = '1'
 ```
 
-### 1.2 TurboModules (Native Modules)
+---
 
-Type-safe native modules using TypeScript (`Codegen`).
+## Part 2: Project Structure
 
-**1. Define Spec (JS/TS):**
+### 2.1 Recommended Structure
+
+```text
+src/
+├── app/                    # Navigation & entry
+│   ├── screens/            # Screen components
+│   └── navigation/         # Navigation config
+├── components/             # Shared components
+│   ├── ui/                 # Primitives (Button, Text)
+│   └── forms/              # Form components
+├── features/               # Feature modules
+│   ├── auth/
+│   ├── profile/
+│   └── feed/
+├── hooks/                  # Custom hooks
+├── services/               # API services
+├── stores/                 # Zustand/MMKV state
+├── theme/                  # Design tokens
+├── types/                  # TypeScript types
+└── utils/                  # Helper functions
+```
+
+### 2.2 Technology Stack
+
+| Layer | Recommended | Alternative |
+|-------|-------------|-------------|
+| **Navigation** | React Navigation 7 | Expo Router |
+| **State Management** | Zustand + MMKV | Jotai, Redux Toolkit |
+| **Data Fetching** | TanStack Query | SWR |
+| **Forms** | React Hook Form | Formik |
+| **Animations** | Reanimated 3 | Moti |
+| **Styling** | StyleSheet | NativeWind |
+| **Storage** | MMKV | Async Storage |
+
+---
+
+## Part 3: Performance Optimization
+
+### 3.1 Performance Checklist
+
+| Issue | Solution |
+|-------|----------|
+| Slow list rendering | FlashList (not FlatList) |
+| JS thread blocking | Move to worklets (Reanimated) |
+| Slow startup | Hermes, lazy loading |
+| Memory leaks | Proper cleanup, weak references |
+| Large bundle | Code splitting, lazy imports |
+
+### 3.2 FlashList (Replacing FlatList)
+
+FlashList recycles views like native RecyclerView/UICollectionView:
+
+```tsx
+import { FlashList } from '@shopify/flash-list';
+
+function UserList({ users }: { users: User[] }) {
+  return (
+    <FlashList
+      data={users}
+      renderItem={({ item }) => <UserCard user={item} />}
+      estimatedItemSize={100}   // Critical for performance
+      drawDistance={250}         // Pre-render buffer
+      keyExtractor={(item) => item.id}
+    />
+  );
+}
+```
+
+### 3.3 Hermes Engine
+
+Hermes compiles JavaScript to bytecode ahead of time:
+
+| Metric | Without Hermes | With Hermes |
+|--------|---------------|-------------|
+| **TTI** | ~4.5s | ~2.0s |
+| **Memory** | ~185MB | ~136MB |
+| **APK Size** | ~16MB | ~12MB |
+
+Enable in `android/app/build.gradle`:
+
+```groovy
+project.ext.react = [
+    enableHermes: true,
+]
+```
+
+---
+
+## Part 4: Animations with Reanimated
+
+### 4.1 Why Reanimated?
+
+| Feature | Animated API | Reanimated 3 |
+|---------|--------------|--------------|
+| Thread | JS Thread | UI Thread (60fps) |
+| Gestures | Limited | Gesture Handler |
+| Complexity | Simple only | Any animation |
+| Performance | Can drop frames | Native speed |
+
+### 4.2 Basic Animation Pattern
+
+```tsx
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+
+function AnimatedCard() {
+  const offset = useSharedValue(0);
+  const scale = useSharedValue(1);
+  
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: offset.value },
+      { scale: scale.value },
+    ],
+  }));
+  
+  const handlePress = () => {
+    offset.value = withSpring(Math.random() * 200);
+    scale.value = withTiming(1.2, { duration: 200 });
+  };
+  
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <Animated.View style={[styles.card, animatedStyle]}>
+        <Text>Tap me!</Text>
+      </Animated.View>
+    </TouchableOpacity>
+  );
+}
+```
+
+### 4.3 Gesture Handler Integration
+
+```tsx
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+
+function DraggableCard() {
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  
+  const gesture = Gesture.Pan()
+    .onUpdate((event) => {
+      translateX.value = event.translationX;
+      translateY.value = event.translationY;
+    })
+    .onEnd(() => {
+      translateX.value = withSpring(0);
+      translateY.value = withSpring(0);
+    });
+  
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
+  }));
+  
+  return (
+    <GestureDetector gesture={gesture}>
+      <Animated.View style={[styles.card, animatedStyle]} />
+    </GestureDetector>
+  );
+}
+```
+
+---
+
+## Part 5: State Management
+
+### 5.1 Zustand + MMKV Pattern
+
+**Why MMKV over AsyncStorage?**
+
+- Synchronous (no await needed)
+- 30x faster
+- C++ implementation
+
+```typescript
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { MMKV } from 'react-native-mmkv';
+
+const storage = new MMKV();
+
+const mmkvStorage = {
+  getItem: (name: string) => storage.getString(name) ?? null,
+  setItem: (name: string, value: string) => storage.set(name, value),
+  removeItem: (name: string) => storage.delete(name),
+};
+
+interface AuthStore {
+  token: string | null;
+  user: User | null;
+  login: (token: string, user: User) => void;
+  logout: () => void;
+}
+
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      token: null,
+      user: null,
+      login: (token, user) => set({ token, user }),
+      logout: () => set({ token: null, user: null }),
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => mmkvStorage),
+    }
+  )
+);
+```
+
+---
+
+## Part 6: Navigation
+
+### 6.1 React Navigation 7 Setup
+
+```tsx
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  Home: undefined;
+  Profile: { userId: string };
+  Settings: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right',
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen 
+          name="Profile" 
+          component={ProfileScreen}
+          options={{ presentation: 'modal' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+```
+
+### 6.2 Type-Safe Navigation
+
+```tsx
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RouteProp } from '@react-navigation/native';
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Profile'>;
+type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
+
+function ProfileScreen() {
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const route = useRoute<ProfileScreenRouteProp>();
+  
+  const { userId } = route.params;
+  
+  return (
+    <View>
+      <Text>User: {userId}</Text>
+      <Button onPress={() => navigation.navigate('Settings')} title="Settings" />
+    </View>
+  );
+}
+```
+
+---
+
+## Part 7: Native Modules (TurboModules)
+
+### 7.1 Creating a TurboModule
+
+**Step 1: Define TypeScript Spec**
 
 ```typescript
 // NativeCalculator.ts
@@ -50,12 +370,13 @@ import { TurboModuleRegistry } from 'react-native';
 
 export interface Spec extends TurboModule {
   add(a: number, b: number): Promise<number>;
+  multiply(a: number, b: number): number; // Synchronous with JSI
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('Calculator');
 ```
 
-**2. Implement (Kotlin/Android):**
+**Step 2: Implement (Kotlin)**
 
 ```kotlin
 class CalculatorModule(context: ReactApplicationContext) : 
@@ -66,166 +387,48 @@ class CalculatorModule(context: ReactApplicationContext) :
   override fun add(a: Double, b: Double, promise: Promise) {
     promise.resolve(a + b)
   }
+  
+  override fun multiply(a: Double, b: Double): Double {
+    return a * b
+  }
 }
 ```
 
 ---
 
-## Part 2: High-Performance UI
-
-### 2.1 FlashList (Better FlatList)
-
-`FlatList` creates a view for every item. `FlashList` recycles views (like RecyclerView/UICollectionView).
-
-```tsx
-import { FlashList } from "@shopify/flash-list";
-
-const MyList = ({ data }) => {
-  return (
-    <FlashList
-      data={data}
-      renderItem={({ item }) => <Text>{item.title}</Text>}
-      estimatedItemSize={200} // Critical for performance
-      drawDistance={250}
-    />
-  );
-};
-```
-
-### 2.2 Reanimated 3 (Worklet Animations)
-
-Run animations on UI Thread, not JS Thread.
-
-```tsx
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withSpring 
-} from 'react-native-reanimated';
-
-const Box = () => {
-  const offset = useSharedValue(0);
-
-  const style = useAnimatedStyle(() => ({
-    transform: [{ translateX: offset.value }],
-  }));
-
-  return (
-    <>
-      <Animated.View style={[styles.box, style]} />
-      <Button onPress={() => (offset.value = withSpring(Math.random() * 255))} />
-    </>
-  );
-};
-```
-
----
-
-## Part 3: Navigation & State
-
-### 3.1 React Navigation 6/7
-
-Stack is native on iOS (`UINavigationController`) via `react-native-screens`.
-
-```tsx
-<Stack.Navigator
-  screenOptions={{
-    headerShown: false, // Custom headers are better
-    animation: 'slide_from_right',
-    presentation: 'modal', // Native modal behavior
-  }}
->
-  <Stack.Screen name="Home" component={HomeScreen} />
-  <Stack.Screen name="Profile" component={ProfileScreen} />
-</Stack.Navigator>
-```
-
-### 3.2 State Management (Zustand + MMKV)
-
-Don't use AsyncStorage (it's slow & async). Use MMKV (C++ synchronous storage).
-
-```typescript
-import { create } from 'zustand';
-import { MMKV } from 'react-native-mmkv';
-
-const storage = new MMKV();
-
-const useStore = create((set) => ({
-  bears: 0,
-  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  // Persist logic manually or via middleware
-  hydrate: () => {
-    const bears = storage.getNumber('bears') || 0;
-    set({ bears });
-  },
-}));
-```
-
----
-
-## Part 4: Native Integration Patterns
-
-### 4.1 Native UI Components (Fabric)
-
-Exposing a custom Android `VideoView` or iOS `MapView` to React Native.
-
-**JS Spec:**
-
-```typescript
-// MapViewNativeComponent.ts
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type { ViewProps } from 'react-native';
-
-interface NativeProps extends ViewProps {
-  zoomEnabled?: boolean;
-}
-
-export default codegenNativeComponent<NativeProps>('MapView');
-```
-
----
-
-## Part 5: Debugging & Profiling
-
-### 5.1 Flipper (Deprecated) -> Chrome DevTools & React DevTools
-
-- **CPU Profiler**: Find JS bottlenecks.
-- **Perf Monitor**: Check JS FPS vs UI FPS.
-  - If JS FPS < 60: Logic is too heavy on JS thread.
-  - If UI FPS < 60: Too many views or overdraw.
-
-### 5.2 Hermes Engine
-
-Enable Hermes. It compiles JS to Bytecode ahead of time (AOT).
-
-```groovy
-// android/app/build.gradle
-project.ext.react = [
-    enableHermes: true,
-]
-```
-
----
-
-## Part 6: Best Practices Checklist
+## Part 8: Best Practices Summary
 
 ### ✅ Do This
 
-- ✅ **Enable Hermes**: Mandatory for startup speed and memory.
-- ✅ **Use `useCallback` / `useMemo`**: Optimization is critical in RN to prevent re-renders passing props to Native Components.
-- ✅ **Lazy Load Bundles**: Split your bundle if the app is huge (`React.lazy`).
-- ✅ **Styles outside render**: Define `StyleSheet.create` outside the component to avoid recreating style objects.
+- ✅ **Enable Hermes** - Mandatory for performance
+- ✅ **Use FlashList** - Not FlatList for lists
+- ✅ **Use MMKV** - Not AsyncStorage
+- ✅ **Memoize callbacks** - `useCallback` for native props
+- ✅ **Define styles outside** - `StyleSheet.create` outside component
 
 ### ❌ Avoid This
 
-- ❌ **`ScrollView` for lists**: It renders ALL children at once. OOM Crash. Use `FlashList`.
-- ❌ **Doing heavy math in JS**: Move image processing / heavy calc to C++/Native via JSI/TurboModule.
-- ❌ **Inline Functions in Render**: `<View onLayout={() => {}} />` forces re-render.
+- ❌ **ScrollView for lists** - Renders ALL children (OOM crash)
+- ❌ **Heavy JS computation** - Move to native/worklets
+- ❌ **Inline functions in render** - Forces re-renders
+- ❌ **Console.log in production** - Remove or use Reactotron
+
+---
+
+## Debugging Tools
+
+| Tool | Purpose |
+|------|---------|
+| Flipper | Network, logs, performance |
+| React DevTools | Component inspection |
+| Perf Monitor | JS/UI FPS |
+| Reactotron | State, API, async storage |
 
 ---
 
 ## Related Skills
 
-- `@senior-react-developer` - React Core concepts
-- `@senior-android-developer` - Native Android Code
-- `@senior-ios-developer` - Native iOS Code
+- `@senior-react-developer` - React patterns
+- `@senior-android-developer` - Native Android
+- `@senior-ios-developer` - Native iOS
+- `@flutter-riverpod-specialist` - Alternative: Flutter

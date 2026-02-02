@@ -1,199 +1,292 @@
 ---
 name: senior-firebase-developer
-description: "Expert Firebase development including Firestore, Authentication, Cloud Functions, Storage, and real-time applications"
+description: "Expert Firebase development including Firestore, Authentication, Cloud Functions, Storage, FCM, and real-time applications"
 ---
 
 # Senior Firebase Developer
 
 ## Overview
 
-Build applications with Firebase including Firestore, Authentication, Cloud Functions, Storage, and real-time features for web and mobile.
+Expert Firebase Developer capable of building scalable, real-time apps using Firestore, Auth, Cloud Functions, Storage, and FCM.
 
-## When to Use This Skill
+## When to Use
 
-- Use when building Firebase apps
-- Use when need serverless backend
-- Use when real-time sync required
-- Use when rapid prototyping
+- Serverless applications
+- Real-time data sync
+- Rapid prototyping
+- Mobile apps (Flutter, React Native)
 
-## How It Works
+---
 
-### Step 1: Firebase Setup
+## Part 1: Firebase Architecture
+
+### 1.1 Services Overview
+
+| Category | Services |
+|----------|----------|
+| **Build** | Firestore, Realtime DB, Auth, Storage, Functions, Hosting |
+| **Engage** | FCM (Push), In-App Messaging, Remote Config |
+| **Monitor** | Crashlytics, Analytics, Performance |
+
+### 1.2 Firestore vs Realtime Database
+
+| Aspect | Firestore | Realtime DB |
+|--------|-----------|-------------|
+| Data Model | Documents/Collections | JSON Tree |
+| Queries | Compound, indexed | Limited |
+| Scalability | Automatic | Manual sharding |
+| Pricing | Per operation | Per bandwidth |
+
+---
+
+## Part 2: Setup
+
+### 2.1 Web/TypeScript
 
 ```typescript
-// Firebase configuration
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
-import { getFunctions } from 'firebase/functions';
 
-const firebaseConfig = {
+const config = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: 'project.firebaseapp.com',
   projectId: 'project-id',
   storageBucket: 'project.appspot.com',
-  messagingSenderId: '123456789',
-  appId: '1:123456789:web:abc123'
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApps()[0] : initializeApp(config);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
-export const functions = getFunctions(app);
 ```
 
-### Step 2: Firestore Operations
+### 2.2 Flutter/Dart
 
-```typescript
-import { 
-  collection, doc, getDoc, getDocs, 
-  addDoc, updateDoc, deleteDoc, 
-  query, where, orderBy, limit, 
-  onSnapshot, serverTimestamp 
-} from 'firebase/firestore';
+```dart
+// Run: flutterfire configure
+import 'package:firebase_core/firebase_core.dart';
 
-// Create
-async function createUser(userData: User) {
-  const docRef = await addDoc(collection(db, 'users'), {
-    ...userData,
-    createdAt: serverTimestamp()
-  });
-  return docRef.id;
-}
-
-// Read
-async function getUser(userId: string) {
-  const docSnap = await getDoc(doc(db, 'users', userId));
-  if (docSnap.exists()) {
-    return { id: docSnap.id, ...docSnap.data() };
-  }
-  return null;
-}
-
-// Query
-async function getActiveUsers() {
-  const q = query(
-    collection(db, 'users'),
-    where('status', '==', 'active'),
-    orderBy('createdAt', 'desc'),
-    limit(10)
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
-
-// Real-time listener
-function subscribeToUsers(callback: (users: User[]) => void) {
-  const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
-  
-  return onSnapshot(q, (snapshot) => {
-    const users = snapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      ...doc.data() 
-    }));
-    callback(users);
-  });
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 ```
 
-### Step 3: Authentication
+---
+
+## Part 3: Firestore Operations
+
+### 3.1 TypeScript CRUD
 
 ```typescript
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  signInWithPopup, GoogleAuthProvider,
-  signOut, onAuthStateChanged
-} from 'firebase/auth';
+import { collection, doc, getDoc, getDocs, addDoc, 
+  updateDoc, deleteDoc, query, where, orderBy, 
+  onSnapshot, serverTimestamp } from 'firebase/firestore';
 
-// Email/Password auth
-async function signUp(email: string, password: string) {
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
-  return credential.user;
+// CREATE
+const docRef = await addDoc(collection(db, 'users'), {
+  name: 'John',
+  createdAt: serverTimestamp(),
+});
+
+// READ
+const docSnap = await getDoc(doc(db, 'users', id));
+if (docSnap.exists()) {
+  return { id: docSnap.id, ...docSnap.data() };
 }
 
-async function signIn(email: string, password: string) {
-  const credential = await signInWithEmailAndPassword(auth, email, password);
-  return credential.user;
-}
+// QUERY
+const q = query(
+  collection(db, 'users'),
+  where('role', '==', 'admin'),
+  orderBy('createdAt', 'desc')
+);
+const snapshot = await getDocs(q);
 
-// Google auth
-async function signInWithGoogle() {
-  const provider = new GoogleAuthProvider();
-  const credential = await signInWithPopup(auth, provider);
-  return credential.user;
-}
+// UPDATE
+await updateDoc(doc(db, 'users', id), { name: 'Jane' });
 
-// Auth state observer
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log('Signed in:', user.uid);
-  } else {
-    console.log('Signed out');
+// DELETE
+await deleteDoc(doc(db, 'users', id));
+
+// REALTIME
+const unsubscribe = onSnapshot(doc(db, 'users', id), (doc) => {
+  console.log('Data:', doc.data());
+});
+```
+
+### 3.2 Flutter/Dart CRUD
+
+```dart
+final collection = FirebaseFirestore.instance.collection('users');
+
+// CREATE
+final docRef = await collection.add({
+  'name': 'John',
+  'createdAt': FieldValue.serverTimestamp(),
+});
+
+// READ
+final doc = await collection.doc(id).get();
+if (doc.exists) return doc.data();
+
+// QUERY
+final snapshot = await collection
+  .where('role', isEqualTo: 'admin')
+  .orderBy('createdAt', descending: true)
+  .get();
+
+// UPDATE
+await collection.doc(id).update({'name': 'Jane'});
+
+// DELETE
+await collection.doc(id).delete();
+
+// REALTIME STREAM
+collection.snapshots().listen((snapshot) {
+  for (var doc in snapshot.docs) {
+    print(doc.data());
   }
 });
 ```
 
-### Step 4: Cloud Functions
+---
+
+## Part 4: Security Rules
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuth() { return request.auth != null; }
+    function isOwner(uid) { return request.auth.uid == uid; }
+    
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow write: if isOwner(userId);
+    }
+    
+    match /posts/{postId} {
+      allow read: if resource.data.published == true;
+      allow create: if isAuth();
+      allow update, delete: if request.auth.uid == resource.data.authorId;
+    }
+  }
+}
+```
+
+---
+
+## Part 5: Authentication
+
+### 5.1 TypeScript
 
 ```typescript
-// functions/src/index.ts
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+
+// Email Sign Up
+const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+// Google Sign In
+const provider = new GoogleAuthProvider();
+const cred = await signInWithPopup(auth, provider);
+
+// Auth State
+onAuthStateChanged(auth, (user) => {
+  if (user) console.log('Logged in:', user.uid);
+});
+```
+
+### 5.2 Flutter/Dart
+
+```dart
+final auth = FirebaseAuth.instance;
+
+// Email Sign Up
+await auth.createUserWithEmailAndPassword(email: email, password: password);
+
+// Google Sign In
+final googleUser = await GoogleSignIn().signIn();
+final googleAuth = await googleUser!.authentication;
+final credential = GoogleAuthProvider.credential(
+  accessToken: googleAuth.accessToken,
+  idToken: googleAuth.idToken,
+);
+await auth.signInWithCredential(credential);
+
+// Auth State Stream
+auth.authStateChanges().listen((user) {
+  print(user?.uid);
+});
+```
+
+---
+
+## Part 6: Cloud Functions
+
+```typescript
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-
 admin.initializeApp();
 
-// HTTP trigger
+// HTTP Callable
 export const createUser = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Not authenticated');
-  }
-  
-  const { name, email } = data;
-  const userRef = await admin.firestore().collection('users').add({
-    name,
-    email,
-    createdBy: context.auth.uid,
-    createdAt: admin.firestore.FieldValue.serverTimestamp()
-  });
-  
-  return { id: userRef.id };
+  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', '');
+  return admin.firestore().collection('users').add(data);
 });
 
-// Firestore trigger
+// Firestore Trigger
 export const onUserCreate = functions.firestore
   .document('users/{userId}')
-  .onCreate(async (snap, context) => {
-    const user = snap.data();
-    
-    // Send welcome email
-    await admin.firestore().collection('mail').add({
-      to: user.email,
-      template: { name: 'welcome' }
-    });
+  .onCreate(async (snap) => {
+    console.log('New user:', snap.data());
   });
 ```
+
+---
+
+## Part 7: Storage
+
+```typescript
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+const storageRef = ref(storage, `users/${userId}/profile.jpg`);
+await uploadBytes(storageRef, file);
+const url = await getDownloadURL(storageRef);
+```
+
+```dart
+final ref = FirebaseStorage.instance.ref('users/$userId/profile.jpg');
+await ref.putFile(file);
+final url = await ref.getDownloadURL();
+```
+
+---
 
 ## Best Practices
 
 ### ✅ Do This
 
-- ✅ Use Security Rules
-- ✅ Index queries properly
-- ✅ Use batch writes
-- ✅ Handle offline mode
-- ✅ Unsubscribe listeners
+- Always use Security Rules
+- Create composite indexes
+- Use batch writes for atomic ops
+- Unsubscribe listeners
+- Use emulators for dev
 
-### ❌ Avoid This
+### ❌ Avoid
 
-- ❌ Don't skip security rules
-- ❌ Don't fetch entire collections
-- ❌ Don't ignore billing
-- ❌ Don't forget cleanup
+- Fetching entire collections
+- Storing sensitive data unsecured
+- Ignoring billing alerts
+
+---
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Flutter + Firebase
-- `@senior-react-developer` - React + Firebase
+- `@flutter-firebase-developer` - Flutter + Firebase
+- `@senior-supabase-developer` - Alternative BaaS

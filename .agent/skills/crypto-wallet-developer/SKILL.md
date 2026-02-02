@@ -7,431 +7,379 @@ description: "Expert cryptocurrency wallet development including key management,
 
 ## Overview
 
-Skill ini menjadikan AI Agent Anda sebagai spesialis pengembangan cryptocurrency wallet. Agent akan mampu membangun fitur key generation, secure storage, transaction signing, multi-chain support, dan integrasi dengan berbagai blockchain networks.
+This skill transforms you into a **Cryptocurrency Wallet Expert**. You will master **Key Management**, **Multi-Chain Support**, **Transaction Signing**, **HD Wallets**, and **Secure Storage** for building production-ready crypto wallets.
 
 ## When to Use This Skill
 
-- Use when building cryptocurrency wallet applications
-- Use when implementing secure key management
-- Use when the user asks about wallet architecture
-- Use when integrating with multiple blockchain networks
-- Use when implementing transaction signing and broadcasting
+- Use when building cryptocurrency wallets
+- Use when implementing key management
+- Use when creating multi-chain support
+- Use when handling transaction signing
+- Use when building DeFi interfaces
 
-## How It Works
+---
 
-### Step 1: Wallet Architecture
+## Part 1: Wallet Architecture
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│              CRYPTO WALLET ARCHITECTURE                 │
-├─────────────────────────────────────────────────────────┤
-│ 🔑 Key Management    - HD wallets, BIP39/44/84          │
-│ 🔐 Secure Storage    - Keychain, Secure Enclave, HSM    │
-│ ⛓️ Multi-Chain       - EVM, Bitcoin, Solana, etc.       │
-│ ✍️ Tx Signing        - Sign transactions locally        │
-│ 📡 Broadcasting      - Submit to blockchain network     │
-│ 💱 Token Support     - ERC20, SPL, native tokens        │
-│ 🔄 WalletConnect     - dApp integration                 │
-└─────────────────────────────────────────────────────────┘
+### 1.1 System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Crypto Wallet                           │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Keys       │ Chains      │ Transactions│ DApps              │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Secure Enclave / Keychain                      │
+├─────────────────────────────────────────────────────────────┤
+│              Blockchain RPC / Indexers                       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Step 2: HD Wallet Generation (BIP39/44)
+### 1.2 Key Concepts
 
-```dart
-// Using web3dart + bip39 packages
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:bip32/bip32.dart' as bip32;
-import 'package:web3dart/web3dart.dart';
+| Concept | Description |
+|---------|-------------|
+| **HD Wallet** | Hierarchical Deterministic (BIP32) |
+| **Mnemonic** | 12/24 word seed phrase |
+| **Private Key** | Secret for signing |
+| **Public Key** | Derived from private key |
+| **Address** | Derived from public key |
+| **Derivation Path** | Key hierarchy path |
 
-class HDWalletService {
-  // Generate new mnemonic
-  String generateMnemonic() {
-    return bip39.generateMnemonic(strength: 256); // 24 words
-  }
-  
-  // Validate mnemonic
-  bool validateMnemonic(String mnemonic) {
-    return bip39.validateMnemonic(mnemonic);
-  }
-  
-  // Derive Ethereum wallet from mnemonic
-  EthereumWallet deriveEthereumWallet(String mnemonic, int index) {
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final root = bip32.BIP32.fromSeed(seed);
-    
-    // BIP44 path for Ethereum: m/44'/60'/0'/0/index
-    final child = root.derivePath("m/44'/60'/0'/0/$index");
-    
-    final privateKey = EthPrivateKey.fromHex(
-      child.privateKey!.map((b) => b.toRadixString(16).padLeft(2, '0')).join(),
-    );
-    
-    return EthereumWallet(
-      address: privateKey.address.hex,
-      privateKey: privateKey,
-      path: "m/44'/60'/0'/0/$index",
-      index: index,
-    );
-  }
-  
-  // Derive Bitcoin wallet
-  BitcoinWallet deriveBitcoinWallet(String mnemonic, int index) {
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final root = bip32.BIP32.fromSeed(seed);
-    
-    // BIP84 path for Native SegWit: m/84'/0'/0'/0/index
-    final child = root.derivePath("m/84'/0'/0'/0/$index");
-    
-    return BitcoinWallet(
-      publicKey: child.publicKey,
-      privateKey: child.privateKey!,
-      path: "m/84'/0'/0'/0/$index",
-      index: index,
-    );
-  }
+---
+
+## Part 2: Wallet Creation
+
+### 2.1 Generate HD Wallet
+
+```typescript
+import { ethers } from 'ethers';
+import * as bip39 from 'bip39';
+import { HDNodeWallet } from 'ethers';
+
+// Generate new mnemonic
+function generateMnemonic(strength = 128): string {
+  // 128 bits = 12 words, 256 bits = 24 words
+  return bip39.generateMnemonic(strength);
 }
-```
 
-### Step 3: Secure Key Storage
-
-```dart
-// Secure storage using flutter_secure_storage + encryption
-class SecureKeyStorage {
-  final FlutterSecureStorage _storage;
-  final _encryptionKey = 'wallet_encryption_key';
+// Create wallet from mnemonic
+function createWalletFromMnemonic(mnemonic: string, path?: string): HDNodeWallet {
+  const derivationPath = path || "m/44'/60'/0'/0/0";  // Ethereum default
   
-  // Store encrypted mnemonic
-  Future<void> storeMnemonic(String mnemonic, String password) async {
-    // Derive encryption key from password
-    final salt = _generateSalt();
-    final key = await _deriveKey(password, salt);
-    
-    // Encrypt mnemonic with AES-256-GCM
-    final encrypted = await _encrypt(mnemonic, key);
-    
-    await _storage.write(key: 'mnemonic_encrypted', value: encrypted);
-    await _storage.write(key: 'mnemonic_salt', value: salt);
-  }
+  const wallet = ethers.HDNodeWallet.fromMnemonic(
+    ethers.Mnemonic.fromPhrase(mnemonic),
+    derivationPath
+  );
   
-  // Retrieve and decrypt mnemonic
-  Future<String?> retrieveMnemonic(String password) async {
-    final encrypted = await _storage.read(key: 'mnemonic_encrypted');
-    final salt = await _storage.read(key: 'mnemonic_salt');
-    
-    if (encrypted == null || salt == null) return null;
-    
-    try {
-      final key = await _deriveKey(password, salt);
-      return await _decrypt(encrypted, key);
-    } catch (e) {
-      throw WrongPasswordException();
-    }
-  }
-  
-  // Use biometric for quick unlock
-  Future<bool> authenticateWithBiometric() async {
-    final localAuth = LocalAuthentication();
-    return await localAuth.authenticate(
-      localizedReason: 'Authenticate to access wallet',
-      options: const AuthenticationOptions(
-        biometricOnly: true,
-        stickyAuth: true,
-      ),
-    );
-  }
-  
-  // Secure key derivation
-  Future<Uint8List> _deriveKey(String password, String salt) async {
-    final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64))
-      ..init(Pbkdf2Parameters(
-        utf8.encode(salt) as Uint8List,
-        100000, // iterations
-        32, // key length
-      ));
-    return pbkdf2.process(utf8.encode(password) as Uint8List);
-  }
+  return wallet;
 }
-```
 
-### Step 4: Transaction Signing
-
-```dart
-class TransactionService {
-  final Web3Client _web3client;
+// Derive multiple accounts
+function deriveAccounts(mnemonic: string, count = 5): Account[] {
+  const accounts: Account[] = [];
   
-  // Sign and send Ethereum transaction
-  Future<String> sendTransaction({
-    required EthPrivateKey privateKey,
-    required String to,
-    required BigInt value,
-    BigInt? gasPrice,
-    int? gasLimit,
-    Uint8List? data,
-  }) async {
-    final credentials = privateKey;
-    final chainId = await _web3client.getChainId();
+  for (let i = 0; i < count; i++) {
+    const path = `m/44'/60'/0'/0/${i}`;
+    const wallet = createWalletFromMnemonic(mnemonic, path);
     
-    // Estimate gas if not provided
-    gasLimit ??= (await _web3client.estimateGas(
-      sender: credentials.address,
-      to: EthereumAddress.fromHex(to),
-      value: EtherAmount.inWei(value),
-      data: data,
-    )).toInt();
-    
-    // Get current gas price if not provided
-    gasPrice ??= (await _web3client.getGasPrice()).getInWei;
-    
-    // Build transaction
-    final transaction = Transaction(
-      to: EthereumAddress.fromHex(to),
-      value: EtherAmount.inWei(value),
-      gasPrice: EtherAmount.inWei(gasPrice),
-      maxGas: gasLimit,
-      data: data,
-    );
-    
-    // Sign and send
-    final txHash = await _web3client.sendTransaction(
-      credentials,
-      transaction,
-      chainId: chainId.toInt(),
-    );
-    
-    return txHash;
-  }
-  
-  // Sign ERC20 token transfer
-  Future<String> sendERC20Token({
-    required EthPrivateKey privateKey,
-    required String tokenAddress,
-    required String to,
-    required BigInt amount,
-  }) async {
-    final contract = DeployedContract(
-      ContractAbi.fromJson(_erc20Abi, 'ERC20'),
-      EthereumAddress.fromHex(tokenAddress),
-    );
-    
-    final transferFunction = contract.function('transfer');
-    final data = transferFunction.encodeCall([
-      EthereumAddress.fromHex(to),
-      amount,
-    ]);
-    
-    return sendTransaction(
-      privateKey: privateKey,
-      to: tokenAddress,
-      value: BigInt.zero,
-      data: data,
-    );
-  }
-  
-  // Sign message (EIP-191)
-  Uint8List signMessage(String message, EthPrivateKey privateKey) {
-    final messageBytes = utf8.encode(message);
-    final prefix = '\x19Ethereum Signed Message:\n${messageBytes.length}';
-    final prefixedMessage = utf8.encode(prefix) + messageBytes;
-    
-    final hash = keccak256(Uint8List.fromList(prefixedMessage));
-    return privateKey.signPersonalMessageToUint8List(
-      Uint8List.fromList(messageBytes),
-    );
-  }
-}
-```
-
-### Step 5: WalletConnect Integration
-
-```dart
-// WalletConnect v2 integration
-class WalletConnectService {
-  late Web3Wallet _web3wallet;
-  
-  Future<void> initialize() async {
-    _web3wallet = await Web3Wallet.createInstance(
-      projectId: 'YOUR_PROJECT_ID',
-      metadata: const PairingMetadata(
-        name: 'My Crypto Wallet',
-        description: 'A secure cryptocurrency wallet',
-        url: 'https://mywallet.app',
-        icons: ['https://mywallet.app/icon.png'],
-      ),
-    );
-    
-    // Handle session proposals
-    _web3wallet.onSessionProposal.subscribe((proposal) async {
-      // Show approval dialog to user
-      final approved = await _showApprovalDialog(proposal);
-      
-      if (approved) {
-        await _web3wallet.approveSession(
-          id: proposal.id,
-          namespaces: _buildNamespaces(proposal),
-        );
-      } else {
-        await _web3wallet.rejectSession(
-          id: proposal.id,
-          reason: Errors.getSdkError(Errors.USER_REJECTED),
-        );
-      }
-    });
-    
-    // Handle sign requests
-    _web3wallet.onSessionRequest.subscribe((request) async {
-      switch (request.method) {
-        case 'eth_sendTransaction':
-          await _handleSendTransaction(request);
-          break;
-        case 'personal_sign':
-          await _handlePersonalSign(request);
-          break;
-        case 'eth_signTypedData':
-          await _handleSignTypedData(request);
-          break;
-      }
+    accounts.push({
+      index: i,
+      path,
+      address: wallet.address,
+      privateKey: wallet.privateKey,  // Store securely!
     });
   }
   
-  // Pair with dApp
-  Future<void> pair(String uri) async {
-    await _web3wallet.pair(uri: Uri.parse(uri));
-  }
+  return accounts;
+}
+```
+
+### 2.2 Multi-Chain Derivation Paths
+
+```typescript
+const DERIVATION_PATHS: Record<string, string> = {
+  ethereum: "m/44'/60'/0'/0/0",
+  bitcoin: "m/44'/0'/0'/0/0",
+  bitcoin_testnet: "m/44'/1'/0'/0/0",
+  solana: "m/44'/501'/0'/0'",
+  cosmos: "m/44'/118'/0'/0/0",
+  polygon: "m/44'/60'/0'/0/0",  // Same as ETH (EVM compatible)
+};
+
+function deriveAddressForChain(mnemonic: string, chain: string, index = 0): string {
+  const basePath = DERIVATION_PATHS[chain];
+  if (!basePath) throw new Error(`Unsupported chain: ${chain}`);
   
-  // Handle send transaction request
-  Future<void> _handleSendTransaction(SessionRequest request) async {
-    final params = request.params[0] as Map<String, dynamic>;
-    
-    // Show confirmation dialog
-    final confirmed = await _showTransactionDialog(params);
-    
-    if (confirmed) {
-      final txHash = await _transactionService.sendTransaction(
-        privateKey: _wallet.privateKey,
-        to: params['to'],
-        value: BigInt.parse(params['value'] ?? '0'),
-        data: params['data'] != null 
-          ? hexToBytes(params['data']) 
-          : null,
-      );
-      
-      await _web3wallet.respondSessionRequest(
-        topic: request.topic,
-        response: JsonRpcResponse(id: request.id, result: txHash),
-      );
-    } else {
-      await _web3wallet.respondSessionRequest(
-        topic: request.topic,
-        response: JsonRpcResponse(
-          id: request.id,
-          error: const JsonRpcError(code: 4001, message: 'User rejected'),
-        ),
-      );
-    }
+  // Replace last segment with index
+  const path = basePath.replace(/\/0$/, `/${index}`);
+  
+  if (chain === 'solana') {
+    return deriveSolanaAddress(mnemonic, path);
+  } else if (chain.startsWith('bitcoin')) {
+    return deriveBitcoinAddress(mnemonic, path, chain === 'bitcoin_testnet');
+  } else {
+    // EVM chains
+    const wallet = createWalletFromMnemonic(mnemonic, path);
+    return wallet.address;
   }
 }
 ```
 
-### Step 6: Multi-Chain Support
+---
 
-```dart
-// Chain configuration
-class ChainConfig {
-  static const chains = {
-    'ethereum': ChainInfo(
-      chainId: 1,
-      name: 'Ethereum Mainnet',
-      symbol: 'ETH',
-      rpcUrl: 'https://mainnet.infura.io/v3/YOUR_KEY',
-      explorerUrl: 'https://etherscan.io',
-      derivationPath: "m/44'/60'/0'/0",
-    ),
-    'polygon': ChainInfo(
-      chainId: 137,
-      name: 'Polygon',
-      symbol: 'MATIC',
-      rpcUrl: 'https://polygon-rpc.com',
-      explorerUrl: 'https://polygonscan.com',
-      derivationPath: "m/44'/60'/0'/0",
-    ),
-    'bsc': ChainInfo(
-      chainId: 56,
-      name: 'BNB Smart Chain',
-      symbol: 'BNB',
-      rpcUrl: 'https://bsc-dataseed.binance.org',
-      explorerUrl: 'https://bscscan.com',
-      derivationPath: "m/44'/60'/0'/0",
-    ),
-    'bitcoin': ChainInfo(
-      chainId: 0,
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      rpcUrl: 'https://blockstream.info/api',
-      explorerUrl: 'https://blockstream.info',
-      derivationPath: "m/84'/0'/0'/0",
-    ),
+## Part 3: Secure Key Storage
+
+### 3.1 Encrypt Private Key
+
+```typescript
+import * as crypto from 'crypto';
+
+interface EncryptedWallet {
+  ciphertext: string;
+  iv: string;
+  salt: string;
+  tag: string;
+}
+
+function encryptPrivateKey(privateKey: string, password: string): EncryptedWallet {
+  const salt = crypto.randomBytes(32);
+  const iv = crypto.randomBytes(16);
+  
+  // Derive key from password using PBKDF2
+  const key = crypto.pbkdf2Sync(password, salt, 100000, 32, 'sha256');
+  
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  
+  let ciphertext = cipher.update(privateKey, 'utf8', 'hex');
+  ciphertext += cipher.final('hex');
+  
+  const tag = cipher.getAuthTag();
+  
+  return {
+    ciphertext,
+    iv: iv.toString('hex'),
+    salt: salt.toString('hex'),
+    tag: tag.toString('hex'),
   };
 }
 
-class MultiChainWallet {
-  final Map<String, Web3Client> _evmClients = {};
+function decryptPrivateKey(encrypted: EncryptedWallet, password: string): string {
+  const salt = Buffer.from(encrypted.salt, 'hex');
+  const iv = Buffer.from(encrypted.iv, 'hex');
+  const tag = Buffer.from(encrypted.tag, 'hex');
   
-  // Get balance for chain
-  Future<BigInt> getBalance(String chain, String address) async {
-    if (_isEvmChain(chain)) {
-      final client = _getEvmClient(chain);
-      final balance = await client.getBalance(
-        EthereumAddress.fromHex(address),
-      );
-      return balance.getInWei;
-    } else if (chain == 'bitcoin') {
-      return await _getBitcoinBalance(address);
-    }
-    throw UnsupportedChainException(chain);
-  }
+  const key = crypto.pbkdf2Sync(password, salt, 100000, 32, 'sha256');
   
-  // Get token balances
-  Future<List<TokenBalance>> getTokenBalances(
-    String chain,
-    String address,
-  ) async {
-    // Use token list API or on-chain calls
-    final tokens = await _fetchTokenList(chain, address);
-    return tokens;
-  }
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+  decipher.setAuthTag(tag);
+  
+  let privateKey = decipher.update(encrypted.ciphertext, 'hex', 'utf8');
+  privateKey += decipher.final('utf8');
+  
+  return privateKey;
 }
 ```
 
-## Best Practices
+### 3.2 Mobile Secure Storage
+
+```typescript
+// React Native with react-native-keychain
+import * as Keychain from 'react-native-keychain';
+
+async function storeSecurely(key: string, value: string): Promise<void> {
+  await Keychain.setGenericPassword(key, value, {
+    service: 'crypto-wallet',
+    accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET_OR_DEVICE_PASSCODE,
+    accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+  });
+}
+
+async function retrieveSecurely(key: string): Promise<string | null> {
+  const credentials = await Keychain.getGenericPassword({
+    service: 'crypto-wallet',
+  });
+  
+  if (credentials && credentials.username === key) {
+    return credentials.password;
+  }
+  return null;
+}
+```
+
+---
+
+## Part 4: Transaction Signing
+
+### 4.1 Sign Ethereum Transaction
+
+```typescript
+import { ethers, TransactionRequest } from 'ethers';
+
+async function signAndSendTransaction(
+  wallet: ethers.Wallet,
+  to: string,
+  amount: string,
+  data?: string
+): Promise<string> {
+  const provider = new ethers.JsonRpcProvider(RPC_URL);
+  const connectedWallet = wallet.connect(provider);
+  
+  // Build transaction
+  const tx: TransactionRequest = {
+    to,
+    value: ethers.parseEther(amount),
+    data: data || '0x',
+  };
+  
+  // Estimate gas
+  const gasEstimate = await provider.estimateGas(tx);
+  const feeData = await provider.getFeeData();
+  
+  tx.gasLimit = gasEstimate * BigInt(12) / BigInt(10);  // 20% buffer
+  tx.maxFeePerGas = feeData.maxFeePerGas;
+  tx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
+  tx.nonce = await provider.getTransactionCount(wallet.address);
+  tx.chainId = (await provider.getNetwork()).chainId;
+  
+  // Sign and send
+  const signedTx = await connectedWallet.signTransaction(tx);
+  const txResponse = await provider.broadcastTransaction(signedTx);
+  
+  return txResponse.hash;
+}
+```
+
+### 4.2 Sign ERC-20 Token Transfer
+
+```typescript
+async function sendToken(
+  wallet: ethers.Wallet,
+  tokenAddress: string,
+  to: string,
+  amount: string,
+  decimals = 18
+): Promise<string> {
+  const provider = new ethers.JsonRpcProvider(RPC_URL);
+  const connectedWallet = wallet.connect(provider);
+  
+  // ERC-20 interface
+  const erc20Interface = new ethers.Interface([
+    'function transfer(address to, uint256 amount) returns (bool)',
+  ]);
+  
+  const amountWei = ethers.parseUnits(amount, decimals);
+  const data = erc20Interface.encodeFunctionData('transfer', [to, amountWei]);
+  
+  const tx = await connectedWallet.sendTransaction({
+    to: tokenAddress,
+    data,
+  });
+  
+  return tx.hash;
+}
+```
+
+---
+
+## Part 5: Balance & Transaction History
+
+### 5.1 Fetch Balances
+
+```typescript
+interface TokenBalance {
+  symbol: string;
+  name: string;
+  address: string;
+  balance: string;
+  decimals: number;
+  usdValue?: number;
+}
+
+async function getBalances(address: string, chainId: number): Promise<TokenBalance[]> {
+  const provider = new ethers.JsonRpcProvider(getRpcUrl(chainId));
+  
+  // Native balance
+  const nativeBalance = await provider.getBalance(address);
+  const balances: TokenBalance[] = [{
+    symbol: 'ETH',
+    name: 'Ethereum',
+    address: '0x0000000000000000000000000000000000000000',
+    balance: ethers.formatEther(nativeBalance),
+    decimals: 18,
+  }];
+  
+  // Token balances (using an indexer API like Alchemy)
+  const tokenBalances = await fetchTokenBalances(address, chainId);
+  balances.push(...tokenBalances);
+  
+  // Get USD prices
+  const prices = await fetchPrices(balances.map(b => b.address));
+  
+  return balances.map(b => ({
+    ...b,
+    usdValue: parseFloat(b.balance) * (prices[b.address] || 0),
+  }));
+}
+```
+
+### 5.2 Transaction History
+
+```typescript
+interface TxHistoryItem {
+  hash: string;
+  from: string;
+  to: string;
+  value: string;
+  timestamp: number;
+  status: 'confirmed' | 'pending' | 'failed';
+  type: 'send' | 'receive' | 'swap' | 'contract';
+}
+
+async function getTransactionHistory(
+  address: string,
+  chainId: number,
+  page = 1
+): Promise<TxHistoryItem[]> {
+  // Use blockchain indexer (Etherscan, Alchemy, etc.)
+  const response = await fetch(
+    `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&page=${page}&offset=20&sort=desc&apikey=${API_KEY}`
+  );
+  
+  const data = await response.json();
+  
+  return data.result.map((tx: any) => ({
+    hash: tx.hash,
+    from: tx.from,
+    to: tx.to,
+    value: ethers.formatEther(tx.value),
+    timestamp: parseInt(tx.timeStamp) * 1000,
+    status: tx.isError === '0' ? 'confirmed' : 'failed',
+    type: tx.from.toLowerCase() === address.toLowerCase() ? 'send' : 'receive',
+  }));
+}
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Never store private keys in plain text—always encrypt
-- ✅ Use hardware security modules (Secure Enclave/TEE) when available
-- ✅ Implement proper backup and recovery flows
-- ✅ Show clear transaction details before signing
-- ✅ Support hardware wallets (Ledger, Trezor) for enhanced security
+- ✅ **Never Log Private Keys**: Mask in logs.
+- ✅ **Use Biometric Auth**: For signing.
+- ✅ **Validate Addresses**: Before sending.
 
 ### ❌ Avoid This
 
-- ❌ Never transmit private keys over the network
-- ❌ Don't log mnemonic phrases or private keys
-- ❌ Don't skip transaction simulation before signing
-- ❌ Never auto-sign transactions without user confirmation
-- ❌ Don't store mnemonic in clipboard for extended periods
+- ❌ **Store Plain Text Keys**: Always encrypt.
+- ❌ **Skip Gas Estimation**: Transactions may fail.
+- ❌ **Ignore Chain ID**: Wrong chain = lost funds.
 
-## Common Pitfalls
-
-**Problem:** Transaction fails with "nonce too low"
-**Solution:** Track nonces locally and sync with chain. Use pending nonce for queued transactions.
-
-**Problem:** WalletConnect session disconnects
-**Solution:** Implement session persistence and auto-reconnection on app restart.
+---
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Mobile app development
-- `@decentralized-finance-specialist` - DeFi integration
-- `@senior-web3-developer` - Blockchain integration
-- `@web3-smart-contract-auditor` - Security considerations
-- `@senior-cybersecurity-engineer` - Security best practices
+- `@senior-web3-developer` - Web3 integration
+- `@decentralized-finance-specialist` - DeFi
+- `@react-native-developer` - Mobile wallet

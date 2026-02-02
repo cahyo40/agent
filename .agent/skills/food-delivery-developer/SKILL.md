@@ -7,265 +7,444 @@ description: "Expert food delivery application development including restaurant 
 
 ## Overview
 
-Build food delivery platforms including restaurant management, real-time order tracking, driver dispatch, and delivery logistics optimization.
+This skill transforms you into a **Food Delivery Expert**. You will master **Restaurant Onboarding**, **Order Management**, **Real-Time Tracking**, **Driver Assignment**, and **Delivery Logistics** for building production-ready food delivery platforms.
 
 ## When to Use This Skill
 
 - Use when building food delivery apps
-- Use when order management needed
-- Use when delivery tracking required
-- Use when restaurant systems
+- Use when implementing order tracking
+- Use when creating driver assignment systems
+- Use when building restaurant dashboards
+- Use when handling delivery logistics
 
-## How It Works
+---
 
-### Step 1: Food Delivery Architecture
+## Part 1: Food Delivery Architecture
+
+### 1.1 System Components
 
 ```
-FOOD DELIVERY PLATFORM
-├── CUSTOMER APP
-│   ├── Restaurant discovery
-│   ├── Menu browsing
-│   ├── Cart & checkout
-│   ├── Order tracking
-│   └── Ratings & reviews
-│
-├── RESTAURANT APP
-│   ├── Menu management
-│   ├── Order management
-│   ├── Availability toggle
-│   ├── Preparation time
-│   └── Analytics
-│
-├── DRIVER APP
-│   ├── Order acceptance
-│   ├── Navigation
-│   ├── Status updates
-│   ├── Earnings tracking
-│   └── Availability toggle
-│
-├── BACKEND SERVICES
-│   ├── Order orchestration
-│   ├── Driver dispatch
-│   ├── Payment processing
-│   ├── Notifications
-│   └── Analytics
-│
-└── ADMIN DASHBOARD
-    ├── Restaurant onboarding
-    ├── Driver management
-    ├── Commission settings
-    └── Reports
+┌─────────────────────────────────────────────────────────────┐
+│                   Food Delivery Platform                     │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Customer   │ Restaurant  │ Driver      │ Admin              │
+│ App        │ Dashboard   │ App         │ Panel              │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Order Management System                        │
+├─────────────────────────────────────────────────────────────┤
+│              Logistics & Driver Assignment                   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Step 2: Data Models
+### 1.2 Order Flow
+
+```
+Customer Orders → Restaurant Accepts → Driver Assigned → Picked Up → Delivered
+                        ↓
+                 Kitchen Prepares
+```
+
+---
+
+## Part 2: Database Schema
+
+### 2.1 Core Tables
+
+```sql
+-- Restaurants
+CREATE TABLE restaurants (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    logo_url VARCHAR(500),
+    cover_image_url VARCHAR(500),
+    address TEXT,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    location GEOGRAPHY(POINT),
+    phone VARCHAR(20),
+    cuisine_types VARCHAR(50)[],
+    price_range INTEGER,  -- 1-4 ($-$$$$)
+    rating DECIMAL(2, 1) DEFAULT 0,
+    review_count INTEGER DEFAULT 0,
+    min_order_amount DECIMAL(10, 2),
+    delivery_fee DECIMAL(10, 2),
+    delivery_radius_km DECIMAL(5, 2),
+    avg_prep_time_minutes INTEGER,
+    is_active BOOLEAN DEFAULT TRUE,
+    opens_at TIME,
+    closes_at TIME,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Menu Items
+CREATE TABLE menu_items (
+    id UUID PRIMARY KEY,
+    restaurant_id UUID REFERENCES restaurants(id),
+    category_id UUID REFERENCES menu_categories(id),
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    image_url VARCHAR(500),
+    is_available BOOLEAN DEFAULT TRUE,
+    is_popular BOOLEAN DEFAULT FALSE,
+    prep_time_minutes INTEGER,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Drivers
+CREATE TABLE drivers (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    vehicle_type VARCHAR(50),  -- 'motorcycle', 'car', 'bicycle'
+    vehicle_number VARCHAR(20),
+    license_number VARCHAR(50),
+    phone VARCHAR(20),
+    status VARCHAR(50) DEFAULT 'offline',  -- 'offline', 'online', 'busy'
+    current_latitude DECIMAL(10, 8),
+    current_longitude DECIMAL(11, 8),
+    last_location_update TIMESTAMPTZ,
+    rating DECIMAL(2, 1) DEFAULT 5.0,
+    total_deliveries INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Orders
+CREATE TABLE orders (
+    id UUID PRIMARY KEY,
+    order_number VARCHAR(20) UNIQUE,
+    customer_id UUID REFERENCES users(id),
+    restaurant_id UUID REFERENCES restaurants(id),
+    driver_id UUID REFERENCES drivers(id),
+    
+    -- Delivery address
+    delivery_address TEXT,
+    delivery_latitude DECIMAL(10, 8),
+    delivery_longitude DECIMAL(11, 8),
+    delivery_instructions TEXT,
+    
+    -- Status
+    status VARCHAR(50) DEFAULT 'pending',  -- 'pending', 'confirmed', 'preparing', 'ready', 'picked_up', 'delivered', 'cancelled'
+    
+    -- Amounts
+    subtotal DECIMAL(10, 2),
+    delivery_fee DECIMAL(10, 2),
+    service_fee DECIMAL(10, 2),
+    tip DECIMAL(10, 2) DEFAULT 0,
+    discount DECIMAL(10, 2) DEFAULT 0,
+    total DECIMAL(10, 2),
+    
+    -- Timestamps
+    placed_at TIMESTAMPTZ DEFAULT NOW(),
+    confirmed_at TIMESTAMPTZ,
+    preparing_at TIMESTAMPTZ,
+    ready_at TIMESTAMPTZ,
+    picked_up_at TIMESTAMPTZ,
+    delivered_at TIMESTAMPTZ,
+    estimated_delivery_at TIMESTAMPTZ
+);
+
+-- Order Items
+CREATE TABLE order_items (
+    id UUID PRIMARY KEY,
+    order_id UUID REFERENCES orders(id),
+    menu_item_id UUID REFERENCES menu_items(id),
+    quantity INTEGER,
+    unit_price DECIMAL(10, 2),
+    modifiers JSONB,
+    special_instructions TEXT
+);
+```
+
+---
+
+## Part 3: Order Management
+
+### 3.1 Place Order
 
 ```typescript
-// Restaurant
-interface Restaurant {
-  id: string;
-  name: string;
-  description: string;
-  cuisine: string[];
-  location: GeoPoint;
-  address: Address;
-  rating: number;
-  ratingCount: number;
-  deliveryTime: { min: number; max: number };
-  deliveryFee: number;
-  minOrder: number;
-  isOpen: boolean;
-  openingHours: OperatingHours[];
-  menu: MenuCategory[];
-}
-
-// Menu
-interface MenuItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image?: string;
-  category: string;
-  isAvailable: boolean;
-  options?: MenuOption[];
-  addons?: MenuAddon[];
-}
-
-// Order
-interface Order {
-  id: string;
-  customerId: string;
-  restaurantId: string;
-  driverId?: string;
+async function placeOrder(
+  customerId: string,
+  restaurantId: string,
+  items: OrderItem[],
+  deliveryAddress: DeliveryAddress
+): Promise<Order> {
+  const restaurant = await db.restaurants.findUnique({ where: { id: restaurantId } });
   
-  items: OrderItem[];
-  subtotal: number;
-  deliveryFee: number;
-  serviceFee: number;
-  discount: number;
-  total: number;
+  // Check if restaurant is open
+  if (!isRestaurantOpen(restaurant)) {
+    throw new Error('Restaurant is closed');
+  }
   
-  deliveryAddress: Address;
-  deliveryInstructions?: string;
+  // Check delivery distance
+  const distance = calculateDistance(
+    { lat: restaurant.latitude, lng: restaurant.longitude },
+    { lat: deliveryAddress.latitude, lng: deliveryAddress.longitude }
+  );
   
-  status: OrderStatus;
-  statusHistory: StatusUpdate[];
+  if (distance > restaurant.deliveryRadiusKm) {
+    throw new Error('Address outside delivery area');
+  }
   
-  estimatedDelivery: Date;
-  actualDelivery?: Date;
+  // Calculate totals
+  let subtotal = 0;
+  for (const item of items) {
+    const menuItem = await db.menuItems.findUnique({ where: { id: item.menuItemId } });
+    const modifierTotal = item.modifiers?.reduce((sum, m) => sum + m.price, 0) || 0;
+    subtotal += (menuItem.price + modifierTotal) * item.quantity;
+  }
   
-  paymentMethod: PaymentMethod;
-  paymentStatus: 'pending' | 'paid' | 'refunded';
+  if (subtotal < restaurant.minOrderAmount) {
+    throw new Error(`Minimum order is ${restaurant.minOrderAmount}`);
+  }
   
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-type OrderStatus = 
-  | 'pending'
-  | 'confirmed'
-  | 'preparing'
-  | 'ready_for_pickup'
-  | 'picked_up'
-  | 'on_the_way'
-  | 'delivered'
-  | 'cancelled';
-```
-
-### Step 3: Real-time Order Tracking
-
-```typescript
-// WebSocket for real-time updates
-import { Server } from 'socket.io';
-
-const io = new Server(server);
-
-// Customer tracking
-io.on('connection', (socket) => {
-  socket.on('track_order', (orderId: string) => {
-    socket.join(`order:${orderId}`);
+  const deliveryFee = restaurant.deliveryFee;
+  const serviceFee = subtotal * 0.05;  // 5% service fee
+  const total = subtotal + deliveryFee + serviceFee;
+  
+  // Estimate delivery time
+  const estimatedMinutes = restaurant.avgPrepTimeMinutes + getDeliveryTimeEstimate(distance);
+  
+  const order = await db.orders.create({
+    data: {
+      orderNumber: generateOrderNumber(),
+      customerId,
+      restaurantId,
+      deliveryAddress: deliveryAddress.address,
+      deliveryLatitude: deliveryAddress.latitude,
+      deliveryLongitude: deliveryAddress.longitude,
+      deliveryInstructions: deliveryAddress.instructions,
+      status: 'pending',
+      subtotal,
+      deliveryFee,
+      serviceFee,
+      total,
+      estimatedDeliveryAt: addMinutes(new Date(), estimatedMinutes),
+    },
   });
-});
+  
+  // Create order items
+  for (const item of items) {
+    await db.orderItems.create({
+      data: {
+        orderId: order.id,
+        menuItemId: item.menuItemId,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        modifiers: item.modifiers,
+        specialInstructions: item.specialInstructions,
+      },
+    });
+  }
+  
+  // Notify restaurant
+  await notifyRestaurant(restaurantId, 'new_order', order);
+  
+  return order;
+}
+```
 
-// Update order status
-async function updateOrderStatus(
-  orderId: string, 
-  status: OrderStatus,
-  driverLocation?: GeoPoint
-) {
-  await db.orders.update(orderId, { 
-    status,
-    statusHistory: db.arrayUnion({
+### 3.2 Order Status Updates
+
+```typescript
+async function updateOrderStatus(orderId: string, status: OrderStatus) {
+  const order = await db.orders.findUnique({ where: { id: orderId } });
+  
+  const timestamps: Record<string, string> = {
+    confirmed: 'confirmedAt',
+    preparing: 'preparingAt',
+    ready: 'readyAt',
+    picked_up: 'pickedUpAt',
+    delivered: 'deliveredAt',
+  };
+  
+  await db.orders.update({
+    where: { id: orderId },
+    data: {
       status,
-      timestamp: new Date(),
-      location: driverLocation
-    })
+      [timestamps[status]]: new Date(),
+    },
   });
   
-  // Notify customer
-  io.to(`order:${orderId}`).emit('order_update', {
-    orderId,
-    status,
-    driverLocation,
-    estimatedArrival: calculateETA(orderId)
-  });
+  // Notify relevant parties
+  await notifyCustomer(order.customerId, 'order_update', { orderId, status });
   
-  // Push notification
-  await sendPushNotification(order.customerId, {
-    title: getStatusTitle(status),
-    body: getStatusMessage(status)
-  });
+  if (status === 'ready') {
+    await notifyDriver(order.driverId, 'order_ready', { orderId });
+  }
+  
+  // Real-time broadcast
+  broadcastOrderUpdate(orderId, status);
 }
-
-// Driver location streaming
-socket.on('driver_location', async ({ orderId, location }) => {
-  await cache.set(`driver:${orderId}:location`, location, 30);
-  io.to(`order:${orderId}`).emit('driver_location', location);
-});
 ```
 
-### Step 4: Driver Dispatch & Optimization
+---
+
+## Part 4: Driver Assignment
+
+### 4.1 Find Nearest Available Driver
 
 ```typescript
-// Find optimal driver
 async function assignDriver(orderId: string): Promise<Driver | null> {
-  const order = await db.orders.findById(orderId);
-  const restaurant = await db.restaurants.findById(order.restaurantId);
-  
-  // Find available drivers near restaurant
-  const nearbyDrivers = await db.drivers.find({
-    isAvailable: true,
-    location: {
-      $near: {
-        $geometry: restaurant.location,
-        $maxDistance: 5000 // 5km
-      }
-    }
+  const order = await db.orders.findUnique({
+    where: { id: orderId },
+    include: { restaurant: true },
   });
   
-  // Score drivers
-  const scoredDrivers = nearbyDrivers.map(driver => ({
-    driver,
-    score: calculateDriverScore(driver, restaurant, order)
-  }));
+  // Find online drivers within radius
+  const nearbyDrivers = await db.$queryRaw`
+    SELECT 
+      d.*,
+      ST_Distance(
+        ST_SetSRID(ST_MakePoint(d.current_longitude, d.current_latitude), 4326)::geography,
+        ST_SetSRID(ST_MakePoint(${order.restaurant.longitude}, ${order.restaurant.latitude}), 4326)::geography
+      ) / 1000 as distance_km
+    FROM drivers d
+    WHERE 
+      d.status = 'online'
+      AND d.last_location_update > NOW() - INTERVAL '5 minutes'
+      AND ST_DWithin(
+        ST_SetSRID(ST_MakePoint(d.current_longitude, d.current_latitude), 4326)::geography,
+        ST_SetSRID(ST_MakePoint(${order.restaurant.longitude}, ${order.restaurant.latitude}), 4326)::geography,
+        5000  -- 5km radius
+      )
+    ORDER BY distance_km
+    LIMIT 10
+  `;
   
-  // Sort by score and assign
-  const bestDriver = scoredDrivers.sort((a, b) => b.score - a.score)[0];
-  
-  if (bestDriver) {
-    await assignOrderToDriver(orderId, bestDriver.driver.id);
-    return bestDriver.driver;
+  // Try to assign to nearest driver
+  for (const driver of nearbyDrivers) {
+    const accepted = await offerToDriver(driver.id, orderId);
+    if (accepted) {
+      await db.orders.update({
+        where: { id: orderId },
+        data: { driverId: driver.id },
+      });
+      
+      await db.drivers.update({
+        where: { id: driver.id },
+        data: { status: 'busy' },
+      });
+      
+      return driver;
+    }
   }
   
   return null;
 }
 
-function calculateDriverScore(driver: Driver, restaurant: Restaurant, order: Order) {
-  const distance = calculateDistance(driver.location, restaurant.location);
-  const rating = driver.rating;
-  const completedOrders = driver.completedOrdersToday;
-  const acceptance = driver.acceptanceRate;
+async function offerToDriver(driverId: string, orderId: string): Promise<boolean> {
+  // Send push notification with timeout
+  await sendPushToDriver(driverId, {
+    type: 'order_offer',
+    orderId,
+    timeout: 30,  // 30 seconds to respond
+  });
   
-  // Weighted scoring
-  return (
-    (1 / distance) * 0.4 +      // Closer is better
-    rating * 0.3 +               // Higher rating better
-    (1 / (completedOrders + 1)) * 0.2 + // Distribute fairly
-    acceptance * 0.1             // Reliable drivers
-  );
-}
-
-// ETA calculation
-function calculateETA(order: Order, driver: Driver): Date {
-  const prepTime = order.restaurant.avgPrepTime;
-  const pickupDistance = calculateDistance(driver.location, order.restaurant.location);
-  const deliveryDistance = calculateDistance(order.restaurant.location, order.deliveryAddress);
-  
-  const pickupTime = pickupDistance / AVERAGE_SPEED;
-  const deliveryTime = deliveryDistance / AVERAGE_SPEED;
-  
-  return new Date(Date.now() + (prepTime + pickupTime + deliveryTime) * 60000);
+  // Wait for response (Redis pub/sub or polling)
+  return await waitForDriverResponse(driverId, orderId, 30000);
 }
 ```
 
-## Best Practices
+---
+
+## Part 5: Real-Time Tracking
+
+### 5.1 Driver Location Updates
+
+```typescript
+// Driver app sends location every 5 seconds
+async function updateDriverLocation(driverId: string, lat: number, lng: number) {
+  await db.drivers.update({
+    where: { id: driverId },
+    data: {
+      currentLatitude: lat,
+      currentLongitude: lng,
+      lastLocationUpdate: new Date(),
+    },
+  });
+  
+  // Get active order for this driver
+  const activeOrder = await db.orders.findFirst({
+    where: { driverId, status: { in: ['picked_up'] } },
+  });
+  
+  if (activeOrder) {
+    // Broadcast to customer
+    broadcastToCustomer(activeOrder.customerId, {
+      type: 'driver_location',
+      orderId: activeOrder.id,
+      location: { lat, lng },
+      eta: await calculateETA(lat, lng, activeOrder.deliveryLatitude, activeOrder.deliveryLongitude),
+    });
+  }
+}
+```
+
+### 5.2 Customer Tracking View
+
+```typescript
+function OrderTrackingMap({ orderId }: { orderId: string }) {
+  const [driverLocation, setDriverLocation] = useState<Location | null>(null);
+  const [order, setOrder] = useState<Order | null>(null);
+  
+  useEffect(() => {
+    const ws = new WebSocket(`wss://api.example.com/track/${orderId}`);
+    
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      if (data.type === 'driver_location') {
+        setDriverLocation(data.location);
+      }
+      
+      if (data.type === 'order_update') {
+        setOrder(prev => ({ ...prev, status: data.status }));
+      }
+    };
+    
+    return () => ws.close();
+  }, [orderId]);
+  
+  return (
+    <Map center={order?.deliveryLocation}>
+      {order?.restaurant && (
+        <Marker position={order.restaurant.location} icon="restaurant" />
+      )}
+      {order?.deliveryLocation && (
+        <Marker position={order.deliveryLocation} icon="home" />
+      )}
+      {driverLocation && (
+        <Marker position={driverLocation} icon="driver" />
+      )}
+      {driverLocation && order?.deliveryLocation && (
+        <Route from={driverLocation} to={order.deliveryLocation} />
+      )}
+    </Map>
+  );
+}
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use WebSockets for tracking
-- ✅ Cache restaurant menus
-- ✅ Optimize driver dispatch
-- ✅ Handle order cancellations
-- ✅ Implement surge pricing
+- ✅ **Real-Time Updates**: WebSocket for tracking.
+- ✅ **Timeout Handling**: Auto-cancel if not accepted.
+- ✅ **Offline Queue**: Queue driver location updates.
 
 ### ❌ Avoid This
 
-- ❌ Don't poll for updates
-- ❌ Don't skip order validation
-- ❌ Don't ignore payment failures
-- ❌ Don't forget offline mode
+- ❌ **Polling for Location**: Use WebSocket.
+- ❌ **Ignoring Delivery Radius**: Always validate.
+- ❌ **Skip Driver Verification**: Check license, vehicle.
+
+---
 
 ## Related Skills
 
-- `@gis-specialist` - Location services
-- `@senior-backend-developer` - Backend systems
+- `@ride-hailing-developer` - Driver dispatch patterns
+- `@geolocation-specialist` - Maps and routing
+- `@restaurant-system-developer` - Restaurant operations

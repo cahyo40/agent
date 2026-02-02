@@ -7,271 +7,411 @@ description: "Expert real-time collaboration systems including CRDT, operational
 
 ## Overview
 
-Skill ini menjadikan AI Agent sebagai spesialis pengembangan sistem kolaborasi real-time. Agent akan mampu membangun collaborative editing, presence indicators, conflict resolution, dan real-time sync seperti Google Docs.
+This skill transforms you into a **Real-Time Collaboration Expert**. You will master **CRDTs**, **Operational Transformation**, **Presence Indicators**, **Conflict Resolution**, and **Collaborative Editing** for building production-ready collaboration features.
 
 ## When to Use This Skill
 
-- Use when building collaborative editing features
+- Use when building collaborative editors
 - Use when implementing real-time sync
-- Use when designing multiplayer/shared state
-- Use when handling concurrent edits
+- Use when creating multiplayer features
+- Use when handling offline-first sync
+- Use when building presence indicators
 
-## Core Concepts
+---
 
-### System Components
+## Part 1: Collaboration Fundamentals
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│           REAL-TIME COLLABORATION SYSTEM                │
-├─────────────────────────────────────────────────────────┤
-│ 📝 Collaborative Edit  - Multi-user simultaneous edits  │
-│ 👥 Presence            - Who's online, cursor positions │
-│ 🔄 Sync Engine         - State synchronization          │
-│ ⚡ Conflict Resolution - Merge concurrent changes       │
-│ 📜 Version History     - Undo, history, snapshots       │
-│ 💬 Comments/Threads    - Contextual discussions         │
-│ 🔒 Permissions         - View, edit, comment access     │
-└─────────────────────────────────────────────────────────┘
-```
+### 1.1 Sync Strategies
 
-### Synchronization Approaches
+| Strategy | Description | Use Case |
+|----------|-------------|----------|
+| **Last Write Wins** | Simple, lossy | Low contention |
+| **Operational Transform** | Transform operations | Google Docs |
+| **CRDT** | Conflict-free merge | Figma, Linear |
+| **Event Sourcing** | Replay events | Audit-heavy apps |
 
-```text
-APPROACH COMPARISON:
-────────────────────
+### 1.2 Key Concepts
 
-1. OPERATIONAL TRANSFORMATION (OT)
-   ├── Used by: Google Docs
-   ├── How: Transform operations against concurrent ops
-   ├── Pros: Mature, proven at scale
-   └── Cons: Complex to implement correctly
+| Concept | Description |
+|---------|-------------|
+| **CRDT** | Conflict-free Replicated Data Type |
+| **OT** | Operational Transformation |
+| **Presence** | Who's online/where |
+| **Cursor** | User's position in doc |
+| **Version Vector** | Track causality |
 
-2. CONFLICT-FREE REPLICATED DATA TYPES (CRDT)
-   ├── Used by: Figma, Notion
-   ├── How: Data structures that auto-merge
-   ├── Pros: Decentralized, offline-first friendly
-   └── Cons: Memory overhead, eventual consistency
+---
 
-3. LAST-WRITE-WINS (LWW)
-   ├── Used by: Simple apps
-   ├── How: Latest timestamp wins
-   ├── Pros: Simple
-   └── Cons: Data loss on conflicts
+## Part 2: Presence System
 
-WHEN TO USE WHAT:
-─────────────────
-Text editing → OT or CRDT (Y.js, Automerge)
-Canvas/Design → CRDT
-Simple forms → LWW with conflict UI
-Lists/Todos → CRDT (add-wins set)
-```
+### 2.1 WebSocket Presence
 
-### Operational Transformation
-
-```text
-OPERATIONAL TRANSFORMATION (OT):
-────────────────────────────────
-
-Initial: "Hello"
-User A: Insert 'X' at position 1 → "HXello"
-User B: Delete char at position 4 → "Hell"
-
-WITHOUT OT (conflict):
-- A applies B's op: Delete pos 4 → "HXell" ✗
-  
-WITH OT (transform):
-- Transform B's op: Delete pos 5 (shifted +1)
-- A applies: Delete pos 5 → "HXell" → "HXelo" ✗
-
-CORRECT OT:
-- A: Insert 'X' at 1
-- B: Delete at 4
-- Transform(A, B): B becomes Delete at 5
-- Result: "HXelo" ✓
-
-OPERATIONS:
-─────────────
-insert(position, characters)
-delete(position, count)
-retain(count)  // skip characters
-```
-
-### CRDT Types
-
-```text
-COMMON CRDT TYPES:
-──────────────────
-
-G-Counter (Grow-only counter)
-├── Each node has own counter
-├── Merge: Take max of each node's value
-└── Use: View counts, likes
-
-PN-Counter (Positive-Negative)
-├── Two G-Counters (P and N)
-├── Value = P - N
-└── Use: Stock levels, votes
-
-LWW-Register (Last-Writer-Wins)
-├── Value + timestamp
-├── Merge: Highest timestamp wins
-└── Use: Simple fields
-
-OR-Set (Observed-Remove Set)
-├── Add and remove operations
-├── Concurrent add + remove → add wins
-└── Use: Tags, collaborators
-
-Sequence CRDT
-├── For ordered lists/text
-├── Types: RGA, LSEQ, Logoot
-└── Use: Text editors, lists
-```
-
-### Presence System
-
-```text
-PRESENCE ARCHITECTURE:
-──────────────────────
-
-┌───────────┐     ┌──────────────┐     ┌───────────┐
-│  Client A │────►│   Presence   │◄────│  Client B │
-│           │     │    Server    │     │           │
-│ cursor:   │     │              │     │ cursor:   │
-│ {x, y}    │     │ Broadcast    │     │ {x, y}    │
-│ selection │     │ to all       │     │ selection │
-└───────────┘     └──────────────┘     └───────────┘
-
-PRESENCE DATA:
-{
-  "user_id": "user_123",
-  "name": "John",
-  "color": "#FF5733",
-  "cursor": {
-    "position": 42,
-    "anchor": 42,
-    "head": 50
-  },
-  "last_active": 1706860000,
-  "status": "editing"
+```typescript
+interface UserPresence {
+  oderId: string;
+  name: string;
+  color: string;
+  cursor?: { x: number; y: number };
+  selection?: { start: number; end: number };
+  lastActive: number;
 }
 
-EVENTS:
-├── user.joined
-├── user.left
-├── cursor.moved
-├── selection.changed
-└── user.idle
+// Server-side presence management
+const roomPresence = new Map<string, Map<string, UserPresence>>();
+
+wss.on('connection', (ws, req) => {
+  const roomId = req.url.split('/')[2];
+  const userId = getUserIdFromToken(req);
+  
+  // Add to room
+  if (!roomPresence.has(roomId)) {
+    roomPresence.set(roomId, new Map());
+  }
+  
+  const room = roomPresence.get(roomId)!;
+  
+  ws.on('message', (data) => {
+    const msg = JSON.parse(data.toString());
+    
+    if (msg.type === 'presence') {
+      room.set(userId, {
+        userId,
+        name: msg.name,
+        color: msg.color,
+        cursor: msg.cursor,
+        selection: msg.selection,
+        lastActive: Date.now(),
+      });
+      
+      // Broadcast to others
+      broadcastToRoom(roomId, {
+        type: 'presence_update',
+        users: Array.from(room.values()),
+      }, userId);
+    }
+  });
+  
+  ws.on('close', () => {
+    room.delete(userId);
+    broadcastToRoom(roomId, {
+      type: 'user_left',
+      userId,
+    });
+  });
+});
 ```
 
-### Sync Protocol
+### 2.2 React Presence Hook
 
-```text
-CLIENT-SERVER SYNC:
-───────────────────
-
-1. Client sends local changes
-   {
-     "document_id": "doc_123",
-     "client_id": "client_A",
-     "version": 5,
-     "operations": [...]
-   }
-
-2. Server validates & transforms
-   - Check client version matches
-   - Transform against concurrent ops
-   - Apply to server state
-   - Increment version
-
-3. Server broadcasts to others
-   {
-     "version": 6,
-     "operations": [...transformed...],
-     "origin": "client_A"
-   }
-
-4. Clients apply & acknowledge
-   - Transform local pending ops
-   - Apply received ops
-   - Update local version
-
-OFFLINE SUPPORT:
-────────────────
-1. Queue local operations
-2. On reconnect, send all pending
-3. Receive & transform against missed ops
-4. Resolve to consistent state
+```typescript
+function usePresence(roomId: string) {
+  const [users, setUsers] = useState<UserPresence[]>([]);
+  const ws = useWebSocket(`wss://api.example.com/rooms/${roomId}`);
+  
+  useEffect(() => {
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      
+      if (msg.type === 'presence_update') {
+        setUsers(msg.users);
+      }
+      
+      if (msg.type === 'user_left') {
+        setUsers(prev => prev.filter(u => u.userId !== msg.userId));
+      }
+    };
+  }, [ws]);
+  
+  const updatePresence = useCallback((cursor: { x: number; y: number }) => {
+    ws.send(JSON.stringify({
+      type: 'presence',
+      cursor,
+      name: currentUser.name,
+      color: currentUser.color,
+    }));
+  }, [ws]);
+  
+  return { users, updatePresence };
+}
 ```
 
-### Data Schema
+---
 
-```text
-┌──────────────────┐     ┌──────────────────┐
-│    DOCUMENT      │     │    OPERATION     │
-├──────────────────┤     ├──────────────────┤
-│ id               │────►│ id               │
-│ content          │     │ document_id      │
-│ version          │     │ version          │
-│ created_by       │     │ user_id          │
-│ created_at       │     │ type             │
-│ updated_at       │     │ data (JSON)      │
-└──────────────────┘     │ created_at       │
-                         └──────────────────┘
+## Part 3: CRDTs
 
-┌──────────────────┐
-│    SNAPSHOT      │
-├──────────────────┤
-│ id               │
-│ document_id      │
-│ version          │
-│ content          │
-│ created_at       │
-└──────────────────┘
+### 3.1 G-Counter (Grow-Only Counter)
+
+```typescript
+class GCounter {
+  private counts: Map<string, number> = new Map();
+  
+  constructor(private nodeId: string) {}
+  
+  increment(amount = 1) {
+    const current = this.counts.get(this.nodeId) || 0;
+    this.counts.set(this.nodeId, current + amount);
+  }
+  
+  value(): number {
+    return Array.from(this.counts.values()).reduce((sum, c) => sum + c, 0);
+  }
+  
+  merge(other: GCounter) {
+    for (const [nodeId, count] of other.counts) {
+      const current = this.counts.get(nodeId) || 0;
+      this.counts.set(nodeId, Math.max(current, count));
+    }
+  }
+  
+  state(): Record<string, number> {
+    return Object.fromEntries(this.counts);
+  }
+}
 ```
 
-### API/WebSocket Design
+### 3.2 LWW-Register (Last-Writer-Wins)
 
-```text
-WEBSOCKET EVENTS:
-─────────────────
-
-Client → Server:
-├── document.join { document_id }
-├── document.leave { document_id }
-├── operation.send { operations[] }
-├── cursor.update { position, selection }
-└── presence.update { status }
-
-Server → Client:
-├── document.state { content, version, users[] }
-├── operation.received { operations[], origin }
-├── user.joined { user }
-├── user.left { user_id }
-├── cursor.updated { user_id, cursor }
-└── error { code, message }
+```typescript
+class LWWRegister<T> {
+  private value: T | null = null;
+  private timestamp = 0;
+  private nodeId: string;
+  
+  constructor(nodeId: string) {
+    this.nodeId = nodeId;
+  }
+  
+  set(value: T, ts = Date.now()) {
+    if (ts > this.timestamp) {
+      this.value = value;
+      this.timestamp = ts;
+    }
+  }
+  
+  get(): T | null {
+    return this.value;
+  }
+  
+  merge(other: LWWRegister<T>) {
+    if (other.timestamp > this.timestamp) {
+      this.value = other.value;
+      this.timestamp = other.timestamp;
+    }
+  }
+}
 ```
 
-## Best Practices
+### 3.3 Using Yjs (Production CRDT Library)
+
+```typescript
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+
+// Create document
+const ydoc = new Y.Doc();
+
+// Connect to server
+const provider = new WebsocketProvider(
+  'wss://y-websocket.example.com',
+  'room-id',
+  ydoc
+);
+
+// Shared types
+const ytext = ydoc.getText('content');
+const ymap = ydoc.getMap('metadata');
+const yarray = ydoc.getArray('items');
+
+// Observe changes
+ytext.observe((event) => {
+  console.log('Text changed:', ytext.toString());
+});
+
+// Make changes
+ytext.insert(0, 'Hello');
+ymap.set('title', 'My Document');
+yarray.push(['item1', 'item2']);
+
+// Awareness (presence)
+const { awareness } = provider;
+
+awareness.setLocalStateField('user', {
+  name: 'John',
+  color: '#ff0000',
+});
+
+awareness.on('change', () => {
+  const states = Array.from(awareness.getStates().values());
+  console.log('Users:', states);
+});
+```
+
+---
+
+## Part 4: Operational Transform
+
+### 4.1 Basic OT for Text
+
+```typescript
+type Operation = 
+  | { type: 'insert'; pos: number; text: string }
+  | { type: 'delete'; pos: number; length: number };
+
+function transform(op1: Operation, op2: Operation): Operation {
+  // Transform op1 against op2
+  if (op1.type === 'insert' && op2.type === 'insert') {
+    if (op1.pos <= op2.pos) {
+      return op1;
+    } else {
+      return { ...op1, pos: op1.pos + op2.text.length };
+    }
+  }
+  
+  if (op1.type === 'insert' && op2.type === 'delete') {
+    if (op1.pos <= op2.pos) {
+      return op1;
+    } else if (op1.pos >= op2.pos + op2.length) {
+      return { ...op1, pos: op1.pos - op2.length };
+    } else {
+      return { ...op1, pos: op2.pos };
+    }
+  }
+  
+  // ... more cases
+  return op1;
+}
+```
+
+### 4.2 Using Automerge
+
+```typescript
+import * as Automerge from '@automerge/automerge';
+
+// Create document
+let doc = Automerge.init<{ text: Automerge.Text }>();
+
+// Make changes
+doc = Automerge.change(doc, 'Add text', (d) => {
+  d.text = new Automerge.Text();
+  d.text.insertAt(0, 'Hello, world!');
+});
+
+// Get binary for sync
+const binary = Automerge.save(doc);
+
+// Merge with another doc
+const otherDoc = Automerge.load<{ text: Automerge.Text }>(otherBinary);
+doc = Automerge.merge(doc, otherDoc);
+
+// Get changes since version
+const changes = Automerge.getChanges(oldDoc, doc);
+```
+
+---
+
+## Part 5: Collaborative Editor
+
+### 5.1 React + Yjs + TipTap
+
+```typescript
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+
+function CollaborativeEditor({ roomId }: { roomId: string }) {
+  const ydoc = useMemo(() => new Y.Doc(), []);
+  
+  const provider = useMemo(() =>
+    new WebsocketProvider('wss://collab.example.com', roomId, ydoc),
+    [ydoc, roomId]
+  );
+  
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Collaboration.configure({ document: ydoc }),
+      CollaborationCursor.configure({
+        provider,
+        user: { name: currentUser.name, color: currentUser.color },
+      }),
+    ],
+  });
+  
+  return (
+    <div>
+      <OnlineUsers provider={provider} />
+      <EditorContent editor={editor} />
+    </div>
+  );
+}
+
+function OnlineUsers({ provider }: { provider: WebsocketProvider }) {
+  const [users, setUsers] = useState<User[]>([]);
+  
+  useEffect(() => {
+    const { awareness } = provider;
+    
+    const handleChange = () => {
+      setUsers(Array.from(awareness.getStates().values())
+        .filter(s => s.user)
+        .map(s => s.user));
+    };
+    
+    awareness.on('change', handleChange);
+    return () => awareness.off('change', handleChange);
+  }, [provider]);
+  
+  return (
+    <div className="flex gap-2">
+      {users.map(user => (
+        <div
+          key={user.name}
+          className="w-8 h-8 rounded-full"
+          style={{ backgroundColor: user.color }}
+          title={user.name}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+---
+
+## Part 6: Conflict Resolution
+
+### 6.1 Merge Strategies
+
+| Strategy | Description |
+|----------|-------------|
+| **Last Write Wins** | Latest timestamp wins |
+| **First Write Wins** | Earliest change preserved |
+| **Manual Resolution** | User chooses |
+| **Auto-Merge** | CRDT handles |
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use proven libraries (Y.js, Automerge, ShareDB)
-- ✅ Implement periodic snapshots
-- ✅ Show other users' cursors with colors
-- ✅ Handle network partitions gracefully
-- ✅ Throttle presence updates (100-200ms)
+- ✅ **Use Established Libraries**: Yjs, Automerge.
+- ✅ **Debounce Presence Updates**: Don't spam.
+- ✅ **Handle Reconnection**: Queue offline changes.
 
 ### ❌ Avoid This
 
-- ❌ Don't build OT from scratch (very complex)
-- ❌ Don't ignore offline scenarios
-- ❌ Don't broadcast every keystroke (batch)
-- ❌ Don't forget undo/redo per user
+- ❌ **Implement OT From Scratch**: Very complex.
+- ❌ **Sync Full Document**: Send deltas only.
+- ❌ **Ignore Offline Mode**: Users go offline.
+
+---
 
 ## Related Skills
 
-- `@senior-backend-developer` - WebSocket servers
-- `@senior-firebase-developer` - Realtime Database
-- `@senior-database-engineer-nosql` - State storage
-- `@queue-system-specialist` - Event streaming
+- `@queue-system-specialist` - Message queues
+- `@senior-react-developer` - React integration
+- `@senior-nodejs-developer` - WebSocket servers

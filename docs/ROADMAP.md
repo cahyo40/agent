@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.5.0  
-> **Total Skills:** 300
+> **Current Version:** v6.6.0  
+> **Total Skills:** 304
 
 ---
 
@@ -10,12 +10,27 @@
 
 ```text
 ████████████████████████████████████████ 100%
-300/300 Skills Complete ✅ (Milestone!)
+304/304 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.6.0 - BaaS & Education Expansion (Feb 2026) ✅
+
+**Goal:** 304 Skills + Enhanced BaaS + Education
+
+**New in v6.6.0:**
+
+- 🆕 `appwrite-developer` - Appwrite BaaS (cloud & Docker self-host)
+- 🆕 `library-system-developer` - Library management systems
+- 🆕 `mit-cs-professor` - CS fundamentals education (Indonesian)
+- 🆕 `yo-flutter-dev` - yo.dart generator & YoUI components
+- 📝 Enhanced `senior-firebase-developer` with multi-language examples
+- 📝 Enhanced `senior-supabase-developer` with RLS patterns
+
+---
 
 ### v6.5.0 - 300 Skills Milestone (Feb 2026) ✅
 
@@ -205,7 +220,8 @@ What this skill does and when to use it.
 | v6.2.0 | Feb 2026 | 261 | +2.3% |
 | v6.3.0 | Feb 2026 | 269 | +3% |
 | v6.4.0 | Feb 2026 | 275 | +2% |
-| **v6.5.0** | **Feb 2026** | **300** | **+9%** 🎉 |
+| v6.5.0 | Feb 2026 | 300 | +9% 🎉 |
+| **v6.6.0** | **Feb 2026** | **304** | **+1.3%** |
 
 ---
 

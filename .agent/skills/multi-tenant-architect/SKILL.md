@@ -7,229 +7,377 @@ description: "Expert multi-tenant SaaS architecture including database strategie
 
 ## Overview
 
-Skill ini menjadikan AI Agent sebagai spesialis arsitektur multi-tenant untuk aplikasi SaaS. Agent akan mampu merancang tenant isolation, database strategies, configuration management, dan scaling patterns.
+This skill transforms you into a **Multi-Tenant Architecture Expert**. You will master **Database Strategies**, **Tenant Isolation**, **Configuration Management**, **Subdomain Routing**, and **Scalability Patterns** for building production-ready multi-tenant SaaS applications.
 
 ## When to Use This Skill
 
-- Use when designing SaaS applications
-- Use when implementing tenant isolation
-- Use when choosing multi-tenant database strategies
-- Use when building white-label solutions
+- Use when designing multi-tenant SaaS
+- Use when choosing database isolation strategies
+- Use when implementing tenant routing
+- Use when building white-label platforms
+- Use when scaling multi-tenant systems
 
-## Core Concepts
+---
 
-### Multi-Tenancy Models
+## Part 1: Multi-Tenancy Fundamentals
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│           MULTI-TENANCY STRATEGIES                      │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│ 1. SHARED DATABASE + SHARED SCHEMA (Column-based)       │
-│    ┌─────────────────────────────────────────┐         │
-│    │ users: id, tenant_id, name, email       │         │
-│    │ orders: id, tenant_id, user_id, total   │         │
-│    └─────────────────────────────────────────┘         │
-│    ✓ Lowest cost  ✓ Easy migrations                    │
-│    ✗ Data isolation risk  ✗ Query complexity           │
-│                                                         │
-│ 2. SHARED DATABASE + SEPARATE SCHEMA                    │
-│    ┌─────────────────────────────────────────┐         │
-│    │ tenant_a.users, tenant_a.orders         │         │
-│    │ tenant_b.users, tenant_b.orders         │         │
-│    └─────────────────────────────────────────┘         │
-│    ✓ Better isolation  ✓ Per-tenant customization      │
-│    ✗ Schema management overhead                         │
-│                                                         │
-│ 3. SEPARATE DATABASE PER TENANT                         │
-│    ┌───────────┐  ┌───────────┐  ┌───────────┐        │
-│    │ db_acme   │  │ db_corp   │  │ db_xyz    │        │
-│    └───────────┘  └───────────┘  └───────────┘        │
-│    ✓ Full isolation  ✓ Easy backup/restore             │
-│    ✗ Higher cost  ✗ Complex connection management      │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+### 1.1 What is Multi-Tenancy?
+
+```
+Single Application → Multiple Customers (Tenants)
+                  → Shared Infrastructure
+                  → Isolated Data
 ```
 
-### Decision Matrix
+### 1.2 Isolation Strategies
 
-```text
-CHOOSING A STRATEGY:
-────────────────────
-                    │ Shared    │ Separate  │ Separate
-                    │ Schema    │ Schema    │ Database
-────────────────────┼───────────┼───────────┼──────────
-Tenant Count        │ 1000+     │ 100-1000  │ <100
-Data Sensitivity    │ Low       │ Medium    │ High
-Customization Need  │ Low       │ Medium    │ High
-Cost per Tenant     │ Lowest    │ Medium    │ Highest
-Migration Ease      │ Easiest   │ Medium    │ Hardest
-Performance         │ Shared    │ Better    │ Dedicated
-Backup Granularity  │ All       │ Schema    │ Per Tenant
-Compliance (SOC2)   │ ✗         │ ✓         │ ✓✓
+| Strategy | Isolation | Performance | Cost |
+|----------|-----------|-------------|------|
+| **Shared DB, Shared Schema** | Low | High | Low |
+| **Shared DB, Separate Schema** | Medium | Medium | Medium |
+| **Separate Database** | High | Variable | High |
+| **Hybrid** | Variable | Variable | Variable |
+
+---
+
+## Part 2: Database Strategies
+
+### 2.1 Shared Schema (Row-Level Tenancy)
+
+```sql
+-- All tables have tenant_id
+CREATE TABLE products (
+    id UUID PRIMARY KEY,
+    tenant_id UUID NOT NULL,
+    name VARCHAR(255),
+    price DECIMAL(10, 2),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Composite index for tenant queries
+CREATE INDEX idx_products_tenant ON products(tenant_id, id);
+
+-- PostgreSQL Row Level Security
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON products
+    USING (tenant_id = current_setting('app.tenant_id')::uuid);
+
+-- Set tenant context
+SET app.tenant_id = 'tenant-uuid-here';
 ```
 
-### Data Schema (Shared Schema)
+### 2.2 Separate Schema
 
-```text
-┌──────────────────┐
-│     TENANT       │
-├──────────────────┤
-│ id               │
-│ name             │
-│ subdomain        │
-│ plan_id          │
-│ settings (JSON)  │
-│ created_at       │
-│ status           │
-└──────────────────┘
-         │
-         ▼ (All tables have tenant_id FK)
-┌──────────────────┐     ┌──────────────────┐
-│      USER        │     │     RESOURCE     │
-├──────────────────┤     ├──────────────────┤
-│ id               │     │ id               │
-│ tenant_id ◄──────│     │ tenant_id ◄──────│
-│ email            │     │ name             │
-│ role             │     │ data             │
-└──────────────────┘     └──────────────────┘
+```sql
+-- Create schema per tenant
+CREATE SCHEMA tenant_acme;
+CREATE SCHEMA tenant_globex;
 
-CRITICAL: Every query MUST filter by tenant_id!
+-- Tables in each schema
+CREATE TABLE tenant_acme.products (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255),
+    price DECIMAL(10, 2)
+);
+
+-- Switch schema
+SET search_path TO tenant_acme;
 ```
 
-### Tenant Resolution
+### 2.3 Database Per Tenant
 
-```text
-TENANT IDENTIFICATION METHODS:
-──────────────────────────────
+```typescript
+// Connection pool per tenant
+const tenantConnections: Map<string, Pool> = new Map();
 
-1. SUBDOMAIN
-   acme.yourapp.com → tenant_id: "acme"
-   
-2. CUSTOM DOMAIN
-   app.acme.com → lookup DNS/mapping → tenant_id
-   
-3. PATH PREFIX
-   yourapp.com/acme/dashboard → tenant_id: "acme"
-   
-4. HEADER/TOKEN
-   X-Tenant-ID: acme
-   JWT claim: { "tenant_id": "acme" }
-
-RESOLUTION FLOW:
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Request   │───►│  Resolver   │───►│  Context    │
-│ (subdomain) │    │ (middleware)│    │ (tenant_id) │
-└─────────────┘    └─────────────┘    └─────────────┘
+function getTenantConnection(tenantId: string): Pool {
+  if (!tenantConnections.has(tenantId)) {
+    const tenant = await db.tenants.findUnique({ where: { id: tenantId } });
+    const pool = new Pool({
+      host: tenant.dbHost,
+      database: tenant.dbName,
+      user: tenant.dbUser,
+      password: decrypt(tenant.dbPassword),
+    });
+    tenantConnections.set(tenantId, pool);
+  }
+  return tenantConnections.get(tenantId);
+}
 ```
 
-### Isolation Patterns
+---
 
-```text
-DATA ISOLATION:
-───────────────
-1. Row-Level Security (PostgreSQL RLS)
-   CREATE POLICY tenant_isolation ON users
-   USING (tenant_id = current_setting('app.tenant_id'));
+## Part 3: Tenant Resolution
 
-2. Query Scoping (ORM)
-   // Auto-inject tenant_id in all queries
-   User.where(tenant_id: current_tenant.id)
+### 3.1 Subdomain Routing
 
-3. Schema per Tenant
-   SET search_path TO tenant_acme;
-   SELECT * FROM users; -- Only acme's users
-
-COMPUTE ISOLATION:
-──────────────────
-1. Shared workers (soft limits)
-2. Dedicated workers per tenant
-3. Serverless (natural isolation)
-
-STORAGE ISOLATION:
-──────────────────
-1. Shared bucket + tenant prefix
-   s3://bucket/tenant_acme/files/
-2. Separate bucket per tenant
-   s3://tenant-acme-bucket/files/
+```typescript
+// Subdomain middleware
+function tenantFromSubdomain(req: Request, res: Response, next: NextFunction) {
+  const host = req.hostname;
+  const subdomain = host.split('.')[0];
+  
+  // Skip for main domain
+  if (subdomain === 'www' || subdomain === 'app') {
+    return next();
+  }
+  
+  const tenant = await db.tenants.findFirst({
+    where: { subdomain },
+  });
+  
+  if (!tenant) {
+    return res.status(404).render('tenant-not-found');
+  }
+  
+  req.tenant = tenant;
+  next();
+}
 ```
 
-### Configuration Management
+### 3.2 Custom Domain Support
 
-```text
-TENANT CONFIGURATION LAYERS:
-────────────────────────────
+```typescript
+// Nginx config for custom domains
+// server {
+//     server_name ~^(?<tenant>.+)\.app\.com$;
+//     set $tenant_domain $tenant;
+// }
 
-┌─────────────────────────────┐
-│      Tenant Override        │ ← Highest priority
-├─────────────────────────────┤
-│       Plan Settings         │
-├─────────────────────────────┤
-│     System Defaults         │ ← Lowest priority
-└─────────────────────────────┘
+// Custom domain lookup
+async function tenantFromCustomDomain(req: Request) {
+  const host = req.hostname;
+  
+  // Check custom domains
+  const customDomain = await db.customDomains.findFirst({
+    where: { domain: host, verified: true },
+    include: { tenant: true },
+  });
+  
+  if (customDomain) {
+    return customDomain.tenant;
+  }
+  
+  // Fall back to subdomain
+  return tenantFromSubdomain(req);
+}
+```
 
-CONFIGURATION SCHEMA:
-{
-  "tenant_id": "acme",
-  "plan": "enterprise",
-  "features": {
-    "sso_enabled": true,
-    "api_access": true,
-    "max_users": 500,
-    "custom_domain": true
-  },
-  "branding": {
-    "logo_url": "...",
-    "primary_color": "#0066CC",
-    "custom_css": "..."
-  },
-  "limits": {
-    "storage_gb": 100,
-    "api_calls_monthly": 100000
+### 3.3 Header-Based (for APIs)
+
+```typescript
+// Header middleware
+function tenantFromHeader(req: Request, res: Response, next: NextFunction) {
+  const tenantId = req.headers['x-tenant-id'] as string;
+  
+  if (!tenantId) {
+    return res.status(400).json({ error: 'Missing X-Tenant-ID header' });
+  }
+  
+  const tenant = await db.tenants.findUnique({
+    where: { id: tenantId },
+  });
+  
+  if (!tenant) {
+    return res.status(404).json({ error: 'Tenant not found' });
+  }
+  
+  req.tenant = tenant;
+  next();
+}
+```
+
+---
+
+## Part 4: Tenant Configuration
+
+### 4.1 Configuration Schema
+
+```sql
+CREATE TABLE tenant_configurations (
+    id UUID PRIMARY KEY,
+    tenant_id UUID REFERENCES tenants(id) UNIQUE,
+    
+    -- Branding
+    logo_url VARCHAR(500),
+    primary_color VARCHAR(7),
+    secondary_color VARCHAR(7),
+    favicon_url VARCHAR(500),
+    
+    -- Features
+    features JSONB DEFAULT '{}',  -- { "analytics": true, "api_access": false }
+    
+    -- Limits
+    max_users INTEGER DEFAULT 10,
+    max_storage_gb INTEGER DEFAULT 5,
+    
+    -- Integrations
+    integrations JSONB DEFAULT '{}',  -- { "slack": { "webhook": "..." } }
+    
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### 4.2 Feature Flags
+
+```typescript
+interface TenantFeatures {
+  analytics: boolean;
+  apiAccess: boolean;
+  customBranding: boolean;
+  ssoEnabled: boolean;
+  [key: string]: boolean;
+}
+
+async function hasFeature(tenantId: string, feature: string): Promise<boolean> {
+  const config = await db.tenantConfigurations.findUnique({
+    where: { tenantId },
+  });
+  
+  const planFeatures = PLAN_FEATURES[config.plan] || {};
+  const tenantFeatures = config.features || {};
+  
+  // Tenant override takes precedence
+  if (feature in tenantFeatures) {
+    return tenantFeatures[feature];
+  }
+  
+  // Fall back to plan defaults
+  return planFeatures[feature] ?? false;
+}
+
+// Middleware
+function requireFeature(feature: string) {
+  return async (req, res, next) => {
+    if (!await hasFeature(req.tenant.id, feature)) {
+      return res.status(403).json({
+        error: 'Feature not available',
+        upgrade: true,
+      });
+    }
+    next();
+  };
+}
+```
+
+---
+
+## Part 5: Data Isolation Patterns
+
+### 5.1 Prisma with RLS
+
+```typescript
+// prisma/schema.prisma extension
+// model Product {
+//   id       String @id @default(uuid())
+//   tenantId String
+//   name     String
+//   @@index([tenantId])
+// }
+
+// Middleware to inject tenant_id
+prisma.$use(async (params, next) => {
+  const tenantId = getTenantContext();
+  
+  if (params.action === 'findMany' || params.action === 'findFirst') {
+    params.args.where = {
+      ...params.args.where,
+      tenantId,
+    };
+  }
+  
+  if (params.action === 'create') {
+    params.args.data.tenantId = tenantId;
+  }
+  
+  return next(params);
+});
+```
+
+### 5.2 TypeORM Subscriber
+
+```typescript
+@EventSubscriber()
+export class TenantSubscriber implements EntitySubscriberInterface {
+  beforeInsert(event: InsertEvent<any>) {
+    const tenantId = getTenantContext();
+    if (event.entity && 'tenantId' in event.entity) {
+      event.entity.tenantId = tenantId;
+    }
+  }
+
+  async afterLoad(entity: any) {
+    const tenantId = getTenantContext();
+    if (entity.tenantId && entity.tenantId !== tenantId) {
+      throw new ForbiddenException('Access denied');
+    }
   }
 }
 ```
 
-### API Design
+---
 
-```text
-/api/v1/
-├── /tenants (Admin only)
-│   ├── POST   /             - Create tenant
-│   ├── GET    /:id          - Tenant details
-│   └── PUT    /:id/settings - Update settings
-│
-├── /admin/tenants/:tenant_id
-│   ├── GET    /users        - Tenant users
-│   ├── GET    /usage        - Resource usage
-│   └── POST   /impersonate  - Support access
-│
-└── /* (Tenant-scoped, auto-filtered)
-    ├── GET    /users
-    ├── GET    /resources
-    └── ...
+## Part 6: Scaling Strategies
+
+### 6.1 Shard by Tenant
+
+```typescript
+// Determine shard for tenant
+function getShardForTenant(tenantId: string): string {
+  const hash = hashString(tenantId);
+  const shardIndex = hash % SHARD_COUNT;
+  return `shard_${shardIndex}`;
+}
+
+// Route to correct shard
+async function query(sql: string, params: any[], tenantId: string) {
+  const shardName = getShardForTenant(tenantId);
+  const pool = shardPools.get(shardName);
+  return pool.query(sql, params);
+}
 ```
 
-## Best Practices
+### 6.2 Tenant-Specific Caching
+
+```typescript
+// Namespace cache keys by tenant
+function tenantCacheKey(tenantId: string, key: string): string {
+  return `tenant:${tenantId}:${key}`;
+}
+
+async function getTenantCache<T>(tenantId: string, key: string): Promise<T | null> {
+  const cacheKey = tenantCacheKey(tenantId, key);
+  const cached = await redis.get(cacheKey);
+  return cached ? JSON.parse(cached) : null;
+}
+
+async function setTenantCache(tenantId: string, key: string, value: any, ttl = 3600) {
+  const cacheKey = tenantCacheKey(tenantId, key);
+  await redis.setex(cacheKey, ttl, JSON.stringify(value));
+}
+```
+
+---
+
+## Part 7: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Always scope queries to current tenant
-- ✅ Use middleware for tenant resolution
-- ✅ Implement proper RLS in database
-- ✅ Log tenant_id in all audit logs
-- ✅ Test with multiple tenants
+- ✅ **Always Filter by Tenant**: Never trust client-side tenant ID.
+- ✅ **Use RLS as Defense in Depth**: Multiple layers.
+- ✅ **Audit Cross-Tenant Access**: Log any suspicious queries.
 
 ### ❌ Avoid This
 
-- ❌ Don't expose tenant_id in URLs if sensitive
-- ❌ Don't allow cross-tenant data access
-- ❌ Don't hardcode tenant-specific logic
-- ❌ Don't share caches without tenant keys
+- ❌ **Forget Tenant in Queries**: Data leaks.
+- ❌ **Share Secrets Across Tenants**: Isolate credentials.
+- ❌ **Single Large Tenant Degrades All**: Plan for noisy neighbors.
+
+---
 
 ## Related Skills
 
 - `@saas-product-developer` - SaaS features
-- `@senior-database-engineer-sql` - Database design
-- `@senior-software-architect` - System design
-- `@senior-api-security-specialist` - Access control
+- `@senior-backend-developer` - Backend patterns
+- `@postgresql-specialist` - RLS and advanced features

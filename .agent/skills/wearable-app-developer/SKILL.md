@@ -7,228 +7,399 @@ description: "Expert wearable application development including Apple Watch, Wea
 
 ## Overview
 
-Skill ini menjadikan AI Agent sebagai spesialis pengembangan aplikasi wearable. Agent akan mampu membangun aplikasi untuk Apple Watch (watchOS), Wear OS, health/fitness tracking, dan companion app integration.
+This skill transforms you into a **Wearable App Expert**. You will master **Apple Watch Development**, **Wear OS**, **Health Sensors**, **Complications**, and **Companion App Integration** for building production-ready wearable applications.
 
 ## When to Use This Skill
 
-- Use when building Apple Watch or Wear OS apps
-- Use when implementing health/fitness tracking
-- Use when designing glanceable interfaces
-- Use when creating companion mobile apps
+- Use when building Apple Watch apps
+- Use when creating Wear OS applications
+- Use when integrating health sensors
+- Use when building complications/tiles
+- Use when syncing with phone apps
 
-## Core Concepts
+---
 
-### Platforms
+## Part 1: Wearable Architecture
 
-```text
-WEARABLE PLATFORMS:
-───────────────────
-├── Apple Watch (watchOS)
-│   ├── SwiftUI/WatchKit
-│   ├── HealthKit integration
-│   ├── Complications
-│   └── Independent or companion
-│
-├── Wear OS (Google)
-│   ├── Compose for Wear OS
-│   ├── Health Services
-│   ├── Tiles
-│   └── Watchfaces
-│
-├── Fitbit OS
-│   ├── Fitbit SDK
-│   ├── Health metrics
-│   └── Clock faces
-│
-└── Samsung Galaxy Watch
-    ├── Tizen → now Wear OS
-    └── One UI Watch
+### 1.1 System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Wearable Platform                         │
+├────────────┬─────────────┬─────────────┬────────────────────┤
+│ Watch App  │ Sensors     │ Notifications│ Complications     │
+├────────────┴─────────────┴─────────────┴────────────────────┤
+│               Phone Companion App                            │
+├─────────────────────────────────────────────────────────────┤
+│              Health Integration (HealthKit/Fit)              │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### App Architecture
+### 1.2 Key Concepts
 
-```text
-WEARABLE APP TYPES:
-───────────────────
+| Concept | Description |
+|---------|-------------|
+| **Complication** | Watch face data display (watchOS) |
+| **Tile** | Quick-access screen (Wear OS) |
+| **Glance** | At-a-glance information |
+| **Digital Crown** | Apple Watch scroll input |
+| **Haptics** | Vibration feedback |
+| **WatchConnectivity** | Phone-Watch communication |
 
-1. COMPANION APP
-   Phone ←──Sync──→ Watch
-   - Watch depends on phone
-   - Data synced via Bluetooth
-   - Phone does heavy lifting
+---
 
-2. STANDALONE APP
-   Watch ←──Network──→ Server
-   - Works without phone
-   - Has own connectivity
-   - Independent experience
+## Part 2: Apple Watch (SwiftUI)
 
-3. HYBRID
-   Watch ↔ Phone ↔ Server
-   - Best of both worlds
-   - Fallback when phone unavailable
+### 2.1 WatchOS App Structure
 
-COMMUNICATION:
-┌─────────────┐           ┌─────────────┐
-│   iPhone    │◄─────────►│ Apple Watch │
-│             │WatchConn. │             │
-└─────────────┘           └─────────────┘
-     │                          │
-     │ Network                  │ Network (LTE)
-     ↓                          ↓
-┌────────────────────────────────────────┐
-│              Backend Server            │
-└────────────────────────────────────────┘
+```swift
+import SwiftUI
+import HealthKit
+
+@main
+struct WorkoutTrackerApp: App {
+    @StateObject private var workoutManager = WorkoutManager()
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(workoutManager)
+        }
+    }
+}
+
+struct ContentView: View {
+    @EnvironmentObject var workoutManager: WorkoutManager
+    @State private var selectedWorkout: HKWorkoutActivityType = .running
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("Quick Start") {
+                    ForEach(WorkoutType.allCases, id: \.self) { workout in
+                        NavigationLink(value: workout) {
+                            HStack {
+                                Image(systemName: workout.icon)
+                                    .foregroundColor(.green)
+                                Text(workout.name)
+                            }
+                        }
+                    }
+                }
+                
+                Section("Recent") {
+                    ForEach(workoutManager.recentWorkouts) { workout in
+                        WorkoutRowView(workout: workout)
+                    }
+                }
+            }
+            .navigationTitle("Workouts")
+            .navigationDestination(for: WorkoutType.self) { workout in
+                WorkoutSessionView(workoutType: workout)
+            }
+        }
+    }
+}
 ```
 
-### Design Principles
+### 2.2 Workout Session
 
-```text
-WEARABLE UI PRINCIPLES:
-───────────────────────
+```swift
+import HealthKit
 
-1. GLANCEABLE
-   - Info readable in 2-3 seconds
-   - Large, bold text
-   - High contrast
+class WorkoutManager: NSObject, ObservableObject {
+    private let healthStore = HKHealthStore()
+    private var session: HKWorkoutSession?
+    private var builder: HKLiveWorkoutBuilder?
+    
+    @Published var heartRate: Double = 0
+    @Published var activeCalories: Double = 0
+    @Published var distance: Double = 0
+    @Published var elapsedTime: TimeInterval = 0
+    @Published var isActive = false
+    
+    func startWorkout(type: HKWorkoutActivityType) async throws {
+        let configuration = HKWorkoutConfiguration()
+        configuration.activityType = type
+        configuration.locationType = .outdoor
+        
+        session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
+        builder = session?.associatedWorkoutBuilder()
+        
+        builder?.dataSource = HKLiveWorkoutDataSource(
+            healthStore: healthStore,
+            workoutConfiguration: configuration
+        )
+        
+        session?.delegate = self
+        builder?.delegate = self
+        
+        let startDate = Date()
+        session?.startActivity(with: startDate)
+        try await builder?.beginCollection(at: startDate)
+        
+        DispatchQueue.main.async {
+            self.isActive = true
+        }
+    }
+    
+    func endWorkout() async throws {
+        session?.end()
+        try await builder?.endCollection(at: Date())
+        
+        if let workout = try await builder?.finishWorkout() {
+            // Save completed workout
+            DispatchQueue.main.async {
+                self.isActive = false
+            }
+        }
+    }
+}
 
-2. MINIMAL INTERACTION
-   - Max 2-3 taps to complete action
-   - Use Digital Crown/bezel
-   - Avoid typing (use voice/presets)
-
-3. FOCUSED CONTENT
-   - One primary action per screen
-   - No scrolling walls of text
-   - Progressive disclosure
-
-4. CONTEXT-AWARE
-   - Time of day
-   - Activity (walking, running)
-   - Location
-
-SCREEN SIZES:
-┌──────────────────┐
-│ Apple Watch      │
-│ 41mm: 352×430px  │
-│ 45mm: 396×484px  │
-├──────────────────┤
-│ Wear OS (varies) │
-│ Round: 454×454px │
-│ Rect: 450×450px  │
-└──────────────────┘
+extension WorkoutManager: HKLiveWorkoutBuilderDelegate {
+    func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, 
+                        didCollectDataOf collectedTypes: Set<HKSampleType>) {
+        for type in collectedTypes {
+            guard let quantityType = type as? HKQuantityType else { continue }
+            
+            let statistics = workoutBuilder.statistics(for: quantityType)
+            
+            DispatchQueue.main.async {
+                switch quantityType {
+                case HKQuantityType.quantityType(forIdentifier: .heartRate):
+                    let heartRateUnit = HKUnit.count().unitDivided(by: .minute())
+                    self.heartRate = statistics?.mostRecentQuantity()?.doubleValue(for: heartRateUnit) ?? 0
+                    
+                case HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned):
+                    let calorieUnit = HKUnit.kilocalorie()
+                    self.activeCalories = statistics?.sumQuantity()?.doubleValue(for: calorieUnit) ?? 0
+                    
+                case HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning):
+                    let meterUnit = HKUnit.meter()
+                    self.distance = statistics?.sumQuantity()?.doubleValue(for: meterUnit) ?? 0
+                    
+                default:
+                    break
+                }
+            }
+        }
+    }
+}
 ```
 
-### Health & Fitness Data
+### 2.3 Complication
 
-```text
-HEALTH METRICS:
-───────────────
-├── Heart Rate (BPM)
-│   └── Resting, active, recovery
-├── Steps & Distance
-├── Calories (active + resting)
-├── Sleep Tracking
-│   └── Stages, duration, quality
-├── Blood Oxygen (SpO2)
-├── ECG (Apple Watch)
-├── Activity (standing, exercise)
-└── Workouts
-    └── Type, duration, heart rate zones
+```swift
+import ClockKit
+import SwiftUI
 
-DATA ACCESS:
-┌─────────────────────────────────────────┐
-│ Platform      │ API                     │
-├───────────────┼─────────────────────────┤
-│ watchOS       │ HealthKit               │
-│ Wear OS       │ Health Services API     │
-│ Fitbit        │ Web API                 │
-└─────────────────────────────────────────┘
+struct ComplicationController: CLKComplicationDataSource {
+    func complicationDescriptors() async -> [CLKComplicationDescriptor] {
+        [
+            CLKComplicationDescriptor(
+                identifier: "workout_stats",
+                displayName: "Workout Stats",
+                supportedFamilies: [
+                    .circularSmall,
+                    .graphicCircular,
+                    .graphicCorner,
+                    .modularSmall
+                ]
+            )
+        ]
+    }
+    
+    func currentTimelineEntry(for complication: CLKComplication) async -> CLKComplicationTimelineEntry? {
+        let template = makeTemplate(for: complication)
+        return CLKComplicationTimelineEntry(date: Date(), complicationTemplate: template)
+    }
+    
+    private func makeTemplate(for complication: CLKComplication) -> CLKComplicationTemplate {
+        switch complication.family {
+        case .graphicCircular:
+            return CLKComplicationTemplateGraphicCircularView(
+                CircularComplicationView()
+            )
+        case .modularSmall:
+            return CLKComplicationTemplateModularSmallSimpleText(
+                textProvider: CLKSimpleTextProvider(text: "500 cal")
+            )
+        default:
+            fatalError("Unsupported complication family")
+        }
+    }
+}
 
-PERMISSIONS:
-- Always request minimal data
-- Explain why needed
-- Handle denial gracefully
+struct CircularComplicationView: View {
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.green, lineWidth: 4)
+            VStack {
+                Image(systemName: "flame.fill")
+                    .foregroundColor(.orange)
+                Text("500")
+                    .font(.caption2)
+            }
+        }
+    }
+}
 ```
 
-### Complications & Tiles
+---
 
-```text
-COMPLICATIONS (watchOS):
-────────────────────────
-Small widgets on watch face
+## Part 3: Wear OS (Compose)
 
-Types:
-├── Circular Small - Icon + text
-├── Modular Small - One value
-├── Modular Large - Multi-line
-├── Rectangular - Larger area
-├── Graphic Corner - Gauge style
-└── Graphic Extra Large - Full corner
+### 3.1 Wear Compose App
 
-Update Strategy:
-├── Timeline: Pre-schedule entries
-├── Push: Server-triggered update
-└── Budget: ~4 refreshes/hour
+```kotlin
+import androidx.wear.compose.material.*
+import androidx.wear.compose.foundation.*
 
-TILES (Wear OS):
-────────────────
-Swipeable cards from watch face
-
-Structure:
-├── Layout (Row, Column, Box)
-├── Text, Image, Spacer
-├── Clickable actions
-└── Refresh on swipe
+@Composable
+fun WorkoutApp() {
+    val scalingLazyListState = rememberScalingLazyListState()
+    
+    Scaffold(
+        timeText = { TimeText() },
+        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
+        positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) }
+    ) {
+        ScalingLazyColumn(
+            state = scalingLazyListState,
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Text(
+                    text = "Start Workout",
+                    style = MaterialTheme.typography.title2
+                )
+            }
+            
+            items(workoutTypes) { workout ->
+                Chip(
+                    onClick = { startWorkout(workout) },
+                    label = { Text(workout.name) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(workout.iconRes),
+                            contentDescription = workout.name
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
 ```
 
-### Battery Considerations
+### 3.2 Tile Service
 
-```text
-BATTERY OPTIMIZATION:
-─────────────────────
+```kotlin
+import androidx.wear.tiles.*
 
-HIGH DRAIN:
-├── Continuous GPS
-├── Always-on sensors
-├── Frequent network calls
-├── Bright colors/animations
-└── Background refresh
-
-BEST PRACTICES:
-├── Batch network requests
-├── Use complications (no app launch)
-├── Reduce GPS sampling rate
-├── Use dark backgrounds (OLED)
-├── Cache data aggressively
-└── Limit background activity
-
-SENSOR SAMPLING:
-├── Workout mode: Real-time
-├── Background: 1-5 min intervals
-└── Passive: System-managed
+class WorkoutTileService : TileService() {
+    override fun onTileRequest(requestParams: RequestBuilders.TileRequest) =
+        Futures.immediateFuture(
+            TileBuilders.Tile.Builder()
+                .setResourcesVersion("1")
+                .setTimeline(
+                    TimelineBuilders.Timeline.Builder()
+                        .addTimelineEntry(
+                            TimelineBuilders.TimelineEntry.Builder()
+                                .setLayout(createLayout())
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
+        )
+    
+    private fun createLayout(): LayoutElementBuilders.Layout {
+        return LayoutElementBuilders.Layout.Builder()
+            .setRoot(
+                LayoutElementBuilders.Column.Builder()
+                    .addContent(
+                        LayoutElementBuilders.Text.Builder()
+                            .setText("Today's Stats")
+                            .build()
+                    )
+                    .addContent(
+                        LayoutElementBuilders.Text.Builder()
+                            .setText("500 cal burned")
+                            .build()
+                    )
+                    .build()
+            )
+            .build()
+    }
+}
 ```
 
-## Best Practices
+---
+
+## Part 4: Phone-Watch Communication
+
+### 4.1 WatchConnectivity (iOS)
+
+```swift
+import WatchConnectivity
+
+class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
+    static let shared = WatchConnectivityManager()
+    private var session: WCSession?
+    
+    override init() {
+        super.init()
+        if WCSession.isSupported() {
+            session = WCSession.default
+            session?.delegate = self
+            session?.activate()
+        }
+    }
+    
+    // Send data to watch
+    func sendWorkoutData(_ data: [String: Any]) {
+        guard let session = session, session.isReachable else { return }
+        
+        session.sendMessage(data, replyHandler: nil) { error in
+            print("Error sending: \(error)")
+        }
+    }
+    
+    // Receive from watch
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        DispatchQueue.main.async {
+            if let workoutData = message["workout"] as? Data {
+                // Process workout data from watch
+            }
+        }
+    }
+}
+```
+
+---
+
+## Part 5: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Design for 2-3 second glances
-- ✅ Use haptic feedback for notifications
-- ✅ Support both watch and phone flows
-- ✅ Handle offline gracefully
-- ✅ Test on actual hardware
+- ✅ **Large Tap Targets**: Small screen = big buttons.
+- ✅ **Glanceable Info**: Quick, essential data only.
+- ✅ **Battery Efficient**: Minimize background work.
 
 ### ❌ Avoid This
 
-- ❌ Don't require text input
-- ❌ Don't drain battery with sensors
-- ❌ Don't show too much data at once
-- ❌ Don't ignore accessibility (larger fonts)
+- ❌ **Complex Navigation**: Keep it simple.
+- ❌ **Tiny Text**: Use readable font sizes.
+- ❌ **Continuous GPS**: Drain battery fast.
+
+---
 
 ## Related Skills
 
-- `@senior-ios-developer` - watchOS apps
-- `@senior-android-developer` - Wear OS apps
-- `@healthcare-app-developer` - Health integrations
-- `@senior-ui-ux-designer` - Wearable design
+- `@fitness-app-developer` - Workout tracking
+- `@senior-ios-developer` - iOS development
+- `@healthcare-app-developer` - Health data
