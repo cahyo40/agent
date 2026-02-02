@@ -7,169 +7,168 @@ description: "Expert system analysis including requirements gathering, business 
 
 ## Overview
 
-Bridge business needs and technical solutions through requirements gathering, process modeling, system design, and stakeholder communication.
+This skill transforms you into a **Technical Architect / System Analyst**. You will bridge the gap between "I have an idea" and "Here is the blueprint". You will master **Event Storming**, **C4 Architecture Models**, **UML Sequence Diagrams**, and writing precise **Requirements (FR/NFR)**.
 
 ## When to Use This Skill
 
-- Use when gathering requirements
-- Use when designing systems
-- Use when analyzing business processes
-- Use when creating specifications
+- Use when starting a completely new project (greenfield)
+- Use when designing complex microservices interactions
+- Use when documenting "How the system works" for stakeholders
+- Use when gathering requirements from non-technical clients
+- Use when modeling database schemas (ERD) before coding
 
-## How It Works
+---
 
-### Step 1: Requirements Gathering
+## Part 1: Architecture Modeling (The C4 Model)
 
-```
-REQUIREMENTS ENGINEERING PROCESS
-├── ELICITATION
-│   ├── Stakeholder interviews
-│   ├── Workshops/JAD sessions
-│   ├── Observation
-│   ├── Document analysis
-│   └── Surveys/questionnaires
-│
-├── ANALYSIS
-│   ├── Categorize requirements
-│   ├── Identify conflicts
-│   ├── Prioritize (MoSCoW)
-│   └── Feasibility assessment
-│
-├── SPECIFICATION
-│   ├── Functional requirements
-│   ├── Non-functional requirements
-│   ├── Business rules
-│   └── Constraints
-│
-├── VALIDATION
-│   ├── Review with stakeholders
-│   ├── Prototyping
-│   └── Acceptance criteria
-│
-└── MANAGEMENT
-    ├── Version control
-    ├── Change management
-    └── Traceability matrix
-```
+Don't draw generic "boxes and arrows". Use the C4 Model (Context, Containers, Components, Code).
 
-### Step 2: Use Case Documentation
+### 1.1 Level 1: System Context (The Big Picture)
 
-```markdown
-# Use Case: Place Order
+Who uses the system? What external systems do we talk to?
 
-**Actors:** Customer, Inventory System, Payment Gateway
+- **Person**: Customer
+- **System**: Banking App
+- **External System**: Mainframe, Email Provider
 
-**Preconditions:**
-- User is logged in
-- Shopping cart has items
+### 1.2 Level 2: Containers (Tech Choices)
 
-**Main Flow:**
-1. Customer clicks "Checkout"
-2. System displays order summary
-3. Customer selects shipping address
-4. System calculates shipping cost
-5. Customer selects payment method
-6. Customer confirms order
-7. System validates inventory
-8. System processes payment
-9. System creates order
-10. System sends confirmation email
-11. System displays order confirmation
+Deployable units.
 
-**Alternative Flows:**
-- 7a. Inventory unavailable:
-  - System notifies customer
-  - Customer modifies order
-- 8a. Payment fails:
-  - System displays error
-  - Customer retries or changes method
+- **Mobile App** (Flutter)
+- **API Application** (Go/Gin)
+- **Database** (PostgreSQL)
+- **Message Broker** (Kafka)
 
-**Postconditions:**
-- Order is created in system
-- Inventory is reserved
-- Customer receives confirmation
+### 1.3 Level 3: Components (Modules)
 
-**Business Rules:**
-- BR1: Minimum order value $10
-- BR2: Free shipping over $50
-- BR3: Max 10 items per order
-```
+Inside the API Application.
 
-### Step 3: Business Process Modeling (BPMN)
+- **AuthController**
+- **PaymentService**
+- **UserRepository**
+
+---
+
+## Part 2: Requirements Engineering
+
+### 2.1 Functional Requirements (FR)
+
+"The system shall..." (What it does).
+
+- *FR-01*: The system shall allow users to log in via Email or SSO.
+- *FR-02*: The system must prevent overdrawing account baance.
+
+### 2.2 Non-Functional Requirements (NFR)
+
+"The system must be..." (Attributes).
+
+- **Scalability**: Must handle 10k concurrent users.
+- **Latency**: API response time < 200ms (P95).
+- **Availability**: 99.9% Uptime.
+- **Security**: All PII must be encrypted at rest (AES-256).
+
+---
+
+## Part 3: Event Storming (Discovery)
+
+Best workshop technique for complex domains.
+
+**Color Codes:**
+
+- **Orange**: Domain Event (Past Tense). `OrderPlaced`, `PaymentFailed`.
+- **Blue**: Command (Action). `PlaceOrder`, `RefundUser`.
+- **Yellow**: Aggregate (Entity). `Order`, `User`.
+- **Purple**: Policy (Rule). "If 3 failed attempts, lock account".
+
+**Flow:**
+
+1. Brainstorm all Events (Everything that happens).
+2. Order them chronologically.
+3. Add Commands (What triggers the event?).
+4. Add Aggregates (What data changes?).
+
+---
+
+## Part 4: UML & Diagrams (Mermaid.js)
+
+Don't use Visio. Use Code.
+
+### 4.1 Sequence Diagram (Interactions)
 
 ```mermaid
-flowchart TD
-    A[Start: Order Received] --> B{Validate Order}
-    B -->|Valid| C[Check Inventory]
-    B -->|Invalid| Z[Reject Order]
-    C -->|In Stock| D[Process Payment]
-    C -->|Out of Stock| E[Backorder or Cancel]
-    D -->|Success| F[Create Shipment]
-    D -->|Failed| G[Notify Customer]
-    F --> H[Send Confirmation]
-    H --> I[End: Order Complete]
+sequenceDiagram
+    participant U as User
+    participant A as API
+    participant D as DB
+    
+    U->>A: Login(user, pass)
+    activate A
+    A->>D: FindUser(user)
+    D-->>A: UserData
+    A->>A: VerifyPasswordHash
+    A-->>U: JWT Token
+    deactivate A
 ```
 
-### Step 4: Requirements Specification
+### 4.2 Entity Relationship Diagram (ERD)
 
-```markdown
-# Software Requirements Specification (SRS)
-
-## 1. Introduction
-### 1.1 Purpose
-### 1.2 Scope
-### 1.3 Definitions & Acronyms
-
-## 2. Overall Description
-### 2.1 Product Perspective
-### 2.2 Product Functions
-### 2.3 User Classes
-### 2.4 Operating Environment
-### 2.5 Constraints
-### 2.6 Assumptions
-
-## 3. Functional Requirements
-### FR-001: User Registration
-- Description: System shall allow new users to register
-- Priority: Must Have
-- Input: Name, email, password
-- Output: Account created, verification email sent
-- Acceptance Criteria:
-  - [ ] Email must be unique
-  - [ ] Password minimum 8 characters
-  - [ ] Verification email sent within 1 minute
-
-### FR-002: Order Management
-...
-
-## 4. Non-Functional Requirements
-### NFR-001: Performance
-- System shall support 1000 concurrent users
-- Page load time < 3 seconds
-
-### NFR-002: Security
-- All data encrypted in transit (TLS 1.3)
-- Session timeout after 30 minutes
+```mermaid
+erDiagram
+    USER ||--o{ ORDER : places
+    ORDER ||--|{ ORDER_ITEM : contains
+    PRODUCT ||--o{ ORDER_ITEM : "included in"
+    
+    USER {
+        uuid id PK
+        string email
+        string password_hash
+    }
 ```
 
-## Best Practices
+---
+
+## Part 5: API Specification (OpenAPI / Swagger)
+
+Design First. Code Second.
+
+```yaml
+paths:
+  /users:
+    post:
+      summary: Create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: Created
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Clarify ambiguous requirements
-- ✅ Prioritize with stakeholders
-- ✅ Document assumptions
-- ✅ Create traceability
-- ✅ Validate with prototypes
+- ✅ **Talk to Domain Experts**: Don't guess the business logic. Ask "What happens if...?"
+- ✅ **Focus on the "Why"**: Understand the business value before picking a technology.
+- ✅ **Keep Diagrams Updated**: An outdated map is worse than no map. Use Mermaid (Git versioned).
+- ✅ **Identify Bounded Contexts**: Split large systems into smaller, independent sub-domains (DDD).
 
 ### ❌ Avoid This
 
-- ❌ Don't assume requirements
-- ❌ Don't skip stakeholders
-- ❌ Don't ignore NFRs
-- ❌ Don't forget edge cases
+- ❌ **Big Design Up Front (BDUF)**: Don't design every single class before coding. Design the Boundaries.
+- ❌ **Vague Requirements**: "System must be fast" is useless. "System must respond in < 100ms" is testable.
+- ❌ **Ignoring Data Migration**: Moving data is harder than writing code. Plan for it early.
+
+---
 
 ## Related Skills
 
-- `@senior-software-architect` - System design
-- `@senior-project-manager` - Project management
+- `@software-architecture-patterns` - Microservices, Monolith, Event-Driven
+- `@senior-code-reviewer` - Validating the implementation
+- `@mermaid-diagram-expert` - Drawing the diagrams

@@ -7,175 +7,173 @@ description: "Expert analytics engineering including event tracking, data modeli
 
 ## Overview
 
-This skill helps you design and implement analytics systems that produce reliable, actionable data for decision-making.
+This skill transforms you into an **Analytics Engineer**. You will bridge the gap between Data Engineering and Data Analysis. You will master the **Modern Data Stack** (MDS), **dbt** (Transformation), **Data Modeling** (Kimball/Star Schema), and **Data Quality** (Great Expectations).
 
 ## When to Use This Skill
 
-- Use when setting up analytics
-- Use when designing tracking plans
-- Use when building dashboards
-- Use when data quality is needed
+- Use when building a Data Warehouse (Snowflake / BigQuery / Redshift)
+- Use when transforming raw data into business logic (dbt)
+- Use when designing Data Marts for BI tools (Tableau / Looker / Metabase)
+- Use when debugging data discrepancies ("Why is revenue wrong?")
+- Use when implementing Event Tracking (Segment / RudderStack)
 
-## How It Works
+---
 
-### Step 1: Tracking Plan
+## Part 1: The Modern Data Stack (MDS)
 
-```markdown
-## Tracking Plan Template
+No more ETL (Extract-Transform-Load). It is now **ELT** (Extract-Load-Transform).
 
-### Event: `product_viewed`
-**When:** User views a product detail page
-**Properties:**
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| product_id | string | Yes | Unique product ID |
-| product_name | string | Yes | Product name |
-| category | string | Yes | Product category |
-| price | number | Yes | Current price |
-| currency | string | Yes | Currency code |
+1. **Extract & Load (EL)**: Fivetran / Airbyte. Move data from Postgres/Salesforce -> Warehouse. Raw.
+2. **Warehouse**: Snowflake / BigQuery. Massive storage, separation of compute/storage.
+3. **Transform (T)**: dbt. SQL-based transformations. Version controlled.
+4. **Visualize**: Looker / Tableau.
 
-### Event: `add_to_cart`
-**When:** User adds product to cart
-**Properties:**
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| product_id | string | Yes | Product ID |
-| quantity | number | Yes | Quantity added |
-| cart_total | number | Yes | New cart total |
+---
 
-### Event: `checkout_completed`
-**When:** Order is successfully placed
-**Properties:**
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| order_id | string | Yes | Order ID |
-| total | number | Yes | Order total |
-| items_count | number | Yes | Number of items |
-| payment_method | string | Yes | Payment method used |
+## Part 2: Data Modeling (Kimball Methodology)
+
+Do not just query raw tables. Build a **Star Schema**.
+
+### 2.1 Fact Tables (Events)
+
+Measurable, quantitative. Big tables.
+
+- `fact_orders`
+- `fact_page_views`
+- `fact_transactions`
+
+**Columns**: Foreign Keys (`user_id`, `product_id`), Measurements (`amount`, `quantity`), Timestamp (`created_at`).
+
+### 2.2 Dimension Tables (Context)
+
+Descriptive, qualitative. Small tables.
+
+- `dim_users` (Name, email, region)
+- `dim_products` (Category, price, SKU)
+- `dim_time` (Day, month, quarter, holiday flag)
+
+### 2.3 One Big Table (OBT)
+
+Modern warehouses are fast. Sometimes you denormalize *everything* into one table for BI speed.
+`fact_orders` + `dim_users` + `dim_products` -> `rpt_sales_dashboard`.
+
+---
+
+## Part 3: dbt (Data Build Tool)
+
+SQL + Jinja + Git = Magic.
+
+### 3.1 Project Structure
+
+```text
+models/
+├── staging/             # 1:1 Cleaned version of Raw Source
+│   ├── stripe/
+│   │   ├── stg_stripe_payments.sql
+│   │   └── _stripe_sources.yml
+├── intermediate/        # Complex Logic / Joins
+│   ├── int_revenue_by_user.sql
+├── marts/               # Business Ready (Facts/Dims)
+│   ├── core/
+│   │   ├── dim_customers.sql
+│   │   └── fact_orders.sql
+│   └── marketing/
 ```
 
-### Step 2: Event Implementation
-
-```typescript
-// analytics.ts
-interface AnalyticsEvent {
-  name: string;
-  properties: Record<string, any>;
-  timestamp: string;
-  userId?: string;
-  sessionId: string;
-}
-
-class Analytics {
-  track(eventName: string, properties: Record<string, any>) {
-    const event: AnalyticsEvent = {
-      name: eventName,
-      properties: {
-        ...properties,
-        ...this.getDefaultProperties()
-      },
-      timestamp: new Date().toISOString(),
-      userId: this.userId,
-      sessionId: this.sessionId
-    };
-
-    // Send to analytics service
-    this.send(event);
-  }
-
-  private getDefaultProperties() {
-    return {
-      page_url: window.location.href,
-      page_title: document.title,
-      referrer: document.referrer,
-      screen_width: window.innerWidth,
-      user_agent: navigator.userAgent
-    };
-  }
-}
-
-// Usage
-analytics.track('product_viewed', {
-  product_id: 'prod_123',
-  product_name: 'Blue T-Shirt',
-  category: 'Clothing',
-  price: 29.99,
-  currency: 'USD'
-});
-```
-
-### Step 3: Key Metrics
-
-```
-E-COMMERCE METRICS
-├── ACQUISITION
-│   ├── Sessions
-│   ├── New vs returning users
-│   ├── Traffic sources
-│   └── Campaign performance
-│
-├── ENGAGEMENT
-│   ├── Pages per session
-│   ├── Time on site
-│   ├── Bounce rate
-│   └── Product views
-│
-├── CONVERSION
-│   ├── Conversion rate
-│   ├── Add-to-cart rate
-│   ├── Checkout abandonment
-│   └── Revenue per session
-│
-└── RETENTION
-    ├── Repeat purchase rate
-    ├── Customer lifetime value
-    ├── Cohort analysis
-    └── Churn rate
-```
-
-### Step 4: Funnel Analysis
+### 3.2 A Typical Model
 
 ```sql
--- Conversion funnel query
-WITH funnel AS (
-  SELECT 
-    user_id,
-    MAX(CASE WHEN event = 'product_viewed' THEN 1 ELSE 0 END) as viewed,
-    MAX(CASE WHEN event = 'add_to_cart' THEN 1 ELSE 0 END) as added,
-    MAX(CASE WHEN event = 'checkout_started' THEN 1 ELSE 0 END) as started,
-    MAX(CASE WHEN event = 'checkout_completed' THEN 1 ELSE 0 END) as completed
-  FROM events
-  WHERE timestamp >= CURRENT_DATE - INTERVAL '7 days'
-  GROUP BY user_id
+-- models/marts/core/fact_orders.sql
+
+with orders as (
+    select * from {{ ref('stg_jaffle_shop_orders') }}
+),
+
+payments as (
+    select * from {{ ref('stg_stripe_payments') }}
+),
+
+final as (
+    select
+        orders.order_id,
+        orders.customer_id,
+        orders.order_date,
+        payments.amount
+    from orders
+    left join payments using (order_id)
 )
-SELECT
-  COUNT(*) as total_users,
-  SUM(viewed) as viewed_product,
-  SUM(added) as added_to_cart,
-  SUM(started) as started_checkout,
-  SUM(completed) as completed_order,
-  ROUND(SUM(completed)::numeric / SUM(viewed) * 100, 2) as conversion_rate
-FROM funnel;
+
+select * from final
 ```
 
-## Best Practices
+### 3.3 Testing (Data Quality)
+
+Define tests in YAML. dbt runs them.
+
+```yaml
+version: 2
+
+models:
+  - name: dim_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['active', 'churned']
+```
+
+Run: `dbt test`
+
+---
+
+## Part 4: Data Orchestration
+
+How to run dbt every hour?
+
+- **dbt Cloud**: Native scheduler.
+- **Airflow**: `BashOperator('dbt run')`.
+- **Dagster**: Asset-based orchestration.
+
+---
+
+## Part 5: Event Tracking (Segment/RudderStack)
+
+Garbage In, Garbage Out. Define a **Tracking Plan**.
+
+**Bad Event:**
+`track('Button Clicked')` (Which button? What page?)
+
+**Good Event:**
+`track('Order Completed', { orderId: '123', total: 50.00, currency: 'USD' })`
+
+**Identify:**
+`identify('user_123', { email: 'john@doe.com', plan: 'pro' })`
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Create tracking plan first
-- ✅ Use consistent naming
-- ✅ Validate data quality
-- ✅ Track user identity
-- ✅ Document all events
+- ✅ **Use `staging` layer**: Never query raw sources (`raw.orders`) in downstream models. Always use `stg_orders`.
+- ✅ **Incremental Models**: For huge tables, process only new rows (`config(materialized='incremental')`).
+- ✅ **Version Control**: Analytics code belongs in Git. No "editing SQL in the BI tool".
+- ✅ **Documentation**: Add descriptions to every column in YAML. `dbt docs generate`.
 
 ### ❌ Avoid This
 
-- ❌ Don't track everything
-- ❌ Don't skip validation
-- ❌ Don't ignore privacy
-- ❌ Don't use vague names
+- ❌ **SELECT ***: Be explicit. Schemas change. `SELECT *` breaks things eventually.
+- ❌ **Business Logic in BI**: If you calculate `Revenue = Amount - Tax` in Tableau, you have to repeat it in Looker. Put it in dbt.
+- ❌ **Hardcoded Dates**: Use dynamic dates (`current_date`) or partition filters.
+
+---
 
 ## Related Skills
 
-- `@senior-data-analyst` - Data analysis
-- `@senior-data-engineer` - Data pipelines
+- `@senior-data-engineer` - Managing the Warehouse/Airflow
+- `@senior-database-engineer-sql` - Advanced SQL optimization
+- `@bi-dashboard-developer` - Consuming the dbt models

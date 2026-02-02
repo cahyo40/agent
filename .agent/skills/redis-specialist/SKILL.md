@@ -1,178 +1,175 @@
 ---
 name: redis-specialist
-description: "Expert Redis development including caching strategies, data structures, pub/sub, and performance optimization"
+description: "Expert Redis development including caching strategies, data structures, pub/sub, streams, and performance optimization"
 ---
 
 # Redis Specialist
 
 ## Overview
 
-Master Redis for caching, session management, rate limiting, and real-time features.
+This skill transforms you into a **Redis Expert**. You will move beyond simple `SET/GET` to using Redis as a **Message Broker (Streams/PubSub)**, implementing **Leaky Bucket Rate Limiting** with Lua, handling **GeoSpatial** data, and optimizing memory with **BitMaps/HyperLogLog**.
 
 ## When to Use This Skill
 
-- Use when implementing caching
-- Use when building real-time features
-- Use when optimizing performance
+- Use when caching DB queries (Cache-Aside pattern)
+- Use when building Leaderboards (Sorted Sets)
+- Use when implementing Queues (Streams vs Lists)
+- Use when Distributed Locking (Redlock)
+- Use when handling Session Store or Real-time Analytics
 
-## How It Works
+---
 
-### Step 1: Data Structures
+## Part 1: Data Types & Use Cases
 
-```python
-import redis
+### 1.1 Strings (Atomic Counters)
 
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+`INCR` is atomic. Use it for rate limits or ID generation.
 
-# Strings - Simple key-value
-r.set('user:1:name', 'John', ex=3600)  # expires in 1 hour
-name = r.get('user:1:name')
-
-# Hashes - Objects
-r.hset('user:1', mapping={
-    'name': 'John',
-    'email': 'john@example.com',
-    'age': 30
-})
-user = r.hgetall('user:1')
-
-# Lists - Queues
-r.lpush('notifications:1', 'New message')
-r.rpop('notifications:1')
-
-# Sets - Unique collections
-r.sadd('user:1:followers', 'user:2', 'user:3')
-followers = r.smembers('user:1:followers')
-
-# Sorted Sets - Leaderboards
-r.zadd('leaderboard', {'player1': 100, 'player2': 85})
-top10 = r.zrevrange('leaderboard', 0, 9, withscores=True)
+```bash
+SET user:101:rate 0
+INCR user:101:rate
+EXPIRE user:101:rate 60
 ```
 
-### Step 2: Caching Patterns
+### 1.2 Hashes (Objects)
 
-```python
-# Cache-Aside Pattern
-def get_user(user_id: str):
-    cache_key = f'user:{user_id}'
-    
-    # Try cache first
-    cached = r.get(cache_key)
-    if cached:
-        return json.loads(cached)
-    
-    # Cache miss - fetch from DB
-    user = db.query(User).get(user_id)
-    if user:
-        r.setex(cache_key, 3600, json.dumps(user.dict()))
-    
-    return user
+Don't store JSON strings if you need to access fields individually. Use Hashes.
 
-# Write-Through Pattern
-def update_user(user_id: str, data: dict):
-    # Update DB
-    db.query(User).filter_by(id=user_id).update(data)
-    db.commit()
-    
-    # Update cache
-    cache_key = f'user:{user_id}'
-    r.setex(cache_key, 3600, json.dumps(data))
-
-# Cache Invalidation
-def invalidate_user_cache(user_id: str):
-    r.delete(f'user:{user_id}')
-    r.delete(f'user:{user_id}:posts')  # Related caches
+```bash
+HSET user:101 name "John" age "30" login "2023-01-01"
+HGET user:101 name
+HINCRBY user:101 age 1
 ```
 
-### Step 3: Rate Limiting
+### 1.3 Sorted Sets (Leaderboards)
 
-```python
-# Token Bucket Rate Limiter
-def rate_limit(user_id: str, limit: int = 100, window: int = 60):
-    key = f'ratelimit:{user_id}'
-    
-    pipe = r.pipeline()
-    pipe.incr(key)
-    pipe.expire(key, window)
-    result = pipe.execute()
-    
-    current = result[0]
-    
-    if current > limit:
-        return False, limit - current  # Denied, remaining
-    return True, limit - current  # Allowed, remaining
+The killer feature of Redis.
 
-# Sliding Window
-def sliding_window_rate_limit(user_id: str, limit: int, window: int):
-    key = f'ratelimit:{user_id}'
-    now = time.time()
-    
-    pipe = r.pipeline()
-    pipe.zremrangebyscore(key, 0, now - window)
-    pipe.zadd(key, {str(now): now})
-    pipe.zcard(key)
-    pipe.expire(key, window)
-    _, _, count, _ = pipe.execute()
-    
-    return count <= limit
+```bash
+# ZADD key score member
+ZADD leaderboard 100 "PlayerA"
+ZADD leaderboard 200 "PlayerB"
+
+# Get Top 3
+ZREVRANGE leaderboard 0 2 WITHSCORES
 ```
 
-### Step 4: Session Management
+---
 
-```python
-# Session Store
-class RedisSessionStore:
-    def __init__(self, prefix='session:', ttl=86400):
-        self.prefix = prefix
-        self.ttl = ttl
-    
-    def create(self, user_id: str, data: dict) -> str:
-        session_id = secrets.token_urlsafe(32)
-        key = f'{self.prefix}{session_id}'
-        
-        r.hset(key, mapping={
-            'user_id': user_id,
-            **data,
-            'created_at': datetime.now().isoformat()
-        })
-        r.expire(key, self.ttl)
-        
-        return session_id
-    
-    def get(self, session_id: str) -> dict:
-        return r.hgetall(f'{self.prefix}{session_id}')
-    
-    def destroy(self, session_id: str):
-        r.delete(f'{self.prefix}{session_id}')
+## Part 2: Redis Streams (Message Broker)
+
+Like Kafka, but in Redis. Robust consumer groups.
+
+### 2.1 Concept
+
+- **Producer**: Adds to Stream (`XADD`).
+- **Consumer Group**: Tracks "last read" ID for group.
+- **Consumer**: Reads pending messages (`XREADGROUP`), processes, ACKs (`XACK`).
+
+### 2.2 Implementation
+
+```bash
+# 1. Produce
+XADD events * user_id 101 action "login"
+
+# 2. Create Group (Run once)
+XGROUP CREATE events mygroup $ MKSTREAM
+
+# 3. Consume
+XREADGROUP GROUP mygroup consumer1 COUNT 1 BLOCK 2000 STREAMS events >
+
+# 4. Acknowledge (Mark processed)
+XACK events mygroup 1678123123-0
 ```
 
-### Step 5: Pub/Sub
+---
 
-```python
-# Publisher
-def publish_event(channel: str, event: dict):
-    r.publish(channel, json.dumps(event))
+## Part 3: Lua Scripting (Atomicity)
 
-# Subscriber
-def subscribe_events(channel: str):
-    pubsub = r.pubsub()
-    pubsub.subscribe(channel)
-    
-    for message in pubsub.listen():
-        if message['type'] == 'message':
-            event = json.loads(message['data'])
-            handle_event(event)
+Execute logic *inside* Redis. Atomic. No network RTT.
+
+**Scenario: Atomic Transfer**
+
+```lua
+-- transfer.lua
+local from = KEYS[1]
+local to = KEYS[2]
+local amount = tonumber(ARGV[1])
+
+if tonumber(redis.call("GET", from)) >= amount then
+    redis.call("DECRBY", from, amount)
+    redis.call("INCRBY", to, amount)
+    return true
+else
+    return false
+end
 ```
 
-## Best Practices
+**Run:** `EVALSHA <sha1> 2 account:A account:B 100`
 
-- ✅ Set TTL on all keys
-- ✅ Use pipeline for batch operations
-- ✅ Use proper data structures
-- ❌ Don't store large objects
-- ❌ Don't use KEYS in production
+---
+
+## Part 4: Caching Patterns
+
+### 4.1 Cache Aside (Lazy Loading)
+
+1. App asks Cache for key.
+2. **Miss**: App asks DB -> Writes to Cache -> Returns to User.
+3. **Hit**: App returns from Cache.
+
+*Crucial*: Always set a TTL (Time To Live) to prevent stale data forever.
+
+### 4.2 Probabilistic Caching (Avoiding Storms)
+
+To avoid "Cache Stampede" (everyone recomputing at same time), use **X-Fetch** or **Early Expiration**.
+
+*Logic*: "If TTL is less than 10s remaining, recompute in background, but return old value now."
+
+---
+
+## Part 5: Production Checklist
+
+### 5.1 Persistence
+
+- **RDB (Snapshot)**: Compact. Good for backups. Potential data loss of minutes.
+- **AOF (Append Only File)**: Logs every write. Durable. Slower restart.
+- **Hybrid**: Use both.
+
+### 5.2 Memory Management
+
+What happens when RAM is full?
+
+- `maxmemory-policy allkeys-lru`: Evict least recently used keys (Standard Cache).
+- `maxmemory-policy noeviction`: Return error (Standard DB).
+
+### 5.3 Keyspace Notifications
+
+Trigger events when keys change/expire.
+
+- `CONFIG SET notify-keyspace-events Ex` (Notify on Expire).
+- Subscribe: `PSUBSCRIBE __keyevent@0__:expired`
+
+---
+
+## Part 6: Best Practices Checklist
+
+### ✅ Do This
+
+- ✅ **Use Pipelines**: Send 100 commands in 1 RTT. Massive speedup.
+- ✅ **Use Namespaces**: `user:101`, `session:xyz`. Use `:` separator.
+- ✅ **Monitor `INFO`**: Check `instantaneous_ops_per_sec`, `used_memory`, `evicted_keys`.
+- ✅ **Slow Log**: `SLOWLOG GET 10`. Find commands blocking the single thread.
+
+### ❌ Avoid This
+
+- ❌ **`KEYS *`**: It scans 100M keys and blocks the server. Use `SCAN`.
+- ❌ **Huge Values**: Don't store 10MB JSONs. Split them or use S3.
+- ❌ **No Password**: Redis is fast. Hackers can guess 150k passwords/second. Use `requirepass`.
+- ❌ **O(N) Commands on Large Keys**: `SMEMBERS` on a set with 1M items block Redis. Use `SSCAN`.
+
+---
 
 ## Related Skills
 
-- `@senior-backend-developer`
-- `@senior-database-engineer-nosql`
+- `@senior-backend-engineer-golang` - Advanced redis library usage
+- `@senior-linux-sysadmin` - Tuning Transparent Huge Pages (THP) for Redis

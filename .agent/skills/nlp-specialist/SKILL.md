@@ -7,236 +7,160 @@ description: "Expert Natural Language Processing including text classification, 
 
 ## Overview
 
-Master Natural Language Processing including text preprocessing, sentiment analysis, named entity recognition, text classification, and language model integration.
+This skill transforms you into an **NLP Engineer**. You will move beyond Regex and Bag-of-Words to mastering **Transformers (BERT/GPT)**, interacting with **Hugging Face**, fine-tuning **LLMs**, and deploying production-ready inference endpoints.
 
 ## When to Use This Skill
 
-- Use when building text analysis
-- Use when sentiment detection needed
-- Use when entity extraction required
-- Use when language understanding
+- Use when building Chatbots or RAG systems
+- Use when classifying text (Sentiment, Spam, Intent)
+- Use when extracting structured data (Named Entity Recognition - NER)
+- Use when summarizing long documents
+- Use when fine-tuning models (PEFT/LoRA) for custom tasks
 
-## How It Works
+---
 
-### Step 1: Text Preprocessing
+## Part 1: Modern NLP Pipeline (Transformers)
 
-```python
-import re
-import nltk
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer, PorterStemmer
+Spacy is great, but Transformers are SOTA.
 
-nltk.download(['punkt', 'stopwords', 'wordnet', 'averaged_perceptron_tagger'])
-
-class TextPreprocessor:
-    def __init__(self, language='english'):
-        self.stop_words = set(stopwords.words(language))
-        self.lemmatizer = WordNetLemmatizer()
-        self.stemmer = PorterStemmer()
-    
-    def clean_text(self, text: str) -> str:
-        # Lowercase
-        text = text.lower()
-        # Remove URLs
-        text = re.sub(r'http\S+|www\S+|https\S+', '', text)
-        # Remove HTML tags
-        text = re.sub(r'<.*?>', '', text)
-        # Remove special characters
-        text = re.sub(r'[^\w\s]', '', text)
-        # Remove extra whitespace
-        text = ' '.join(text.split())
-        return text
-    
-    def tokenize(self, text: str) -> list[str]:
-        return word_tokenize(text)
-    
-    def remove_stopwords(self, tokens: list[str]) -> list[str]:
-        return [t for t in tokens if t not in self.stop_words]
-    
-    def lemmatize(self, tokens: list[str]) -> list[str]:
-        return [self.lemmatizer.lemmatize(t) for t in tokens]
-    
-    def process(self, text: str) -> list[str]:
-        text = self.clean_text(text)
-        tokens = self.tokenize(text)
-        tokens = self.remove_stopwords(tokens)
-        tokens = self.lemmatize(tokens)
-        return tokens
-
-# Usage
-preprocessor = TextPreprocessor()
-tokens = preprocessor.process("The cats are running quickly in the park!")
-# Output: ['cat', 'running', 'quickly', 'park']
-```
-
-### Step 2: Sentiment Analysis
+### 1.1 The Hugging Face Ecosystem
 
 ```python
-from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer
-
-# Using Hugging Face pipeline
-sentiment_analyzer = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
-
-def analyze_sentiment(texts: list[str]) -> list[dict]:
-    results = sentiment_analyzer(texts)
-    return results
-
-# Example
-texts = [
-    "I love this product! It's amazing!",
-    "Terrible experience, would not recommend.",
-    "It's okay, nothing special."
-]
-results = analyze_sentiment(texts)
-# [{'label': 'positive', 'score': 0.98}, ...]
-
-# Custom sentiment model
-class SentimentClassifier:
-    def __init__(self, model_name="distilbert-base-uncased"):
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForSequenceClassification.from_pretrained(
-            model_name, num_labels=3
-        )
-    
-    def predict(self, text: str) -> dict:
-        inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
-        outputs = self.model(**inputs)
-        probs = outputs.logits.softmax(dim=-1)
-        
-        labels = ['negative', 'neutral', 'positive']
-        pred_idx = probs.argmax().item()
-        
-        return {
-            'label': labels[pred_idx],
-            'confidence': probs[0][pred_idx].item()
-        }
-```
-
-### Step 3: Named Entity Recognition
-
-```python
-import spacy
 from transformers import pipeline
 
-# Using spaCy
-nlp = spacy.load("en_core_web_lg")
+# Zero-Shot Classification (No training needed!)
+classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 
-def extract_entities_spacy(text: str) -> list[dict]:
-    doc = nlp(text)
-    entities = []
-    for ent in doc.ents:
-        entities.append({
-            'text': ent.text,
-            'label': ent.label_,
-            'start': ent.start_char,
-            'end': ent.end_char
-        })
-    return entities
+text = "The new iPhone 15 features a titanium frame."
+labels = ["technology", "politics", "sports"]
 
-# Example
-text = "Apple Inc. was founded by Steve Jobs in Cupertino, California in 1976."
-entities = extract_entities_spacy(text)
-# [
-#   {'text': 'Apple Inc.', 'label': 'ORG', ...},
-#   {'text': 'Steve Jobs', 'label': 'PERSON', ...},
-#   {'text': 'Cupertino', 'label': 'GPE', ...},
-#   {'text': 'California', 'label': 'GPE', ...},
-#   {'text': '1976', 'label': 'DATE', ...}
-# ]
-
-# Using Hugging Face
-ner_pipeline = pipeline("ner", model="dslim/bert-base-NER", aggregation_strategy="simple")
-
-def extract_entities_hf(text: str) -> list[dict]:
-    results = ner_pipeline(text)
-    return [
-        {
-            'text': r['word'],
-            'label': r['entity_group'],
-            'score': r['score']
-        }
-        for r in results
-    ]
+result = classifier(text, labels)
+print(result) 
+# Output: {'labels': ['technology', ...], 'scores': [0.99, ...]}
 ```
 
-### Step 4: Text Classification
+### 1.2 Tokenization
+
+Computers don't read text. They read tokens.
 
 ```python
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from transformers import AutoTokenizer
 
-# Traditional ML approach
-class TextClassifier:
-    def __init__(self):
-        self.pipeline = Pipeline([
-            ('tfidf', TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
-            ('clf', MultinomialNB())
-        ])
-    
-    def train(self, texts: list[str], labels: list[str]):
-        X_train, X_test, y_train, y_test = train_test_split(
-            texts, labels, test_size=0.2, random_state=42
-        )
-        self.pipeline.fit(X_train, y_train)
-        
-        # Evaluate
-        y_pred = self.pipeline.predict(X_test)
-        print(classification_report(y_test, y_pred))
-    
-    def predict(self, text: str) -> str:
-        return self.pipeline.predict([text])[0]
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+text = "Hello, world!"
+tokens = tokenizer(text, padding=True, truncation=True, return_tensors="pt")
 
-# Transformer-based classification
-from transformers import Trainer, TrainingArguments
-
-def train_transformer_classifier(train_dataset, eval_dataset, num_labels):
-    model = AutoModelForSequenceClassification.from_pretrained(
-        "distilbert-base-uncased", num_labels=num_labels
-    )
-    
-    training_args = TrainingArguments(
-        output_dir="./results",
-        num_train_epochs=3,
-        per_device_train_batch_size=16,
-        per_device_eval_batch_size=64,
-        evaluation_strategy="epoch",
-        save_strategy="epoch",
-        load_best_model_at_end=True
-    )
-    
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=eval_dataset
-    )
-    
-    trainer.train()
-    return model
+print(tokens['input_ids']) # [101, 7592, 1010, 2088, 999, 102]
 ```
 
-## Best Practices
+---
+
+## Part 2: Task Specific Models
+
+### 2.1 Named Entity Recognition (NER)
+
+Extracting Companies, Dates, Locations.
+
+```python
+ner = pipeline("ner", aggregation_strategy="simple")
+text = "Apple bought a startup in San Francisco for $1 Billion."
+print(ner(text))
+# [{'entity_group': 'ORG', 'word': 'Apple'}, {'entity_group': 'LOC', 'word': 'San Francisco'}]
+```
+
+### 2.2 Text Embedding (Semantic Search)
+
+Converting text to vectors for RAG.
+
+```python
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+embeddings = model.encode(["This is a sentence", "This is another one"])
+# Returns [384]-dimensional dense vectors
+```
+
+---
+
+## Part 3: Fine-Tuning (PEFT / LoRA)
+
+Don't retrain the whole model. Use **Low-Rank Adaptation (LoRA)**.
+
+```python
+from peft import LoraConfig, get_peft_model, TaskType
+
+peft_config = LoraConfig(
+    task_type=TaskType.SEQ_CLS, 
+    inference_mode=False, 
+    r=8, 
+    lora_alpha=32, 
+    lora_dropout=0.1
+)
+
+model = get_peft_model(base_model, peft_config)
+model.print_trainable_parameters()
+# "trainable params: 0.1% of all params" (Very Fast!)
+```
+
+---
+
+## Part 4: LLM Integration (LangChain / OpenAI)
+
+### 4.1 Prompt Templates
+
+```python
+from langchain.prompts import PromptTemplate
+
+template = "Translate the following english text to {language}: {text}"
+prompt = PromptTemplate(template=template, input_variables=["language", "text"])
+
+final_prompt = prompt.format(language="French", text="Hello")
+```
+
+### 4.2 Agents (Tool Use)
+
+Giving LLMs access to calculators, search, or APIs.
+
+---
+
+## Part 5: Deployment & Optimization
+
+### 5.1 Quantization (Running big models on small GPUs)
+
+- **FP32** (32-bit float): Standard. Huge VRAM.
+- **INT8** (8-bit integer): 4x smaller. Minimal accuracy loss.
+- **4-bit (QLoRA)**: Run Llama-2-70b on consumer GPUs.
+
+### 5.2 ONNX Runtime
+
+Convert PyTorch models to ONNX for 2x faster inference on CPU/Edge.
+
+```python
+# Export
+torch.onnx.export(model, dummy_input, "model.onnx")
+```
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Preprocess text consistently
-- ✅ Handle edge cases (empty, special chars)
-- ✅ Use appropriate models for task
-- ✅ Evaluate with proper metrics
-- ✅ Consider language/domain
+- ✅ **Use Pre-trained Models**: Don't train from scratch unless you have 10TB of text. Fine-tune instead.
+- ✅ **Clean Your Data**: Text quality > Model Architecture. Remove HTML tags, fix encoding.
+- ✅ **Chunking**: For RAG, split text intelligently (by paragraph/header), not just by character count.
+- ✅ **Eval**: Use metrics like BLEU/ROUGE for translation, but use **LLM-as-a-Judge** for subjective quality.
 
 ### ❌ Avoid This
 
-- ❌ Don't skip text cleaning
-- ❌ Don't ignore class imbalance
-- ❌ Don't overtrain on small data
-- ❌ Don't hardcode stopwords
+- ❌ **Regex for Complicated Tasks**: Don't parse natural language with Regex. It breaks on edge cases.
+- ❌ **Ignoring Token Limits**: LLMs have context windows (4k/8k/128k). Truncate or chunk inputs.
+- ❌ **Leaking PII**: Anonymize names/emails before sending to external APIs (OpenAI).
+
+---
 
 ## Related Skills
 
-- `@senior-ai-ml-engineer` - ML engineering
-- `@senior-python-developer` - Python development
+- `@senior-ai-ml-engineer` - Deep Learning foundations
+- `@senior-rag-engineer` - Retrieval Augmented Generation
+- `@senior-python-developer` - The language of AI
