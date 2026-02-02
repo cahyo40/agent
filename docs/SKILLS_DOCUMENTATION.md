@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.2.0  
-> **Last Updated:** 2026-02-01  
-> **Total Skills:** 261
+> **Version:** 6.3.0  
+> **Last Updated:** 2026-02-02  
+> **Total Skills:** 269
 
 ---
 
@@ -19,7 +19,16 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **261 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **269 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+
+### Apa itu Skill?
+
+Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam suatu domain. Setiap skill berisi:
+
+- **Context & Knowledge** - Pengetahuan domain spesifik
+- **Best Practices** - Standar industri dan pola yang direkomendasikan
+- **Code Patterns** - Template dan contoh kode siap pakai
+- **Anti-Patterns** - Kesalahan umum yang harus dihindari
 
 ### Key Features
 
@@ -34,7 +43,7 @@ Antigravity AI Agent Skills adalah koleksi **261 skills** yang memperluas kemamp
 |----------|-------|-------------|
 | 🤖 AI & Machine Learning | 20 | LLM, agents, RAG, NLP, CV, OCR |
 | 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
-| 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod |
+| 📱 Mobile Development | 17 | Flutter, iOS, Android, BLoC, Firebase, Supabase |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 17 | CI/CD, K8s, Terraform, Chaos Eng |
@@ -46,7 +55,7 @@ Antigravity AI Agent Skills adalah koleksi **261 skills** yang memperluas kemamp
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
 | 💼 Industry Apps | 21 | Healthcare, Trading, ERP, Fleet, BI, Travel, Logistics, Marketplace, Gig Economy |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
-| 🔮 Emerging Tech | 11 | VR/AR, quantum, Web3, Biometrics, Digital Human |
+| 🔮 Emerging Tech | 16 | VR/AR, quantum, Web3, Tech Trends, Innovation Scout |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Audio & Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
@@ -133,24 +142,27 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-### 📱 Mobile Development (14 Skills)
+### 📱 Mobile Development (17 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-flutter-developer` | Flutter, Riverpod, clean architecture |
-| `flutter-riverpod-specialist` | Riverpod state management |
-| `flutter-getx-specialist` | GetX state, routing, DI |
-| `flutter-testing-specialist` | Unit, widget, integration tests |
-| `flutter-package-developer` | Package creation, pub.dev |
-| `flutter-ci-cd` | GitHub Actions, Codemagic |
-| `senior-ios-developer` | Swift, SwiftUI, Combine |
-| `senior-android-developer` | Kotlin, Jetpack Compose |
-| `react-native-developer` | React Native, Expo |
-| `fitness-app-developer` | Workout tracking, health metrics |
-| `senior-firebase-developer` | Firestore, Auth, Functions |
-| `senior-supabase-developer` | PostgreSQL, RLS, Edge Functions |
-| `dapp-mobile-developer` | Flutter + Web3 integration |
-| `mobile-app-designer` | iOS/Android design patterns |
+| `senior-flutter-developer` | Expert Flutter development dengan clean architecture, performance optimization |
+| `flutter-riverpod-specialist` | State management dengan Riverpod, providers, code generation |
+| `flutter-bloc-specialist` | 🆕 BLoC pattern, Cubit, event-driven state management |
+| `flutter-getx-specialist` | GetX state management, routing, dependency injection |
+| `flutter-firebase-developer` | 🆕 Firebase Auth, Firestore, FCM, Storage, Crashlytics |
+| `flutter-supabase-developer` | 🆕 Supabase Auth, PostgreSQL, Realtime, RLS, Edge Functions |
+| `flutter-testing-specialist` | Unit tests, widget tests, integration tests, golden tests |
+| `flutter-package-developer` | Package creation, platform channels, pub.dev publishing |
+| `flutter-ci-cd` | GitHub Actions, Codemagic, Fastlane automation |
+| `senior-ios-developer` | Swift, SwiftUI, UIKit, Combine, async/await |
+| `senior-android-developer` | Kotlin, Jetpack Compose, MVVM, coroutines |
+| `react-native-developer` | React Native, Expo, cross-platform mobile |
+| `fitness-app-developer` | Workout tracking, health metrics integration |
+| `senior-firebase-developer` | Advanced Firebase patterns, multi-platform |
+| `senior-supabase-developer` | Advanced Supabase, PostgreSQL optimization |
+| `dapp-mobile-developer` | Flutter + Web3, WalletConnect, token/NFT |
+| `mobile-app-designer` | iOS/Android design patterns, HIG/Material |
 
 ---
 
@@ -301,18 +313,26 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-### 🔮 Emerging Tech (8 Skills)
+### 🔮 Emerging Tech & Innovation (16 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-spatial-computing-developer` | VR/AR, visionOS |
-| `senior-quantum-computing-developer` | Qiskit, quantum algorithms |
-| `senior-robotics-engineer` | ROS2, SLAM, autonomous |
-| `expert-web3-blockchain` | Smart contracts, DeFi |
-| `senior-web3-developer` | Web3 integration |
-| `web3-defi-developer` | AMM, lending protocols |
-| `gis-specialist` | PostGIS, Leaflet, Mapbox |
-| `iot-developer` | Arduino, Raspberry Pi |
+| `senior-spatial-computing-developer` | VR/AR development, Apple visionOS, Meta Quest |
+| `senior-quantum-computing-developer` | Qiskit, quantum algorithms, hybrid systems |
+| `senior-robotics-engineer` | ROS2, SLAM, motion planning, autonomous systems |
+| `expert-web3-blockchain` | Smart contracts, DeFi, NFTs, security-first |
+| `senior-web3-developer` | Web3 frontend integration, wagmi/viem |
+| `web3-defi-developer` | AMM, lending protocols, yield farming |
+| `tech-trend-analyst` | 🆕 Analyze GitHub Trending, StackOverflow surveys, Technology Radar |
+| `emerging-tech-specialist` | 🆕 Track bleeding-edge tech before mainstream adoption |
+| `open-source-evaluator` | 🆕 Assess OSS project health, maintainer activity, licensing risks |
+| `market-innovation-scout` | 🆕 Discover trending products on ProductHunt/IndieHackers |
+| `tech-stack-architect` | 🆕 Recommend cohesive tech stacks based on requirements |
+| `gis-specialist` | PostGIS, Leaflet, Mapbox, spatial analysis |
+| `iot-developer` | Arduino, Raspberry Pi, MQTT, sensors |
+| `biometric-system-architect` | FaceID, TouchID, multi-modal biometrics |
+| `digital-human-architect` | Digital humans, virtual influencers, AI avatars |
+| `autonomous-vehicle-engineer` | Sensor fusion, path planning, safety-critical |
 
 ---
 
@@ -343,6 +363,26 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ## Changelog
 
+### v6.3.0 (2026-02-02)
+
+- 🎉 **269 Skills** - Total skills increased from 261 to 269
+- ✨ New Flutter Integration Skills:
+  - `flutter-bloc-specialist` - BLoC/Cubit state management
+  - `flutter-firebase-developer` - Full Firebase integration
+  - `flutter-supabase-developer` - Full Supabase integration
+- ✨ New Tech Analysis Skills:
+  - `tech-trend-analyst` - Technology trend research
+  - `emerging-tech-specialist` - Cutting-edge tech tracking
+  - `open-source-evaluator` - OSS project evaluation
+  - `market-innovation-scout` - Market opportunity discovery
+  - `tech-stack-architect` - Stack recommendations
+- 📄 README updated with multi-platform usage guide
+
+### v6.2.0 (2026-02-01)
+
+- 🎉 **261 Skills** - Added 6 Creative AI skills
+- ✨ New skills: `ai-poster-designer`, `book-cover-architect`, `sports-poster-specialist`, `presentation-slide-expert`, `ai-native-filmmaker`, `digital-human-architect`
+
 ### v5.0.0 (2026-02-01)
 
 - 🎉 **209 Skills** - Total skills increased from 156 to 209
@@ -368,12 +408,6 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 - 🎉 **118 Skills**
 - ✨ Added Content Creation & Video category
-
----
-
-## License
-
-MIT © Antigravity AI Agent Skills
 
 ---
 
