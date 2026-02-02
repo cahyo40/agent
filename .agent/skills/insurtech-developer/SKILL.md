@@ -7,62 +7,175 @@ description: "Expert in insurance technology including claims processing, digita
 
 ## Overview
 
-Master the development of insurance platforms. Expertise in digital underwriting (risk assessment), automated claims processing, policy lifecycle management, premium calculation engines, and regulatory compliance (Solvency II, local insurance acts).
+This skill transforms you into an **Insurance Technology Developer**. You will master **Policy Management**, **Claims Processing**, **Underwriting Automation**, and **Regulatory Compliance** for building modern insurance platforms.
 
 ## When to Use This Skill
 
-- Use when building modern insurance portals or mobile apps
-- Use for digitizing paper-based claims workflows
-- Use when creating automated pricing models based on user data
-- Use for integrating external data sources (Telematics, Health) into risk models
+- Use when digitizing insurance policy management
+- Use when automating claims processing workflows
+- Use when building underwriting risk models
+- Use when integrating with third-party data providers
+- Use when ensuring regulatory compliance (HIPAA, GDPR)
 
-## How It Works
+---
 
-### Step 1: Digital Underwriting
+## Part 1: Insurance Domain Concepts
 
-- **Risk Engines**: Using rule-based or ML models to determine if a policy should be issued.
-- **Rating Engines**: Calculating the premium based on multiple variables (age, history, coverage).
+### 1.1 Core Entities
 
-### Step 2: Policy Lifecycle Management
+| Entity | Description |
+|--------|-------------|
+| **Policy** | Contract between insurer and policyholder |
+| **Premium** | Periodic payment for coverage |
+| **Claim** | Request for payout when event occurs |
+| **Underwriting** | Risk assessment before issuing policy |
+| **Coverage** | What is protected (life, auto, health) |
 
-- **Issuance**: Generating official policy documents and binders.
-- **Renewal**: Automated reminders and price adjustments for returning customers.
-- **Endorsements**: Managing changes to active policies without breaking historical data.
+### 1.2 Insurance Product Types
 
-### Step 3: Claims Processing Workflow
+| Type | Coverage | Example |
+|------|----------|---------|
+| **Health** | Medical expenses | Hospital stays, prescriptions |
+| **Auto** | Vehicle damage, liability | Collision, theft |
+| **Life** | Death benefit | Term life, whole life |
+| **Property** | Home/building damage | Fire, flood |
+| **Travel** | Trip issues | Cancellation, medical |
 
-```text
-CLAIMS STAGES:
-1. Notification (FNOL - First Notice of Loss)
-2. Evaluation (Evidence gathering, photo analysis via AI)
-3. Settlement (Payment calculation and authorization)
-4. Recovery (Subrogation from other insurance companies)
+---
+
+## Part 2: Policy Management System
+
+### 2.1 Policy Lifecycle
+
+```
+Quote Request -> Underwriting -> Policy Issued -> Premium Collection -> Renewal/Cancellation
 ```
 
-### Step 4: Fraud Detection
+### 2.2 Data Model (Simplified)
 
-- **Anomaly Detection**: Flagging suspicious claims for human investigation.
-- **Network Analysis**: Identifying clusters of fraudulent actors across multiple policies.
+```sql
+CREATE TABLE policies (
+    id UUID PRIMARY KEY,
+    policyholder_id UUID NOT NULL,
+    product_type VARCHAR(50),
+    coverage_amount DECIMAL(12,2),
+    premium_monthly DECIMAL(10,2),
+    start_date DATE,
+    end_date DATE,
+    status VARCHAR(20)  -- 'active', 'expired', 'cancelled'
+);
 
-## Best Practices
+CREATE TABLE policyholders (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    dob DATE,
+    address JSONB
+);
+```
+
+### 2.3 Quote Engine
+
+```python
+def calculate_premium(coverage_amount, risk_score, age, product_type):
+    base_rate = BASE_RATES[product_type]
+    age_factor = 1 + (age - 25) * 0.02 if age > 25 else 1
+    risk_factor = 1 + (risk_score / 100)
+    
+    return coverage_amount * base_rate * age_factor * risk_factor / 12
+```
+
+---
+
+## Part 3: Claims Processing
+
+### 3.1 Claim Workflow
+
+```
+Claim Submitted -> Document Collection -> Validation -> Adjudication -> Payout/Denial
+```
+
+### 3.2 Straight-Through Processing (STP)
+
+Automate simple claims with no human intervention.
+
+- **Rule Engine**: "If claim < $500 and photo verified, auto-approve."
+- **ML Fraud Detection**: Flag anomalies for manual review.
+
+### 3.3 Document Processing
+
+- **OCR**: Extract data from uploaded receipts.
+- **NLP**: Parse medical reports for ICD-10 codes.
+- **Photo AI**: Damage assessment from vehicle photos.
+
+---
+
+## Part 4: Underwriting Automation
+
+### 4.1 Risk Data Sources
+
+| Source | Data |
+|--------|------|
+| **MIB** | Medical history (US) |
+| **CLUE** | Claims history (property/auto) |
+| **DMV** | Driving record |
+| **Credit Bureau** | Credit-based insurance score |
+| **IoT/Telematics** | Driving behavior, smart home sensors |
+
+### 4.2 ML Risk Models
+
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+features = ['age', 'credit_score', 'claims_history', 'location_risk']
+target = 'approved'
+
+model = GradientBoostingClassifier()
+model.fit(X_train, y_train)
+```
+
+### 4.3 Decision Factors
+
+Output: Risk Score (1-100) + Recommended Premium Tier.
+
+---
+
+## Part 5: Compliance & Regulations
+
+### 5.1 Key Regulations
+
+| Region | Regulation |
+|--------|------------|
+| **US** | State-specific DOI, HIPAA (health) |
+| **EU** | GDPR, Solvency II |
+| **India** | IRDAI regulations |
+
+### 5.2 Data Protection
+
+- **Encrypt PII**: AES-256 at rest, TLS in transit.
+- **Audit Logs**: Who accessed what, when.
+- **Data Retention**: Delete expired policy data per regulation.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Maintain a perfect audit trail for all policy and claim changes
-- ✅ Use standard actuarial models for premium accuracy
-- ✅ Implement secure, legally binding digital signatures (e.g., DocuSign)
-- ✅ Use highly available systems for 24/7 claims notification
-- ✅ Design for multi-currency and multi-region compliance
+- ✅ **Versioned Products**: Policy terms change; keep historical versions.
+- ✅ **Idempotent Payments**: Avoid double-charging premiums.
+- ✅ **Explain AI Decisions**: Regulators require explainability.
 
 ### ❌ Avoid This
 
-- ❌ Don't store unencrypted PII or sensitive medical records
-- ❌ Don't hardcode fiscal logic into the core code (use a Rules Engine)
-- ❌ Don't skip rigorous UAT with real actuarial data
-- ❌ Don't allow non-authorized personnel to modify settlement amounts
+- ❌ **Hardcoded Business Rules**: Use rule engines (Drools, custom).
+- ❌ **Manual Document Handling**: Automate with OCR/NLP.
+- ❌ **Ignoring State/Country Variations**: Requirements differ significantly.
+
+---
 
 ## Related Skills
 
-- `@fintech-developer` - Money movement
-- `@healthcare-app-developer` - Health insurance overlap
-- `@document-generator` - Policy PDF creation
+- `@fintech-developer` - Payment processing
+- `@senior-database-engineer-sql` - Data modeling
+- `@senior-ai-ml-engineer` - Risk models

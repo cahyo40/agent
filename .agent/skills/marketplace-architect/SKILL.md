@@ -7,69 +7,178 @@ description: "Expert in multi-vendor marketplace systems including commission en
 
 ## Overview
 
-Master the architecture of multi-vendor marketplaces (e.g., Shopee, Amazon). Expertise in complex commission logic, automated payout systems (Stripe Connect), merchant onboarding, product feeds from multiple sources, and platform-wide reputation systems.
+This skill transforms you into a **Multi-Vendor Marketplace Developer**. You will master **Seller Onboarding**, **Commission Engines**, **Payout Automation**, and **Order Routing** for building platforms like Amazon Marketplace, Shopify, or Etsy.
 
 ## When to Use This Skill
 
-- Use when building platforms where multiple third-party sellers offer products
-- Use for implementing complex treasury logic (Split payments, Escrow)
-- Use when designing scalable merchant dashboards and inventory APIs
-- Use for multi-vendor dispute resolution and review systems
+- Use when building multi-vendor e-commerce platforms
+- Use when implementing seller/merchant management
+- Use when designing commission and payout systems
+- Use when handling split payments (customer pays, platform takes cut)
+- Use when managing catalog aggregation from multiple sellers
 
-## How It Works
+---
 
-### Step 1: Multi-Vendor Treasury & Payouts
+## Part 1: Marketplace Architecture
 
-- **Split Payments**: Diverting funds to the merchant, the platform (commission), and tax authorities instantly at checkout.
-- **Escrow**: Holding funds until the buyer confirms receipt of the product.
+### 1.1 Core Components
+
+```
+Buyer -> Product Catalog (Aggregated) -> Order Service -> Order Routing (to Seller)
+                                              |
+                                              v
+                                      Payment Service (Split)
+                                              |
+                                              v
+                                      Payout Service (to Seller)
+```
+
+### 1.2 Key Entities
+
+| Entity | Description |
+|--------|-------------|
+| **Seller** | Vendor listing products |
+| **Product** | Item with seller_id FK |
+| **Order** | May contain items from multiple sellers |
+| **Sub-Order** | Order split by seller for fulfillment |
+| **Commission** | Platform cut per transaction |
+
+---
+
+## Part 2: Seller Onboarding
+
+### 2.1 Verification Flow
+
+1. **Sign Up**: Basic info (name, email).
+2. **KYC**: Identity verification (Stripe Identity).
+3. **Bank Account**: For payouts (Stripe Connect).
+4. **Store Setup**: Logo, description, return policy.
+5. **Product Listing**: Add inventory.
+6. **Approval**: Manual or auto-approve.
+
+### 2.2 Stripe Connect Integration
 
 ```javascript
-// Stripe Connect Split Payment Example
-const session = await stripe.checkout.sessions.create({
-  payment_intent_data: {
-    application_fee_amount: 123, // Platform commission
-    transfer_data: {
-      destination: '{{CONNECTED_ACCOUNT_ID}}', // Merchant account
-    },
+// Create Connected Account (Express)
+const account = await stripe.accounts.create({
+  type: 'express',
+  country: 'US',
+  email: 'seller@example.com',
+  capabilities: {
+    transfers: { requested: true },
   },
-  // ... other session data
 });
 ```
 
-### Step 2: Merchant & Product Management
+---
 
-- **Isolated Inventories**: Ensuring Merchant A cannot see or modify Merchant B's products.
-- **Global Search**: High-performance indexing (Elasticsearch) across millions of products from thousands of sellers.
+## Part 3: Commission Engine
 
-### Step 3: Logistics & Fulfillment
+### 3.1 Commission Types
 
-- **Multi-Origin Shipping**: Calculating shipping rates from different warehouses in a single order.
-- **Order Splitting**: Creating sub-orders for each merchant within a single customer transaction.
+| Type | Example |
+|------|---------|
+| **Flat Fee** | $0.50 per order |
+| **Percentage** | 15% of order value |
+| **Tiered** | 10% for first $10k, 8% after |
+| **Category-Based** | Electronics 12%, Clothing 20% |
 
-### Step 4: Trust & Reputation
+### 3.2 Calculation
 
-- **Review Systems**: Verified purchase reviews with anti-fraud mechanisms.
-- **Seller KPIs**: Tracking response time, shipping speed, and cancellation rates.
+```python
+def calculate_commission(order_value, seller_tier, category):
+    base_rate = CATEGORY_RATES[category]
+    tier_discount = TIER_DISCOUNTS[seller_tier]
+    
+    commission = order_value * (base_rate - tier_discount)
+    return max(commission, MINIMUM_COMMISSION)
+```
 
-## Best Practices
+### 3.3 Split Payment (Stripe)
+
+```javascript
+const paymentIntent = await stripe.paymentIntents.create({
+  amount: 10000,  // $100
+  currency: 'usd',
+  transfer_data: {
+    destination: 'acct_seller123',  // Seller's Stripe Connect ID
+  },
+  application_fee_amount: 1500,  // $15 platform commission
+});
+```
+
+---
+
+## Part 4: Order Management
+
+### 4.1 Multi-Seller Orders
+
+One cart, multiple sellers = multiple sub-orders.
+
+```json
+{
+  "order_id": "ORD-001",
+  "sub_orders": [
+    { "seller_id": "A", "items": [...], "shipping_label": "..." },
+    { "seller_id": "B", "items": [...], "shipping_label": "..." }
+  ]
+}
+```
+
+### 4.2 Fulfillment Models
+
+| Model | Who Ships? |
+|-------|------------|
+| **Seller-Fulfilled** | Seller handles shipping |
+| **Marketplace-Fulfilled** | Platform warehouse (FBA model) |
+| **Dropship** | Third-party fulfillment |
+
+### 4.3 Returns & Refunds
+
+- Define return policy per seller.
+- Platform mediates disputes.
+- Commission clawback on refunds.
+
+---
+
+## Part 5: Catalog Management
+
+### 5.1 Product Listing
+
+- **Unique SKU per Seller**: Same product, different sellers.
+- **Buy Box**: Algorithm chooses default seller (price, rating, delivery).
+
+### 5.2 Category Management
+
+Standardized category tree (Google Product Taxonomy).
+Sellers map their products to platform categories.
+
+### 5.3 Pricing
+
+- **MSRP**: Suggested price.
+- **Seller Price**: Actual listing price.
+- **Price Parity**: Optional rule requiring competitive pricing.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use dedicated payout services like Stripe Connect or Adyen for Platforms
-- ✅ Implement robust permission systems for merchant dashboard access
-- ✅ Design for high-concurrency during flash sales
-- ✅ Automate merchant KYC (Know Your Customer) and tax verification
-- ✅ Provide detailed merchant analytics and reporting
+- ✅ **Escrow Payments**: Hold funds until delivery confirmed.
+- ✅ **Seller Dashboard**: Real-time sales, payouts, analytics.
+- ✅ **Fraud Detection**: Flag suspicious sellers (fake reviews, counterfeit).
 
 ### ❌ Avoid This
 
-- ❌ Don't mix merchant funds with platform operational funds
-- ❌ Don't allow merchants to directly access customer's full PII if avoidable
-- ❌ Don't hardcode commission rates—make them dynamic per category or seller
-- ❌ Don't skip rigorous testing for the payout calculation logic
+- ❌ **Instant Payouts Before Delivery**: Chargebacks hurt.
+- ❌ **No Seller Vetting**: Quality control is critical.
+- ❌ **Ignoring Tax**: Marketplace facilitator laws (US) require platform to collect.
+
+---
 
 ## Related Skills
 
-- `@e-commerce-developer` - Core shopping logic
-- `@payment-integration-specialist` - Treasury foundation
-- `@senior-backend-developer` - Database isolation
+- `@e-commerce-developer` - Cart and checkout
+- `@payment-integration-specialist` - Stripe Connect
+- `@logistics-software-developer` - Shipping integration

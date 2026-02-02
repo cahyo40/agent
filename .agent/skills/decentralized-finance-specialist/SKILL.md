@@ -3,67 +3,162 @@ name: decentralized-finance-specialist
 description: "Expert in Decentralized Finance (DeFi) including AMM logic, lending protocols, yield farming, and liquidity mining"
 ---
 
-# DeFi Specialist
+# Decentralized Finance Specialist
 
 ## Overview
 
-Master the complex world of Decentralized Finance. Expertise in AMM (Automated Market Maker) mathematics (Uniswap v2/v3), flash loans, algorithmic stablecoins, yield farming strategies, and liquid staking.
+This skill transforms you into a **DeFi Protocol Developer**. You will master **Automated Market Makers (AMMs)**, **Lending Protocols**, **Yield Farming Strategies**, and **Smart Contract Security** for building and interacting with DeFi systems.
 
 ## When to Use This Skill
 
-- Use when building or auditing DEXs (Decentralized Exchanges)
-- Use when designing lending or borrowing protocols (Aave, Compound)
-- Use for creating complex yield strategies or portfolio aggregators
-- Use when implementing flash loan logic for arbitrage or rebalancing
+- Use when building or auditing DEX protocols (Uniswap, Curve)
+- Use when implementing lending/borrowing (Aave, Compound)
+- Use when analyzing yield farming strategies
+- Use when understanding tokenomics and incentives
+- Use when detecting DeFi exploits (flash loans, reentrancy)
 
-## How It Works
+---
 
-### Step 1: Constant Product Formula (AMM)
+## Part 1: Automated Market Makers (AMMs)
 
-- **Uniswap v2**: `x * y = k`. Understanding slippage, price impact, and impermanent loss.
-- **Uniswap v3 (Concentrated Liquidity)**: Providing liquidity in specific price ranges to increase capital efficiency.
+### 1.1 Constant Product Formula
 
-### Step 2: Lending & Interest Rate Logic
+The foundation of Uniswap V2:
+`x * y = k`
 
-```solidity
-// Simplified Lending logic
-function calculateInterest(uint principal, uint time, uint rate) public pure returns (uint) {
-    return principal * rate * time / (1e18 * 365 days);
-}
+- `x`: Reserve of Token A.
+- `y`: Reserve of Token B.
+- `k`: Constant. Never changes (except when adding/removing liquidity).
+
+**Price Impact**: Large trades move `k` significantly, causing slippage.
+
+### 1.2 Uniswap V3 (Concentrated Liquidity)
+
+LPs provide liquidity in specific price ranges.
+
+- Higher capital efficiency.
+- More complex position management.
+
+### 1.3 Curve (StableSwap)
+
+Optimized for assets of similar value (USDC/USDT).
+
+- Lower slippage for stablecoin swaps.
+- Uses StableSwap invariant (mix of constant sum and constant product).
+
+---
+
+## Part 2: Lending Protocols
+
+### 2.1 Architecture (Aave/Compound Model)
+
+1. **Deposit**: User deposits collateral, receives aTokens/cTokens.
+2. **Borrow**: User borrows against collateral. Interest accrues.
+3. **Health Factor**: `Collateral Value / Borrowed Value`. If < 1, liquidation.
+4. **Liquidation**: Anyone can repay debt and claim collateral at discount.
+
+### 2.2 Key Parameters
+
+| Parameter | Meaning |
+|-----------|---------|
+| **LTV** | Loan-to-Value ratio (max borrow %) |
+| **Liquidation Threshold** | When liquidation can occur |
+| **Liquidation Bonus** | Discount for liquidators |
+| **Utilization Rate** | % of deposited funds borrowed |
+
+### 2.3 Interest Rate Models
+
+```
+Interest Rate = Base Rate + (Utilization * Slope)
 ```
 
-- **Collateral Factor**: Maximum amount a user can borrow against their collateral.
-- **Liquidation**: Closing under-collateralized positions to protect the protocol.
+When utilization is high, interest rates spike to incentivize deposits.
 
-### Step 3: Flash Loans & Arbitrage
+---
 
-- **Flash Loans**: Multi-million dollar loans that must be repaid within the same block.
-- **Arbitrage**: Exploiting price differences between different pools or exchanges.
+## Part 3: Yield Farming & Liquidity Mining
 
-### Step 4: Staking & Governance
+### 3.1 How It Works
 
-- **Liquid Staking (LSD)**: Staking tokens while receiving a liquid representative (e.g., stETH).
-- **DAO Governance**: Implementing voting systems and treasury management.
+1. User provides liquidity (LP tokens).
+2. Protocol rewards LPs with governance tokens.
+3. User farms by staking LP tokens in Masterchef-style contracts.
 
-## Best Practices
+### 3.2 Risks
+
+| Risk | Description |
+|------|-------------|
+| **Impermanent Loss** | LP value diverges from HODL value |
+| **Rug Pull** | Devs drain liquidity |
+| **Smart Contract Risk** | Bugs, exploits |
+| **Token Inflation** | Rewards dilute token value |
+
+### 3.3 APY vs APR
+
+- **APR**: Simple interest. 100% APR = 100% return in 1 year.
+- **APY**: Compound interest. Higher with frequent compounding.
+
+---
+
+## Part 4: Flash Loans
+
+### 4.1 What Are Flash Loans?
+
+Borrow any amount, repay in same transaction. No collateral needed.
+
+- If not repaid, entire transaction reverts.
+
+### 4.2 Use Cases
+
+- **Arbitrage**: Buy cheap on DEX A, sell high on DEX B.
+- **Collateral Swaps**: Refinance position without unwinding.
+- **Liquidations**: Borrow funds to liquidate underwater positions.
+
+### 4.3 Flash Loan Attacks
+
+Manipulate price oracles within a single transaction to exploit protocols.
+**Defense**: Use TWAPs (Time-Weighted Average Prices), Chainlink Oracles.
+
+---
+
+## Part 5: Security Considerations
+
+### 5.1 Common Vulnerabilities
+
+| Vulnerability | Description |
+|---------------|-------------|
+| **Reentrancy** | Callback before state update |
+| **Oracle Manipulation** | Spot price used as oracle |
+| **Rounding Errors** | Integer division issues |
+| **Access Control** | Missing `onlyOwner` |
+
+### 5.2 Auditing Checklist
+
+- ✅ Use CEI (Checks-Effects-Interactions) pattern.
+- ✅ Use Chainlink for price feeds.
+- ✅ Test with Foundry fuzzing.
+- ✅ Get multi-sig on admin keys.
+
+---
+
+## Part 6: Best Practices Checklist
 
 ### ✅ Do This
 
-- ✅ Use secure Oracles (Chainlink) to prevent price manipulation
-- ✅ Implement rigorous time-weighted average price (TWAP) calculations
-- ✅ Conduct extensive economic simulations using tools like Gauntlet
-- ✅ Use battle-tested OpenZeppelin libraries for smart contracts
-- ✅ Design for composability with other DeFi protocols
+- ✅ **Simulate First**: Fork mainnet locally (Hardhat Forking, Foundry).
+- ✅ **Use Established Libraries**: OpenZeppelin, Solmate.
+- ✅ **Time-lock Upgrades**: Governance delay on critical changes.
 
 ### ❌ Avoid This
 
-- ❌ Don't rely on `balanceOf` for price calculation (susceptible to flash loan attacks)
-- ❌ Don't ignore the risk of "Governance Attacks"
-- ❌ Don't hardcode sensitive constant variables
-- ❌ Don't skip audit for new economic models
+- ❌ **Using Spot Price as Oracle**: Flash loan manipulation.
+- ❌ **Minting Unbounded Tokens**: Token inflation.
+- ❌ **Skipping Audits**: DeFi is adversarial; assume attacks.
+
+---
 
 ## Related Skills
 
-- `@expert-web3-blockchain` - Foundation
-- `@web3-smart-contract-auditor` - Security focus
-- `@trading-app-developer` - Financial UX
+- `@expert-web3-blockchain` - Smart contract fundamentals
+- `@web3-smart-contract-auditor` - Security auditing
+- `@senior-typescript-developer` - Frontend integration (wagmi)
