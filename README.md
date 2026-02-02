@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-261-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.2.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-269-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.3.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 261+ skills untuk memperluas kemampuan AI Agent**
+**Koleksi 269+ skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **261 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **269 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -77,6 +77,76 @@ your-project/
 ```
 
 ---
+
+## 🔄 Use on Existing Projects
+
+Skills dapat langsung digunakan pada project yang sudah ada:
+
+### Step 1: Copy Folder `.agent`
+
+```bash
+# Clone repo skills
+git clone https://github.com/cahyo40/agent.git temp-skills
+
+# Copy ke project Anda
+cp -r temp-skills/.agent /path/to/your-project/
+
+# Cleanup
+rm -rf temp-skills
+```
+
+### Step 2: Struktur Akhir
+
+```text
+your-existing-project/
+├── .agent/
+│   └── skills/           ← Skills folder (baru)
+│       ├── senior-flutter-developer/
+│       └── ...
+├── lib/                  ← Code Anda (existing)
+├── src/                  ← Code Anda (existing)
+└── package.json          ← Config Anda (existing)
+```
+
+### Tips
+
+- ✅ Skills tidak mengubah code Anda sama sekali
+- ✅ Folder `.agent` bisa di-gitignore jika tidak ingin di-commit
+- ✅ Update skills dengan `git pull` di folder temp lalu copy ulang
+
+---
+
+## 🤖 Use with Other AI Models
+
+Skills ini kompatibel dengan berbagai AI coding assistants:
+
+| Platform | Folder Target | Cara Pakai |
+|----------|---------------|------------|
+| **Gemini (Antigravity)** | `.agent/skills/` | Native support ✅ |
+| **Claude Code** | `.claude/skills/` | Rename folder `.agent` → `.claude` |
+| **Cursor IDE** | `.cursor/skills/` | Rename folder `.agent` → `.cursor` |
+| **OpenCode CLI** | `.opencode/skills/` | Rename folder `.agent` → `.opencode` |
+| **ChatGPT** | Custom Instructions | Copy isi SKILL.md ke System Prompt |
+| **Cline (VSCode)** | `.cline/skills/` | Rename folder `.agent` → `.cline` |
+
+### Contoh: Setup untuk Claude Code
+
+```bash
+# Clone dan rename
+git clone https://github.com/cahyo40/agent.git temp-skills
+mv temp-skills/.agent temp-skills/.claude
+cp -r temp-skills/.claude /path/to/your-project/
+rm -rf temp-skills
+```
+
+### Contoh: Setup untuk ChatGPT
+
+1. Buka skill yang diinginkan (misal `senior-flutter-developer/SKILL.md`)
+2. Copy seluruh isi file
+3. Paste ke **Custom Instructions** atau **System Prompt** di ChatGPT
+4. AI akan mengikuti instruksi skill tersebut
+
+> 💡 **Tip**: Untuk ChatGPT, pilih 1-3 skills yang paling relevan karena ada batasan karakter.
 
 ## 🏆 Skills Categories
 
@@ -163,7 +233,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 ```text
 agents/
 ├── .agent/
-│   └── skills/          # 209 skill folders
+│   └── skills/          # 269 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/
