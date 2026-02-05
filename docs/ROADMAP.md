@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.6.0  
-> **Total Skills:** 304
+> **Current Version:** v6.7.0  
+> **Total Skills:** 307
 
 ---
 
@@ -10,12 +10,24 @@
 
 ```text
 ████████████████████████████████████████ 100%
-304/304 Skills Complete ✅
+307/307 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.7.0 - Platform Expansion (Feb 2026) ✅
+
+**Goal:** 307 Skills + Desktop Flutter + NestJS + LLM Fine-tuning
+
+**New in v6.7.0:**
+
+- 🆕 `flutter-desktop-developer` - macOS, Windows, Linux Flutter apps
+- 🆕 `senior-nestjs-developer` - NestJS TypeScript backend framework
+- 🆕 `llm-fine-tuning-specialist` - LoRA, QLoRA, PEFT fine-tuning
+
+---
 
 ### v6.6.0 - BaaS & Education Expansion (Feb 2026) ✅
 
@@ -221,7 +233,8 @@ What this skill does and when to use it.
 | v6.3.0 | Feb 2026 | 269 | +3% |
 | v6.4.0 | Feb 2026 | 275 | +2% |
 | v6.5.0 | Feb 2026 | 300 | +9% 🎉 |
-| **v6.6.0** | **Feb 2026** | **304** | **+1.3%** |
+| v6.6.0 | Feb 2026 | 304 | +1.3% |
+| **v6.7.0** | **Feb 2026** | **307** | **+1%** |
 
 ---
 

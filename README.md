@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-304-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.6.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-307-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.7.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 304 skills untuk memperluas kemampuan AI Agent**
+**Koleksi 307 skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **304 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **307 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -152,9 +152,9 @@ rm -rf temp-skills
 
 | Category | Count | Highlights |
 |----------|-------|------------|
-| 🤖 AI & Machine Learning | 20 | LLM, RAG, agents, CV, OCR, LLM Security |
-| 🔧 Backend Development | 26 | Python, Go, Rust, PHP, Elixir, C++ |
-| 📱 Mobile Development | 14 | Flutter, iOS, Android, Riverpod, GetX |
+| 🤖 AI & Machine Learning | 21 | LLM, RAG, agents, fine-tuning, LLM Security |
+| 🔧 Backend Development | 27 | Python, Go, NestJS, Rust, PHP, Elixir |
+| 📱 Mobile Development | 15 | Flutter, iOS, Android, Desktop, Riverpod |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Figma, design systems |
 | ☁️ Cloud & DevOps | 17 | AWS, K8s, Terraform, Chaos Eng |
@@ -233,7 +233,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 ```text
 agents/
 ├── .agent/
-│   └── skills/          # 304 skill folders
+│   └── skills/          # 307 skill folders
 │       ├── senior-flutter-developer/
 │       │   └── SKILL.md
 │       ├── senior-react-developer/
