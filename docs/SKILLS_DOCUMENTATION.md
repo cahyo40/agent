@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.7.0  
-> **Last Updated:** 2026-02-05  
-> **Total Skills:** 307
+> **Version:** 6.8.0  
+> **Last Updated:** 2026-02-07  
+> **Total Skills:** 309
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **307 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **309 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -41,7 +41,7 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| 🤖 AI & Machine Learning | 21 | LLM, agents, RAG, fine-tuning, NLP, CV |
+| 🤖 AI & Machine Learning | 22 | LLM, agents, RAG, fine-tuning, notebooks |
 | 🔧 Backend Development | 28 | Python, Go, NestJS, Rust, PHP, Elixir |
 | 📱 Mobile Development | 18 | Flutter, iOS, Android, Desktop, BLoC, Firebase |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
@@ -61,7 +61,7 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
 | 🎨 Creative Arts | 1 | Creative Coding Artist |
 | 📚 Education | 1 | MIT CS Professor |
-| 📚 Others | 31 | Various specialized skills |
+| 📚 Others | 32 | Various specialized skills |
 
 ---
 
@@ -293,6 +293,13 @@ buatkan script dan ide thumbnail untuk video YouTube
 ---
 
 ## Changelog
+
+### v6.8.0 (2026-02-07)
+
+- 🎉 **309 Skills** - Data Science & Automation update
+- ✨ New Skills:
+  - `data-science-notebook-developer` - Jupyter, Colab, interactive analysis
+  - `google-apps-script-developer` - Google Workspace automation
 
 ### v6.7.0 (2026-02-05)
 

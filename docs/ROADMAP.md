@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.7.0  
-> **Total Skills:** 307
+> **Current Version:** v6.8.0  
+> **Total Skills:** 309
 
 ---
 
@@ -10,12 +10,23 @@
 
 ```text
 ████████████████████████████████████████ 100%
-307/307 Skills Complete ✅
+309/309 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.8.0 - Data Science & Automation (Feb 2026) ✅
+
+**Goal:** 309 Skills + Notebooks + Google Workspace Automation
+
+**New in v6.8.0:**
+
+- 🆕 `data-science-notebook-developer` - Jupyter, Colab, interactive analysis
+- 🆕 `google-apps-script-developer` - Google Workspace automation
+
+---
 
 ### v6.7.0 - Platform Expansion (Feb 2026) ✅
 
@@ -234,7 +245,8 @@ What this skill does and when to use it.
 | v6.4.0 | Feb 2026 | 275 | +2% |
 | v6.5.0 | Feb 2026 | 300 | +9% 🎉 |
 | v6.6.0 | Feb 2026 | 304 | +1.3% |
-| **v6.7.0** | **Feb 2026** | **307** | **+1%** |
+| v6.7.0 | Feb 2026 | 307 | +1% |
+| **v6.8.0** | **Feb 2026** | **309** | **+0.6%** |
 
 ---
 
