@@ -228,16 +228,52 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-## 📁 Repository Structure
+## � Workflows (Vibe Coding)
+
+Pre-built workflows untuk inisialisasi project dengan anti-hallucination guardrails:
+
+| Workflow | Description |
+|----------|-------------|
+| `/vibe-coding-init` | Base initialization untuk semua project |
+| `/vibe-coding-flutter` | Flutter multi-platform dengan Clean Architecture |
+| `/vibe-coding-react` | React/Next.js web application |
+| `/vibe-coding-vue` | Vue.js/Nuxt dengan Composition API |
+| `/vibe-coding-svelte` | Svelte/SvelteKit web application |
+| `/vibe-coding-astro` | Astro static/hybrid website |
+| `/vibe-coding-nestjs` | NestJS backend API |
+| `/vibe-coding-laravel` | Laravel backend/full-stack |
+| `/vibe-coding-go-backend` | Go backend API |
+| `/vibe-coding-python-backend` | Python FastAPI/Django REST |
+| `/vibe-coding-python-web` | Python web (Django/Flask) |
+| `/vibe-coding-react-native` | React Native mobile app |
+| `/vibe-coding-fullstack` | Full-stack monorepo dengan Turborepo |
+
+### Usage
+
+```text
+/vibe-coding-flutter
+→ Membuat context files untuk project Flutter
+
+/vibe-coding-react
+→ Membuat context files untuk project React/Next.js
+```
+
+---
+
+## �📁 Repository Structure
 
 ```text
 agents/
 ├── .agent/
-│   └── skills/          # 307 skill folders
-│       ├── senior-flutter-developer/
-│       │   └── SKILL.md
-│       ├── senior-react-developer/
-│       │   └── SKILL.md
+│   ├── skills/           # 309 skill folders
+│   │   ├── senior-flutter-developer/
+│   │   │   └── SKILL.md
+│   │   ├── senior-react-developer/
+│   │   │   └── SKILL.md
+│   │   └── ...
+│   └── workflows/        # 13 vibe-coding workflows
+│       ├── vibe-coding-flutter.md
+│       ├── vibe-coding-react.md
 │       └── ...
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
