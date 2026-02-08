@@ -6,6 +6,13 @@ description: Initialize Vibe Coding context files for Flutter multi-platform app
 
 Workflow untuk setup dokumen konteks Vibe Coding khusus **Flutter Multi-Platform App** (iOS, Android, Web, macOS, Windows, Linux) dengan Clean Architecture dan state management modern (Riverpod/BLoC/GetX).
 
+> **📚 Skill Reference:** Workflow ini menggunakan `@senior-flutter-developer` yang memiliki templates lengkap:
+>
+> - **State Management:** `templates/state_management/` (riverpod, bloc, getx)
+> - **Backend Integration:** `templates/backend_integration/` (firebase, supabase)
+> - **Platform:** `templates/platform/` (ios, android, web, desktop, platform_channels)
+> - **Tooling:** `templates/tooling/` (testing, ci_cd, package_development)
+
 ---
 
 ## 📋 Prerequisites
@@ -237,6 +244,9 @@ Buatkan file `RULES.md` sebagai panduan AI untuk Flutter project.
 - Gunakan named parameters untuk widget custom
 
 ## State Management Rules
+
+> 📚 **Refer ke:** `@senior-flutter-developer` → `templates/state_management/[riverpod|bloc|getx].md`
+
 ### Jika Riverpod:
 - Gunakan `@riverpod` annotation untuk code generation
 - Provider harus ada documentation comment
@@ -662,7 +672,9 @@ test/
 
 ### Step 2.3: Generate DB_SCHEMA.md
 
-Gunakan skill `database-modeling-specialist` + `senior-firebase-developer` atau `senior-supabase-developer`:
+Gunakan skill `database-modeling-specialist` + `senior-flutter-developer`:
+
+> 📚 **Refer ke:** `@senior-flutter-developer` → `templates/backend_integration/[firebase|supabase].md`
 
 ```markdown
 Act as database-modeling-specialist.
@@ -1088,6 +1100,26 @@ dart run build_runner build --delete-conflicting-outputs
 
 ## 💡 Flutter-Specific Tips
 
+### Skill Templates Reference
+
+Gunakan templates dari `@senior-flutter-developer` untuk pattern yang lebih detail:
+
+| Topic | Template Path |
+|-------|---------------|
+| Riverpod patterns | `templates/state_management/riverpod.md` |
+| BLoC patterns | `templates/state_management/bloc.md` |
+| GetX patterns | `templates/state_management/getx.md` |
+| Firebase integration | `templates/backend_integration/firebase.md` |
+| Supabase integration | `templates/backend_integration/supabase.md` |
+| iOS specifics | `templates/platform/ios.md` |
+| Android specifics | `templates/platform/android.md` |
+| Web deployment | `templates/platform/web.md` |
+| Desktop apps | `templates/platform/desktop.md` |
+| Platform channels | `templates/platform/platform_channels.md` |
+| Testing | `templates/tooling/testing.md` |
+| CI/CD pipelines | `templates/tooling/ci_cd.md` |
+| Package development | `templates/tooling/package_development.md` |
+
 ### Magic Words untuk Flutter Prompts
 
 - "Gunakan freezed untuk data class"
@@ -1095,6 +1127,7 @@ dart run build_runner build --delete-conflicting-outputs
 - "Handle semua state: loading, error, empty, data"
 - "Gunakan const constructor"
 - "Refer ke DESIGN_SYSTEM.md untuk styling"
+- "Refer ke templates di `@senior-flutter-developer` untuk pattern [topic]"
 
 ### Common Mistakes to Avoid
 
@@ -1105,7 +1138,6 @@ dart run build_runner build --delete-conflicting-outputs
 | String literals | Pakai constants atau l10n |
 | Nested callbacks | Pakai async/await |
 | `setState` untuk complex state | Pakai state management |
-
 
 ---
 
@@ -1309,4 +1341,3 @@ flutter build linux --release
 | **Web** | PWA manifest.json created | ☐ |
 | **Desktop** | Window size configured | ☐ |
 | **Desktop** | Minimum window size set | ☐ |
-
