@@ -7,186 +7,97 @@ description: "Expert Node.js development including Express, NestJS, event-driven
 
 ## Overview
 
-This skill transforms you into a **Node.js Core Engineer**. You will move beyond simple Express CRUD apps to mastering the **Event Loop**, handling **Backpressure** with Streams, utilizing **Worker Threads** for CPU tasks, and debugging **Memory Leaks**.
+This skill helps build robust, production-grade Node.js applications with focus on performance, scalability, and maintainability. Covers advanced patterns, debugging, and enterprise architecture.
 
 ## When to Use This Skill
 
-- Use when auditing performance of Node.js services
-- Use when implementing file processing (Streams)
-- Use when handling CPU-intensive tasks (Image resizing, Crypto)
-- Use when designing scalable microservices (NestJS)
-- Use when debugging "Heap out of memory" errors
+- Building production REST/GraphQL APIs with Express or Fastify
+- Designing scalable microservices with NestJS
+- Processing large files with Streams (CSV, uploads, ETL)
+- Handling CPU-intensive tasks (crypto, image processing)
+- Debugging performance issues, memory leaks, and crashes
+- Implementing real-time features with WebSockets
 
----
+## Templates Reference
 
-## Part 1: The Event Loop & Async Architecture
+### Core Patterns
 
-Node is single-threaded (mostly). Don't block it.
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Express API** | `templates/express-api.md` | Production-ready Express setup with middleware |
+| **Fastify API** | `templates/fastify-api.md` | High-performance Fastify with schema validation |
+| **NestJS Module** | `templates/nestjs-module.md` | Clean architecture with DI, Guards, Interceptors |
+| **Error Handling** | `templates/error-handling.md` | Global error handler, custom errors, logging |
+| **Validation** | `templates/validation.md` | Zod, class-validator, runtime type checking |
 
-### 1.1 The Golden Rule
+### Advanced Backend
 
-**NEVER** use synchronous I/O (`fs.readFileSync`) or heavy loops on the main thread in a web server.
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Streams** | `templates/streams.md` | Pipeline, backpressure, transform streams |
+| **Worker Threads** | `templates/worker-threads.md` | CPU-intensive tasks, thread pool pattern |
+| **Event Emitters** | `templates/event-emitters.md` | Async events, typed emitters, patterns |
+| **Caching** | `templates/caching.md` | Redis patterns, cache-aside, invalidation |
+| **Queues** | `templates/queues.md` | BullMQ, job processing, retry strategies |
 
-### 1.2 `process.nextTick` vs `setImmediate`
+### Database & ORM
 
-- `process.nextTick()`: Runs *immediately* after current operation, before any I/O events. (Higher priority).
-- `setImmediate()`: Runs on the next iteration of the Event Loop (Check phase).
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Prisma** | `templates/prisma.md` | Schema, queries, transactions, migrations |
+| **TypeORM** | `templates/typeorm.md` | Entities, repositories, query builder |
+| **MongoDB** | `templates/mongodb.md` | Mongoose, aggregation, indexes |
 
-```javascript
-// Starvation Risk
-function recursive() {
-  process.nextTick(recursive); // BLOCKS I/O forever
-}
+### Testing & Performance
 
-// Safe recursive
-function recursiveSafe() {
-  setImmediate(recursiveSafe); // Allows I/O in between
-}
-```
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Testing** | `templates/testing.md` | Jest/Vitest, mocking, integration tests |
+| **Performance** | `templates/performance.md` | Profiling, memory leaks, optimization |
+| **Graceful Shutdown** | `templates/graceful-shutdown.md` | Signal handling, connection draining |
 
----
+### Security & Auth
 
-## Part 2: Streams & Backpressure
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Authentication** | `templates/authentication.md` | JWT, sessions, OAuth2, Passport |
+| **Security** | `templates/security.md` | Helmet, CORS, rate limiting, input sanitization |
 
-Handling 10GB files with 512MB RAM.
+## Key Principles
 
-### 2.1 Pipeline Pattern (Safe Streaming)
+1. **Never Block Event Loop** - Use async I/O, Worker Threads for CPU tasks
+2. **Streams for Large Data** - Don't load entire files into memory
+3. **Structured Logging** - JSON logs with correlation IDs (pino, winston)
+4. **Graceful Shutdown** - Handle SIGTERM, drain connections
+5. **Type Safety** - TypeScript with strict mode
+6. **Error Boundaries** - Global handlers, never crash without logging
 
-Don't use `.pipe()` without error handling. Use `pipeline`.
-
-```typescript
-import { pipeline } from 'stream/promises';
-import { createReadStream, createWriteStream } from 'fs';
-import { createGzip } from 'zlib';
-
-async function compressFile(input: string, output: string) {
-  try {
-    await pipeline(
-      createReadStream(input), // Source
-      createGzip(),            // Transform
-      createWriteStream(output) // Destination
-    );
-    console.log('Compression complete');
-  } catch (err) {
-    console.error('Streaming failed', err);
-  }
-}
-```
-
-### 2.2 Generators as Streams
-
-Node.js Readable streams are Async Iterables.
-
-```typescript
-import { Readable } from 'stream';
-
-async function* generateData() {
-  for (let i = 0; i < 1000; i++) {
-    yield `Row ${i}\n`; // Efficiently yield chunks
-  }
-}
-
-const readable = Readable.from(generateData());
-readable.pipe(process.stdout);
-```
-
----
-
-## Part 3: CPU Intensive Tasks (Worker Threads)
-
-Node is bad at math/CPU tasks on the main thread. Use Workers.
-
-```javascript
-// main.js
-const { Worker } = require('worker_threads');
-
-function runService(workerData) {
-  return new Promise((resolve, reject) => {
-    const worker = new Worker('./worker.js', { workerData });
-    worker.on('message', resolve);
-    worker.on('error', reject);
-    worker.on('exit', (code) => {
-      if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
-    });
-  });
-}
-
-// worker.js
-const { parentPort, workerData } = require('worker_threads');
-
-// Heavy calculation
-let result = 0;
-for (let i = 0; i < 1e9; i++) {
-  result += i;
-}
-
-parentPort.postMessage(result);
-```
-
----
-
-## Part 4: Production Patterns (NestJS)
-
-Standard Enterprise Framework.
-
-```typescript
-// cats.controller.ts (Clean Architecture)
-@Controller('cats')
-export class CatsController {
-  constructor(private catsService: CatsService) {}
-
-  @Post()
-  @UseGuards(RolesGuard) // Declarative Security
-  async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) {
-    return this.catsService.create(createCatDto);
-  }
-}
-```
-
----
-
-## Part 5: Debugging & Profiling
-
-### 5.1 Memory Leaks
-
-Common causes:
-
-1. Global variables (growing arrays).
-2. Unremoved Event Listeners (`stream.on('data', ...)` without off).
-3. Closure references.
-
-**Tool**: `node --inspect` + Chrome DevTools "Memory" tab -> Take Heap Snapshot.
-
-### 5.2 Performance Profiling
-
-**Tool**: `clinic.js`
-
-```bash
-npm install -g clinic
-clinic doctor -- node server.js
-```
-
----
-
-## Part 6: Best Practices Checklist
+## Best Practices
 
 ### ✅ Do This
 
-- ✅ **Handle Uncaught Exceptions**: Log and restart. Process is in undefined state.
-- ✅ **Use `pino` for logging**: JSON logging, extremely fast, async.
-- ✅ **Graceful Shutdown**: Listen to `SIGTERM`. Close DB connections, stop server accepting new requests.
-- ✅ **Secure Headers**: Use `helmet` middleware.
+- ✅ Use `pipeline()` instead of `.pipe()` for streams
+- ✅ Use `pino` for structured JSON logging
+- ✅ Handle `uncaughtException` and `unhandledRejection`
+- ✅ Use `helmet` for security headers
+- ✅ Use environment variables via validated config
+- ✅ Use connection pooling (database, Redis)
+- ✅ Write integration tests, not just unit tests
+- ✅ Use TypeScript with strict mode
 
 ### ❌ Avoid This
 
-- ❌ **`console.log` in Prod**: It's synchronous and blocking! Use a logger.
-- ❌ **Storing state in memory**: Node processes are ephemeral. Use Redis.
-- ❌ **Blocking Event Loop**: No `bcrypt.hashSync()`. Use async versions always.
-
----
+- ❌ Don't use `console.log` in production (blocking!)
+- ❌ Don't use sync methods (`fs.readFileSync`) in request handlers
+- ❌ Don't store state in memory (use Redis/DB)
+- ❌ Don't use `any` type in TypeScript
+- ❌ Don't ignore backpressure in streams
+- ❌ Don't hardcode secrets
 
 ## Related Skills
 
-- `@senior-typescript-developer` - Language of choice for Node
-- `@senior-backend-engineer-golang` - Alternative backend
-- `@docker-containerization-specialist` - Packaging Node apps
+- `@senior-typescript-developer` - Language fundamentals
+- `@senior-nestjs-developer` - NestJS deep dive
+- `@senior-database-engineer-sql` - Database optimization
+- `@docker-containerization-specialist` - Container packaging
+- `@senior-devops-engineer` - CI/CD & deployment
