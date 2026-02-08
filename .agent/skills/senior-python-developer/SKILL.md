@@ -7,207 +7,113 @@ description: "Expert Python development including FastAPI, async programming, ty
 
 ## Overview
 
-This skill transforms you into a **Python Expert**. You will move beyond scripting to building robust, type-safe, and asynchronous applications. You will master **FastAPI**, **Pydantic** for validation, **Asyncio** for concurrency, and strictly typed Python (`mypy`).
+This skill helps build robust, production-grade Python applications with focus on type safety, performance, and maintainability. Covers advanced patterns, Clean Architecture, debugging, and enterprise-ready backend systems.
 
 ## When to Use This Skill
 
-- Use when building Backend APIs (FastAPI/Django/Flask)
-- Use when writing data processing scripts (Pandas/Polars)
-- Use when debugging concurrency issues (Race conditions, Deadlocks)
-- Use when optimizing Python performance (Profiling, Multiprocessing)
-- Use when structuring large Python monorepos
+- Building production REST APIs with FastAPI or Django
+- Designing scalable services with Clean Architecture
+- Processing large data with async patterns and queues
+- Debugging performance issues, memory leaks, and concurrency bugs
+- Implementing secure authentication and authorization
+- Deploying containerized Python applications
 
----
+## Templates Reference
 
-## Part 1: Modern Python (Type Safety)
+### Project Architecture
 
-Python 3.10+ is strictly typed. Use `mypy` or `pyright`.
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Project Structure** | `templates/project-structure.md` | Clean Architecture layout, monorepo setup |
+| **Configuration** | `templates/configuration.md` | pydantic-settings, env management, secrets |
+| **Dependency Injection** | `templates/dependency-injection.md` | DI containers, FastAPI dependencies |
 
-### 1.1 Type Hinting Best Practices
+### FastAPI Patterns
 
-```python
-from typing import Optional, List, Dict, Any, Union
-from collections.abc import Callable, Iterable
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **FastAPI Setup** | `templates/fastapi-patterns.md` | Production-ready FastAPI with middleware |
+| **Routing & Versioning** | `templates/routing.md` | API versioning, routers, OpenAPI customization |
+| **Background Tasks** | `templates/background-tasks.md` | Celery, FastAPI BackgroundTasks, job queues |
 
-# Use built-in types (Python 3.9+)
-def process_items(items: list[str]) -> dict[str, int]:
-    result = {}
-    for item in items:
-        result[item] = len(item)
-    return result
+### Database & ORM
 
-# Optional (Nullable)
-def find_user(user_id: int) -> str | None: # 3.10+ syntax for Union[str, None]
-    return "User" if user_id == 1 else None
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **SQLAlchemy 2.0** | `templates/database-patterns.md` | Repository pattern, Unit of Work, async |
+| **Migrations** | `templates/migrations.md` | Alembic patterns, data migrations |
+| **Query Optimization** | `templates/query-optimization.md` | N+1 prevention, eager loading, indexing |
 
-# Protocols (Structural Typing / Interfaces)
-from typing import Protocol
+### Async & Concurrency
 
-class Loggable(Protocol):
-    def log(self, msg: str) -> None: ...
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Async Patterns** | `templates/async-patterns.md` | asyncio, aiohttp, concurrent execution |
+| **Task Queues** | `templates/task-queues.md` | Celery, RQ, async job processing |
+| **Rate Limiting** | `templates/rate-limiting.md` | Throttling, circuit breakers |
 
-def logger(obj: Loggable) -> None:
-    obj.log("Hello")
-```
+### Testing & Quality
 
-### 1.2 Pydantic (Data Validation)
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Testing** | `templates/testing-patterns.md` | Pytest, fixtures, integration tests, mocking |
+| **Code Quality** | `templates/code-quality.md` | Ruff, mypy, pre-commit hooks |
 
-The backbone of modern Python apps.
+### Security & Auth
 
-```python
-from pydantic import BaseModel, Field, EmailStr, field_validator
-from datetime import datetime
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Authentication** | `templates/security.md` | JWT, OAuth2, password hashing, RBAC |
+| **API Security** | `templates/api-security.md` | CORS, rate limiting, input validation |
 
-class UserCreate(BaseModel):
-    username: str = Field(min_length=3, max_length=50)
-    email: EmailStr
-    age: int | None = None
-    created_at: datetime = Field(default_factory=datetime.now)
+### Production & DevOps
 
-    @field_validator('age')
-    @classmethod
-    def check_age(cls, v: int | None) -> int | None:
-        if v is not None and v < 18:
-            raise ValueError('Must be 18+')
-        return v
+| Pattern | File | Description |
+| ------- | ---- | ----------- |
+| **Observability** | `templates/observability.md` | Structlog, OpenTelemetry, metrics |
+| **Deployment** | `templates/deployment.md` | Docker, Gunicorn, CI/CD, health checks |
+| **Performance** | `templates/performance.md` | Profiling, caching, optimization |
 
-# Usage
-try:
-    user = UserCreate(username="john", email="john@example.com", age=20)
-    print(user.model_dump_json())
-except ValueError as e:
-    print(e.errors())
-```
+## Key Principles
 
----
+1. **Type Everything** - Use strict type hints, run `mypy --strict`
+2. **Async for I/O** - Use async/await for database, HTTP, file I/O
+3. **Structured Logging** - JSON logs with correlation IDs (structlog)
+4. **Dependency Injection** - Testable, loosely coupled components
+5. **Repository Pattern** - Abstract database access behind interfaces
+6. **Graceful Shutdown** - Handle SIGTERM, drain connections
+7. **Configuration as Code** - pydantic-settings, never hardcode secrets
 
-## Part 2: Asynchronous Programming (Asyncio)
-
-Stop blocking the main thread.
-
-### 2.1 Async/Await Basics
-
-```python
-import asyncio
-import aiohttp
-
-async def fetch_url(session: aiohttp.ClientSession, url: str) -> str:
-    async with session.get(url) as response:
-        return await response.text()
-
-async def main():
-    async with aiohttp.ClientSession() as session:
-        # Run concurrently (Parallel I/O)
-        tasks = [
-            fetch_url(session, "https://google.com"),
-            fetch_url(session, "https://github.com"),
-        ]
-        results = await asyncio.gather(*tasks)
-        print(f"Fetched {len(results)} pages")
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-### 2.2 Sync vs Async
-
-- **CPU Bound (Heavy Math)**: Use `multiprocessing` or C extensions. `asyncio` won't help.
-- **I/O Bound (DB, Network)**: Use `asyncio`. Efficiency is massive.
-
----
-
-## Part 3: FastAPI (Production Ready)
-
-The standard framework for Modern Python APIs.
-
-```python
-from fastapi import FastAPI, HTTPException, Depends
-from sqlalchemy.orm import Session
-
-app = FastAPI()
-
-# Dependency Injection
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-@app.get("/users/{user_id}", response_model=UserResponse)
-async def read_user(user_id: int, db: Session = Depends(get_db)):
-    user = crud.get_user(db, user_id=user_id)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-```
-
----
-
-## Part 4: Testing (Pytest)
-
-Stop using `unittest`. Use `pytest` fixtures.
-
-```python
-import pytest
-from httpx import AsyncClient
-
-# Fixture (Setup/Teardown)
-@pytest.fixture
-def sample_user():
-    return {"username": "test", "email": "test@test.com"}
-
-# Test Case
-def test_user_creation(sample_user):
-    assert sample_user["username"] == "test"
-
-# Async Test
-@pytest.mark.asyncio
-async def test_api_endpoint():
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.get("/health")
-    assert response.status_code == 200
-```
-
----
-
-## Part 5: Dependency Management (Poetry/UV)
-
-Stop using `pip freeze > requirements.txt`. It breaks dependency resolution.
-
-**Use Poetry:**
-
-1. `poetry init`
-2. `poetry add fastapi uvicorn`
-3. `poetry add --group dev pytest black isort`
-4. `poetry run python main.py`
-
-**Use UV (The new hotness - extremely fast):**
-
-1. `uv venv`
-2. `uv pip install fastapi`
-
----
-
-## Part 6: Best Practices Checklist
+## Best Practices
 
 ### ✅ Do This
 
-- ✅ **Use Type Hints everywhere**: It serves as documentation and catches errors.
-- ✅ **Use strict formatters**: `ruff` (combines black, isort, flake8) is the new standard. Fast and strict.
-- ✅ **Handle Exceptions**: `try: ... except AppSpecificError:` instead of `except Exception:`.
-- ✅ **Use Context Managers**: `with open(...)` ensures files/connections are closed.
+- ✅ Use Python 3.11+ with strict type hints
+- ✅ Use `pydantic` for all data validation
+- ✅ Use `structlog` for structured JSON logging
+- ✅ Use `ruff` for linting + formatting (replaces black, isort, flake8)
+- ✅ Use async database drivers (asyncpg, aiosqlite)
+- ✅ Use connection pooling for databases
+- ✅ Write integration tests with TestClient
+- ✅ Use environment variables via pydantic-settings
+- ✅ Handle exceptions with custom exception classes
+- ✅ Use context managers for resource cleanup
 
 ### ❌ Avoid This
 
-- ❌ **Mutable Default Arguments**: `def bad(items=[]):` -> The list persists across calls! Use `None`.
-- ❌ **`import *`**: Pollutes namespace. Be explicit.
-- ❌ **Global Variables**: Nightmare for concurrency and testing.
-
----
+- ❌ Don't use `print()` for logging
+- ❌ Don't use mutable default arguments (`def bad(items=[])`)
+- ❌ Don't use `import *`
+- ❌ Don't use `except Exception:` without re-raising
+- ❌ Don't store state in global variables
+- ❌ Don't hardcode configuration values
+- ❌ Don't use synchronous I/O in async handlers
+- ❌ Don't ignore `mypy` errors
 
 ## Related Skills
 
-- `@senior-backend-engineer-golang` - Comparing patterns
-- `@senior-database-engineer-sql` - SQLAlchemy/SQLModel integration
-- `@devsecops-specialist` - Secure Python deployment
+- `@senior-fastapi-developer` - FastAPI deep dive
+- `@senior-database-engineer-sql` - PostgreSQL optimization
+- `@docker-containerization-specialist` - Container packaging
+- `@senior-devops-engineer` - CI/CD & deployment
+- `@senior-rag-engineer` - LLM integration
