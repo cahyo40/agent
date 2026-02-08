@@ -58,7 +58,7 @@ Skill: `tech-stack-architect` + `senior-laravel-developer`
 
 ### Option B: Blade + Livewire
 - Blade templates
-- Livewire 3 untuk interaktivity
+- Livewire 3 untuk interactivity
 - Alpine.js untuk JS
 
 ### Option C: Inertia.js
@@ -67,8 +67,8 @@ Skill: `tech-stack-architect` + `senior-laravel-developer`
 - TypeScript optional
 
 ## Authentication
-- Laravel Breeze / Jetstream
-- Sanctum untuk API tokens
+- Laravel Breeze / Jetstream (Breeze preferred for simple apps)
+- Sanctum untuk API tokens (Default for API)
 
 ## File Storage
 - Laravel Filesystem
@@ -76,7 +76,7 @@ Skill: `tech-stack-architect` + `senior-laravel-developer`
 
 ## Queue
 - Laravel Queues
-- Redis driver
+- Redis driver (Horizon for monitoring)
 
 ## Approved Packages (composer.json)
 ```json
@@ -87,21 +87,24 @@ Skill: `tech-stack-architect` + `senior-laravel-developer`
     "laravel/sanctum": "^4.0",
     "laravel/horizon": "^5.0",
     "spatie/laravel-permission": "^6.0",
-    "spatie/laravel-query-builder": "^5.0"
+    "spatie/laravel-query-builder": "^5.0",
+    "spatie/laravel-medialibrary": "^11.0"
   },
   "require-dev": {
     "laravel/pint": "^1.0",
     "pestphp/pest": "^2.0",
-    "pestphp/pest-plugin-laravel": "^2.0"
+    "pestphp/pest-plugin-laravel": "^2.0",
+    "spatie/laravel-ignition": "^2.0"
   }
 }
 ```
 
 ## Constraints
 
-- WAJIB PHP 8.2+ features (readonly, enums, match)
-- WAJIB strict types
+- WAJIB PHP 8.2+ features (readonly, enums, match, constructor promotion)
+- WAJIB strict types (`declare(strict_types=1);`)
 - Laravel Pint untuk formatting
+- SELALU gunakan native type hints untuk parameters dan return types
 
 ```
 
@@ -117,51 +120,57 @@ Skill: `senior-laravel-developer`
 ```markdown
 ## PHP Standards
 - PHP 8.2+ features
-- Strict types (`declare(strict_types=1)`)
-- PSR-12 coding style
-- Laravel Pint untuk formatting
+- Strict types (`declare(strict_types=1);`)
+- PSR-12 coding style via Laravel Pint
+- SELALU gunakan constructor promotion jika memungkinkan
 
 ## Laravel Conventions
 - Fat Models, Thin Controllers
+- **Service Layer** untuk kompleks business logic
+- **Repository Pattern** untuk data access abstraction (opsional namun disarankan)
 - Form Requests untuk validation
 - API Resources untuk response transformation
-- Policies untuk authorization
+- Policies/Gate untuk authorization
 
 ## Naming Convention
-- Models: PascalCase singular (User, Post)
-- Controllers: PascalCase + Controller (UserController)
-- Migrations: snake_case dengan timestamp
-- Routes: kebab-case
+- Models: `PascalCase` singular (`User`, `Order`)
+- Controllers: `PascalCase` + `Controller` (`OrderController`)
+- Services: `PascalCase` + `Service` (`OrderService`)
+- Repositories: `PascalCase` + `Repository` (`OrderRepository`)
+- Migrations: `snake_case` dengan timestamp
+- API Routes: `kebab-case` (`/api/v1/user-profiles`)
 
 ## Database Rules
 - SELALU gunakan migrations
-- JANGAN edit migration yang sudah production
-- Eloquent relationships WAJIB didefinisikan
-- Eager loading untuk avoid N+1
+- JANGAN edit migration yang sudah production (gunakan migration baru)
+- Eloquent relationships WAJIB didefinisikan dengan type hints
+- Eager loading (`with()`) untuk menghindari N+1 query problem
+- Gunakan Database Transactions (`DB::transaction`) untuk multi-step writes
 
 ## Controller Rules
-- Single responsibility
+- Single responsibility (Thin Controllers)
 - Max 5-7 methods per controller
 - Resource controllers untuk CRUD
-- Invokable controllers untuk single action
+- JANGAN letakkan business logic di controller
 
 ## Validation Rules
-- Form Request classes
+- Gunakan Form Request classes
 - JANGAN validate di controller
-- Custom rules di App\Rules
+- Custom rules di `App\Rules` jika diperlukan
 
 ## API Response
 - API Resources untuk transformation
-- Consistent format: data, message, errors
-- Proper HTTP status codes
+- Consistent format: `data`, `message`, `meta` (untuk pagination)
+- Proper HTTP status codes (200, 201, 204, 403, 404, 422)
 
 ## AI Behavior Rules
-1. JANGAN install package tidak ada di composer.json
-2. JANGAN raw queries kecuali perlu
-3. SELALU gunakan Form Request
-4. SELALU gunakan API Resources
-5. Refer ke DB_SCHEMA.md untuk migrations
-6. Refer ke API_CONTRACT.md untuk routes
+1. JANGAN install package tidak ada di `composer.json` tanpa izin
+2. JANGAN gunakan raw SQL queries kecuali performansi sangat kritikal
+3. SELALU gunakan Form Request untuk setiap input validation
+4. SELALU gunakan API Resources untuk output data
+5. Refer ke `DB_SCHEMA.md` sebelum membuat migrations baru
+6. Refer ke `API_CONTRACT.md` sebelum membuat routes baru
+7. Gunakan Service Layer untuk logika yang melibatkan lebih dari satu model
 ```
 
 // turbo
@@ -173,11 +182,7 @@ Skill: `senior-laravel-developer`
 
 ### Step 2.1: FOLDER_STRUCTURE.md
 
-```markdown
-## Laravel 11 Structure
-
-```
-
+```text
 app/
 ├── Console/                     # Artisan commands
 ├── Exceptions/                  # Custom exceptions
@@ -191,13 +196,13 @@ app/
 ├── Models/                      # Eloquent models
 ├── Policies/                    # Authorization
 ├── Providers/
-├── Services/                    # Business logic (custom)
-└── Repositories/                # Data access (custom)
+├── Services/                    # Business logic (Required for complex apps)
+└── Repositories/                # Data access (Recommended for abstraction)
 
 database/
 ├── factories/
 ├── migrations/
-└── seeders/
+├── seeders/
 
 resources/
 ├── views/                       # Blade templates
@@ -214,17 +219,22 @@ routes/
 
 tests/
 ├── Feature/
+│   ├── Api/                     # API feature tests
+│   └── Web/                     # Web feature tests
 └── Unit/
-
 ```
 
 ## Naming Conventions
+
 - Model: `User.php` (singular, PascalCase)
 - Controller: `UserController.php`
+- Service: `UserService.php`
+- Repository: `UserRepository.php`
 - Request: `StoreUserRequest.php`, `UpdateUserRequest.php`
 - Resource: `UserResource.php`, `UserCollection.php`
 - Migration: `2024_01_01_000000_create_users_table.php`
 - Seeder: `UserSeeder.php`
+
 ```
 
 // turbo
@@ -235,30 +245,26 @@ tests/
 ### Step 2.2: EXAMPLES.md
 
 ```markdown
-## 1. Model
+## 1. Model (Eloquent)
+
 ```php
 <?php
 declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasUuids;
+    use HasApiTokens;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password'];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {
@@ -268,14 +274,51 @@ class User extends Authenticatable
         ];
     }
 
-    public function posts(): HasMany
+    public function orders(): HasMany
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Order::class);
     }
 }
 ```
 
-## 2. Form Request
+## 2. Service & Repository Layer
+
+```php
+<?php
+// app/Services/UserService.php
+namespace App\Services;
+
+use App\Models\User;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\DB;
+
+class UserService
+{
+    public function __construct(
+        private UserRepository $userRepository
+    ) {}
+
+    public function register(array $data): User
+    {
+        return DB::transaction(fn() => $this->userRepository->create($data));
+    }
+}
+
+// app/Repositories/UserRepository.php
+namespace App\Repositories;
+
+use App\Models\User;
+
+class UserRepository
+{
+    public function create(array $data): User
+    {
+        return User::create($data);
+    }
+}
+```
+
+## 3. Form Request
 
 ```php
 <?php
@@ -287,48 +330,20 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
+    public function authorize(): bool { return true; }
 
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
         ];
     }
 }
 ```
 
-## 3. API Resource
-
-```php
-<?php
-declare(strict_types=1);
-
-namespace App\Http\Resources;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-
-class UserResource extends JsonResource
-{
-    public function toArray(Request $request): array
-    {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'created_at' => $this->created_at->toISOString(),
-        ];
-    }
-}
-```
-
-## 4. Controller
+## 4. Controller (Thin)
 
 ```php
 <?php
@@ -339,42 +354,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
-    public function index(): JsonResponse
-    {
-        $users = User::paginate(15);
-        return UserResource::collection($users)->response();
-    }
+    public function __construct(
+        private UserService $userService
+    ) {}
 
-    public function store(StoreUserRequest $request): JsonResponse
+    public function store(StoreUserRequest $request): UserResource
     {
-        $user = User::create($request->validated());
-        return (new UserResource($user))
-            ->response()
-            ->setStatusCode(201);
-    }
-
-    public function show(User $user): UserResource
-    {
+        $user = $this->userService->register($request->validated());
         return new UserResource($user);
     }
 }
 ```
 
-## 5. API Routes
-
-```php
-// routes/api.php
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('users', UserController::class);
-});
-```
-
-## 6. Migration
+## 5. Migration
 
 ```php
 <?php
@@ -387,7 +383,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -412,7 +408,7 @@ return new class extends Migration
 ```bash
 composer create-project laravel/laravel . --prefer-dist
 php artisan install:api  # Setup API routes + Sanctum
-composer require spatie/laravel-permission spatie/laravel-query-builder
+composer require spatie/laravel-permission spatie/laravel-query-builder spatie/laravel-medialibrary
 composer require --dev pestphp/pest pestphp/pest-plugin-laravel
 ./vendor/bin/pest --init
 ```
@@ -421,7 +417,7 @@ composer require --dev pestphp/pest pestphp/pest-plugin-laravel
 
 ## 📁 Checklist
 
-```
+```text
 PRD.md, TECH_STACK.md, RULES.md, DB_SCHEMA.md,
 FOLDER_STRUCTURE.md, API_CONTRACT.md, EXAMPLES.md
 ```
