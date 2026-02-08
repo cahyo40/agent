@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.8.0  
-> **Last Updated:** 2026-02-07  
-> **Total Skills:** 309
+> **Version:** 6.9.0  
+> **Last Updated:** 2026-02-08  
+> **Total Skills:** 300
 
 ---
 
@@ -43,7 +43,7 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 |----------|-------|-------------|
 | 🤖 AI & Machine Learning | 22 | LLM, agents, RAG, fine-tuning, notebooks |
 | 🔧 Backend Development | 28 | Python, Go, NestJS, Rust, PHP, Elixir |
-| 📱 Mobile Development | 18 | Flutter, iOS, Android, Desktop, BLoC, Firebase |
+| 📱 Mobile Development | 9 | Flutter (consolidated), iOS, Android, React Native |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
 | 🎨 UI/UX & Design | 14 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 17 | CI/CD, K8s, Terraform, Chaos Eng |
@@ -145,28 +145,26 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-### 📱 Mobile Development (17 Skills)
+### 📱 Mobile Development (9 Skills)
 
 | Skill | Description |
 |-------|-------------|
-| `senior-flutter-developer` | Expert Flutter development dengan clean architecture |
-| `flutter-riverpod-specialist` | State management dengan Riverpod |
-| `flutter-bloc-specialist` | BLoC pattern, Cubit, event-driven |
-| `flutter-getx-specialist` | GetX state management, routing |
-| `flutter-firebase-developer` | Firebase Auth, Firestore, FCM, Storage |
-| `flutter-supabase-developer` | Supabase Auth, PostgreSQL, Realtime |
-| `flutter-testing-specialist` | Unit tests, widget tests, integration tests |
-| `flutter-package-developer` | Package creation, platform channels |
-| `flutter-ci-cd` | GitHub Actions, Codemagic, Fastlane |
+| `senior-flutter-developer` | **Consolidated** - Includes state management, Firebase, Supabase, Web, Desktop, Testing, CI/CD, and Package Development as templates |
+| `yo-flutter-dev` | Flutter dengan yo.dart generator dan YoUI component library |
 | `senior-ios-developer` | Swift, SwiftUI, UIKit, Combine |
 | `senior-android-developer` | Kotlin, Jetpack Compose, MVVM |
 | `react-native-developer` | React Native, Expo, cross-platform |
-| `fitness-app-developer` | Workout tracking, health metrics |
-| `senior-firebase-developer` | Advanced Firebase patterns |
-| `senior-supabase-developer` | Advanced Supabase, PostgreSQL |
+| `senior-firebase-developer` | Advanced Firebase patterns (platform-agnostic) |
+| `senior-supabase-developer` | Advanced Supabase, PostgreSQL (platform-agnostic) |
 | `dapp-mobile-developer` | Flutter + Web3, WalletConnect |
 | `mobile-app-designer` | iOS/Android design patterns |
-| `flutter-desktop-developer` | macOS, Windows, Linux desktop apps |
+
+> **Note:** Flutter-specific skills telah dikonsolidasi menjadi templates di dalam `senior-flutter-developer`:
+>
+> - State Management: Riverpod, BLoC, GetX
+> - Backend: Firebase, Supabase
+> - Platform: iOS, Android, Web, Desktop, Platform Channels
+> - Tooling: Testing, CI/CD, Package Development
 
 ---
 
@@ -273,7 +271,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 |----------|--------------|
 | Create TikTok/Reels content | `@short-form-video-creator` |
 | Build Flutter app | `@senior-flutter-developer` |
-| State management Flutter | `@flutter-riverpod-specialist` |
+| State management Flutter | `@senior-flutter-developer` (template) |
 | Build React app | `@senior-react-developer` |
 | Create REST API (Python) | `@python-fastapi-developer` |
 | Create REST API (Go) | `@senior-backend-engineer-golang` |
@@ -293,6 +291,18 @@ buatkan script dan ide thumbnail untuk video YouTube
 ---
 
 ## Changelog
+
+### v6.9.0 (2026-02-08)
+
+- 🎉 **300 Skills** - Flutter consolidation update
+- 🔄 **Flutter Skills Consolidated:**
+  - Merged 10 Flutter skills into `senior-flutter-developer` templates
+  - State Management: `riverpod.md`, `bloc.md`, `getx.md`
+  - Backend Integration: `firebase.md`, `supabase.md`
+  - Platform: `ios.md`, `android.md`, `web.md`, `desktop.md`, `platform_channels.md`
+  - Tooling: `testing.md`, `ci_cd.md`, `package_development.md`
+- ✅ Kept `yo-flutter-dev` as separate specialized skill
+- 📉 Skill count reduced from 309 to 300 (consolidation)
 
 ### v6.8.0 (2026-02-07)
 
