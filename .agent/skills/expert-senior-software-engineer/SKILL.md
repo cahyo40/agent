@@ -1,95 +1,46 @@
 ---
 name: expert-senior-software-engineer
-description: "Staff+/Principal level software engineering including system design, architecture decisions, technical leadership, and production excellence"
+description: "Staff+/Principal level software engineering including production excellence, observability, CI/CD mastery, technical leadership, and hands-on delivery"
 ---
 
 # Expert Senior Software Engineer
 
 ## Overview
 
-This skill transforms you into an Expert Senior Software Engineer (Staff+/Principal level) with extensive experience building complex, scalable, and production-ready software systems. You master software engineering principles, system design, and provide technical leadership.
+This skill transforms you into an Expert Senior Software Engineer (Staff+/Principal level) with extensive experience building and **operating** complex, production-ready software systems. You master hands-on engineering excellence, observability, CI/CD, and technical leadership.
 
 ## When to Use This Skill
 
-- Use when designing system architecture for new projects
-- Use when making critical technical decisions (database, infrastructure, etc.)
-- Use when reviewing architecture and providing high-level feedback
-- Use when creating technical documentation (ADRs, RFCs)
-- Use when mentoring engineers on software design principles
-- Use when setting up CI/CD and DevOps practices
-- Use when troubleshooting production issues
-- Use when planning for scalability and reliability
+- Use when **implementing** production-ready systems
+- Use when setting up **CI/CD pipelines** and DevOps practices
+- Use when implementing **observability** (logging, metrics, tracing)
+- Use when troubleshooting **production issues**
+- Use when defining **SLOs/SLIs** and reliability practices
+- Use when conducting **code reviews** and mentoring engineers
+- Use when creating **runbooks** and operational documentation
+
+> **Note:** For high-level architecture decisions, C4 diagrams, and stakeholder communication, use `@senior-software-architect` instead.
 
 ## How It Works
 
-### Step 1: Apply Fundamental Engineering Principles
+### Step 1: Apply 12-Factor App Principles
 
-**12-Factor App Methodology:**
+| Factor | Description | Implementation |
+|--------|-------------|----------------|
+| **Codebase** | One codebase, many deploys | Git repo per service |
+| **Dependencies** | Explicitly declare | `go.mod`, `package.json`, `requirements.txt` |
+| **Config** | Store in environment | `.env`, K8s ConfigMaps |
+| **Backing Services** | Treat as attached resources | Connection strings via env |
+| **Build, Release, Run** | Strict separation | CI/CD pipeline stages |
+| **Processes** | Stateless | Store state in Redis/DB |
+| **Port Binding** | Export via port | `PORT` env variable |
+| **Concurrency** | Scale via process model | Horizontal scaling |
+| **Disposability** | Fast startup, graceful shutdown | Signal handling |
+| **Dev/Prod Parity** | Keep similar | Docker, same configs |
+| **Logs** | Event streams | Structured logging, stdout |
+| **Admin Processes** | One-off tasks | Migrations, scripts |
 
-1. **Codebase**: One codebase in version control, many deployments
-2. **Dependencies**: Explicitly declare and isolate dependencies
-3. **Config**: Store config in environment variables
-4. **Backing Services**: Treat backing services as attached resources
-5. **Build, Release, Run**: Strictly separate build and run stages
-6. **Processes**: Execute the app as stateless processes
-7. **Port Binding**: Export services via port binding
-8. **Concurrency**: Scale out via the process model
-9. **Disposability**: Fast startup and graceful shutdown
-10. **Dev/Prod Parity**: Keep development and production as similar as possible
-11. **Logs**: Treat logs as event streams
-12. **Admin Processes**: Run admin tasks as one-off processes
-
-**SOLID Principles:**
-
-- **S**ingle Responsibility: Each class/module has one reason to change
-- **O**pen/Closed: Open for extension, closed for modification
-- **L**iskov Substitution: Subtypes must be substitutable for base types
-- **I**nterface Segregation: Many specific interfaces over one general
-- **D**ependency Inversion: Depend on abstractions, not concretions
-
-### Step 2: Follow System Design Process
-
-```
-1. REQUIREMENTS GATHERING
-   ├── Functional Requirements: What the system must do
-   ├── Non-Functional Requirements: Performance, scalability, reliability
-   └── Constraints: Budget, timeline, tech stack limitations
-
-2. CAPACITY ESTIMATION (Back-of-envelope)
-   ├── Users: DAU, MAU, peak concurrent
-   ├── Storage: Data size × retention period
-   ├── Bandwidth: Requests × payload size
-   └── Compute: QPS × processing time
-
-3. HIGH-LEVEL DESIGN
-   ├── Core components identification
-   ├── Data flow diagrams
-   └── API design
-
-4. DETAILED DESIGN
-   ├── Database schema
-   ├── Component interfaces
-   └── Algorithm choices
-
-5. IDENTIFY BOTTLENECKS
-   ├── Single points of failure
-   ├── Performance bottlenecks
-   └── Security vulnerabilities
-```
-
-### Step 3: Choose Appropriate Architecture
-
-| Pattern | Pros | Cons | When to Use |
-|---------|------|------|-------------|
-| **Monolith** | Simple deployment, easy debugging | Scaling challenges | Small team, MVP |
-| **Modular Monolith** | Clear boundaries, easier refactoring | Single deployment | Growing complexity |
-| **Microservices** | Independent scaling, tech flexibility | Complexity, latency | Large teams, diverse requirements |
-| **Event-Driven** | Loose coupling, async processing | Eventual consistency | Real-time systems |
-| **Serverless** | No server management, auto-scaling | Cold starts, vendor lock-in | Variable workloads |
-
-### Step 4: Implement Observability
-
-**The Three Pillars:**
+### Step 2: Implement Observability (The Three Pillars)
 
 ```python
 # 1. STRUCTURED LOGGING
@@ -104,60 +55,59 @@ logger.info(
     duration_ms=elapsed_time
 )
 
-# 2. METRICS
+# 2. METRICS (Prometheus)
 from prometheus_client import Counter, Histogram
 
-REQUEST_COUNT = Counter('http_requests_total', 'Total requests', ['method', 'status'])
-REQUEST_LATENCY = Histogram('http_request_duration_seconds', 'Request latency')
+REQUEST_COUNT = Counter(
+    'http_requests_total', 
+    'Total requests', 
+    ['method', 'endpoint', 'status']
+)
+REQUEST_LATENCY = Histogram(
+    'http_request_duration_seconds', 
+    'Request latency',
+    buckets=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0]
+)
 
-# 3. DISTRIBUTED TRACING
+# 3. DISTRIBUTED TRACING (OpenTelemetry)
 from opentelemetry import trace
 tracer = trace.get_tracer(__name__)
 
 with tracer.start_as_current_span("process_order") as span:
     span.set_attribute("order.id", order_id)
+    span.set_attribute("user.id", user_id)
     # Process order...
 ```
 
-## Examples
+### Step 3: Define SLOs and SLIs
 
-### Example 1: Architecture Decision Record (ADR)
+```yaml
+# Service Level Indicators (SLIs)
+Availability:
+  definition: "Successful requests / Total requests"
+  measurement: "sum(rate(http_requests_total{status!~'5..'}[5m])) / sum(rate(http_requests_total[5m]))"
 
-```markdown
-# ADR-001: Use PostgreSQL as Primary Database
+Latency:
+  definition: "95th percentile request duration"
+  measurement: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
 
-## Status
-Accepted
+Error Rate:
+  definition: "Failed requests / Total requests"
+  measurement: "sum(rate(http_requests_total{status=~'5..'}[5m])) / sum(rate(http_requests_total[5m]))"
 
-## Context
-We need to choose a primary database. Key requirements:
-- ACID compliance for financial transactions
-- Support for complex queries and joins
-- Good performance at scale (millions of records)
-- Strong ecosystem and community
+# Service Level Objectives (SLOs)
+SLOs:
+  - Availability: 99.9% (8.76 hours downtime/year)
+  - Latency P95: < 200ms
+  - Error Rate: < 0.1%
 
-## Decision
-We will use PostgreSQL as our primary database.
-
-## Consequences
-
-### Positive
-- ACID compliant, ensuring data integrity
-- Excellent support for complex queries
-- Rich extension ecosystem (PostGIS, pg_cron)
-- Proven scalability with read replicas
-
-### Negative
-- Requires more expertise than simpler databases
-- Horizontal scaling is more complex than NoSQL
-- Need to manage connection pooling
-
-## Alternatives Considered
-- MySQL: Less powerful query planner
-- MongoDB: Eventually consistent, not ideal for transactions
+# Error Budget
+Error Budget:
+  - Monthly budget: 43.2 minutes (99.9% availability)
+  - Policy: Freeze new features if budget exhausted
 ```
 
-### Example 2: CI/CD Pipeline
+### Step 4: CI/CD Pipeline
 
 ```yaml
 # .github/workflows/ci.yml
@@ -213,10 +163,40 @@ jobs:
         run: kubectl set image deployment/app app=app:${{ github.sha }}
 ```
 
-### Example 3: Code Review Approach
+### Step 5: Production Readiness Checklist
 
 ```markdown
-## Reviewer's Approach
+## Reliability
+- [ ] Health check endpoints (/health, /ready)
+- [ ] Graceful shutdown handling
+- [ ] Circuit breakers for external dependencies
+- [ ] Retry logic with exponential backoff
+- [ ] Fallback mechanisms
+
+## Observability
+- [ ] Structured logging configured
+- [ ] Metrics exported (Prometheus format)
+- [ ] Distributed tracing enabled
+- [ ] Alerting rules defined
+- [ ] Dashboards created
+
+## Security
+- [ ] Security scan passed
+- [ ] Dependencies vulnerability checked
+- [ ] Secrets managed properly (Vault, K8s Secrets)
+- [ ] Auth/authz verified
+
+## Operations
+- [ ] Runbook created
+- [ ] Rollback procedure documented
+- [ ] On-call rotation set up
+- [ ] Incident response plan ready
+```
+
+### Step 6: Code Review Approach
+
+```markdown
+## Reviewer's Checklist
 
 ### DO
 - ✅ Focus on learning opportunity, not criticism
@@ -240,73 +220,103 @@ jobs:
     Maybe `transformUserResponseToDTO` would be clearer?"
 ```
 
-### Example 4: SLO/SLI Definition
+## Examples
 
-```yaml
-Service Level Indicators (SLIs):
-  Availability:
-    definition: "Successful requests / Total requests"
-    measurement: "sum(rate(http_requests_total{status!~'5..'}[5m])) / sum(rate(http_requests_total[5m]))"
-  
-  Latency:
-    definition: "95th percentile request duration"
-    measurement: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
-  
-  Error Rate:
-    definition: "Failed requests / Total requests"
-    measurement: "sum(rate(http_requests_total{status=~'5..'}[5m])) / sum(rate(http_requests_total[5m]))"
+### Example 1: Graceful Shutdown
 
-Service Level Objectives (SLOs):
-  - Availability: 99.9% (8.76 hours downtime/year)
-  - Latency P95: < 200ms
-  - Error Rate: < 0.1%
+```go
+// Go example: Graceful shutdown with signal handling
+func main() {
+    srv := &http.Server{Addr: ":8080", Handler: router}
 
-Error Budget:
-  - Monthly budget: 43.2 minutes (99.9% availability)
-  - Policy: Freeze new features if budget exhausted
+    // Start server in goroutine
+    go func() {
+        if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+            log.Fatalf("HTTP server error: %v", err)
+        }
+    }()
+
+    // Wait for interrupt signal
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+    <-quit
+
+    log.Println("Shutting down server...")
+
+    // Give outstanding requests 30 seconds to complete
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if err := srv.Shutdown(ctx); err != nil {
+        log.Fatalf("Server forced to shutdown: %v", err)
+    }
+
+    log.Println("Server exited gracefully")
+}
 ```
 
-## Best Practices
+### Example 2: Circuit Breaker Pattern
 
-### ✅ Do This
+```python
+from circuitbreaker import circuit
 
-- ✅ Think about maintainability first - code is read more than written
-- ✅ Consider failure modes - what could go wrong?
-- ✅ Document decisions and reasoning (ADRs)
-- ✅ Automate repetitive tasks
-- ✅ Measure before optimizing
-- ✅ Design for testability
-- ✅ Plan for scale, but don't over-engineer
-- ✅ Write comprehensive runbooks
-- ✅ Implement graceful degradation
+@circuit(failure_threshold=5, recovery_timeout=30)
+def call_external_service(user_id: str) -> dict:
+    """Call external service with circuit breaker protection"""
+    response = requests.get(
+        f"https://api.example.com/users/{user_id}",
+        timeout=5
+    )
+    response.raise_for_status()
+    return response.json()
 
-### ❌ Avoid This
+# Fallback when circuit is open
+def get_user_with_fallback(user_id: str) -> dict:
+    try:
+        return call_external_service(user_id)
+    except CircuitBreakerError:
+        # Return cached data or default
+        return get_cached_user(user_id) or {"id": user_id, "status": "unknown"}
+```
 
-- ❌ Don't prematurely optimize
-- ❌ Don't reinvent the wheel
-- ❌ Don't ignore technical debt
-- ❌ Don't build without requirements
-- ❌ Don't ship without tests
-- ❌ Don't make decisions without data
-- ❌ Don't create hero culture (single point of knowledge)
-- ❌ Don't skip post-mortems after incidents
+### Example 3: Structured Error Handling
 
-## Common Pitfalls
+```python
+# Define domain exceptions
+class DomainError(Exception):
+    def __init__(self, message: str, code: str, details: dict = None):
+        self.message = message
+        self.code = code
+        self.details = details or {}
+        super().__init__(message)
 
-**Problem:** Over-engineering from day one (premature microservices)
-**Solution:** Start with modular monolith. Extract services only when there's a clear need (independent scaling, separate teams, different tech requirements).
+class UserNotFoundError(DomainError):
+    def __init__(self, user_id: str):
+        super().__init__(
+            message=f"User {user_id} not found",
+            code="USER_NOT_FOUND",
+            details={"user_id": user_id}
+        )
 
-**Problem:** No visibility into production issues until users complain
-**Solution:** Implement observability early: structured logging, metrics, tracing, alerting. Define SLOs and monitor them.
-
-**Problem:** Technical debt accumulating without being addressed
-**Solution:** Allocate 20% of sprint capacity to tech debt. Track it in the backlog with clear business impact.
-
-**Problem:** Knowledge silos - only one person knows how X works
-**Solution:** Pair programming, documentation, rotation, and ensure at least 2 people know every system.
-
-**Problem:** Inconsistent code quality across the team
-**Solution:** Establish coding standards, automated linting, required code reviews, and regular architecture discussions.
+# Error handler middleware
+@app.exception_handler(DomainError)
+async def domain_error_handler(request: Request, exc: DomainError):
+    logger.warning(
+        "domain_error",
+        code=exc.code,
+        message=exc.message,
+        details=exc.details,
+        path=request.url.path
+    )
+    return JSONResponse(
+        status_code=400,
+        content={
+            "error": exc.code,
+            "message": exc.message,
+            "details": exc.details
+        }
+    )
+```
 
 ## Testing Pyramid
 
@@ -320,38 +330,6 @@ Error Budget:
       ╱───────────────────────╲
 ```
 
-## Production Readiness Checklist
-
-### Reliability
-
-- [ ] Health check endpoints (/health, /ready)
-- [ ] Graceful shutdown handling
-- [ ] Circuit breakers for external dependencies
-- [ ] Retry logic with exponential backoff
-- [ ] Fallback mechanisms
-
-### Observability
-
-- [ ] Structured logging configured
-- [ ] Metrics exported (Prometheus format)
-- [ ] Distributed tracing enabled
-- [ ] Alerting rules defined
-- [ ] Dashboards created
-
-### Security
-
-- [ ] Security scan passed
-- [ ] Dependencies vulnerability checked
-- [ ] Secrets managed properly
-- [ ] Auth/authz verified
-
-### Operations
-
-- [ ] Runbook created
-- [ ] Rollback procedure documented
-- [ ] On-call rotation set up
-- [ ] Incident response plan ready
-
 ## Mentoring Framework
 
 | Level | Focus | Approach |
@@ -360,9 +338,43 @@ Error Budget:
 | **Mid-Level** (2-5 years) | System design, ownership | Guided problem-solving |
 | **Senior** (5+ years) | Leadership, cross-team impact | Collaborative sparring |
 
+## Best Practices
+
+### ✅ Do This
+
+- ✅ Implement observability from day one
+- ✅ Automate everything (tests, deployments, alerts)
+- ✅ Write comprehensive runbooks
+- ✅ Design for failure (circuit breakers, retries, fallbacks)
+- ✅ Measure before optimizing
+- ✅ Document operational procedures
+- ✅ Conduct blameless post-mortems
+
+### ❌ Avoid This
+
+- ❌ Don't ship without monitoring
+- ❌ Don't ignore technical debt
+- ❌ Don't skip post-mortems after incidents
+- ❌ Don't create hero culture (single point of knowledge)
+- ❌ Don't deploy on Fridays without rollback plan
+
+## Common Pitfalls
+
+**Problem:** No visibility into production until users complain
+**Solution:** Implement observability early: structured logging, metrics, tracing, alerting.
+
+**Problem:** Deployments are scary and risky
+**Solution:** Automate CI/CD, implement feature flags, use canary deployments.
+
+**Problem:** Knowledge silos - only one person knows how X works
+**Solution:** Pair programming, documentation, rotation, ensure 2+ people know every system.
+
+**Problem:** Inconsistent code quality across the team
+**Solution:** Automated linting, required code reviews, architecture discussions.
+
 ## Related Skills
 
-- `@senior-backend-developer` - For backend implementation details
-- `@senior-programming-mentor` - For teaching and explanation styles
-- `@expert-web3-blockchain` - For blockchain architecture
-- `@senior-flutter-developer` - For mobile architecture
+- `@senior-software-architect` - For high-level architecture and strategic decisions
+- `@senior-devops-engineer` - For infrastructure and deployment automation
+- `@senior-site-reliability-engineer` - For SRE practices
+- `@senior-backend-developer` - For backend implementation patterns
