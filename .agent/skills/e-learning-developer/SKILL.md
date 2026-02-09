@@ -1512,7 +1512,7 @@ export class CertificateService {
 
 ## Related Skills
 
-- `@edtech-developer` - Full education technology platforms
+- `@instructional-designer` - Curriculum and course design
 - `@video-processing-specialist` - Advanced video handling
 - `@senior-firebase-developer` - Realtime progress sync
 - `@senior-nextjs-developer` - Course platform frontend

@@ -1,5 +1,5 @@
 ---
-name: react-native-developer
+name: senior-react-native-developer
 description: "Expert React Native development including New Architecture (Fabric/TurboModules), native modules, Reanimated, and cross-platform performance"
 ---
 

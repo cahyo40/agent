@@ -227,4 +227,4 @@ val categoryTotals = sales
 ## Related Skills
 
 - `@senior-data-engineer` - Data pipelines
-- `@big-data-engineer` - Big data processing
+- `@senior-data-engineer` - Data engineering & Spark
