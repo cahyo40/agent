@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.9.0  
-> **Last Updated:** 2026-02-08  
-> **Total Skills:** 300
+> **Version:** 6.9.1  
+> **Last Updated:** 2026-02-09  
+> **Total Skills:** 298
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **309 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **298 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -190,7 +190,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `rental-system-developer` | 🆕 Equipment, vehicles, subscription rentals |
 | `healthcare-app-developer` | HIPAA, telemedicine, HL7 FHIR |
 | `trading-app-developer` | Real-time market data, orders |
-| `edtech-developer` | LMS, courses, gamification |
+| `e-learning-developer` | LMS, SCORM/xAPI, courses, gamification |
 | `proptech-developer` | Real estate platforms |
 | `food-delivery-developer` | Orders, driver dispatch |
 | `e-commerce-developer` | Cart, checkout, payments |
@@ -291,6 +291,19 @@ buatkan script dan ide thumbnail untuk video YouTube
 ---
 
 ## Changelog
+
+### v6.9.1 (2026-02-09)
+
+- 🧹 **Skill Audit & Cleanup** - Reduced to 298 skills
+- 🗑️ **Deleted Redundant Skills:**
+  - `big-data-engineer` → merged with `senior-data-engineer`
+  - `edtech-developer` → merged with `e-learning-developer`
+  - `portfolio-dashboard-developer` → redundant with `dashboard-developer-specialist`
+  - `senior-course-creator` → merged into `instructional-designer`
+- 🔄 **Refactored:**
+  - `senior-database-engineer-nosql` - removed implementation details, kept architecture focus
+  - `instructional-designer` - enhanced with curriculum design content
+- 🔧 **Fixed:** `senior-react-native-developer` name field
 
 ### v6.9.0 (2026-02-08)
 

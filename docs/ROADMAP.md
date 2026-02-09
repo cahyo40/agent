@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.8.0  
-> **Total Skills:** 309
+> **Current Version:** v6.9.1  
+> **Total Skills:** 298
 
 ---
 
@@ -10,12 +10,28 @@
 
 ```text
 ████████████████████████████████████████ 100%
-309/309 Skills Complete ✅
+298/298 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.9.1 - Skill Audit & Cleanup (Feb 2026) ✅
+
+**Goal:** Remove redundant skills & fix naming inconsistencies
+
+**Changes in v6.9.1:**
+
+- 🗑️ Deleted `big-data-engineer` - merged with `senior-data-engineer`
+- 🗑️ Deleted `edtech-developer` - merged with `e-learning-developer`
+- 🗑️ Deleted `portfolio-dashboard-developer` - redundant with `dashboard-developer-specialist`
+- 🗑️ Deleted `senior-course-creator` - merged into `instructional-designer`
+- 🔄 Refactored `senior-database-engineer-nosql` - removed implementation details
+- 🔄 Enhanced `instructional-designer` with curriculum design content
+- 🔧 Fixed `senior-react-native-developer` name field
+
+---
 
 ### v6.8.0 - Data Science & Automation (Feb 2026) ✅
 
@@ -246,7 +262,8 @@ What this skill does and when to use it.
 | v6.5.0 | Feb 2026 | 300 | +9% 🎉 |
 | v6.6.0 | Feb 2026 | 304 | +1.3% |
 | v6.7.0 | Feb 2026 | 307 | +1% |
-| **v6.8.0** | **Feb 2026** | **309** | **+0.6%** |
+| v6.8.0 | Feb 2026 | 309 | +0.6% |
+| **v6.9.1** | **Feb 2026** | **298** | **-3.6%** 🧹 |
 
 ---
 

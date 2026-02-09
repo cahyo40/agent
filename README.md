@@ -2,11 +2,11 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.8.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-298-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.9.1-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 309 skills untuk memperluas kemampuan AI Agent**
+**Koleksi 298 skills untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -16,7 +16,7 @@
 
 ## ✨ Features
 
-- 🤖 **309 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **298 Specialized Skills** - Dari Flutter hingga AI/ML
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -265,7 +265,7 @@ Pre-built workflows untuk inisialisasi project dengan anti-hallucination guardra
 ```text
 agents/
 ├── .agent/
-│   ├── skills/           # 309 skill folders
+│   ├── skills/           # 298 skill folders
 │   │   ├── senior-flutter-developer/
 │   │   │   └── SKILL.md
 │   │   ├── senior-react-developer/
