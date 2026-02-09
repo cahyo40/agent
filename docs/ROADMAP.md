@@ -2,7 +2,7 @@
 
 > **Last Updated:** February 2026  
 > **Current Version:** v6.10.0  
-> **Total Skills:** 310
+> **Total Skills:** 309
 
 ---
 
@@ -10,7 +10,7 @@
 
 ```text
 ████████████████████████████████████████ 100%
-310/310 Skills Complete ✅
+309/309 Skills Complete ✅
 ```
 
 ---
@@ -19,7 +19,7 @@
 
 ### v6.10.0 - Edge & AI Toolkit Expansion (Feb 2026) ✅
 
-**Goal:** 310 Skills + Edge Computing + AI Coding Tools
+**Goal:** 309 Skills + Edge Computing + AI Coding Tools
 
 **New in v6.10.0:**
 
