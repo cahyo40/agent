@@ -7,191 +7,144 @@ description: "Expert dApp mobile development combining Flutter with Web3 includi
 
 ## Overview
 
-Build mobile decentralized applications combining Flutter with Web3 technologies including WalletConnect, smart contract interaction, and secure key management.
+Build production-ready mobile decentralized applications combining Flutter with Web3 technologies. This skill covers WalletConnect V2 integration, smart contract interaction, HD wallet creation, and secure key management for iOS and Android.
 
 ## When to Use This Skill
 
-- Use when building mobile dApps
-- Use when integrating WalletConnect
-- Use when displaying tokens/NFTs
-- Use when implementing wallet features
+- Use when building mobile dApps with Flutter
+- Use when integrating WalletConnect V2
+- Use when displaying tokens and NFTs
+- Use when implementing in-app wallet features
+- Use when building DeFi mobile interfaces
+
+## Templates Reference
+
+| Template | Description |
+| -------- | ----------- |
+| [web3-service.md](templates/web3-service.md) | Web3Dart client and transaction signing |
+| [walletconnect-v2.md](templates/walletconnect-v2.md) | WalletConnect V2 integration |
+| [hd-wallet.md](templates/hd-wallet.md) | HD wallet creation and key derivation |
+| [nft-display.md](templates/nft-display.md) | NFT fetching and display |
 
 ## How It Works
 
-### Step 1: Web3 Flutter Setup
+### Step 1: Project Setup
 
 ```yaml
 # pubspec.yaml
 dependencies:
-  web3dart: ^2.7.1
-  walletconnect_flutter_v2: ^2.1.0
-  http: ^1.1.0
+  flutter:
+    sdk: flutter
+  
+  # Web3
+  web3dart: ^2.7.3
+  walletconnect_flutter_v2: ^2.3.0
+  
+  # Wallet
   bip39: ^1.0.6
-  ed25519_hd_key: ^2.2.0
+  bip32: ^2.0.0
   hex: ^0.2.0
+  
+  # Security
+  flutter_secure_storage: ^9.0.0
+  local_auth: ^2.1.6
+  
+  # Networking
+  http: ^1.2.0
+  dio: ^5.4.0
 ```
 
-```dart
-// Web3 Service
-import 'package:web3dart/web3dart.dart';
-import 'package:http/http.dart';
+### Step 2: Architecture Overview
 
-class Web3Service {
-  late Web3Client _client;
-  final String rpcUrl = 'https://mainnet.infura.io/v3/YOUR_KEY';
-  
-  Web3Service() {
-    _client = Web3Client(rpcUrl, Client());
-  }
-  
-  Future<EtherAmount> getBalance(String address) async {
-    final addr = EthereumAddress.fromHex(address);
-    return await _client.getBalance(addr);
-  }
-  
-  Future<String> sendTransaction({
-    required Credentials credentials,
-    required String to,
-    required BigInt value,
-  }) async {
-    final tx = await _client.sendTransaction(
-      credentials,
-      Transaction(
-        to: EthereumAddress.fromHex(to),
-        value: EtherAmount.inWei(value),
-      ),
-      chainId: 1,
-    );
-    return tx;
-  }
-}
+```text
+lib/
+├── core/
+│   ├── services/
+│   │   ├── web3_service.dart      # Blockchain interaction
+│   │   ├── wallet_service.dart    # Key management
+│   │   └── walletconnect_service.dart
+│   └── models/
+│       ├── wallet.dart
+│       ├── token.dart
+│       └── nft.dart
+├── features/
+│   ├── wallet/
+│   ├── send/
+│   ├── nft/
+│   └── dapp_browser/
+└── main.dart
 ```
 
-### Step 2: WalletConnect Integration
+### Step 3: Key Management
+
+Always use secure storage with biometric protection:
 
 ```dart
-// WalletConnect V2 Setup
-import 'package:walletconnect_flutter_v2/walletconnect_flutter_v2.dart';
-
-class WalletConnectService {
-  late Web3App _web3App;
-  SessionData? _session;
-  
-  Future<void> init() async {
-    _web3App = await Web3App.createInstance(
-      projectId: 'YOUR_PROJECT_ID',
-      metadata: const PairingMetadata(
-        name: 'My dApp',
-        description: 'My mobile dApp',
-        url: 'https://myapp.com',
-        icons: ['https://myapp.com/icon.png'],
-      ),
-    );
-  }
-  
-  Future<String> connect() async {
-    final connectResponse = await _web3App.connect(
-      requiredNamespaces: {
-        'eip155': const RequiredNamespace(
-          chains: ['eip155:1', 'eip155:137'],
-          methods: ['eth_sendTransaction', 'personal_sign'],
-          events: ['chainChanged', 'accountsChanged'],
-        ),
-      },
-    );
-    
-    // Return URI for QR code
-    return connectResponse.uri.toString();
-  }
-}
-```
-
-### Step 3: NFT Display
-
-```dart
-// NFT Model & Fetching
-class NFT {
-  final String tokenId;
-  final String name;
-  final String imageUrl;
-  final String contractAddress;
-  
-  NFT({...});
-  
-  factory NFT.fromMetadata(Map<String, dynamic> json) {...}
-}
-
-Future<List<NFT>> fetchNFTs(String address) async {
-  final response = await http.get(Uri.parse(
-    'https://api.opensea.io/v2/chain/ethereum/account/$address/nfts'
-  ));
-  // Parse and return NFTs
-}
-
-// NFT Grid Widget
-class NFTGridView extends StatelessWidget {
-  final List<NFT> nfts;
-  
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 1,
-      ),
-      itemCount: nfts.length,
-      itemBuilder: (context, index) => NFTCard(nft: nfts[index]),
-    );
-  }
-}
-```
-
-### Step 4: Secure Key Management
-
-```dart
-// Secure Storage for Keys
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 class WalletStorage {
-  final _storage = FlutterSecureStorage();
+  final FlutterSecureStorage _storage;
   
   Future<void> saveMnemonic(String mnemonic) async {
     await _storage.write(
       key: 'mnemonic',
       value: mnemonic,
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
+      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     );
-  }
-  
-  Future<Credentials> getCredentials() async {
-    final mnemonic = await _storage.read(key: 'mnemonic');
-    if (mnemonic == null) throw Exception('No wallet');
-    
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final privateKey = _derivePrivateKey(seed);
-    return EthPrivateKey.fromHex(privateKey);
   }
 }
 ```
+
+See [templates/hd-wallet.md](templates/hd-wallet.md) for complete implementation.
+
+### Step 4: WalletConnect V2
+
+```dart
+// Initialize WalletConnect
+final web3App = await Web3App.createInstance(
+  projectId: 'YOUR_PROJECT_ID',
+  metadata: PairingMetadata(
+    name: 'My dApp',
+    description: 'Mobile dApp',
+    url: 'https://myapp.com',
+    icons: ['https://myapp.com/icon.png'],
+  ),
+);
+```
+
+See [templates/walletconnect-v2.md](templates/walletconnect-v2.md) for session management.
 
 ## Best Practices
 
 ### ✅ Do This
 
-- ✅ Use FlutterSecureStorage for keys
+- ✅ Use `flutter_secure_storage` for private keys
+- ✅ Require biometric auth before signing
 - ✅ Support WalletConnect for external wallets
-- ✅ Cache blockchain data locally
-- ✅ Handle network errors gracefully
-- ✅ Show transaction confirmations
+- ✅ Cache blockchain data with proper invalidation
+- ✅ Show clear transaction confirmations
+- ✅ Use EIP-1559 gas estimation
 
 ### ❌ Avoid This
 
-- ❌ Don't store keys in plain text
-- ❌ Don't hardcode RPC URLs
-- ❌ Don't skip transaction confirmations
-- ❌ Don't ignore gas estimation
+- ❌ Don't store keys in SharedPreferences
+- ❌ Don't hardcode RPC URLs in source
+- ❌ Don't skip transaction simulation
+- ❌ Don't ignore chain ID verification
+- ❌ Don't auto-sign without user confirmation
+
+## Common Pitfalls
+
+**Problem:** Transaction fails with "insufficient funds"
+**Solution:** Include gas cost in balance check, use proper gas estimation
+
+**Problem:** WalletConnect session disconnects
+**Solution:** Implement session persistence and reconnection logic
+
+**Problem:** NFT images don't load
+**Solution:** Handle IPFS URLs, convert to HTTP gateway
 
 ## Related Skills
 
-- `@senior-flutter-developer` - Flutter development
-- `@senior-web3-developer` - Web3 development
+- `@senior-flutter-developer` - Flutter architecture
+- `@senior-web3-developer` - Smart contracts
+- `@crypto-wallet-developer` - Wallet development
