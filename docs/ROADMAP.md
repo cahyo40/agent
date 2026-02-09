@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.9.1  
-> **Total Skills:** 298
+> **Current Version:** v6.10.0  
+> **Total Skills:** 310
 
 ---
 
@@ -10,12 +10,33 @@
 
 ```text
 ████████████████████████████████████████ 100%
-298/298 Skills Complete ✅
+310/310 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.10.0 - Edge & AI Toolkit Expansion (Feb 2026) ✅
+
+**Goal:** 310 Skills + Edge Computing + AI Coding Tools
+
+**New in v6.10.0:**
+
+- 🆕 `cloudflare-developer` - Workers, D1, R2, KV, Durable Objects (6 templates)
+- 🆕 `vercel-developer` - Edge Functions, AI SDK, serverless
+- 🆕 `hono-developer` - Edge-first web framework
+- 🆕 `htmx-developer` - Hypermedia-driven applications
+- 🆕 `expo-developer` - Expo SDK 50+, EAS Build
+- 🆕 `drizzle-orm-specialist` - TypeScript ORM for edge databases
+- 🆕 `turso-developer` - Edge SQLite/LibSQL
+- 🆕 `tanstack-specialist` - TanStack Query, Router, Table
+- 🆕 `cursor-rules-engineer` - AI IDE configuration
+- 🆕 `ai-coding-assistant` - Cursor, Windsurf, Copilot integration
+- 🆕 `vibe-coding-specialist` - AI-assisted development workflows
+- 🆕 `ai-voice-clone` - ElevenLabs voice synthesis
+
+---
 
 ### v6.9.1 - Skill Audit & Cleanup (Feb 2026) ✅
 
