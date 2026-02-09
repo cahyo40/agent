@@ -24,6 +24,61 @@ Sebelum memulai, siapkan informasi berikut:
 
 ---
 
+## 💡 Phase 0: Ideation & Brainstorming
+
+Phase ini menggunakan skill `@brainstorming` untuk mengklarifikasi ide sebelum masuk ke dokumentasi teknis.
+
+### Step 0.1: Problem Framing
+
+Gunakan skill `brainstorming`:
+
+```markdown
+Act as brainstorming.
+Berdasarkan ide user, buatkan Problem Framing Canvas:
+
+## Problem Framing Canvas
+### 1. WHAT is the problem? [Satu kalimat spesifik]
+### 2. WHO is affected? [Primary users, stakeholders]
+### 3. WHY does it matter? [Pain points, business opportunity]
+### 4. WHAT constraints exist? [Time, budget, technology]
+### 5. WHAT does success look like? [Measurable outcomes]
+```
+
+### Step 0.2: Feature Ideation
+
+```markdown
+Act as brainstorming.
+Generate fitur potensial dengan:
+- HMW (How Might We) Questions
+- SCAMPER Analysis untuk fitur utama
+```
+
+### Step 0.3: Feature Prioritization
+
+```markdown
+Act as brainstorming.
+Prioritasikan dengan:
+- Impact vs Effort Matrix
+- RICE Scoring (Reach × Impact × Confidence / Effort)
+- MoSCoW: Must Have, Should Have, Could Have, Won't Have
+```
+
+### Step 0.4: Quick Validation
+
+```markdown
+Act as brainstorming.
+Validasi dengan checklist:
+- Feasibility: Bisa dibangun?
+- Viability: Layak secara bisnis?
+- Desirability: User mau pakai?
+- Go/No-Go Decision
+```
+
+// turbo
+**Simpan output ke file `BRAINSTORM.md` di root project.**
+
+---
+
 ## 🏗️ Phase 1: The Holy Trinity (WAJIB)
 
 ### Step 1.1: Generate PRD.md
@@ -397,6 +452,72 @@ lib/
 - Tampilkan user-friendly message di UI (gunakan `YoToast.error()`)
 - Log technical detail untuk debugging
 - Selalu handle `ConnectionException` dan `TimeoutException`
+
+### ⚠️ WAJIB: Try-Catch di Setiap Method
+
+**Setiap method/function di DataSource, Provider, dan Controller WAJIB menggunakan try-catch:**
+
+```dart
+// ❌ DILARANG - tanpa try-catch
+class AuthRemoteDataSource {
+  Future<UserDto> login(String email, String password) async {
+    final response = await _dio.post('/auth/login', data: {...});
+    return UserDto.fromJson(response.data);
+  }
+}
+
+// ✅ WAJIB - dengan try-catch
+class AuthRemoteDataSource {
+  Future<UserDto> login(String email, String password) async {
+    try {
+      final response = await _dio.post('/auth/login', data: {...});
+      return UserDto.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Network error');
+    } catch (e) {
+      throw ServerException('Unexpected error: $e');
+    }
+  }
+}
+```
+
+**Provider/Controller Pattern:**
+
+```dart
+// ✅ Provider dengan try-catch
+@riverpod
+class AuthNotifier extends _$AuthNotifier {
+  Future<void> login(String email, String password) async {
+    state = const AsyncValue.loading();
+    try {
+      final user = await ref.read(authRepositoryProvider).login(email, password);
+      state = AsyncValue.data(user);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      YoToast.error(context: Get.context!, message: e.toString());
+    }
+  }
+}
+
+// ✅ Controller (GetX) dengan try-catch
+class AuthController extends GetxController {
+  final isLoading = false.obs;
+  final error = Rxn<String>();
+  
+  Future<void> login(String email, String password) async {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      await _authRepository.login(email, password);
+    } catch (e) {
+      error.value = e.toString();
+      YoToast.error(context: Get.context!, message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+```
 
 ## API & Data Rules
 

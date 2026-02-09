@@ -17,6 +17,61 @@ Workflow untuk setup dokumen konteks Vibe Coding khusus **Python Backend API** (
 
 ---
 
+## 💡 Phase 0: Ideation & Brainstorming
+
+Phase ini menggunakan skill `@brainstorming` untuk mengklarifikasi ide sebelum masuk ke dokumentasi teknis.
+
+### Step 0.1: Problem Framing
+
+Gunakan skill `brainstorming`:
+
+```markdown
+Act as brainstorming.
+Berdasarkan ide user, buatkan Problem Framing Canvas:
+
+## Problem Framing Canvas
+### 1. WHAT is the problem? [Satu kalimat spesifik]
+### 2. WHO is affected? [Primary users, stakeholders]
+### 3. WHY does it matter? [Pain points, business opportunity]
+### 4. WHAT constraints exist? [Time, budget, technology]
+### 5. WHAT does success look like? [Measurable outcomes]
+```
+
+### Step 0.2: Feature Ideation
+
+```markdown
+Act as brainstorming.
+Generate fitur potensial dengan:
+- HMW (How Might We) Questions
+- SCAMPER Analysis untuk fitur utama
+```
+
+### Step 0.3: Feature Prioritization
+
+```markdown
+Act as brainstorming.
+Prioritasikan dengan:
+- Impact vs Effort Matrix
+- RICE Scoring (Reach × Impact × Confidence / Effort)
+- MoSCoW: Must Have, Should Have, Could Have, Won't Have
+```
+
+### Step 0.4: Quick Validation
+
+```markdown
+Act as brainstorming.
+Validasi dengan checklist:
+- Feasibility: Bisa dibangun?
+- Viability: Layak secara bisnis?
+- Desirability: User mau pakai?
+- Go/No-Go Decision
+```
+
+// turbo
+**Simpan output ke file `BRAINSTORM.md` di root project.**
+
+---
+
 ## 🏗️ Phase 1: Holy Trinity
 
 ### Step 1.1: Generate PRD.md

@@ -3,7 +3,8 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.10.0-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.11.0-green?style=for-the-badge)
+![Workflows](https://img.shields.io/badge/Workflows-16-purple?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 **Koleksi 309 skills untuk memperluas kemampuan AI Agent**
@@ -236,6 +237,8 @@ Pre-built workflows untuk inisialisasi project dengan anti-hallucination guardra
 |----------|-------------|
 | `/vibe-coding-init` | Base initialization untuk semua project |
 | `/vibe-coding-flutter` | Flutter multi-platform dengan Clean Architecture |
+| `/vibe-coding-android` | Android native (Kotlin + Jetpack Compose) |
+| `/vibe-coding-ios` | iOS native (Swift + SwiftUI) |
 | `/vibe-coding-react` | React/Next.js web application |
 | `/vibe-coding-vue` | Vue.js/Nuxt dengan Composition API |
 | `/vibe-coding-svelte` | Svelte/SvelteKit web application |
@@ -247,6 +250,7 @@ Pre-built workflows untuk inisialisasi project dengan anti-hallucination guardra
 | `/vibe-coding-python-web` | Python web (Django/Flask) |
 | `/vibe-coding-react-native` | React Native mobile app |
 | `/vibe-coding-fullstack` | Full-stack monorepo dengan Turborepo |
+| `/vibe-coding-yo-flutter` | Flutter dengan yo.dart generator |
 
 ### Usage
 
@@ -265,14 +269,16 @@ Pre-built workflows untuk inisialisasi project dengan anti-hallucination guardra
 ```text
 agents/
 ├── .agent/
-│   ├── skills/           # 298 skill folders
+│   ├── skills/           # 309 skill folders
 │   │   ├── senior-flutter-developer/
 │   │   │   └── SKILL.md
 │   │   ├── senior-react-developer/
 │   │   │   └── SKILL.md
 │   │   └── ...
-│   └── workflows/        # 13 vibe-coding workflows
+│   └── workflows/        # 16 vibe-coding workflows
 │       ├── vibe-coding-flutter.md
+│       ├── vibe-coding-android.md
+│       ├── vibe-coding-ios.md
 │       ├── vibe-coding-react.md
 │       └── ...
 ├── docs/

@@ -30,6 +30,7 @@ Setiap proyek Vibe Coding memiliki dokumen-dokumen ini:
 
 | Dokumen | Fungsi | Prioritas |
 |---------|--------|-----------|
+| **BRAINSTORM.md** | Hasil ideasi dan prioritas fitur | 🔴 WAJIB |
 | **PRD.md** | Product requirements, user stories, fitur | 🔴 WAJIB |
 | **TECH_STACK.md** | Framework, library, dan constraints | 🔴 WAJIB |
 | **RULES.md** | Aturan coding dan perilaku AI | 🔴 WAJIB |
@@ -58,6 +59,8 @@ Setiap proyek Vibe Coding memiliki dokumen-dokumen ini:
 | Workflow | Command | Deskripsi |
 |----------|---------|-----------|
 | `/vibe-coding-flutter` | Flutter | Multi-platform (iOS, Android, Web, Desktop) |
+| `/vibe-coding-android` | Android Native | Kotlin, Jetpack Compose, Hilt, MVVM |
+| `/vibe-coding-ios` | iOS Native | Swift, SwiftUI, @Observable, MVVM |
 | `/vibe-coding-react-native` | React Native | Expo, React Navigation, NativeWind |
 
 ### Backend Development
@@ -76,6 +79,7 @@ Setiap proyek Vibe Coding memiliki dokumen-dokumen ini:
 |----------|---------|-----------|
 | `/vibe-coding-fullstack` | Monorepo | Turborepo, Next.js + NestJS |
 | `/vibe-coding-init` | Generic | Template dasar untuk semua proyek |
+| `/vibe-coding-yo-flutter` | Flutter yo.dart | yo.dart generator + YoUI components |
 
 ---
 
@@ -108,19 +112,28 @@ AI akan bertanya tentang:
 
 AI akan generate dokumen secara bertahap:
 
-1. **Phase 1: Holy Trinity** (WAJIB)
+1. **Phase 0: Ideation & Brainstorming** (WAJIB)
+   - Problem Framing Canvas
+   - Feature Ideation (HMW + SCAMPER)
+   - Prioritization (RICE + MoSCoW)
+   - Validation Checklist
+   - ➡️ Output: BRAINSTORM.md
+
+2. **Phase 1: Holy Trinity** (WAJIB)
    - PRD.md
    - TECH_STACK.md
    - RULES.md
 
-2. **Phase 2: Support System**
-   - DESIGN_SYSTEM.md
-   - DB_SCHEMA.md
-   - FOLDER_STRUCTURE.md
-   - API_CONTRACT.md
-   - EXAMPLES.md
+🔍 **USER REVIEW CHECKPOINT** - User cek & approve semua docs
 
-3. **Phase 3: Project Setup**
+1. **Phase 2: Support System** (Step-by-step)
+   - DESIGN_SYSTEM.md → user cek
+   - DB_SCHEMA.md → user cek
+   - FOLDER_STRUCTURE.md → user cek
+   - API_CONTRACT.md → user cek
+   - EXAMPLES.md → user cek
+
+2. **Phase 3: Project Setup**
    - Initialize project
    - Install dependencies
    - Create folder structure
@@ -434,11 +447,13 @@ Semua workflow tersedia di:
 
 ```
 .agent/workflows/
+├── vibe-coding-android.md
 ├── vibe-coding-astro.md
 ├── vibe-coding-flutter.md
 ├── vibe-coding-fullstack.md
 ├── vibe-coding-go-backend.md
 ├── vibe-coding-init.md
+├── vibe-coding-ios.md
 ├── vibe-coding-laravel.md
 ├── vibe-coding-nestjs.md
 ├── vibe-coding-python-backend.md
@@ -446,19 +461,23 @@ Semua workflow tersedia di:
 ├── vibe-coding-react-native.md
 ├── vibe-coding-react.md
 ├── vibe-coding-svelte.md
-└── vibe-coding-vue.md
+├── vibe-coding-vue.md
+└── vibe-coding-yo-flutter.md
 ```
 
 ### Skills yang Digunakan
 
 Workflow ini menggunakan skill-skill berikut:
 
+- `brainstorming` - Ideation & prioritization
 - `senior-project-manager` - Generate PRD
 - `tech-stack-architect` - Tech stack selection
 - `design-system-architect` - Design system
 - `database-modeling-specialist` - DB schema
 - `api-design-specialist` - API contract
 - `mermaid-diagram-expert` - Flow diagrams
+- `senior-android-developer` - Android native
+- `senior-ios-developer` - iOS native
 - Framework-specific skills (Flutter, React, Vue, dll)
 
 ---

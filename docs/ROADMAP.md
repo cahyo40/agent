@@ -1,8 +1,9 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.10.0  
-> **Total Skills:** 309
+> **Current Version:** v6.11.0  
+> **Total Skills:** 309  
+> **Total Workflows:** 16
 
 ---
 
@@ -16,6 +17,24 @@
 ---
 
 ## ✅ Completed Milestones
+
+### v6.11.0 - Workflow Enhancement (Feb 2026) ✅
+
+**Goal:** 16 Workflows + Phase 0 Brainstorming + Native Mobile
+
+**New in v6.11.0:**
+
+- 🆕 `/vibe-coding-android` - Android native (Kotlin + Jetpack Compose + Hilt)
+- 🆕 `/vibe-coding-ios` - iOS native (Swift + SwiftUI + @Observable)
+- 🆕 **Phase 0: Brainstorming** - Semua workflow sekarang include ideation phase
+  - Problem Framing Canvas
+  - HMW Questions + SCAMPER Analysis
+  - Impact/Effort + RICE Scoring
+  - Feasibility/Viability/Desirability Validation
+- 📝 Output: `BRAINSTORM.md` generated sebelum PRD.md
+- 🔧 Hybrid execution: Phase 0-1 batch → user review → Phase 2+ step-by-step
+
+---
 
 ### v6.10.0 - Edge & AI Toolkit Expansion (Feb 2026) ✅
 

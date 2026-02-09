@@ -6,12 +6,14 @@ description: Initialize Vibe Coding context files for Flutter multi-platform app
 
 Workflow untuk setup dokumen konteks Vibe Coding khusus **Flutter Multi-Platform App** (iOS, Android, Web, macOS, Windows, Linux) dengan Clean Architecture dan state management modern (Riverpod/BLoC/GetX).
 
-> **📚 Skill Reference:** Workflow ini menggunakan `@senior-flutter-developer` yang memiliki templates lengkap:
+> **📚 Skill Reference:** Workflow ini menggunakan:
 >
-> - **State Management:** `templates/state_management/` (riverpod, bloc, getx)
-> - **Backend Integration:** `templates/backend_integration/` (firebase, supabase)
-> - **Platform:** `templates/platform/` (ios, android, web, desktop, platform_channels)
-> - **Tooling:** `templates/tooling/` (testing, ci_cd, package_development)
+> - `@brainstorming` — Framework ideasi terstruktur (Problem Framing, HMW Questions, RICE Scoring)
+> - `@senior-flutter-developer` — Templates lengkap:
+>   - **State Management:** `templates/state_management/` (riverpod, bloc, getx)
+>   - **Backend Integration:** `templates/backend_integration/` (firebase, supabase)
+>   - **Platform:** `templates/platform/` (ios, android, web, desktop, platform_channels)
+>   - **Tooling:** `templates/tooling/` (testing, ci_cd, package_development)
 
 ---
 
@@ -28,6 +30,183 @@ Sebelum memulai, siapkan informasi berikut:
 4. **Backend preference** (Firebase/Supabase/Custom API)
 5. **Vibe/estetika** yang diinginkan
 6. **Responsive strategy** (Mobile-first / Desktop-first / Adaptive)
+
+---
+
+## 💡 Phase 0: Ideation & Brainstorming
+
+Phase ini menggunakan skill `@brainstorming` untuk mengklarifikasi ide sebelum masuk ke dokumentasi teknis.
+
+### Step 0.1: Problem Framing
+
+```
+Tanyakan kepada user:
+"Jelaskan secara singkat ide aplikasi yang ingin dibuat.
+Tidak perlu detail teknis, cukup ceritakan:
+- Apa yang ingin Anda buat?
+- Mengapa Anda ingin membuatnya?"
+```
+
+Gunakan skill `brainstorming`:
+
+```markdown
+Act as brainstorming.
+Berdasarkan ide user: [IDE USER]
+
+Buatkan Problem Framing Canvas:
+
+## Problem Framing Canvas
+
+### 1. WHAT is the problem?
+[Satu kalimat yang jelas dan spesifik]
+
+### 2. WHO is affected?
+- Primary users: [siapa pengguna utama]
+- Secondary stakeholders: [siapa yang terpengaruh]
+- Alternative solutions they use now: [apa yang mereka pakai sekarang]
+
+### 3. WHY does it matter?
+- User pain points: [masalah yang dihadapi user]
+- Business opportunity: [peluang bisnis]
+- Urgency: [seberapa mendesak]
+
+### 4. WHAT constraints exist?
+- Time: [deadline jika ada]
+- Budget: [estimasi budget]
+- Technology: [batasan teknis]
+- Skills: [kemampuan tim]
+
+### 5. WHAT does success look like?
+- Metric 1: [outcome terukur]
+- Metric 2: [outcome terukur]
+- Definition of done: [kriteria MVP selesai]
+```
+
+---
+
+### Step 0.2: Feature Ideation
+
+Gunakan skill `brainstorming`:
+
+```markdown
+Act as brainstorming.
+Berdasarkan Problem Framing di atas, generate fitur-fitur potensial.
+
+## "How Might We..." Questions
+Generate 5-10 HMW questions:
+- HMW make [task] faster for [user]?
+- HMW reduce [pain point]?
+- HMW help users achieve [goal]?
+
+## Feature Ideas (Divergent Thinking)
+Dari setiap HMW question, generate 2-3 ide fitur:
+
+| HMW Question | Feature Ideas |
+|--------------|---------------|
+| HMW make X faster? | 1. Auto-complete, 2. Templates, 3. Shortcuts |
+| ... | ... |
+
+## SCAMPER Analysis (Untuk fitur utama)
+- **S**ubstitute: Apa yang bisa diganti?
+- **C**ombine: Apa yang bisa digabung?
+- **A**dapt: Apa yang bisa diadaptasi dari app lain?
+- **M**odify: Apa yang bisa dimodifikasi?
+- **P**ut to other uses: Penggunaan alternatif?
+- **E**liminate: Apa yang bisa dihapus?
+- **R**everse: Apa jika dibalik?
+```
+
+---
+
+### Step 0.3: Feature Prioritization
+
+Gunakan skill `brainstorming`:
+
+```markdown
+Act as brainstorming.
+Prioritasikan fitur-fitur yang sudah di-generate.
+
+## Impact vs Effort Matrix
+
+Klasifikasikan setiap fitur ke dalam kuadran:
+
+```
+
+           HIGH IMPACT
+                │
+    Quick Wins  │  Big Bets
+    (Do First)  │  (Plan Carefully)
+                │
+────────────────┼────────────────
+                │
+    Fill-ins    │  Time Sinks
+    (Do Later)  │  (Avoid)
+                │
+           LOW IMPACT
+    LOW EFFORT ─────── HIGH EFFORT
+
+```
+
+## RICE Scoring (Top 10 Features)
+
+| Feature | Reach | Impact (1-3) | Confidence (%) | Effort (days) | Score |
+|---------|-------|--------------|----------------|---------------|-------|
+| Feature A | 1000 | 3 | 80% | 5 | ? |
+| ... | ... | ... | ... | ... | ... |
+
+Score = (Reach × Impact × Confidence) / Effort
+
+## MoSCoW Prioritization (Final)
+
+- **Must Have (MVP):** [list fitur wajib]
+- **Should Have (v1.1):** [list fitur penting]
+- **Could Have (v2.0):** [list nice-to-have]
+- **Won't Have (Out of Scope):** [list fitur yang ditolak]
+```
+
+---
+
+### Step 0.4: Quick Validation
+
+Gunakan skill `brainstorming`:
+
+```markdown
+Act as brainstorming.
+Validasi kelayakan ide sebelum lanjut ke fase teknis.
+
+## Quick Validation Checklist
+
+### Feasibility (Bisa dibangun?)
+- [ ] Teknologi yang dibutuhkan sudah mature?
+- [ ] Tim punya skills yang dibutuhkan?
+- [ ] Timeline realistis untuk MVP?
+
+### Viability (Layak secara bisnis?)
+- [ ] Menyelesaikan masalah nyata?
+- [ ] Ada willingness to pay?
+- [ ] ROI positif?
+
+### Desirability (User mau pakai?)
+- [ ] Berbeda dari solusi yang sudah ada?
+- [ ] Sudah divalidasi dengan calon user?
+- [ ] Fit dengan workflow user?
+
+## Key Assumptions to Test
+
+| Assumption | Risk Level | How to Test | Result |
+|------------|------------|-------------|--------|
+| User mau bayar X | High | Survey/Interview | TBD |
+| Teknologi bisa handle Y | Medium | Prototype | TBD |
+| ... | ... | ... | ... |
+
+## Go/No-Go Decision
+- [ ] ✅ GO — Lanjut ke Phase 1 (PRD)
+- [ ] ⚠️ PIVOT — Ubah approach
+- [ ] ❌ NO-GO — Abandon idea
+```
+
+// turbo
+**Simpan output Phase 0 ke file `BRAINSTORM.md` di root project.**
 
 ---
 
@@ -265,24 +444,92 @@ Buatkan file `RULES.md` sebagai panduan AI untuk Flutter project.
 - DILARANG akses controller tanpa `Get.find()` atau dependency injection
 
 ## Error Handling Rules
+
 - Semua async call harus di-wrap dengan try-catch
 - Gunakan custom Exception class untuk domain errors
 - Tampilkan user-friendly message di UI
 - Log technical detail untuk debugging
 - Selalu handle `ConnectionException` dan `TimeoutException`
 
+### ⚠️ WAJIB: Try-Catch di Setiap Method
+
+**Setiap method/function di DataSource, Provider, dan Controller WAJIB menggunakan try-catch:**
+
+```dart
+// ❌ DILARANG - tanpa try-catch
+class AuthRemoteDataSource {
+  Future<UserDto> login(String email, String password) async {
+    final response = await _dio.post('/auth/login', data: {...});
+    return UserDto.fromJson(response.data);
+  }
+}
+
+// ✅ WAJIB - dengan try-catch
+class AuthRemoteDataSource {
+  Future<UserDto> login(String email, String password) async {
+    try {
+      final response = await _dio.post('/auth/login', data: {...});
+      return UserDto.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ServerException(e.message ?? 'Network error');
+    } catch (e) {
+      throw ServerException('Unexpected error: $e');
+    }
+  }
+}
+```
+
+**Provider/Controller Pattern:**
+
+```dart
+// ✅ Provider dengan try-catch
+@riverpod
+class AuthNotifier extends _$AuthNotifier {
+  Future<void> login(String email, String password) async {
+    state = const AsyncValue.loading();
+    try {
+      final user = await ref.read(authRepositoryProvider).login(email, password);
+      state = AsyncValue.data(user);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+
+// ✅ Controller (GetX) dengan try-catch
+class AuthController extends GetxController {
+  final isLoading = false.obs;
+  final error = Rxn<String>();
+  
+  Future<void> login(String email, String password) async {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      await _authRepository.login(email, password);
+    } catch (e) {
+      error.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+}
+```
+
 ## API & Data Rules
+
 - API calls HANYA di Repository layer
 - Gunakan DTO untuk API response, Entity untuk domain
 - Mapping DTO ↔ Entity di Repository
 - JANGAN expose DTO ke Presentation layer
 
 ## Navigation Rules
+
 - Semua route didefinisikan di satu file (`app_router.dart`)
 - Gunakan named routes dengan type-safe parameters
 - Handle deep linking jika diperlukan
 
 ## AI Behavior Rules
+
 1. JANGAN pernah import package yang tidak ada di `pubspec.yaml`. Cek dulu.
 2. JANGAN tinggalkan komentar `// TODO` atau `// ... logic here`. Tulis sampai selesai.
 3. JANGAN menebak nama field dari API. Refer ke `API_CONTRACT.md` atau `DB_SCHEMA.md`.
@@ -292,9 +539,11 @@ Buatkan file `RULES.md` sebagai panduan AI untuk Flutter project.
 7. SELALU jalankan `dart analyze` sebelum submit.
 
 ## Workflow Rules
+
 - Sebelum coding, jelaskan rencana dalam 3 bullet points
 - Setelah coding, validasi dengan `flutter analyze`
 - Jika ragu, TANYA user
+
 ```
 
 // turbo
@@ -307,8 +556,10 @@ Buatkan file `RULES.md` sebagai panduan AI untuk Flutter project.
 ### Step 2.1: Generate DESIGN_SYSTEM.md
 
 ```
+
 Tanyakan kepada user:
 "Jelaskan vibe/estetika yang diinginkan untuk app Flutter ini."
+
 ```
 
 Gunakan skill `senior-ui-ux-designer` + `senior-flutter-developer`:
@@ -1079,6 +1330,7 @@ dart run build_runner build --delete-conflicting-outputs
 
 ```
 /project-root
+├── BRAINSTORM.md          ✅ Ideation (Phase 0)
 ├── PRD.md                 ✅ Holy Trinity
 ├── TECH_STACK.md          ✅ Holy Trinity
 ├── RULES.md               ✅ Holy Trinity
