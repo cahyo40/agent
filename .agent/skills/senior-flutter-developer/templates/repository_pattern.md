@@ -139,3 +139,72 @@ class NetworkFailure extends Failure {
   const NetworkFailure([super.message = 'No internet connection']);
 }
 ```
+
+## Modern Dart 3: Sealed Class Result Pattern
+
+> Alternative tanpa package `dartz`. Gunakan jika ingin Dart 3 native.
+
+```dart
+/// core/utils/result.dart
+sealed class Result<T> {
+  const Result();
+}
+
+class Success<T> extends Result<T> {
+  final T data;
+  const Success(this.data);
+}
+
+class Failed<T> extends Result<T> {
+  final AppException error;
+  const Failed(this.error);
+}
+
+// Helper untuk wrap try-catch jadi Result
+Future<Result<T>> guardAsync<T>(Future<T> Function() fn) async {
+  try {
+    return Success(await fn());
+  } on AppException catch (e) {
+    return Failed(e);
+  } on DioException catch (e) {
+    return Failed(mapDioException(e));
+  } catch (e) {
+    return Failed(ServerException('Unexpected: $e'));
+  }
+}
+```
+
+### Usage di Repository (tanpa dartz)
+
+```dart
+abstract class ProductRepository {
+  Future<Result<List<Product>>> getProducts();
+  Future<Result<Product>> getProduct(String id);
+}
+
+class ProductRepositoryImpl implements ProductRepository {
+  @override
+  Future<Result<List<Product>>> getProducts() async {
+    return guardAsync(() async {
+      final response = await _remote.getProducts();
+      await _local.cacheProducts(response);
+      return response.map((e) => e.toEntity()).toList();
+    });
+  }
+}
+```
+
+### Usage di Controller (pattern matching)
+
+```dart
+Future<void> loadProducts() async {
+  state = const AsyncLoading();
+  final result = await _repository.getProducts();
+
+  // Dart 3 pattern matching — exhaustive!
+  state = switch (result) {
+    Success(:final data) => AsyncData(data),
+    Failed(:final error) => AsyncError(error, StackTrace.current),
+  };
+}
+```

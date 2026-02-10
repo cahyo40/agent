@@ -3,7 +3,7 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.11.0-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.12.0-green?style=for-the-badge)
 ![Workflows](https://img.shields.io/badge/Workflows-16-purple?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 

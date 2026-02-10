@@ -526,6 +526,31 @@ class AuthController extends GetxController {
 - Mapping DTO ↔ Entity di Repository
 - JANGAN expose DTO ke Presentation layer
 
+## Performance Rules
+
+- Gunakan `const` constructor secara agresif
+- Gunakan `ListView.builder` (DILARANG `ListView(children: [...])` untuk list panjang)
+- Gunakan `RepaintBoundary` untuk CustomPaint / widget kompleks
+- DILARANG filtering/sorting di `build()` — cache di controller/provider
+- Gunakan `Isolate` / `compute()` untuk heavy computation (JSON parsing, image processing)
+- Gunakan `CachedNetworkImage` dengan `memCacheWidth` / `memCacheHeight`
+- Compress assets (WebP < 200KB)
+
+## REST API Rules
+
+- **Debounce search** input (300-500ms) — DILARANG hit API setiap keystroke
+- **Pagination** untuk semua list endpoint — DILARANG load semua item sekaligus  
+- **Timeout 15 detik** (bukan default 30 detik)
+- **Interceptors wajib:**
+  - `AuthInterceptor` — auto refresh token saat 401
+  - `RetryInterceptor` — retry 3x untuk status 408, 429, 5xx
+  - `LoggingInterceptor` — log request/response (dev only)
+- **Centralized error mapper:** `DioException` → `AppException`
+- **Cache-first with TTL** untuk data yang jarang berubah (categories, config)
+- **Environment config** — DILARANG hardcode API URL, gunakan `AppConfig` dengan `main_dev.dart` / `main_prod.dart`
+
+> 📚 **Refer ke:** `@senior-flutter-developer` → `templates/performance.md` untuk contoh kode lengkap
+
 ## Navigation Rules
 
 - Semua route didefinisikan di satu file (`app_router.dart`)
@@ -1763,6 +1788,219 @@ void main() {
 
 ```
 
+SEMUA kode baru harus mengikuti pola di atas.
+
+## 11. Debounce Search Pattern
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #8
+
+```dart
+// Debounce search — jangan hit API setiap keystroke
+class SearchNotifier extends ChangeNotifier {
+  Timer? _debounce;
+  List<Product> _results = [];
+
+  void onSearchChanged(String query) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _performSearch(query);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+}
+```
+
+## 12. Pagination / Infinite Scroll Pattern
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #9
+
+```dart
+class ProductListNotifier extends ChangeNotifier {
+  int _page = 1;
+  bool _isLoading = false;
+  bool _hasMore = true;
+  final List<Product> _items = [];
+
+  Future<void> loadMore() async {
+    if (_isLoading || !_hasMore) return;
+    _isLoading = true;
+    notifyListeners();
+    final result = await _repository.getProducts(page: _page, limit: 20);
+    result.fold(
+      (failure) {/* handle error */},
+      (response) {
+        _items.addAll(response.items);
+        _hasMore = response.hasMore;
+        _page++;
+      },
+    );
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+```
+
+## 13. Dio Production Setup
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #13
+
+```dart
+class DioClient {
+  late final Dio _dio;
+
+  DioClient({String? token}) {
+    _dio = Dio(BaseOptions(
+      baseUrl: AppConfig.baseUrl,
+      connectTimeout: AppConfig.apiTimeout,   // 15 detik
+      receiveTimeout: AppConfig.apiTimeout,
+    ));
+    _dio.interceptors.addAll([
+      AuthInterceptor(),      // auto refresh token
+      RetryInterceptor(),     // retry 3x untuk 5xx
+      if (AppConfig.isDev) LoggingInterceptor(),
+    ]);
+  }
+}
+```
+
+## 14. Centralized Error Mapper
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #14
+
+```dart
+AppException mapDioException(DioException e) {
+  return switch (e.type) {
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.receiveTimeout => const TimeoutException(),
+    DioExceptionType.connectionError => const NetworkException(),
+    DioExceptionType.badResponse => _mapStatusCode(e),
+    _ => ServerException('Terjadi kesalahan: ${e.message}'),
+  };
+}
+```
+
+## 15. Environment Configuration
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #12
+
+```dart
+enum Env { dev, staging, prod }
+
+class AppConfig {
+  static late final String baseUrl;
+  static late final Env environment;
+
+  static void init(Env env) {
+    environment = env;
+    baseUrl = switch (env) {
+      Env.dev => 'https://dev-api.example.com',
+      Env.staging => 'https://staging-api.example.com',
+      Env.prod => 'https://api.example.com',
+    };
+  }
+}
+
+// Jalankan: flutter run -t lib/main_dev.dart
+// Jalankan: flutter run -t lib/main_prod.dart
+```
+
+## 16. Pull-to-Refresh + Pagination Combo
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #16
+
+```dart
+RefreshIndicator(
+  onRefresh: () => ref.read(productListProvider.notifier).refresh(),
+  child: NotificationListener<ScrollNotification>(
+    onNotification: (notification) {
+      if (notification.metrics.pixels >=
+          notification.metrics.maxScrollExtent - 200) {
+        ref.read(productListProvider.notifier).loadMore();
+      }
+      return false;
+    },
+    child: items.isEmpty && isLoading
+        ? const ShimmerList()
+        : ListView.builder(
+            itemCount: items.length + (hasMore ? 1 : 0),
+            itemBuilder: (_, i) => i == items.length
+                ? const Center(child: CircularProgressIndicator())
+                : ProductTile(product: items[i]),
+          ),
+  ),
+)
+```
+
+## 17. Optimistic Update Pattern
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #17
+
+```dart
+Future<void> toggleComplete(String todoId) async {
+  // 1. Simpan state untuk rollback
+  final previous = List<Todo>.from(_items);
+  // 2. Update UI langsung
+  _items[index] = _items[index].copyWith(isCompleted: !_items[index].isCompleted);
+  notifyListeners();
+  // 3. Call API
+  final result = await _repository.toggleComplete(todoId);
+  // 4. Rollback jika gagal
+  result.fold(
+    (failure) { _items = previous; notifyListeners(); },
+    (_) {},
+  );
+}
+```
+
+## 18. Shimmer Loading Skeleton
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #19
+
+```dart
+class ShimmerBox extends StatelessWidget {
+  const ShimmerBox({super.key, this.width = double.infinity, required this.height});
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(width: width, height: height,
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+}
+
+// Usage: items.isEmpty && isLoading ? ShimmerList() : ListView.builder(...)
+```
+
+## 19. Sealed Class Result Pattern (Dart 3 Modern)
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/repository_pattern.md`
+
+```dart
+// Alternative tanpa dartz — Dart 3 native
+sealed class Result<T> { const Result(); }
+class Success<T> extends Result<T> { final T data; const Success(this.data); }
+class Failed<T> extends Result<T> { final AppException error; const Failed(this.error); }
+
+// Pattern matching di controller
+state = switch (result) {
+  Success(:final data) => AsyncData(data),
+  Failed(:final error) => AsyncError(error, StackTrace.current),
+};
+```
+
+```
+
 // turbo
 **Simpan output ke file `EXAMPLES.md` di root project.**
 
@@ -1989,6 +2227,14 @@ open coverage/html/index.html
 - ✅ Ikuti marker `// TODO` dari generator
 - ✅ Handle semua state (loading, error, success)
 - ✅ Jalankan `flutter analyze` sebelum commit
+- ✅ Debounce search input (300-500ms)
+- ✅ Pagination untuk semua list endpoint
+- ✅ Dio timeout 15s + interceptors (auth, retry, logging)
+- ✅ Centralized error mapper: `DioException` → `AppException`
+- ✅ Cache-first strategy untuk data statis
+- ✅ Environment config (dev/staging/prod) — jangan hardcode URL
+- ✅ `const` constructor secara agresif
+- ✅ `ListView.builder` untuk list panjang
 
 ### ❌ Avoid This
 
@@ -1997,6 +2243,12 @@ open coverage/html/index.html
 - ❌ Jangan mix state management
 - ❌ Jangan skip code generation
 - ❌ Jangan abaikan struktur Clean Architecture
+- ❌ Jangan hit API setiap keystroke — gunakan debounce
+- ❌ Jangan load semua list items sekaligus — gunakan pagination
+- ❌ Jangan `ListView(children: [...])` untuk list panjang
+- ❌ Jangan filtering/sorting di `build()` — cache di controller
+- ❌ Jangan hardcode API URL — gunakan `AppConfig`
+- ❌ Jangan timeout default 30s — set 15s
 
 ---
 

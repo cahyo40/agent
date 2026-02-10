@@ -522,6 +522,31 @@ class AuthController extends GetxController {
 - Mapping DTO ↔ Entity di Repository
 - JANGAN expose DTO ke Presentation layer
 
+## Performance Rules
+
+- Gunakan `const` constructor secara agresif
+- Gunakan `ListView.builder` (DILARANG `ListView(children: [...])` untuk list panjang)
+- Gunakan `RepaintBoundary` untuk CustomPaint / widget kompleks
+- DILARANG filtering/sorting di `build()` — cache di controller/provider
+- Gunakan `Isolate` / `compute()` untuk heavy computation (JSON parsing, image processing)
+- Gunakan `CachedNetworkImage` dengan `memCacheWidth` / `memCacheHeight`
+- Compress assets (WebP < 200KB)
+
+## REST API Rules
+
+- **Debounce search** input (300-500ms) — DILARANG hit API setiap keystroke
+- **Pagination** untuk semua list endpoint — DILARANG load semua item sekaligus  
+- **Timeout 15 detik** (bukan default 30 detik)
+- **Interceptors wajib:**
+  - `AuthInterceptor` — auto refresh token saat 401
+  - `RetryInterceptor` — retry 3x untuk status 408, 429, 5xx
+  - `LoggingInterceptor` — log request/response (dev only)
+- **Centralized error mapper:** `DioException` → `AppException` (lihat `@senior-flutter-developer` → `templates/performance.md`)
+- **Cache-first with TTL** untuk data yang jarang berubah (categories, config)
+- **Environment config** — DILARANG hardcode API URL, gunakan `AppConfig` dengan `main_dev.dart` / `main_prod.dart`
+
+> 📚 **Refer ke:** `@senior-flutter-developer` → `templates/performance.md` untuk contoh kode lengkap
+
 ## Navigation Rules
 
 - Semua route didefinisikan di satu file (`app_router.dart`)
@@ -1236,6 +1261,215 @@ class PrimaryButton extends StatelessWidget {
 
 SEMUA kode baru harus mengikuti pola di atas.
 
+## 7. Debounce Search Pattern
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #8
+
+```dart
+// Debounce search — jangan hit API setiap keystroke
+class SearchNotifier extends ChangeNotifier {
+  Timer? _debounce;
+  List<Product> _results = [];
+
+  void onSearchChanged(String query) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _performSearch(query);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+}
+```
+
+## 8. Pagination / Infinite Scroll Pattern
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #9
+
+```dart
+class ProductListNotifier extends ChangeNotifier {
+  int _page = 1;
+  bool _isLoading = false;
+  bool _hasMore = true;
+  final List<Product> _items = [];
+
+  Future<void> loadMore() async {
+    if (_isLoading || !_hasMore) return;
+    _isLoading = true;
+    notifyListeners();
+    final result = await _repository.getProducts(page: _page, limit: 20);
+    result.fold(
+      (failure) {/* handle error */},
+      (response) {
+        _items.addAll(response.items);
+        _hasMore = response.hasMore;
+        _page++;
+      },
+    );
+    _isLoading = false;
+    notifyListeners();
+  }
+}
+```
+
+## 9. Dio Production Setup
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #13
+
+```dart
+class DioClient {
+  late final Dio _dio;
+
+  DioClient({String? token}) {
+    _dio = Dio(BaseOptions(
+      baseUrl: AppConfig.baseUrl,
+      connectTimeout: AppConfig.apiTimeout,   // 15 detik
+      receiveTimeout: AppConfig.apiTimeout,
+    ));
+    _dio.interceptors.addAll([
+      AuthInterceptor(),      // auto refresh token
+      RetryInterceptor(),     // retry 3x untuk 5xx
+      if (AppConfig.isDev) LoggingInterceptor(),
+    ]);
+  }
+}
+```
+
+## 10. Centralized Error Mapper
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #14
+
+```dart
+AppException mapDioException(DioException e) {
+  return switch (e.type) {
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.receiveTimeout => const TimeoutException(),
+    DioExceptionType.connectionError => const NetworkException(),
+    DioExceptionType.badResponse => _mapStatusCode(e),
+    _ => ServerException('Terjadi kesalahan: ${e.message}'),
+  };
+}
+```
+
+## 11. Environment Configuration
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #12
+
+```dart
+enum Env { dev, staging, prod }
+
+class AppConfig {
+  static late final String baseUrl;
+  static late final Env environment;
+
+  static void init(Env env) {
+    environment = env;
+    baseUrl = switch (env) {
+      Env.dev => 'https://dev-api.example.com',
+      Env.staging => 'https://staging-api.example.com',
+      Env.prod => 'https://api.example.com',
+    };
+  }
+}
+
+// Jalankan: flutter run -t lib/main_dev.dart
+// Jalankan: flutter run -t lib/main_prod.dart
+```
+
+## 12. Pull-to-Refresh + Pagination Combo
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #16
+
+```dart
+RefreshIndicator(
+  onRefresh: () => ref.read(productListProvider.notifier).refresh(),
+  child: NotificationListener<ScrollNotification>(
+    onNotification: (notification) {
+      if (notification.metrics.pixels >=
+          notification.metrics.maxScrollExtent - 200) {
+        ref.read(productListProvider.notifier).loadMore();
+      }
+      return false;
+    },
+    child: items.isEmpty && isLoading
+        ? const ShimmerList()
+        : ListView.builder(
+            itemCount: items.length + (hasMore ? 1 : 0),
+            itemBuilder: (_, i) => i == items.length
+                ? const Center(child: CircularProgressIndicator())
+                : ProductTile(product: items[i]),
+          ),
+  ),
+)
+```
+
+## 13. Optimistic Update Pattern
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #17
+
+```dart
+Future<void> toggleComplete(String todoId) async {
+  // 1. Simpan state untuk rollback
+  final previous = List<Todo>.from(_items);
+  // 2. Update UI langsung
+  _items[index] = _items[index].copyWith(isCompleted: !_items[index].isCompleted);
+  notifyListeners();
+  // 3. Call API
+  final result = await _repository.toggleComplete(todoId);
+  // 4. Rollback jika gagal
+  result.fold(
+    (failure) { _items = previous; notifyListeners(); },
+    (_) {},
+  );
+}
+```
+
+## 14. Shimmer Loading Skeleton
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/performance.md` #19
+
+```dart
+class ShimmerBox extends StatelessWidget {
+  const ShimmerBox({super.key, this.width = double.infinity, required this.height});
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(width: width, height: height,
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
+}
+
+// Usage: items.isEmpty && isLoading ? ShimmerList() : ListView.builder(...)
+```
+
+## 15. Sealed Class Result Pattern (Dart 3 Modern)
+
+> 📚 Contoh kode lengkap: `@senior-flutter-developer` → `templates/repository_pattern.md`
+
+```dart
+// Alternative tanpa dartz — Dart 3 native
+sealed class Result<T> { const Result(); }
+class Success<T> extends Result<T> { final T data; const Success(this.data); }
+class Failed<T> extends Result<T> { final AppException error; const Failed(this.error); }
+
+// Pattern matching di controller
+state = switch (result) {
+  Success(:final data) => AsyncData(data),
+  Failed(:final error) => AsyncError(error, StackTrace.current),
+};
+```
+
 ```
 
 // turbo
@@ -1390,6 +1624,13 @@ Gunakan templates dari `@senior-flutter-developer` untuk pattern yang lebih deta
 | String literals | Pakai constants atau l10n |
 | Nested callbacks | Pakai async/await |
 | `setState` untuk complex state | Pakai state management |
+| Hit API setiap keystroke | Debounce 300-500ms |
+| Load semua list items | Pagination / infinite scroll |
+| `ListView(children: [...])` | `ListView.builder` |
+| Filtering di `build()` | Cache di controller/provider |
+| Hardcode API URL | `AppConfig` + environment |
+| Default timeout 30s | Set timeout 15s |
+| Generic `catch (e)` | Centralized error mapper |
 
 ---
 

@@ -1,7 +1,7 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.11.0  
+> **Current Version:** v6.12.0  
 > **Total Skills:** 309  
 > **Total Workflows:** 16
 
@@ -18,6 +18,30 @@
 
 ## ✅ Completed Milestones
 
+### v6.12.0 - Flutter Documentation Completeness (Feb 2026) ✅
+
+**Goal:** 100% Best Practices Coverage for Flutter Skills
+
+**New in v6.12.0:**
+
+- 📝 **Flutter Best Practices** - Comprehensive documentation update
+- ✨ **5 New Patterns Documented:**
+  - Pull-to-refresh + pagination combo for list screens
+  - Optimistic update pattern (toggle, delete with rollback)
+  - Shimmer loading skeletons (replace plain spinners)
+  - Connectivity check + offline fallback
+  - Dart 3 sealed class `Result<T>` (modern alternative to `dartz Either`)
+- 📄 **6 Files Updated:**
+  - `performance.md` - 4 new sections (#16-#19) with full Riverpod code examples
+  - `repository_pattern.md` - `Result<T>` sealed class + `guardAsync()` helper
+  - `senior-flutter-developer/SKILL.md` - Expanded best practices & production checklist
+  - `yo-flutter-dev/SKILL.md` - New UX Patterns section + 5 checklist items
+  - `vibe-coding-flutter.md` - 4 new EXAMPLES.md sections (#12-#15)
+  - `vibe-coding-yo-flutter.md` - 4 new EXAMPLES.md sections (#16-#19)
+- 📊 **+1,355 lines** of documentation & code examples added
+
+---
+
 ### v6.11.0 - Workflow Enhancement (Feb 2026) ✅
 
 **Goal:** 16 Workflows + Phase 0 Brainstorming + Native Mobile
@@ -32,7 +56,7 @@
   - Impact/Effort + RICE Scoring
   - Feasibility/Viability/Desirability Validation
 - 📝 Output: `BRAINSTORM.md` generated sebelum PRD.md
-- 🔧 Hybrid execution: Phase 0-1 batch → user review → Phase 2+ step-by-step
+- 🛠️ Hybrid execution: Phase 0-1 batch → user review → Phase 2+ step-by-step
 
 ---
 
@@ -304,6 +328,9 @@ What this skill does and when to use it.
 | v6.7.0 | Feb 2026 | 307 | +1% |
 | v6.8.0 | Feb 2026 | 309 | +0.6% |
 | **v6.9.1** | **Feb 2026** | **298** | **-3.6%** 🧹 |
+| v6.10.0 | Feb 2026 | 309 | +3.7% |
+| v6.11.0 | Feb 2026 | 309 | +0% (workflows) |
+| **v6.12.0** | **Feb 2026** | **309** | **+0% (docs)** 📝 |
 
 ---
 

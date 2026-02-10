@@ -28,7 +28,7 @@ This skill includes detailed templates for common patterns. Read the relevant te
 |----------|------|----------|
 | **Architecture** | `templates/architecture.md` | Clean Architecture layers, project structure |
 | **Repository Pattern** | `templates/repository_pattern.md` | Offline-first, Either pattern, error handling |
-| **Performance** | `templates/performance.md` | Slivers, RepaintBoundary, Isolates, caching |
+| **Performance** | `templates/performance.md` | Slivers, RepaintBoundary, Isolates, caching, debounce, pagination, Dio interceptors, env config, error mapper |
 | **Animations** | `templates/animations.md` | Implicit, explicit, staggered animations |
 
 ### State Management
@@ -150,15 +150,34 @@ dev_dependencies:
 - ✅ Implement feature flags for gradual rollout
 - ✅ Use code generation (freezed, riverpod_generator)
 - ✅ Write migration strategy for breaking changes
+- ✅ Use debounce (300-500ms) for search inputs
+- ✅ Use pagination / infinite scroll for list endpoints
+- ✅ Implement cache-first strategy with TTL for static data
+- ✅ Use environment config (dev/staging/prod) — never hardcode URLs
+- ✅ Add Dio interceptors: Auth refresh, Retry (3x for 5xx), Logging (dev only)
+- ✅ Use centralized error mapper: `DioException` → `AppException`
+- ✅ Set API timeout to 15s (not default 30s)
+- ✅ Use `const` constructors aggressively
+- ✅ Pull-to-refresh + pagination combo for all list screens
+- ✅ Optimistic updates for instant-feel UX (toggle, delete)
+- ✅ Shimmer loading skeletons instead of plain spinners
+- ✅ Connectivity check before API calls with offline fallback
+- ✅ Consider sealed class `Result<T>` as Dart 3 alternative to `dartz Either`
 
 ### ❌ Avoid This
 
 - ❌ Don't over-engineer simple features
 - ❌ Don't ignore memory leaks in streams
 - ❌ Don't skip integration tests
-- ❌ Don't hardcode environment values
+- ❌ Don't hardcode environment values or API URLs
 - ❌ Don't use BuildContext after async gaps
 - ❌ Don't block UI thread with heavy computation
+- ❌ Don't hit API on every keystroke — use debounce
+- ❌ Don't load all list items at once — use pagination
+- ❌ Don't use `ListView(children: [...])` for long lists — use `ListView.builder`
+- ❌ Don't do filtering/sorting inside `build()` — cache in controller/provider
+- ❌ Don't use plain `CircularProgressIndicator` for initial load — use shimmer
+- ❌ Don't skip connectivity check — always handle offline gracefully
 
 ## Production Checklist
 
@@ -171,14 +190,33 @@ dev_dependencies:
 - [ ] Analytics implemented
 - [ ] Deep linking tested
 - [ ] Push notifications working
+- [ ] `--split-debug-info` and `--obfuscate` flags used
 
 ### Performance
-- [ ] Profiled with DevTools
-- [ ] No jank in > 60fps animations
-- [ ] Memory leaks checked
-- [ ] Image caching configured
-- [ ] Lazy loading for lists
-- [ ] App size optimized
+- [ ] Profiled with DevTools (no jank > 16ms frames)
+- [ ] Memory leaks checked (no growing memory)
+- [ ] Image caching with CachedNetworkImage + cacheWidth/cacheHeight
+- [ ] ListView.builder for all long lists (no ListView with children)
+- [ ] const constructors used aggressively
+- [ ] RepaintBoundary for CustomPaint / complex widgets
+- [ ] Debounce on search inputs (300-500ms)
+- [ ] Isolates for heavy computation
+- [ ] App size optimized (`--split-per-abi`, compressed assets)
+- [ ] Shimmer loading skeletons for initial load
+- [ ] Pull-to-refresh on all list screens
+- [ ] Optimistic updates for toggle/delete actions
+
+### API & Networking
+- [ ] Dio timeout set to 15s (not 30s)
+- [ ] Auth interceptor with token refresh
+- [ ] Retry interceptor for 5xx errors (max 3 retries)
+- [ ] Centralized error mapper (DioException → AppException)
+- [ ] Pagination for all list endpoints
+- [ ] Cache-first strategy for static data (categories, config)
+- [ ] Connectivity check before API calls
+- [ ] No hardcoded API URLs — use AppConfig
+- [ ] Offline fallback to local cache
+- [ ] Sealed class `Result<T>` or `Either<Failure, T>` for all return types
 
 ### Quality
 - [ ] Unit test coverage > 80%
@@ -186,6 +224,8 @@ dev_dependencies:
 - [ ] Integration tests for happy paths
 - [ ] Accessibility audit passed
 - [ ] Localization complete
+- [ ] `flutter analyze` — 0 warnings
+- [ ] All states handled: loading, error, empty, data
 ```
 
 ## Related Skills

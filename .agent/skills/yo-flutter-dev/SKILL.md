@@ -583,3 +583,111 @@ dart run yo.dart usecase:register --feature=auth
 - ❌ Jangan mix state management
 - ❌ Jangan skip marker // TODO
 - ❌ Jangan abaikan struktur Clean Architecture
+
+---
+
+## ⚡ Performance & REST API Best Practices
+
+> Refer ke `@senior-flutter-developer` → `templates/performance.md` untuk
+> contoh kode lengkap semua pattern di bawah.
+
+### Widget Performance
+
+- Gunakan `const` constructor secara agresif
+- Gunakan `ListView.builder` dengan `itemExtent` untuk list panjang
+- Gunakan `RepaintBoundary` untuk widget `CustomPaint` / kompleks
+- JANGAN filtering/sorting di `build()` — cache di controller/provider
+- Gunakan `Isolate` / `compute()` untuk heavy computation
+
+### Search & Pagination
+
+- **Debounce search** (300-500ms) — jangan hit API setiap keystroke
+- **Pagination / Infinite scroll** — jangan load semua item sekaligus
+- Pattern: `loadMore()` dipanggil saat scroll mendekati akhir
+- **Pull-to-refresh** combo: `RefreshIndicator` + pagination + shimmer loading
+
+### Image Optimization
+
+- Gunakan `CachedNetworkImage` dengan `memCacheWidth` / `memCacheHeight`
+- Precache images untuk item yang akan tampil
+- Compress assets (WebP < 200KB)
+
+### Dio & REST API
+
+- **Timeout 15 detik** (bukan default 30 detik)
+- **Interceptors wajib:**
+  - `AuthInterceptor` — auto refresh token saat 401
+  - `RetryInterceptor` — retry 3x untuk status 408, 429, 5xx
+  - `LoggingInterceptor` — log request/response (dev only)
+- **Centralized error mapper:** `DioException` → `AppException`
+
+```dart
+// Contoh centralized error mapper
+AppException mapDioException(DioException e) {
+  return switch (e.type) {
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.receiveTimeout => const TimeoutException(),
+    DioExceptionType.connectionError => const NetworkException(),
+    DioExceptionType.badResponse => _mapStatusCode(e),
+    _ => ServerException('Terjadi kesalahan: ${e.message}'),
+  };
+}
+```
+
+### Caching Strategy
+
+- **Cache-first with TTL** untuk data yang jarang berubah (categories, config)
+- Fallback ke expired cache jika offline
+- Pattern: cek local → jika valid return → jika expired fetch remote → simpan
+- **Connectivity check** sebelum API call — fallback ke local cache jika offline
+
+### UX Patterns
+
+- **Optimistic update** — update UI langsung, rollback jika API gagal (toggle, delete)
+- **Shimmer loading skeleton** — jangan pakai `CircularProgressIndicator` untuk initial load
+- Gunakan sealed class `Result<T>` (Dart 3 native) atau `Either<Failure, T>` (dartz) untuk return type repository
+
+### Environment Config
+
+- Pisahkan environment: dev / staging / prod
+- JANGAN hardcode API URL — gunakan `AppConfig`
+- Gunakan `main_dev.dart`, `main_prod.dart` untuk entry point berbeda
+
+```dart
+// Contoh environment config
+enum Env { dev, staging, prod }
+
+class AppConfig {
+  static late final String baseUrl;
+  static late final Env environment;
+
+  static void init(Env env) {
+    environment = env;
+    baseUrl = switch (env) {
+      Env.dev => 'https://dev-api.example.com',
+      Env.staging => 'https://staging-api.example.com',
+      Env.prod => 'https://api.example.com',
+    };
+  }
+}
+```
+
+### Pre-Release Checklist
+
+```markdown
+- [ ] `flutter analyze` — 0 warnings
+- [ ] `flutter build --split-debug-info --obfuscate`
+- [ ] ProGuard/R8 enabled (Android)
+- [ ] Dio timeout 15s, retry interceptor, auth refresh
+- [ ] Pagination untuk semua list endpoint
+- [ ] Debounce untuk semua search input
+- [ ] Image caching + resize (cacheWidth/cacheHeight)
+- [ ] Cache-first untuk static data
+- [ ] Semua state: loading, error, empty, data
+- [ ] Memory leak check via DevTools
+- [ ] Pull-to-refresh di semua list screen
+- [ ] Shimmer loading skeleton (bukan spinner)
+- [ ] Optimistic update untuk toggle/delete
+- [ ] Connectivity check + offline fallback
+- [ ] Sealed class `Result<T>` atau `Either<Failure, T>` konsisten
+```

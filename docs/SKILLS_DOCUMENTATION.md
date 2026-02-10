@@ -1,7 +1,7 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.10.0  
-> **Last Updated:** 2026-02-09  
+> **Version:** 6.12.0  
+> **Last Updated:** 2026-02-10  
 > **Total Skills:** 309
 
 ---
@@ -291,6 +291,28 @@ buatkan script dan ide thumbnail untuk video YouTube
 ---
 
 ## Changelog
+
+### v6.12.0 (2026-02-10)
+
+- 📝 **Flutter Best Practices Documentation** - 100% coverage update
+- ✨ **New Patterns Added:**
+  - Pull-to-refresh + pagination combo for list screens
+  - Optimistic update pattern (toggle, delete with rollback)
+  - Shimmer loading skeletons (instead of plain spinners)
+  - Connectivity check + offline fallback
+  - Dart 3 sealed class `Result<T>` (alternative to `dartz Either`)
+- 📄 `performance.md` - Added 4 new sections (#16-#19) with full code examples
+- 📄 `repository_pattern.md` - Added Result sealed class + `guardAsync()` helper
+- 📄 `senior-flutter-developer/SKILL.md` - Expanded best practices & production checklist
+- 📄 `yo-flutter-dev/SKILL.md` - Added UX Patterns section + checklist items
+- 📄 `vibe-coding-flutter.md` - Added 4 new EXAMPLES.md sections (#12-#15)
+- 📄 `vibe-coding-yo-flutter.md` - Added 4 new EXAMPLES.md sections (#16-#19)
+
+### v6.11.0 (2026-02-09)
+
+- 🆕 `/vibe-coding-android` - Android native workflow (Kotlin + Jetpack Compose)
+- 🆕 `/vibe-coding-ios` - iOS native workflow (Swift + SwiftUI)
+- 🆕 **Phase 0: Brainstorming** added to all 16 workflows
 
 ### v6.9.1 (2026-02-09)
 
