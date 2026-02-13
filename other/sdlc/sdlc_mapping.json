@@ -1,0 +1,143 @@
+{
+  "project": "SDLC Documentation & Agent Skills Mapping",
+  "description": "Mapping of SDLC deliverables to specialized AI agent skills to ensure high-quality project planning and execution.",
+  "phases": [
+    {
+      "phase": "Requirement Analysis",
+      "goal": "Identify business needs and user requirements.",
+      "documents": [
+        {
+          "name": "Functional Requirements",
+          "recommended_skills": ["senior-system-analyst"],
+          "description": "Detailed description of system features and capabilities."
+        },
+        {
+          "name": "Non-Functional Requirements",
+          "recommended_skills": ["senior-system-analyst", "senior-software-architect"],
+          "description": "Operational constraints like performance, security, and scalability."
+        },
+        {
+          "name": "User Stories & PRD",
+          "recommended_skills": ["senior-project-manager"],
+          "description": "Feature descriptions from user perspective with acceptance criteria."
+        }
+      ]
+    },
+    {
+      "phase": "UI/UX Design",
+      "goal": "Design the user interface and experience.",
+      "documents": [
+        {
+          "name": "User Flow & Wireframes",
+          "recommended_skills": ["senior-ui-ux-designer"],
+          "description": "Visual path of the user through the application and basic layout."
+        },
+        {
+          "name": "High-Fidelity Mockups",
+          "recommended_skills": ["senior-ui-ux-designer", "figma-specialist"],
+          "description": "Detailed visual design of the application screens."
+        },
+        {
+          "name": "Design System / Style Guide",
+          "recommended_skills": ["design-system-architect", "senior-ui-ux-designer"],
+          "description": "Consistent UI components, colors, and typography rules."
+        }
+      ]
+    },
+    {
+      "phase": "System Design",
+      "goal": "Visualize system behavior and high-level structure.",
+      "documents": [
+        {
+          "name": "Use Case Diagram",
+          "recommended_skills": ["uml-specialist", "senior-system-analyst"],
+          "description": "Representation of user interactions with system components."
+        },
+        {
+          "name": "Activity Diagram",
+          "recommended_skills": ["senior-system-analyst", "uml-specialist"],
+          "description": "Flow of business logic or system processes."
+        },
+        {
+          "name": "System Architecture Diagram",
+          "recommended_skills": ["senior-software-architect", "software-architecture-patterns"],
+          "description": "Structural layout of the tech stack and component communication."
+        }
+      ]
+    },
+    {
+      "phase": "Detailed Design",
+      "goal": "Define low-level technical specifications for implementation.",
+      "documents": [
+        {
+          "name": "Class Diagram",
+          "recommended_skills": ["senior-software-engineer", "uml-specialist"],
+          "description": "Static structure showing classes, attributes, methods, and relationships."
+        },
+        {
+          "name": "Sequence Diagram",
+          "recommended_skills": ["uml-specialist", "senior-software-architect"],
+          "description": "Time-ordered interaction between objects/components."
+        },
+        {
+          "name": "API Specification (OpenAPI)",
+          "recommended_skills": ["api-design-specialist", "senior-backend-developer"],
+          "description": "The contract between frontend and backend services."
+        }
+      ]
+    },
+    {
+      "phase": "Quality & Security",
+      "goal": "Ensure reliability and protection of the system.",
+      "documents": [
+        {
+          "name": "Test Plan & Automation Strategy",
+          "recommended_skills": ["api-testing-specialist", "playwright-specialist"],
+          "description": "Defining how the system will be verified and validated."
+        },
+        {
+          "name": "Security Threat Modeling",
+          "recommended_skills": ["senior-cybersecurity-engineer", "senior-api-security-specialist"],
+          "description": "Identifying potential security risks and mitigation plans."
+        }
+      ]
+    },
+    {
+      "phase": "Data & Deployment",
+      "goal": "Plan data storage and physical environment.",
+      "documents": [
+        {
+          "name": "Database Schema (ERD)",
+          "recommended_skills": ["database-modeling-specialist", "senior-database-engineer-sql"],
+          "description": "Logical and physical database structure and relationships."
+        },
+        {
+          "name": "Deployment Diagram",
+          "recommended_skills": ["senior-devops-engineer", "senior-cloud-architect"],
+          "description": "Physical hosting infrastructure and network configuration."
+        },
+        {
+          "name": "CI/CD Pipeline Workflow",
+          "recommended_skills": ["github-actions-specialist", "senior-devops-engineer"],
+          "description": "Automated build, test, and deployment process."
+        }
+      ]
+    },
+    {
+      "phase": "Maintenance & Operations",
+      "goal": "Monitor, maintain, and update the live system.",
+      "documents": [
+        {
+          "name": "Monitoring & Alerting Setup",
+          "recommended_skills": ["senior-site-reliability-engineer", "senior-devops-engineer"],
+          "description": "System health tracking, logging, and incident response plan."
+        },
+        {
+          "name": "User & Technical Documentation",
+          "recommended_skills": ["senior-technical-writer"],
+          "description": "Manuals for end-users and onboarding guides for developers."
+        }
+      ]
+    }
+  ]
+}
