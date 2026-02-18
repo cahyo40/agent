@@ -1,8 +1,9 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.13.0  
+> **Current Version:** v6.14.0  
 > **Total Skills:** 309  
+> **Total Workflows:** 8 collections (91 workflow files)  
 
 ---
 
@@ -16,6 +17,36 @@
 ---
 
 ## ✅ Completed Milestones
+
+### v6.14.0 - Flutter Workflow Expansion (Feb 2026) ✅
+
+**Goal:** Complete Flutter workflows parity — semua 3 Flutter state management frameworks memiliki workflow lengkap (12-13 files each)
+
+**New in v6.14.0:**
+
+- 📋 **flutter-riverpod** — +5 files (08-12):
+  - `08_state_management_advanced.md` - Family providers, pagination, optimistic updates
+  - `09_offline_storage.md` - Hive TTL cache, Isar DB, offline-first, SecureStorage
+  - `10_ui_components.md` - AppButton, AppTextField, EmptyState, Shimmer, BottomSheet
+  - `11_push_notifications.md` - FCM + local notifications + deep linking
+  - `12_performance_monitoring.md` - Sentry + Crashlytics + performance tracing
+- 📋 **flutter-getx** — +5 files (08-12):
+  - `08_state_management_advanced.md` - Workers (debounce/ever/once), StateMixin, optimistic
+  - `09_offline_storage.md` - GetStorage TTL, Hive, SecureStorage, ConnectivityService
+  - `10_ui_components.md` - Reusable widget library (framework-agnostic)
+  - `11_push_notifications.md` - FCM as GetxService, deep link via Get.toNamed()
+  - `12_performance_monitoring.md` - Sentry + Crashlytics + GetX error integration
+- 📋 **flutter-bloc** — +5 files (09-13):
+  - `09_state_management_advanced.md` - Pagination Bloc, optimistic Cubit, cross-Bloc, EventTransformer
+  - `10_offline_storage.md` - Hive + Isar + ConnectivityCubit + get_it DI
+  - `11_ui_components.md` - Reusable widgets + BlocBuilder integration pattern
+  - `12_push_notifications.md` - FCM @lazySingleton, deep link via go_router
+  - `13_performance_monitoring.md` - Sentry + Crashlytics + AppBlocObserver
+- 📋 **nuxt-frontend** — 14 files (new collection):
+  - Full Nuxt 3 workflow: setup, components, API, auth, Firebase, Supabase, forms, state, dashboard, testing, SEO, deployment
+- 📊 **Total:** 91 workflow files across 8 collections
+
+---
 
 ### v6.13.0 - Repository Simplification (Feb 2026) ✅
 
@@ -339,6 +370,7 @@ What this skill does and when to use it.
 | v6.11.0 | Feb 2026 | 309 | +0% (workflows) |
 | v6.12.0 | Feb 2026 | 309 | +0% (docs) 📝 |
 | **v6.13.0** | **Feb 2026** | **309** | **0 workflows** 🗑️ |
+| **v6.14.0** | **Feb 2026** | **309** | **+91 workflow files** 📋 |
 
 ---
 

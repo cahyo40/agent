@@ -5,6 +5,7 @@
     {
       "phase": "Requirement Analysis",
       "goal": "Identify business needs and user requirements.",
+      "workflow_file": "workflows/sdlc-maker/01_requirement_analysis.md",
       "documents": [
         {
           "name": "Functional Requirements",
@@ -20,12 +21,23 @@
           "name": "User Stories & PRD",
           "recommended_skills": ["senior-project-manager"],
           "description": "Feature descriptions from user perspective with acceptance criteria."
+        },
+        {
+          "name": "RACI Matrix",
+          "recommended_skills": ["senior-project-manager"],
+          "description": "Stakeholder responsibility assignment matrix."
+        },
+        {
+          "name": "Risk Register",
+          "recommended_skills": ["senior-system-analyst", "senior-project-manager"],
+          "description": "Identified risks with probability, impact, and mitigation plans."
         }
       ]
     },
     {
       "phase": "UI/UX Design",
       "goal": "Design the user interface and experience.",
+      "workflow_file": "workflows/sdlc-maker/02_ui_ux_design.md",
       "documents": [
         {
           "name": "User Flow & Wireframes",
@@ -47,6 +59,7 @@
     {
       "phase": "System Design",
       "goal": "Visualize system behavior and high-level structure.",
+      "workflow_file": "workflows/sdlc-maker/03_system_detailed_design.md",
       "documents": [
         {
           "name": "Use Case Diagram",
@@ -68,6 +81,7 @@
     {
       "phase": "Detailed Design",
       "goal": "Define low-level technical specifications for implementation.",
+      "workflow_file": "workflows/sdlc-maker/03_system_detailed_design.md",
       "documents": [
         {
           "name": "Class Diagram",
@@ -87,13 +101,51 @@
       ]
     },
     {
+      "phase": "Data Modeling & Estimation",
+      "goal": "Design data structures and plan project timeline.",
+      "workflow_file": "workflows/sdlc-maker/06_data_modeling_estimation.md",
+      "documents": [
+        {
+          "name": "Data Dictionary",
+          "recommended_skills": ["database-modeling-specialist", "senior-database-engineer-sql"],
+          "description": "Comprehensive reference of all data entities, fields, types, and constraints."
+        },
+        {
+          "name": "Entity Relationship Diagram (ERD)",
+          "recommended_skills": ["database-modeling-specialist", "uml-specialist"],
+          "description": "Visual representation of all entities and their relationships."
+        },
+        {
+          "name": "Data Migration Plan",
+          "recommended_skills": ["database-modeling-specialist", "senior-devops-engineer"],
+          "description": "Strategy for database schema versioning, migration, and rollback."
+        },
+        {
+          "name": "Project Estimation",
+          "recommended_skills": ["project-estimator", "senior-project-manager"],
+          "description": "Story points, sprint planning, resource allocation, and risk buffer."
+        }
+      ]
+    },
+    {
       "phase": "Quality & Security",
       "goal": "Ensure reliability and protection of the system.",
+      "workflow_file": "workflows/sdlc-maker/04_quality_security_deployment.md",
       "documents": [
         {
           "name": "Test Plan & Automation Strategy",
           "recommended_skills": ["api-testing-specialist", "playwright-specialist"],
           "description": "Defining how the system will be verified and validated."
+        },
+        {
+          "name": "Performance Testing Plan",
+          "recommended_skills": ["performance-testing-specialist", "api-testing-specialist"],
+          "description": "Load and stress testing strategy with k6/Artillery."
+        },
+        {
+          "name": "Accessibility Testing",
+          "recommended_skills": ["accessibility-specialist", "senior-ui-ux-designer"],
+          "description": "WCAG 2.1 AA compliance verification checklist."
         },
         {
           "name": "Security Threat Modeling",
@@ -105,6 +157,7 @@
     {
       "phase": "Data & Deployment",
       "goal": "Plan data storage and physical environment.",
+      "workflow_file": "workflows/sdlc-maker/04_quality_security_deployment.md",
       "documents": [
         {
           "name": "Database Schema (ERD)",
@@ -126,6 +179,7 @@
     {
       "phase": "Maintenance & Operations",
       "goal": "Monitor, maintain, and update the live system.",
+      "workflow_file": "workflows/sdlc-maker/05_maintenance_operations.md",
       "documents": [
         {
           "name": "Monitoring & Alerting Setup",
@@ -136,6 +190,33 @@
           "name": "User & Technical Documentation",
           "recommended_skills": ["senior-technical-writer"],
           "description": "Manuals for end-users and onboarding guides for developers."
+        }
+      ]
+    },
+    {
+      "phase": "Project Handoff",
+      "goal": "Transition project to client or operations team.",
+      "workflow_file": "workflows/sdlc-maker/07_project_handoff.md",
+      "documents": [
+        {
+          "name": "Handoff Checklist",
+          "recommended_skills": ["senior-project-manager", "senior-technical-writer"],
+          "description": "Comprehensive checklist ensuring nothing is missed during transition."
+        },
+        {
+          "name": "Knowledge Transfer Plan",
+          "recommended_skills": ["senior-project-manager", "senior-technical-writer"],
+          "description": "Structured plan for transferring project knowledge to receiving team."
+        },
+        {
+          "name": "Acceptance & Sign-off",
+          "recommended_skills": ["senior-project-manager"],
+          "description": "Formal document for stakeholder acceptance of delivered project."
+        },
+        {
+          "name": "Post-Launch Review",
+          "recommended_skills": ["senior-project-manager"],
+          "description": "Retrospective analysis with lessons learned and improvement items."
         }
       ]
     }

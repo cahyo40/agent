@@ -3,10 +3,11 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.13.0-green?style=for-the-badge)
+![Workflows](https://img.shields.io/badge/Workflows-8-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.14.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 309 skills untuk memperluas kemampuan AI Agent**
+**Koleksi 309 skills + 8 workflow collections untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -17,6 +18,7 @@
 ## ✨ Features
 
 - 🤖 **309 Specialized Skills** - Dari Flutter hingga AI/ML
+- 📋 **8 Workflow Collections** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -228,22 +230,50 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
+## 📋 Workflows
+
+Workflows adalah panduan step-by-step untuk development project dari awal hingga production. Tersedia di folder `workflows/`.
+
+| Workflow | Files | Deskripsi |
+|----------|-------|-----------|
+| `flutter-riverpod` | 12 | Flutter + Riverpod + Clean Architecture |
+| `flutter-getx` | 12 | Flutter + GetX (all-in-one, no code gen) |
+| `flutter-bloc` | 13 | Flutter + BLoC + get_it + injectable |
+| `nextjs-frontend` | 12 | Next.js 14 + TypeScript + Tailwind + Shadcn |
+| `nuxt-frontend` | 12 | Nuxt 3 + TypeScript + Tailwind + Shadcn-vue |
+| `golang-backend` | 10 | Go + Gin/Fiber + GORM + Clean Architecture |
+| `python-backend` | 10 | Python + FastAPI + SQLAlchemy + Alembic |
+| `sdlc-maker` | 6 | SDLC documentation generator |
+
+### Setiap Flutter Workflow Mencakup:
+- Project setup, feature generator, backend integration (REST/Firebase/Supabase)
+- Advanced state management, offline storage, reusable UI components
+- Push notifications, testing, performance monitoring (Sentry + Crashlytics), deployment
+
 ---
 
-## �📁 Repository Structure
+## 📁 Repository Structure
 
 ```text
 agents/
 ├── .agent/
-│   ├── skills/           # 309 skill folders
-│   │   ├── senior-flutter-developer/
-│   │   │   └── SKILL.md
-│   │   ├── senior-react-developer/
-│   │   │   └── SKILL.md
-│   │   └── ...
+│   └── skills/           # 309 skill folders
+│       ├── senior-flutter-developer/
+│       ├── senior-react-developer/
+│       └── ...
+├── workflows/
+│   ├── flutter-riverpod/ # 12 workflow files
+│   ├── flutter-getx/     # 12 workflow files
+│   ├── flutter-bloc/     # 13 workflow files
+│   ├── nextjs-frontend/  # 12 workflow files
+│   ├── nuxt-frontend/    # 12 workflow files
+│   ├── golang-backend/   # 10 workflow files
+│   ├── python-backend/   # 10 workflow files
+│   └── sdlc-maker/       # 6 workflow files
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
-│   └── ROADMAP.md
+│   ├── ROADMAP.md
+│   └── ANTIGRAVITY_SKILLS_GUIDE.md
 ├── README.md
 └── LICENSE
 ```

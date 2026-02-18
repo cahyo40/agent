@@ -1,8 +1,9 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.13.0  
+> **Version:** 6.14.0  
 > **Last Updated:** 2026-02-18  
-> **Total Skills:** 309
+> **Total Skills:** 309  
+> **Total Workflows:** 8 collections (91 files)
 
 ---
 
