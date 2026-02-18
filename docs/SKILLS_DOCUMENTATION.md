@@ -1,7 +1,7 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.12.0  
-> **Last Updated:** 2026-02-10  
+> **Version:** 6.13.0  
+> **Last Updated:** 2026-02-18  
 > **Total Skills:** 309
 
 ---
@@ -291,6 +291,11 @@ buatkan script dan ide thumbnail untuk video YouTube
 ---
 
 ## Changelog
+
+### v6.13.0 (2026-02-18)
+
+- 🗑️ **Workflows Removed** - Folder `.agent/workflows` dihapus untuk menyederhanakan repositori.
+- 📝 **Documentation Sync** - Update `README.md` dan `docs/` untuk mencerminkan penghapusan workflow.
 
 ### v6.12.0 (2026-02-10)
 

@@ -1,9 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.12.0  
+> **Current Version:** v6.13.0  
 > **Total Skills:** 309  
-> **Total Workflows:** 16
 
 ---
 
@@ -17,6 +16,14 @@
 ---
 
 ## ✅ Completed Milestones
+
+### v6.13.0 - Repository Simplification (Feb 2026) ✅
+
+**Goal:** Remove workflows to focus purely on skills
+
+- 🗑️ **Deleted .agent/workflows/** - 16 workflows removed
+- 📝 **Updated Docs** - README.md and documentation synced
+- 🧹 **Cleanup** - All internal references to `/vibe-coding-*` removed from primary docs
 
 ### v6.12.0 - Flutter Documentation Completeness (Feb 2026) ✅
 
@@ -330,7 +337,8 @@ What this skill does and when to use it.
 | **v6.9.1** | **Feb 2026** | **298** | **-3.6%** 🧹 |
 | v6.10.0 | Feb 2026 | 309 | +3.7% |
 | v6.11.0 | Feb 2026 | 309 | +0% (workflows) |
-| **v6.12.0** | **Feb 2026** | **309** | **+0% (docs)** 📝 |
+| v6.12.0 | Feb 2026 | 309 | +0% (docs) 📝 |
+| **v6.13.0** | **Feb 2026** | **309** | **0 workflows** 🗑️ |
 
 ---
 

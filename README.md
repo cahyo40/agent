@@ -3,8 +3,7 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.12.0-green?style=for-the-badge)
-![Workflows](https://img.shields.io/badge/Workflows-16-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.13.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 **Koleksi 309 skills untuk memperluas kemampuan AI Agent**
@@ -229,39 +228,6 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-## � Workflows (Vibe Coding)
-
-Pre-built workflows untuk inisialisasi project dengan anti-hallucination guardrails:
-
-| Workflow | Description |
-|----------|-------------|
-| `/vibe-coding-init` | Base initialization untuk semua project |
-| `/vibe-coding-flutter` | Flutter multi-platform dengan Clean Architecture |
-| `/vibe-coding-android` | Android native (Kotlin + Jetpack Compose) |
-| `/vibe-coding-ios` | iOS native (Swift + SwiftUI) |
-| `/vibe-coding-react` | React/Next.js web application |
-| `/vibe-coding-vue` | Vue.js/Nuxt dengan Composition API |
-| `/vibe-coding-svelte` | Svelte/SvelteKit web application |
-| `/vibe-coding-astro` | Astro static/hybrid website |
-| `/vibe-coding-nestjs` | NestJS backend API |
-| `/vibe-coding-laravel` | Laravel backend/full-stack |
-| `/vibe-coding-go-backend` | Go backend API |
-| `/vibe-coding-python-backend` | Python FastAPI/Django REST |
-| `/vibe-coding-python-web` | Python web (Django/Flask) |
-| `/vibe-coding-react-native` | React Native mobile app |
-| `/vibe-coding-fullstack` | Full-stack monorepo dengan Turborepo |
-| `/vibe-coding-yo-flutter` | Flutter dengan yo.dart generator |
-
-### Usage
-
-```text
-/vibe-coding-flutter
-→ Membuat context files untuk project Flutter
-
-/vibe-coding-react
-→ Membuat context files untuk project React/Next.js
-```
-
 ---
 
 ## �📁 Repository Structure
@@ -275,12 +241,6 @@ agents/
 │   │   ├── senior-react-developer/
 │   │   │   └── SKILL.md
 │   │   └── ...
-│   └── workflows/        # 16 vibe-coding workflows
-│       ├── vibe-coding-flutter.md
-│       ├── vibe-coding-android.md
-│       ├── vibe-coding-ios.md
-│       ├── vibe-coding-react.md
-│       └── ...
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
 │   └── ROADMAP.md
