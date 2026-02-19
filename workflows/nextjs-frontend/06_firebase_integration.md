@@ -1,3 +1,6 @@
+---
+description: Integrasi Firebase v10 (modular) sebagai backend-as-a-service: Auth, Firestore database, Storage, dan Push Notificati...
+---
 # 06 - Firebase Integration (Auth + Firestore + Storage + FCM)
 
 **Goal:** Integrasi Firebase v10 (modular) sebagai backend-as-a-service: Auth, Firestore database, Storage, dan Push Notifications (FCM).

@@ -1,3 +1,6 @@
+---
+description: Pola-pola advanced Riverpod untuk production apps: family providers, pagination, optimistic updates, dan cross-provid...
+---
 # 08 - Advanced State Management (Riverpod Patterns)
 
 **Goal:** Pola-pola advanced Riverpod untuk production apps: family providers, pagination, optimistic updates, dan cross-provider communication.

@@ -1,3 +1,6 @@
+---
+description: Pola-pola advanced BLoC untuk production apps: pagination, optimistic updates, cross-Bloc communication, dan EventTra...
+---
 # 09 - Advanced BLoC Patterns (Pagination, Optimistic, Cross-Bloc)
 
 **Goal:** Pola-pola advanced BLoC untuk production apps: pagination, optimistic updates, cross-Bloc communication, dan EventTransformer.

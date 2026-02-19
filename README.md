@@ -3,11 +3,11 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
-![Workflows](https://img.shields.io/badge/Workflows-8-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.14.0-green?style=for-the-badge)
+![Workflows](https://img.shields.io/badge/Workflows-409+-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.15.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 309 skills + 8 workflow collections untuk memperluas kemampuan AI Agent**
+**Koleksi 309 skills + 8 workflow collections (409+ files) untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -18,7 +18,8 @@
 ## ✨ Features
 
 - 🤖 **309 Specialized Skills** - Dari Flutter hingga AI/ML
-- 📋 **8 Workflow Collections** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
+- 📋 **8 Workflow Collections (409+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
+- ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
 - 📚 **Best Practices** - Setiap skill berisi industry best practices
@@ -232,18 +233,34 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ## 📋 Workflows
 
-Workflows adalah panduan step-by-step untuk development project dari awal hingga production. Tersedia di folder `workflows/`.
+Workflows adalah panduan step-by-step untuk development project dari awal hingga production. Tersedia di folder `workflows/` dan dapat diakses via **slash commands**.
+
+### Cara Penggunaan
+
+```text
+# Dari chat, ketik slash command:
+/01_project_setup
+/02_feature_maker
+/03_backend_integration
+
+# Atau mention langsung:
+"Ikuti workflow 01_project_setup untuk buat project Flutter baru"
+```
+
+### Daftar Workflow Collections
 
 | Workflow | Files | Deskripsi |
 |----------|-------|-----------|
-| `flutter-riverpod` | 12 | Flutter + Riverpod + Clean Architecture |
-| `flutter-getx` | 12 | Flutter + GetX (all-in-one, no code gen) |
-| `flutter-bloc` | 13 | Flutter + BLoC + get_it + injectable |
-| `nextjs-frontend` | 12 | Next.js 14 + TypeScript + Tailwind + Shadcn |
+| `flutter-bloc` | 102 | Flutter + BLoC + get_it + injectable |
+| `flutter-getx` | 106 | Flutter + GetX (all-in-one, no code gen) |
+| `flutter-riverpod` | 45 | Flutter + Riverpod + Clean Architecture |
+| `golang-backend` | 74 | Go + Gin/Fiber + GORM + Clean Architecture |
+| `nextjs-frontend` | 17 | Next.js 14 + TypeScript + Tailwind + Shadcn |
 | `nuxt-frontend` | 12 | Nuxt 3 + TypeScript + Tailwind + Shadcn-vue |
-| `golang-backend` | 10 | Go + Gin/Fiber + GORM + Clean Architecture |
-| `python-backend` | 10 | Python + FastAPI + SQLAlchemy + Alembic |
-| `sdlc-maker` | 6 | SDLC documentation generator |
+| `python-backend` | 38 | Python + FastAPI + SQLAlchemy + Alembic |
+| `sdlc-maker` | 15 | SDLC documentation generator |
+
+> 💡 File counts include split parts. Workflow files besar dipecah menjadi beberapa part (max 12K chars per file) agar optimal untuk AI processing.
 
 ### Setiap Flutter Workflow Mencakup:
 - Project setup, feature generator, backend integration (REST/Firebase/Supabase)
@@ -257,19 +274,20 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 ```text
 agents/
 ├── .agent/
-│   └── skills/           # 309 skill folders
-│       ├── senior-flutter-developer/
-│       ├── senior-react-developer/
-│       └── ...
+│   ├── skills/           # 309 skill folders
+│   │   ├── senior-flutter-developer/
+│   │   ├── senior-react-developer/
+│   │   └── ...
+│   └── workflows/        # Symlink → workflows/ (slash command discovery)
 ├── workflows/
-│   ├── flutter-riverpod/ # 12 workflow files
-│   ├── flutter-getx/     # 12 workflow files
-│   ├── flutter-bloc/     # 13 workflow files
-│   ├── nextjs-frontend/  # 12 workflow files
+│   ├── flutter-bloc/     # 102 workflow files
+│   ├── flutter-getx/     # 106 workflow files
+│   ├── flutter-riverpod/ # 45 workflow files
+│   ├── golang-backend/   # 74 workflow files
+│   ├── nextjs-frontend/  # 17 workflow files
 │   ├── nuxt-frontend/    # 12 workflow files
-│   ├── golang-backend/   # 10 workflow files
-│   ├── python-backend/   # 10 workflow files
-│   └── sdlc-maker/       # 6 workflow files
+│   ├── python-backend/   # 38 workflow files
+│   └── sdlc-maker/       # 15 workflow files
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
 │   ├── ROADMAP.md

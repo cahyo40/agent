@@ -1,3 +1,6 @@
+---
+description: Setup error monitoring, crash reporting, dan performance profiling untuk production GetX app.
+---
 # 12 - Performance & Monitoring (Sentry + Crashlytics)
 
 **Goal:** Setup error monitoring, crash reporting, dan performance profiling untuk production GetX app.

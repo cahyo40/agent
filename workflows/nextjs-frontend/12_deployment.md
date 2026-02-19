@@ -1,3 +1,6 @@
+---
+description: Deploy Next.js ke Vercel (rekomendasi) atau self-hosted dengan Docker.
+---
 # 12 - Deployment (Vercel + Docker + CI/CD)
 
 **Goal:** Deploy Next.js ke Vercel (rekomendasi) atau self-hosted dengan Docker.

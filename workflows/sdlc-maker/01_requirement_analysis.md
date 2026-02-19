@@ -1,3 +1,6 @@
+---
+description: This workflow covers the first phase of SDLC: Requirement Analysis.
+---
 # Workflow: Requirement Analysis
 
 ## Overview

@@ -1,3 +1,6 @@
+---
+description: Pola-pola advanced GetX untuk production apps: Workers, StateMixin, pagination, optimistic updates, dan cross-control...
+---
 # 08 - Advanced State Management (GetX Patterns)
 
 **Goal:** Pola-pola advanced GetX untuk production apps: Workers, StateMixin, pagination, optimistic updates, dan cross-controller communication.

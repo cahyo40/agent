@@ -1,3 +1,6 @@
+---
+description: Integrasi Firebase v10 menggunakan `nuxt-vuefire` module: Auth, Firestore, Storage, dan FCM.
+---
 # 06 - Firebase Integration (nuxt-vuefire)
 
 **Goal:** Integrasi Firebase v10 menggunakan `nuxt-vuefire` module: Auth, Firestore, Storage, dan FCM.

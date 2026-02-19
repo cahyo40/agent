@@ -1,3 +1,6 @@
+---
+description: Optimasi SEO dengan Nuxt 3 built-in composables dan performance tuning untuk Core Web Vitals.
+---
 # 11 - SEO & Performance (useSeoMeta + Nuxt Image)
 
 **Goal:** Optimasi SEO dengan Nuxt 3 built-in composables dan performance tuning untuk Core Web Vitals.

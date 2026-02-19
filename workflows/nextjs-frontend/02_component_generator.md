@@ -1,3 +1,6 @@
+---
+description: Template untuk membuat UI components menggunakan Shadcn/UI primitives dengan pola Atomic Design.
+---
 # 02 - Component Generator (Atomic Design + Shadcn/UI)
 
 **Goal:** Template untuk membuat UI components menggunakan Shadcn/UI primitives dengan pola Atomic Design.

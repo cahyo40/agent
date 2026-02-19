@@ -1,3 +1,6 @@
+---
+description: Setup HTTP client dengan Axios dan server state management dengan TanStack Query v5 untuk berkomunikasi dengan backen...
+---
 # 03 - API Client Integration (Axios + TanStack Query)
 
 **Goal:** Setup HTTP client dengan Axios dan server state management dengan TanStack Query v5 untuk berkomunikasi dengan backend Go/Python.

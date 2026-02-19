@@ -1,3 +1,6 @@
+---
+description: This workflow covers the System Design and Detailed Design phases.
+---
 # Workflow: System & Detailed Design
 
 ## Overview

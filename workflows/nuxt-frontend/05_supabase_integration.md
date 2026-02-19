@@ -1,3 +1,6 @@
+---
+description: Integrasi Supabase menggunakan official Nuxt module `@nuxtjs/supabase`: Auth, Database Realtime, dan Storage.
+---
 # 05 - Supabase Integration (@nuxtjs/supabase)
 
 **Goal:** Integrasi Supabase menggunakan official Nuxt module `@nuxtjs/supabase`: Auth, Database Realtime, dan Storage.

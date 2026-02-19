@@ -1,3 +1,6 @@
+---
+description: Setup form handling dengan React Hook Form v7 dan Zod schema validation yang konsisten dengan backend.
+---
 # 07 - Forms & Validation (React Hook Form + Zod)
 
 **Goal:** Setup form handling dengan React Hook Form v7 dan Zod schema validation yang konsisten dengan backend.

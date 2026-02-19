@@ -1,3 +1,6 @@
+---
+description: Implementasi offline-first storage dengan GetStorage untuk simple cache, Hive untuk complex data, dan flutter_secure_...
+---
 # 09 - Offline Storage (GetStorage + Hive + SecureStorage)
 
 **Goal:** Implementasi offline-first storage dengan GetStorage untuk simple cache, Hive untuk complex data, dan flutter_secure_storage untuk sensitive data.

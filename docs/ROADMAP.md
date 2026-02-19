@@ -1,9 +1,9 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026  
-> **Current Version:** v6.14.0  
+> **Current Version:** v6.15.0  
 > **Total Skills:** 309  
-> **Total Workflows:** 8 collections (91 workflow files)  
+> **Total Workflows:** 8 collections (409+ workflow files)  
 
 ---
 
@@ -17,6 +17,30 @@
 ---
 
 ## ✅ Completed Milestones
+
+### v6.15.0 - Workflow Compliance & Slash Commands (Feb 2026) ✅
+
+**Goal:** Make all workflow files compliant with Antigravity rules and enable slash command discovery
+
+**Changes in v6.15.0:**
+
+- 🛠️ **YAML Frontmatter** — Added `description` field to all 87 workflow files
+- ✂️ **File Splitting** — Split 47 oversized files (some up to 109K chars) into smaller parts (max 12K chars each)
+- ⚡ **Slash Command Discovery** — Created `.agent/workflows/` symlink so workflows are accessible via `/workflow-name`
+- 📊 **Total:** 409+ workflow files across 8 collections
+
+| Collection | Original Files | After Split |
+|------------|---------------|-------------|
+| `flutter-bloc` | 13 | 102 |
+| `flutter-getx` | 12 | 106 |
+| `flutter-riverpod` | 12 | 45 |
+| `golang-backend` | 10 | 74 |
+| `nextjs-frontend` | 12 | 17 |
+| `nuxt-frontend` | 12 | 12 |
+| `python-backend` | 10 | 38 |
+| `sdlc-maker` | 6 | 15 |
+
+---
 
 ### v6.14.0 - Flutter Workflow Expansion (Feb 2026) ✅
 
@@ -371,6 +395,7 @@ What this skill does and when to use it.
 | v6.12.0 | Feb 2026 | 309 | +0% (docs) 📝 |
 | **v6.13.0** | **Feb 2026** | **309** | **0 workflows** 🗑️ |
 | **v6.14.0** | **Feb 2026** | **309** | **+91 workflow files** 📋 |
+| **v6.15.0** | **Feb 2026** | **309** | **409+ workflow files** ⚡ |
 
 ---
 

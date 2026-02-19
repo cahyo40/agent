@@ -1,9 +1,9 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.14.0  
-> **Last Updated:** 2026-02-18  
+> **Version:** 6.15.0  
+> **Last Updated:** 2026-02-19  
 > **Total Skills:** 309  
-> **Total Workflows:** 8 collections (91 files)
+> **Total Workflows:** 8 collections (409+ files)
 
 ---
 
@@ -293,7 +293,14 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ## Changelog
 
-### v6.13.0 (2026-02-18)
+### v6.15.0 (2026-02-19)
+
+- 🛠️ **Workflow Compliance** - All 87 workflow files updated with YAML frontmatter (`description` field).
+- ✂️ **File Splitting** - 47 oversized files split into smaller parts (max 12K chars each) for optimal AI processing.
+- ⚡ **Slash Command Support** - Symlink `.agent/workflows/` created for slash command discovery.
+- 📊 **Total:** 409+ workflow files across 8 collections (up from 91 original files).
+
+### v6.14.0 (2026-02-18)
 
 - 🗑️ **Workflows Removed** - Folder `.agent/workflows` dihapus untuk menyederhanakan repositori.
 - 📝 **Documentation Sync** - Update `README.md` dan `docs/` untuk mencerminkan penghapusan workflow.

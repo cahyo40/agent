@@ -1,3 +1,6 @@
+---
+description: Setup HTTP client menggunakan Nuxt 3 built-in `$fetch` (ofetch) dan composables `useAsyncData`/`useFetch` untuk berko...
+---
 # 03 - API Client Integration ($fetch + useAsyncData + useFetch)
 
 **Goal:** Setup HTTP client menggunakan Nuxt 3 built-in `$fetch` (ofetch) dan composables `useAsyncData`/`useFetch` untuk berkomunikasi dengan backend Go/Python.

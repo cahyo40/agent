@@ -1,3 +1,6 @@
+---
+description: This workflow covers the UI/UX Design phase.
+---
 # Workflow: UI/UX Design
 
 ## Overview

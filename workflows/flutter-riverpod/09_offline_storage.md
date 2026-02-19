@@ -1,3 +1,6 @@
+---
+description: Implementasi offline-first storage dengan Hive untuk cache, Isar untuk complex queries, dan flutter_secure_storage un...
+---
 # 09 - Offline Storage (Hive + Isar + SecureStorage)
 
 **Goal:** Implementasi offline-first storage dengan Hive untuk cache, Isar untuk complex queries, dan flutter_secure_storage untuk sensitive data.

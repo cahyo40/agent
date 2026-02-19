@@ -1,3 +1,6 @@
+---
+description: Konfigurasi API documentation yang lengkap menggunakan built-in FastAPI OpenAPI 3.1, Swagger UI, dan ReDoc.
+---
 # 06 - API Documentation (FastAPI Auto-Generated OpenAPI)
 
 **Goal:** Konfigurasi API documentation yang lengkap menggunakan built-in FastAPI OpenAPI 3.1, Swagger UI, dan ReDoc.

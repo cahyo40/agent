@@ -1,3 +1,6 @@
+---
+description: Implementasi Redis caching, session store, rate limiting, pub/sub, dan distributed locking untuk FastAPI backend.
+---
 # 08 - Caching & Redis
 
 **Goal:** Implementasi Redis caching, session store, rate limiting, pub/sub, dan distributed locking untuk FastAPI backend.

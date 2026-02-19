@@ -1,3 +1,6 @@
+---
+description: Implementasi authentication menggunakan `nuxt-auth-utils` dengan session management server-side, connect ke custom ba...
+---
 # 04 - Authentication with nuxt-auth-utils
 
 **Goal:** Implementasi authentication menggunakan `nuxt-auth-utils` dengan session management server-side, connect ke custom backend Go/Python.

@@ -1,3 +1,6 @@
+---
+description: Template layout dashboard admin dengan sidebar collapsible, header, dark mode toggle, dan chart menggunakan Vue Chart...
+---
 # 09 - Layout & Dashboard (Sidebar + Dark Mode + Charts)
 
 **Goal:** Template layout dashboard admin dengan sidebar collapsible, header, dark mode toggle, dan chart menggunakan Vue Chart.js.

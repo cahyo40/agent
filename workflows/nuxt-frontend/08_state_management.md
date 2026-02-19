@@ -1,3 +1,6 @@
+---
+description: Setup state management dengan Pinia untuk client state dan `useAsyncData` untuk server state, mengikuti pola Nuxt 3.
+---
 # 08 - State Management (Pinia + useAsyncData)
 
 **Goal:** Setup state management dengan Pinia untuk client state dan `useAsyncData` untuk server state, mengikuti pola Nuxt 3.

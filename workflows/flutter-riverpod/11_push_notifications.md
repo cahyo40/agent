@@ -1,3 +1,6 @@
+---
+description: Setup push notifications lengkap: FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari no...
+---
 # 11 - Push Notifications (FCM + Local Notifications + Deep Linking)
 
 **Goal:** Setup push notifications lengkap: FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari notification tap.

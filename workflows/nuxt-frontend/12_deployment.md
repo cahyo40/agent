@@ -1,3 +1,6 @@
+---
+description: Deploy Nuxt 3 ke Vercel (rekomendasi) atau self-hosted dengan Docker menggunakan Nitro server engine.
+---
 # 12 - Deployment (Vercel + Docker + Nitro Presets)
 
 **Goal:** Deploy Nuxt 3 ke Vercel (rekomendasi) atau self-hosted dengan Docker menggunakan Nitro server engine.

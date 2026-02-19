@@ -1,3 +1,6 @@
+---
+description: Template layout untuk dashboard admin dengan sidebar collapsible, header, dark mode toggle, dan integrasi chart.
+---
 # 09 - Layout & Dashboard (Sidebar + Dark Mode + Charts)
 
 **Goal:** Template layout untuk dashboard admin dengan sidebar collapsible, header, dark mode toggle, dan integrasi chart.

@@ -1,3 +1,6 @@
+---
+description: Optimasi SEO dengan Next.js Metadata API dan performance tuning untuk Core Web Vitals.
+---
 # 11 - SEO & Performance
 
 **Goal:** Optimasi SEO dengan Next.js Metadata API dan performance tuning untuk Core Web Vitals.

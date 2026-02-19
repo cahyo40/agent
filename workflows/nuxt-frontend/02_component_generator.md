@@ -1,3 +1,6 @@
+---
+description: Template untuk membuat UI components menggunakan Shadcn-vue dengan pola Atomic Design.
+---
 # 02 - Component Generator (Atomic Design + Shadcn-vue)
 
 **Goal:** Template untuk membuat UI components menggunakan Shadcn-vue dengan pola Atomic Design.

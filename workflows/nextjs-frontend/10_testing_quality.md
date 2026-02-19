@@ -1,3 +1,6 @@
+---
+description: Setup testing dengan Vitest untuk unit tests dan Playwright untuk E2E tests.
+---
 # 10 - Testing & Quality (Vitest + Playwright)
 
 **Goal:** Setup testing dengan Vitest untuk unit tests dan Playwright untuk E2E tests.

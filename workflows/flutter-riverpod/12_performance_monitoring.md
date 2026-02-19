@@ -1,3 +1,6 @@
+---
+description: Setup error monitoring, crash reporting, performance profiling, dan analytics untuk production Flutter app.
+---
 # 12 - Performance & Monitoring (Sentry + Crashlytics + DevTools)
 
 **Goal:** Setup error monitoring, crash reporting, performance profiling, dan analytics untuk production Flutter app.

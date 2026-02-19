@@ -1,3 +1,6 @@
+---
+description: Setup state management dengan Zustand untuk client state dan TanStack Query untuk server state, dengan pola yang jela...
+---
 # 08 - State Management (Zustand + TanStack Query)
 
 **Goal:** Setup state management dengan Zustand untuk client state dan TanStack Query untuk server state, dengan pola yang jelas untuk memisahkan keduanya.

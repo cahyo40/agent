@@ -1,3 +1,6 @@
+---
+description: Setup form handling dengan VeeValidate v4 dan Zod schema validation.
+---
 # 07 - Forms & Validation (VeeValidate + Zod)
 
 **Goal:** Setup form handling dengan VeeValidate v4 dan Zod schema validation.

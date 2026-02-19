@@ -1,12 +1,7 @@
-# 05 - File Management
-
-**Goal:** Implementasi file upload, validation, storage (local & S3/MinIO), dan image processing untuk FastAPI backend.
-
-**Output:** `sdlc/python-backend/05-file-management/`
-
-**Time Estimate:** 3-4 jam
-
 ---
+description: Implementasi file upload, validation, storage (local & S3/MinIO), dan image processing untuk FastAPI backend. (Part 1/1)
+---
+# 05 - File Management (Part 1/1)
 
 ## Overview
 
@@ -41,6 +36,7 @@ pip install python-multipart>=0.0.9 \
 ```
 
 ---
+
 
 ## Deliverables
 
@@ -486,12 +482,14 @@ async def delete_file(
 
 ---
 
+
 ## Success Criteria
 - Image upload validates size and type
 - Processed images stored with thumbnails
 - Storage backend swappable (local ↔ S3)
 - File deletion works correctly
 - Upload endpoint returns URLs
+
 
 ## Next Steps
 - `06_api_documentation.md` - API documentation

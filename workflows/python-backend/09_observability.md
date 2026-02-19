@@ -1,3 +1,6 @@
+---
+description: Implementasi structured logging, distributed tracing, Prometheus metrics, dan health checks untuk FastAPI backend.
+---
 # 09 - Observability (Logging, Tracing, Metrics)
 
 **Goal:** Implementasi structured logging, distributed tracing, Prometheus metrics, dan health checks untuk FastAPI backend.

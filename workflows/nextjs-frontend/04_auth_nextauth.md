@@ -1,3 +1,6 @@
+---
+description: Implementasi authentication menggunakan NextAuth.js v5 (Auth.js) dengan Credentials Provider untuk connect ke custom ...
+---
 # 04 - Authentication with NextAuth.js
 
 **Goal:** Implementasi authentication menggunakan NextAuth.js v5 (Auth.js) dengan Credentials Provider untuk connect ke custom backend Go/Python.

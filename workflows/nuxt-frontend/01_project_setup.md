@@ -1,3 +1,6 @@
+---
+description: Setup project Nuxt 3 dari nol dengan TypeScript strict, Tailwind CSS, Shadcn/UI (shadcn-vue), dan folder structure ya...
+---
 # 01 - Nuxt 3 Project Setup (TypeScript + Tailwind + Shadcn/UI)
 
 **Goal:** Setup project Nuxt 3 dari nol dengan TypeScript strict, Tailwind CSS, Shadcn/UI (shadcn-vue), dan folder structure yang terorganisir.

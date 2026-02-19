@@ -1,3 +1,6 @@
+---
+description: This workflow covers the Maintenance & Operations phase.
+---
 # Workflow: Maintenance & Operations
 
 ## Overview

@@ -1,3 +1,6 @@
+---
+description: Setup error monitoring, crash reporting, dan performance profiling untuk production BLoC app.
+---
 # 13 - Performance & Monitoring (Sentry + Crashlytics)
 
 **Goal:** Setup error monitoring, crash reporting, dan performance profiling untuk production BLoC app.
