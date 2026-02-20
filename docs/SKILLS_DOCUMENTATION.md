@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.16.0
+> **Version:** 6.17.0
 > **Last Updated:** 2026-02-20
-> **Total Skills:** 268
+> **Total Skills:** 278
 > **Total Workflows:** 8 collections (409+ files)
 
 ---
@@ -20,7 +20,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **268 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **278 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -42,22 +42,23 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| 🤖 AI & Machine Learning | 21 | LLM, agents, RAG, fine-tuning, notebooks |
+| 🤖 AI & Machine Learning | 22 | LLM, agents, RAG, fine-tuning, notebooks, LLMOps |
 | 🔧 Backend Development | 27 | Python, Go, NestJS, Rust, PHP, Elixir |
 | 📱 Mobile Development | 15 | Flutter (consolidated), iOS, Android, React Native |
-| 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
+| 🎨 Frontend Development | 17 | React, Vue, Next.js, Svelte, Astro, 3D, Web3 |
 | 🎨 UI/UX & Design | 12 | Design systems, illustrations |
-| ☁️ Cloud & DevOps | 17 | CI/CD, K8s, Terraform, Chaos Eng |
-| 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Big Data |
+| ☁️ Cloud & DevOps | 18 | CI/CD, K8s, Terraform, Chaos Eng, Observability |
+| 💾 Data & Databases | 17 | MongoDB, PostgreSQL, Big Data, Search |
 | 🔐 Security | 13 | Pen testing, Bug Bounty, CTF, Red Team |
 | 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
-| 📝 Documentation | 7 | Technical writing, UML, Architecture |
+| 📝 Documentation | 8 | Technical writing, UML, Architecture, API docs |
 | 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Library Systems |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 16 | VR/AR, quantum, Web3, Tech Trends |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
 | 🎞️ Media Processing | 2 | Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
+| ⛓️ Web3 & Blockchain | 5 | Smart contracts, NFT, DAO, dApps |
 | 📚 Education | 1 | MIT CS Professor |
 | 📚 Others | 64 | Various specialized skills |
 
@@ -288,6 +289,23 @@ implementasi design dari Figma ke Flutter code
 ---
 
 ## Changelog
+
+### v6.17.0 (2026-02-20)
+
+- ✨ **10 New Skills Added** - Infrastructure, Architecture, Performance, Documentation, Search, AI/LLM, Web3
+- 🆕 **New Skills:**
+  - `observability-engineer` - Prometheus, Grafana, OpenTelemetry, SRE practices
+  - `domain-driven-design-expert` - DDD, bounded contexts, aggregates, event storming
+  - `web-vitals-specialist` - Core Web Vitals optimization (LCP, FID, CLS, INP)
+  - `api-documentation-specialist` - OpenAPI/Swagger, developer docs, SDK documentation
+  - `search-engine-specialist` - Algolia, Meilisearch, Elasticsearch, relevance tuning
+  - `llm-ops-engineer` - LLM deployment, monitoring, prompt versioning, evaluation
+  - `web3-frontend-specialist` - wagmi, viem, RainbowKit, dApp development
+  - `nft-developer` - ERC-721, ERC-1155, NFT marketplaces, IPFS
+  - `smart-contract-developer` - Solidity, Foundry, security patterns, gas optimization
+  - `dao-developer` - Governance contracts, voting mechanisms, treasury management
+- 📊 **Total Skills:** 278 (up from 268)
+- 📝 **New Categories:** Web3 & Blockchain (5 skills)
 
 ### v6.16.0 (2026-02-20)
 

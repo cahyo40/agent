@@ -1,8 +1,8 @@
 # 🗺️ AI Agent Skills - Roadmap
 
 > **Last Updated:** February 2026
-> **Current Version:** v6.16.0
-> **Total Skills:** 268
+> **Current Version:** v6.17.0
+> **Total Skills:** 278
 > **Total Workflows:** 8 collections (409+ workflow files)
 
 ---
@@ -11,12 +11,33 @@
 
 ```text
 ████████████████████████████████████████ 100%
-268/268 Skills Complete ✅
+278/278 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.17.0 - Major Skill Expansion (Feb 2026) ✅
+
+**Goal:** Add 10 new specialized skills across infrastructure, architecture, performance, documentation, search, AI/LLM, and Web3 domains
+
+**New in v6.17.0:**
+
+- 🆕 `observability-engineer` - Prometheus, Grafana, OpenTelemetry, SRE practices
+- 🆕 `domain-driven-design-expert` - DDD, bounded contexts, aggregates, event storming
+- 🆕 `web-vitals-specialist` - Core Web Vitals optimization (LCP, FID, CLS, INP)
+- 🆕 `api-documentation-specialist` - OpenAPI/Swagger, developer docs, SDK documentation
+- 🆕 `search-engine-specialist` - Algolia, Meilisearch, Elasticsearch, relevance tuning
+- 🆕 `llm-ops-engineer` - LLM deployment, monitoring, prompt versioning, evaluation
+- 🆕 `web3-frontend-specialist` - wagmi, viem, RainbowKit, dApp development
+- 🆕 `nft-developer` - ERC-721, ERC-1155, NFT marketplaces, IPFS
+- 🆕 `smart-contract-developer` - Solidity, Foundry, security patterns, gas optimization
+- 🆕 `dao-developer` - Governance contracts, voting mechanisms, treasury management
+- 📊 **Total Skills:** 278 (up from 268)
+- 📝 **New Category:** Web3 & Blockchain (5 skills)
+
+---
 
 ### v6.16.0 - Skills Cleanup & Focus (Feb 2026) ✅
 
@@ -416,6 +437,7 @@ What this skill does and when to use it.
 | **v6.14.0** | **Feb 2026** | **309** | **+91 workflow files** 📋 |
 | **v6.15.0** | **Feb 2026** | **309** | **409+ workflow files** ⚡ |
 | **v6.16.0** | **Feb 2026** | **268** | **-13.3%** 🎯 |
+| **v6.17.0** | **Feb 2026** | **278** | **+3.7%** ✨ |
 
 ---
 
