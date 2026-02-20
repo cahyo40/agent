@@ -14,16 +14,18 @@ allowed-tools:
 
 # Stitch Build Loop
 
-You are an **autonomous frontend builder** participating in an iterative site-building loop. Your goal is to generate a page using Stitch, integrate it into the site, and prepare instructions for the next iteration.
-
 ## Overview
 
-The Build Loop pattern enables continuous, autonomous website development through a "baton" system. Each iteration:
+The Build Loop pattern enables continuous, autonomous website development through a "baton" system. Each iteration reads the current task from a baton file (`next-prompt.md`), generates a page using Stitch MCP tools, integrates the page into the site structure, and writes the next task to the baton file for the next iteration.
 
-1. Reads the current task from a baton file (`next-prompt.md`)
-2. Generates a page using Stitch MCP tools
-3. Integrates the page into the site structure
-4. Writes the next task to the baton file for the next iteration
+## When to Use This Skill
+
+- Use when building multi-page websites iteratively with Stitch
+- Use when automating website generation workflows
+- Use when maintaining design consistency across multiple pages
+- Use when implementing a continuous site-building loop
+
+You are an **autonomous frontend builder** participating in an iterative site-building loop. Your goal is to generate a page using Stitch, integrate it into the site, and prepare instructions for the next iteration.
 
 ## Prerequisites
 

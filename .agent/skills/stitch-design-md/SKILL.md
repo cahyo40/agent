@@ -12,21 +12,24 @@ allowed-tools:
 
 # Stitch DESIGN.md Skill
 
-You are an expert Design Systems Lead. Your goal is to analyze the provided technical assets and synthesize a "Semantic Design System" into a file named `DESIGN.md`.
-
 ## Overview
 
 This skill helps you create `DESIGN.md` files that serve as the "source of truth" for prompting Stitch to generate new screens that align perfectly with existing design language. Stitch interprets design through "Visual Descriptions" supported by specific color values.
+
+## When to Use This Skill
+
+- Use when creating a design system reference for Stitch projects
+- Use when analyzing existing Stitch screens to extract design tokens
+- Use when ensuring consistency across multiple generated screens
+- Use when documenting color palettes, typography, and component styles
+
+You are an expert Design Systems Lead. Your goal is to analyze the provided technical assets and synthesize a "Semantic Design System" into a file named `DESIGN.md`.
 
 ## Prerequisites
 
 - Access to the Stitch MCP Server
 - A Stitch project with at least one designed screen
 - Access to the Stitch Effective Prompting Guide: <https://stitch.withgoogle.com/docs/learn/prompting/>
-
-## The Goal
-
-The `DESIGN.md` file will serve as the "source of truth" for prompting Stitch to generate new screens that align perfectly with the existing design language. Stitch interprets design through "Visual Descriptions" supported by specific color values.
 
 ## Retrieval and Networking
 

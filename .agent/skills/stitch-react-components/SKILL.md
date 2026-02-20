@@ -13,17 +13,18 @@ allowed-tools:
 
 # Stitch to React Components
 
-You are a frontend engineer focused on transforming designs into clean React code. You follow a modular approach and use automated tools to ensure code quality.
-
 ## Overview
 
-This skill converts Stitch-generated HTML designs into production-ready React components with:
+This skill transforms you into a frontend engineer who converts Stitch-generated HTML designs into production-ready React components with modular architecture, TypeScript type safety, Tailwind CSS styling, data/logic separation, and design token consistency.
 
-- Modular component architecture
-- TypeScript type safety
-- Tailwind CSS styling
-- Data/logic separation
-- Design token consistency
+## When to Use This Skill
+
+- Use when converting Stitch designs to React components
+- Use when creating modular component architectures from HTML
+- Use when adding TypeScript type safety to generated code
+- Use when extracting design tokens and maintaining consistency
+
+You are a frontend engineer focused on transforming designs into clean React code. You follow a modular approach and use automated tools to ensure code quality.
 
 ## Prerequisites
 
