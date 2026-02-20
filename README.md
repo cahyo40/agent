@@ -214,12 +214,12 @@ implementasi design dari Figma ke Flutter code
 - `@mcp-server-builder` - MCP server tools
 - `@chatbot-developer` - Conversational AI
 
-### Content Creation
+### Web3 & Blockchain
 
-- `@video-editor-automation` - FFmpeg automation
-- `@generative-video-specialist` - AI video generation
-- `@blog-content-writer` - Technical blog writing
-- `@ebook-author-toolkit` - Ebook creation
+- `@web3-frontend-specialist` - wagmi, viem, RainbowKit dApps
+- `@smart-contract-developer` - Solidity, Foundry, security patterns
+- `@nft-developer` - ERC-721, ERC-1155, NFT marketplaces
+- `@dao-developer` - Governance contracts, voting mechanisms
 
 ### Business & Industry
 
