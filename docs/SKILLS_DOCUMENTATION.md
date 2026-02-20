@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.15.0  
-> **Last Updated:** 2026-02-19  
-> **Total Skills:** 309  
+> **Version:** 6.16.0
+> **Last Updated:** 2026-02-20
+> **Total Skills:** 268
 > **Total Workflows:** 8 collections (409+ files)
 
 ---
@@ -20,7 +20,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **309 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **268 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -42,27 +42,24 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| 🤖 AI & Machine Learning | 22 | LLM, agents, RAG, fine-tuning, notebooks |
-| 🔧 Backend Development | 28 | Python, Go, NestJS, Rust, PHP, Elixir |
-| 📱 Mobile Development | 9 | Flutter (consolidated), iOS, Android, React Native |
+| 🤖 AI & Machine Learning | 21 | LLM, agents, RAG, fine-tuning, notebooks |
+| 🔧 Backend Development | 27 | Python, Go, NestJS, Rust, PHP, Elixir |
+| 📱 Mobile Development | 15 | Flutter (consolidated), iOS, Android, React Native |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
-| 🎨 UI/UX & Design | 14 | Design systems, illustrations |
+| 🎨 UI/UX & Design | 12 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 17 | CI/CD, K8s, Terraform, Chaos Eng |
 | 💾 Data & Databases | 16 | MongoDB, PostgreSQL, Big Data |
-| 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Forensics |
+| 🔐 Security | 13 | Pen testing, Bug Bounty, CTF, Red Team |
 | 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
-| 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Thumbnails |
-| 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, UML, Architecture |
-| 💼 Industry Apps | 41 | Healthcare, Trading, ERP, Library Systems |
+| 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Library Systems |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 16 | VR/AR, quantum, Web3, Tech Trends |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
-| 🎞️ Media Processing | 2 | Audio & Video engineering |
+| 🎞️ Media Processing | 2 | Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
-| 🎨 Creative Arts | 1 | Creative Coding Artist |
 | 📚 Education | 1 | MIT CS Professor |
-| 📚 Others | 32 | Various specialized skills |
+| 📚 Others | 64 | Various specialized skills |
 
 ---
 
@@ -73,9 +70,9 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 ```text
 @senior-flutter-developer buatkan widget login screen
 
-@short-form-video-creator buat strategi konten TikTok
+@video-editor-automation buat script edit video
 
-@content-repurposer ubah video ini jadi 10 format
+@senior-ai-agent-developer buat AI agent dengan tools
 ```
 
 ### Method 2: Automatic Detection
@@ -85,8 +82,8 @@ AI akan otomatis mendeteksi skill yang relevan berdasarkan konteks.
 ### Method 3: Combine Skills
 
 ```text
-@script-writer @thumbnail-designer 
-buatkan script dan ide thumbnail untuk video YouTube
+@senior-flutter-developer @figma-specialist
+implementasi design dari Figma ke Flutter code
 ```
 
 ---
@@ -245,7 +242,7 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ---
 
-### 🔐 Security & Hacking (14 Skills)
+### 🔐 Security & Hacking (13 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -253,16 +250,15 @@ buatkan script dan ide thumbnail untuk video YouTube
 | `senior-api-security-specialist` | OWASP Top 10, OAuth 2.0, JWT |
 | `senior-penetration-tester` | Vulnerability assessment, ethical hacking |
 | `bug-bounty-hunter` | HackerOne, Bugcrowd, report writing |
-| `ctf-competitor` | CTF challenges: Web, Pwn, Crypto, Forensics |
+| `ctf-competitor` | CTF challenges: Web, Pwn, Crypto |
 | `red-team-operator` | Adversary simulation, social engineering |
-| `malware-analyst` | Static/dynamic analysis, YARA rules |
 | `network-security-specialist` | Network pen testing, IDS/IPS |
-| `forensic-investigator` | Digital forensics, incident response |
 | `web3-smart-contract-auditor` | Smart contract security |
 | `llm-security-specialist` | Prompt injection defense |
 | `devsecops-specialist` | Security in CI/CD pipeline |
 | `privacy-engineering-specialist` | Differential privacy, ZKP |
 | `mobile-security-tester` | iOS/Android pen testing |
+| `senior-linux-sysadmin` | Linux server security |
 
 ---
 
@@ -270,7 +266,6 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 | Use Case | Skill to Use |
 |----------|--------------|
-| Create TikTok/Reels content | `@short-form-video-creator` |
 | Build Flutter app | `@senior-flutter-developer` |
 | State management Flutter | `@senior-flutter-developer` (template) |
 | Build React app | `@senior-react-developer` |
@@ -288,10 +283,24 @@ buatkan script dan ide thumbnail untuk video YouTube
 | Indonesian payments | `@indonesia-payment-integration` |
 | GPS tracking / geofencing | `@geolocation-specialist` |
 | PDF generation | `@pdf-document-specialist` |
+| Video editing automation | `@video-editor-automation` |
 
 ---
 
 ## Changelog
+
+### v6.16.0 (2026-02-20)
+
+- 🗑️ **Skills Cleanup** - Removed 41 non-software development skills
+- ✂️ **Removed Skills:**
+  - Content Creation: `short-form-video-creator`, `content-repurposer`, `copywriting`, `newsletter-writer`, `seo-content-writer`, `script-writer`, `viral-content-creator`
+  - Social Media: `instagram-content-strategist`, `linkedin-content-strategist`, `tiktok-content-strategist`, `twitter-x-strategist`, `youtube-shorts-strategist`, `nano-influencer-strategist`, `social-media-marketer`
+  - Design & Art: `ai-poster-designer`, `book-cover-architect`, `sports-poster-specialist`, `thumbnail-designer`, `illustration-creator`, `infographic-creator`, `motion-designer`, `brand-designer`, `creative-coding-artist`, `generative-art-creator`
+  - Media Production: `ai-native-filmmaker`, `livestream-producer`, `podcast-producer`, `audio-processing-specialist`, `ai-voice-clone`
+  - Marketing: `digital-ads-specialist`, `marketing-strategist`, `local-seo-specialist`, `seo-keyword-research`, `seo-link-building`
+  - Other: `3d-scanning-specialist`, `forensic-investigator`, `malware-analyst`, `market-innovation-scout`, `instructional-designer`, `presentation-slide-expert`, `ux-writer`
+- 📊 **Total Skills:** 268 (down from 309)
+- 📝 **Focus:** Software development, web/mobile development, backend/frontend, UI/UX, freelance, and startup-related skills only.
 
 ### v6.15.0 (2026-02-19)
 

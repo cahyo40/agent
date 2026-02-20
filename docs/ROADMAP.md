@@ -1,9 +1,9 @@
 # 🗺️ AI Agent Skills - Roadmap
 
-> **Last Updated:** February 2026  
-> **Current Version:** v6.15.0  
-> **Total Skills:** 309  
-> **Total Workflows:** 8 collections (409+ workflow files)  
+> **Last Updated:** February 2026
+> **Current Version:** v6.16.0
+> **Total Skills:** 268
+> **Total Workflows:** 8 collections (409+ workflow files)
 
 ---
 
@@ -11,12 +11,31 @@
 
 ```text
 ████████████████████████████████████████ 100%
-309/309 Skills Complete ✅
+268/268 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.16.0 - Skills Cleanup & Focus (Feb 2026) ✅
+
+**Goal:** Remove non-software development skills to focus on core competencies
+
+**Changes in v6.16.0:**
+
+- 🗑️ **Skills Cleanup** - Removed 41 non-software development skills
+- ✂️ **Removed Categories:**
+  - Content Creation (7 skills): short-form-video-creator, content-repurposer, copywriting, newsletter-writer, seo-content-writer, script-writer, viral-content-creator
+  - Social Media (7 skills): instagram-content-strategist, linkedin-content-strategist, tiktok-content-strategist, twitter-x-strategist, youtube-shorts-strategist, nano-influencer-strategist, social-media-marketer
+  - Design & Art (10 skills): ai-poster-designer, book-cover-architect, sports-poster-specialist, thumbnail-designer, illustration-creator, infographic-creator, motion-designer, brand-designer, creative-coding-artist, generative-art-creator
+  - Media Production (5 skills): ai-native-filmmaker, livestream-producer, podcast-producer, audio-processing-specialist, ai-voice-clone
+  - Marketing (5 skills): digital-ads-specialist, marketing-strategist, local-seo-specialist, seo-keyword-research, seo-link-building
+  - Other (7 skills): 3d-scanning-specialist, forensic-investigator, malware-analyst, market-innovation-scout, instructional-designer, presentation-slide-expert, ux-writer
+- 📊 **Total Skills:** 268 (down from 309)
+- 📝 **Focus:** Software development, web/mobile development, backend/frontend, UI/UX, freelance, and startup-related skills only.
+
+---
 
 ### v6.15.0 - Workflow Compliance & Slash Commands (Feb 2026) ✅
 
@@ -396,6 +415,7 @@ What this skill does and when to use it.
 | **v6.13.0** | **Feb 2026** | **309** | **0 workflows** 🗑️ |
 | **v6.14.0** | **Feb 2026** | **309** | **+91 workflow files** 📋 |
 | **v6.15.0** | **Feb 2026** | **309** | **409+ workflow files** ⚡ |
+| **v6.16.0** | **Feb 2026** | **268** | **-13.3%** 🎯 |
 
 ---
 

@@ -2,12 +2,12 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-309-blue?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-268-blue?style=for-the-badge)
 ![Workflows](https://img.shields.io/badge/Workflows-409+-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.15.0-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.16.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 309 skills + 8 workflow collections (409+ files) untuk memperluas kemampuan AI Agent**
+**Koleksi 268 skills + 8 workflow collections (409+ files) untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -17,7 +17,7 @@
 
 ## ✨ Features
 
-- 🤖 **309 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **268 Specialized Skills** - Dari Flutter hingga AI/ML
 - 📋 **8 Workflow Collections (409+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
@@ -159,22 +159,19 @@ rm -rf temp-skills
 | 🔧 Backend Development | 27 | Python, Go, NestJS, Rust, PHP, Elixir |
 | 📱 Mobile Development | 15 | Flutter, iOS, Android, Desktop, Riverpod |
 | 🎨 Frontend Development | 16 | React, Vue, Next.js, Svelte, Astro, 3D |
-| 🎨 UI/UX & Design | 14 | Figma, design systems |
+| 🎨 UI/UX & Design | 12 | Figma, design systems, mobile app design |
 | ☁️ Cloud & DevOps | 17 | AWS, K8s, Terraform, Chaos Eng |
 | 💾 Data & Databases | 16 | ETL, MongoDB, PostgreSQL, Big Data |
-| 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Forensics |
+| 🔐 Security | 13 | Pen testing, Bug Bounty, CTF, Red Team |
 | 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
-| 📝 Content Creation | 24 | Video, Gen Video, Filmmaker, Poster, Book Cover, Thumbnails |
-| 📊 Marketing & Business | 13 | SEO, Copywriting, Tech SEO Pro |
 | 📝 Documentation | 7 | Technical writing, Architecture |
 | 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Fleet, Ride-Hailing, Dating, Social |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
 | 🔮 Emerging Tech | 11 | VR/AR, Quantum, Web3, Biometrics, Digital Human |
 | 💬 Bots & Automation | 7 | Discord, Telegram, WhatsApp |
-| 🎞️ Media Processing | 2 | Audio & Video engineering |
+| 🎞️ Media Processing | 2 | Video engineering |
 | 🏗️ Industrial Tech | 3 | IIoT, SCADA, Edge Infra |
-| 🎨 Creative Arts | 1 | Creative Coding Artist |
-| 📚 Others | 38 | Various specialized |
+| 📚 Others | 64 | Various specialized |
 
 ---
 
@@ -185,7 +182,7 @@ rm -rf temp-skills
 ```
 @senior-flutter-developer buatkan widget login screen
 
-@short-form-video-creator buat strategi konten TikTok
+@video-editor-automation buat script edit video
 
 @senior-ai-agent-developer buat AI agent dengan tools
 ```
@@ -193,8 +190,8 @@ rm -rf temp-skills
 ### Method 2: Combine Skills
 
 ```
-@script-writer @thumbnail-designer 
-buatkan script dan ide thumbnail untuk video YouTube
+@senior-flutter-developer @figma-specialist
+implementasi design dari Figma ke Flutter code
 ```
 
 ---
@@ -217,10 +214,10 @@ buatkan script dan ide thumbnail untuk video YouTube
 
 ### Content Creation
 
-- `@short-form-video-creator` - TikTok, Reels, Shorts
 - `@video-editor-automation` - FFmpeg automation
-- `@content-repurposer` - 1 content → 10 formats
-- `@copywriting` - Marketing copy
+- `@generative-video-specialist` - AI video generation
+- `@blog-content-writer` - Technical blog writing
+- `@ebook-author-toolkit` - Ebook creation
 
 ### Business & Industry
 
@@ -274,7 +271,7 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 ```text
 agents/
 ├── .agent/
-│   ├── skills/           # 309 skill folders
+│   ├── skills/           # 268 skill folders
 │   │   ├── senior-flutter-developer/
 │   │   ├── senior-react-developer/
 │   │   └── ...
