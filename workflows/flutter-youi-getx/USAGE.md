@@ -66,6 +66,12 @@ dependencies:
   # State Management, DI & Routing (all-in-one)
   get: ^4.6.6
   
+  # UI Component Library
+  yo_ui:
+    git:
+      url: https://github.com/cahyo40/youi.git
+      ref: main
+  
   # Local Storage
   get_storage: ^2.1.1
   
@@ -76,7 +82,7 @@ dependencies:
   # Secure Storage
   flutter_secure_storage: ^9.0.0
   
-  # UI
+  # UI Utilities
   cached_network_image: ^3.3.1
   shimmer: ^3.0.0
   google_fonts: ^6.2.1

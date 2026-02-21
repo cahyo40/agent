@@ -1,13 +1,13 @@
 ---
-description: Setup Flutter project dari nol dengan Clean Architecture dan GetX state management. (Part 1/4)
+description: Setup Flutter project dari nol dengan Clean Architecture, GetX, dan YoUI. (Part 1/5)
 ---
-# Workflow: Flutter Project Setup with GetX (Part 1/4)
+# Workflow: Flutter Project Setup with GetX + YoUI (Part 1/5)
 
-> **Navigation:** This workflow is split into 4 parts.
+> **Navigation:** This workflow is split into 5 parts.
 
 ## Overview
 
-Setup Flutter project dari nol dengan Clean Architecture dan GetX state management. Workflow ini mencakup struktur folder lengkap, konfigurasi dependencies, dan contoh implementasi feature.
+Setup Flutter project dari nol dengan Clean Architecture, GetX state management, dan **YoUI component library**. Workflow ini mencakup struktur folder lengkap, konfigurasi dependencies, YoUI theme integration, dan contoh implementasi feature dengan YoUI widgets.
 
 
 ## Output Location
@@ -16,13 +16,13 @@ Setup Flutter project dari nol dengan Clean Architecture dan GetX state manageme
 
 **Output Files:**
 - `project-structure.md` - Dokumentasi struktur folder
-- `pubspec.yaml` - Dependencies lengkap
+- `pubspec.yaml` - Dependencies lengkap (termasuk YoUI)
 - `lib/main.dart` - Entry point aplikasi
-- `lib/app.dart` - Root widget dengan GetMaterialApp
+- `lib/app.dart` - Root widget dengan GetMaterialApp + YoUI Theme
 - `lib/routes/` - GetX routing configuration
 - `lib/bindings/` - GetX dependency injection bindings
-- `lib/core/` - Utils, theme, error handling
-- `lib/features/example/` - Contoh feature lengkap (CRUD)
+- `lib/core/` - Utils, YoUI theme integration, error handling
+- `lib/features/example/` - Contoh feature lengkap (CRUD dengan YoUI widgets)
 - `lib/shared/` - Extensions, utils, shared widgets
 - `README.md` - Setup instructions
 

@@ -1,89 +1,315 @@
 ---
-description: Setup Flutter project dari nol dengan Clean Architecture dan GetX state management. (Part 4/4)
+description: Setup Flutter project dari nol dengan Clean Architecture, GetX, dan YoUI. (Part 4/5)
 ---
-# Workflow: Flutter Project Setup with GetX (Part 4/4)
+# Workflow: Flutter Project Setup with GetX + YoUI (Part 4/5)
 
-> **Navigation:** This workflow is split into 4 parts.
+> **Navigation:** This workflow is split into 5 parts.
 
-## Workflow Steps
+## Deliverables
 
-1. **Project Initialization**
-   - Create Flutter project
-   - Add dependencies ke pubspec.yaml
-   - Run `flutter pub get`
-   - Setup folder structure
+### 5. YoUI Theme Customization
 
-2. **GetX Configuration**
-   - Setup GetMaterialApp
-   - Configure routes dan bindings
-   - Setup auth middleware
+**Description:** Kustomisasi YoUI theme sesuai kebutuhan project.
 
-3. **Core Layer Setup**
-   - Implement error handling classes
-   - Setup theme
-   - Configure storage service
+**Recommended Skills:** `senior-flutter-developer`, `senior-ui-ux-designer`
 
-4. **Example Feature Implementation**
-   - Create domain layer (entity, repository interface)
-   - Create data layer (model, repository impl)
-   - Create feature layer (controller, binding, view)
-   - Implement reactive state dengan Obx
+**Instructions:**
+YoUI menyediakan 36 color schemes siap pakai. Pilih salah satu atau buat custom.
 
-5. **Test Setup**
-   - Verify app runs without error
-   - Test navigation
-   - Test example feature
+**Output Format:**
+```dart
+// lib/core/theme/app_theme.dart
+import 'package:flutter/material.dart';
+import 'package:yo_ui/yo_ui.dart';
 
+/// YoUI theme wrapper untuk app.
+///
+/// YoUI menyediakan 36 preset color schemes.
+/// Gunakan langsung atau buat custom.
+class AppTheme {
+  /// Light theme menggunakan YoUI.
+  static ThemeData lightTheme(BuildContext context) {
+    return YoTheme.lightTheme(context);
+    
+    // Atau dengan custom color scheme:
+    // return YoTheme.lightTheme(
+    //   context,
+    //   YoColorScheme.techPurple,
+    // );
+  }
+  
+  /// Dark theme menggunakan YoUI.
+  static ThemeData darkTheme(BuildContext context) {
+    return YoTheme.darkTheme(context);
+    
+    // Atau dengan custom color scheme:
+    // return YoTheme.darkTheme(
+    //   context,
+    //   YoColorScheme.techPurple,
+    // );
+  }
+}
 
-## Success Criteria
+// Available YoUI Color Schemes (36):
+// YoColorScheme.techPurple
+// YoColorScheme.oceanBlue
+// YoColorScheme.forestGreen
+// YoColorScheme.sunsetOrange
+// ... dan 32 lainnya
+```
 
-- [ ] Project structure mengikuti Clean Architecture
-- [ ] Semua dependencies terinstall tanpa error
-- [ ] GetMaterialApp configured dengan routing
-- [ ] Bindings setup untuk dependency injection
-- [ ] Example feature berjalan dengan reactive state (Obx)
-- [ ] Navigation berfungsi dengan GetX routing
-- [ ] `flutter analyze` tidak ada warning/error
-- [ ] App bisa build dan run
+---
 
+## Deliverables
 
-## GetX vs Riverpod
+### 6. Product Detail View dengan YoUI
 
-| Feature | GetX | Riverpod |
-|---------|------|----------|
-| State Management | `.obs` + `Obx` | `AsyncValue` + `.when()` |
-| Dependency Injection | `Get.put()` / Bindings | `Provider` + `@riverpod` |
-| Routing | `GetMaterialApp` | `GoRouter` |
-| Navigation | `Get.to()` / `Get.toNamed()` | `context.push()` |
-| Code Generation | Tidak perlu | Perlu (build_runner) |
-| Reactive | ✅ `.obs` streams | ✅ AsyncValue |
-| Performance | ✅ Lightweight | ✅ Excellent |
+**Description:** Detail view menggunakan YoUI components.
 
+**Output Format:**
+```dart
+// lib/features/products/views/product_detail_view.dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
+import '../controllers/product_controller.dart';
 
-## Tools & Templates
+class ProductDetailView
+    extends GetView<ProductController> {
+  const ProductDetailView({super.key});
 
-- **Flutter Version:** 3.41.1+
-- **Dart Version:** 3.11.0+
-- **State Management:** GetX 4.6+
-- **Routing:** GetX Routing (built-in)
-- **HTTP Client:** Dio 5.4+
-- **Local Storage:** GetStorage 2.1+
+  @override
+  Widget build(BuildContext context) {
+    final productId = Get.parameters['id'] ?? '';
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Product Detail'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              // Navigate to edit
+            },
+          ),
+        ],
+      ),
+      body: Obx(() {
+        final product =
+            controller.selectedProduct.value;
+        
+        if (product == null) {
+          return Center(
+            child: YoText.bodyMedium(
+              'Product not found',
+            ),
+          );
+        }
+        
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
+            children: [
+              YoCard(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      YoText.headlineMedium(
+                        product.name,
+                      ),
+                      const SizedBox(height: 8),
+                      YoText.titleLarge(
+                        '\$${product.price}',
+                      ),
+                      if (product.description !=
+                          null) ...[
+                        const SizedBox(height: 16),
+                        YoText.bodyMedium(
+                          product.description!,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: YoButton.outline(
+                      text: 'Edit',
+                      onPressed: () {
+                        // Navigate to edit
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: YoButton.primary(
+                      text: 'Delete',
+                      onPressed: () {
+                        controller.deleteProduct(
+                          product.id,
+                        );
+                        Get.back();
+                        YoToast.success(
+                          context: context,
+                          message:
+                              'Product deleted',
+                        );
+                      },
+                      backgroundColor:
+                          Theme.of(context)
+                              .colorScheme
+                              .error,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}
+```
 
+---
 
-## Next Steps
+## Deliverables
 
-Setelah workflow ini selesai, lanjut ke:
-1. `02_feature_maker.md` - Untuk generate feature baru
-2. `03_backend_integration.md` - Untuk API integration
-3. `04_firebase_integration.md` - Untuk Firebase
-4. `05_supabase_integration.md` - Untuk Supabase
-5. `06_testing_production.md` - Testing dan deployment
+### 7. Product Create Form dengan YoUI
 
+**Description:** Form create product dengan YoUI components.
 
-## Catatan Penting GetX
+**Output Format:**
+```dart
+// lib/features/products/views/product_create_view.dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
+import '../controllers/product_controller.dart';
 
-1. **Reactive State**: Gunakan `.obs` untuk reactive variables dan `Obx()` untuk listen
-2. **Controllers**: Auto-dispose saat view di-close (kecuali `permanent: true`)
-3. **Bindings**: Lazy loading untuk performance optimal
-4. **Navigation**: Simpler syntax dengan `Get.to()` dan `Get.toNamed()`
-5. **Snackbar/Dialog**: Built-in tanpa context: `Get.snackbar()`, `Get.dialog()`
+class ProductCreateView
+    extends GetView<ProductController> {
+  const ProductCreateView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final nameController = TextEditingController();
+    final priceController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add Product'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              YoCard(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller:
+                            nameController,
+                        decoration:
+                            const InputDecoration(
+                          labelText:
+                              'Product Name',
+                          hintText:
+                              'Enter product name',
+                        ),
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty) {
+                            return 'Name is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller:
+                            priceController,
+                        decoration:
+                            const InputDecoration(
+                          labelText: 'Price',
+                          hintText:
+                              'Enter price',
+                          prefixText: '\$ ',
+                        ),
+                        keyboardType:
+                            TextInputType.number,
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty) {
+                            return 'Price is required';
+                          }
+                          if (double.tryParse(
+                                  value) ==
+                              null) {
+                            return 'Invalid price';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Obx(
+                () => YoButton.primary(
+                  text: controller.isLoading.value
+                      ? 'Creating...'
+                      : 'Create Product',
+                  onPressed:
+                      controller.isLoading.value
+                          ? null
+                          : () {
+                              if (formKey
+                                  .currentState!
+                                  .validate()) {
+                                controller
+                                    .createProduct(
+                                  nameController
+                                      .text,
+                                  double.parse(
+                                    priceController
+                                        .text,
+                                  ),
+                                );
+                                YoToast.success(
+                                  context:
+                                      context,
+                                  message:
+                                      'Product created!',
+                                );
+                              }
+                            },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+---

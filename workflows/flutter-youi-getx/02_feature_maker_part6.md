@@ -1,5 +1,5 @@
 ---
-description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX pattern. (Part 6/10)
+description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX + YoUI pattern. (Part 6/10)
 ---
 # Workflow: Flutter Feature Maker (GetX) (Part 6/10)
 
@@ -213,9 +213,9 @@ class {FeatureName}Binding extends Bindings {
 
 ## Deliverables
 
-### 8. Shimmer Loading Template
+### 8. Shimmer Loading Template (YoUI)
 
-**Description:** Template shimmer loading skeleton. Standalone StatelessWidget -- tidak perlu ConsumerWidget atau GetView karena shimmer tidak butuh reactive data.
+**Description:** Template shimmer loading skeleton menggunakan `YoShimmer` dari YoUI. Tidak perlu manual shimmer — cukup panggil `YoShimmer.card()` atau `YoShimmer.listTile()`.
 
 **Recommended Skills:** `senior-flutter-developer`
 
@@ -223,8 +223,9 @@ class {FeatureName}Binding extends Bindings {
 ```dart
 // TEMPLATE: views/widgets/{feature}_shimmer.dart
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:yo_ui/yo_ui.dart';
 
+/// Shimmer list loading menggunakan YoShimmer.
 class {FeatureName}ListShimmer extends StatelessWidget {
   const {FeatureName}ListShimmer({super.key});
 
@@ -233,118 +234,41 @@ class {FeatureName}ListShimmer extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: 8,
-      itemBuilder: (context, index) => const {FeatureName}ListItemShimmer(),
-    );
-  }
-}
-
-class {FeatureName}ListItemShimmer extends StatelessWidget {
-  const {FeatureName}ListItemShimmer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: ListTile(
-          leading: Container(
-            width: 48,
-            height: 48,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-          title: Container(
-            height: 16,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          subtitle: Container(
-            height: 12,
-            width: 150,
-            margin: const EdgeInsets.only(top: 8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          trailing: Container(
-            width: 24,
-            height: 24,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: YoShimmer.card(height: 80),
       ),
     );
   }
 }
 
-/// Shimmer untuk detail view
+/// Shimmer untuk detail view menggunakan YoShimmer.
 class {FeatureName}DetailShimmer extends StatelessWidget {
   const {FeatureName}DetailShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title shimmer
-            Container(
-              height: 24,
-              width: 200,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Description shimmer
-            Container(
-              height: 14,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              height: 14,
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Info card shimmer
-            Container(
-              height: 120,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          YoShimmer.card(height: 200),
+          const SizedBox(height: 16),
+          YoShimmer.listTile(),
+          const SizedBox(height: 8),
+          YoShimmer.listTile(),
+          const SizedBox(height: 8),
+          YoShimmer.listTile(),
+        ],
       ),
     );
   }
 }
 ```
+
+> **Note:** YoShimmer sudah handle baseColor dan highlightColor otomatis sesuai YoUI theme.
+> Tidak perlu manual `Shimmer.fromColors()` lagi.
+
+**Recommended Skills:** `senior-flutter-developer`
 

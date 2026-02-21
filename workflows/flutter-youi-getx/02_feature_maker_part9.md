@@ -1,5 +1,5 @@
 ---
-description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX pattern. (Part 9/10)
+description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX + YoUI pattern. (Part 9/10)
 ---
 # Workflow: Flutter Feature Maker (GetX) (Part 9/10)
 
@@ -13,9 +13,9 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
 ```dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
 import '../../../routes/app_routes.dart';
 import '../controllers/todo_controller.dart';
-import 'widgets/todo_shimmer.dart';
 
 class TodoListView extends GetView<TodoController> {
   const TodoListView({super.key});
@@ -45,21 +45,33 @@ class TodoListView extends GetView<TodoController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.todos.isEmpty) {
-          return const TodoListShimmer();
-        }
+          return ListView.builder(
+            itemCount: 5,
+            padding: const EdgeInsets.all(16),
+            itemBuilder: (context, index) =>
+                Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 8),
+              child: YoShimmer.card(height: 72),
+            ),
+          );
 
         if (controller.errorMessage.value.isNotEmpty && controller.todos.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.error,
+                ),
                 const SizedBox(height: 16),
-                Text(controller.errorMessage.value),
+                YoText.bodyLarge(controller.errorMessage.value),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                YoButton.primary(
+                  text: 'Coba Lagi',
                   onPressed: controller.fetchTodos,
-                  child: const Text('Coba Lagi'),
                 ),
               ],
             ),
@@ -69,13 +81,13 @@ class TodoListView extends GetView<TodoController> {
         final items = controller.filteredTodos;
 
         if (items.isEmpty) {
-          return const Center(
+          return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.checklist, size: 64, color: Colors.grey),
-                SizedBox(height: 16),
-                Text('Tidak ada todo', style: TextStyle(color: Colors.grey)),
+                const Icon(Icons.checklist, size: 64, color: Colors.grey),
+                const SizedBox(height: 16),
+                YoText.bodyMedium('Tidak ada todo'),
               ],
             ),
           );
@@ -88,31 +100,30 @@ class TodoListView extends GetView<TodoController> {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final todo = items[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  leading: Checkbox(
-                    value: todo.isCompleted,
-                    onChanged: (_) => controller.toggleComplete(todo.id),
-                  ),
-                  title: Text(
-                    todo.title,
-                    style: TextStyle(
-                      decoration: todo.isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: YoCard(
+                  child: ListTile(
+                    leading: Checkbox(
+                      value: todo.isCompleted,
+                      onChanged: (_) => controller.toggleComplete(todo.id),
                     ),
-                  ),
-                  subtitle: todo.description != null
-                      ? Text(todo.description!, maxLines: 1, overflow: TextOverflow.ellipsis)
-                      : null,
-                  onTap: () {
-                    controller.selectedTodo.value = todo;
-                    Get.toNamed(AppRoutes.todoDetailPath(todo.id));
-                  },
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    onPressed: () => controller.confirmDelete(todo.id),
+                    title: YoText.bodyLarge(
+                      todo.title,
+                    ),
+                    subtitle: todo.description != null
+                        ? YoText.bodySmall(
+                            todo.description!,
+                          )
+                        : null,
+                    onTap: () {
+                      controller.selectedTodo.value = todo;
+                      Get.toNamed(AppRoutes.todoDetailPath(todo.id));
+                    },
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.red),
+                      onPressed: () => controller.confirmDelete(todo.id, context),
+                    ),
                   ),
                 ),
               );
@@ -159,16 +170,22 @@ class TodoListView extends GetView<TodoController> {
           ],
         ),
         actions: [
-          TextButton(
+          YoButton.ghost(
+            text: 'Batal',
             onPressed: () => Get.back(),
-            child: const Text('Batal'),
           ),
-          Obx(() => ElevatedButton(
+          Obx(() => YoButton.primary(
+                text: controller.isSubmitting.value
+                    ? 'Menyimpan...'
+                    : 'Simpan',
                 onPressed: controller.isSubmitting.value
                     ? null
                     : () {
                         if (titleCtrl.text.trim().isEmpty) {
-                          Get.snackbar('Error', 'Judul tidak boleh kosong');
+                          YoToast.error(
+                            context: Get.context!,
+                            message: 'Judul tidak boleh kosong',
+                          );
                           return;
                         }
                         controller.createTodo(
@@ -178,12 +195,6 @@ class TodoListView extends GetView<TodoController> {
                               : descCtrl.text.trim(),
                         );
                       },
-                child: controller.isSubmitting.value
-                    ? const SizedBox(
-                        width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Simpan'),
               )),
         ],
       ),

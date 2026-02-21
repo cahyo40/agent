@@ -1,15 +1,15 @@
 ---
-description: Setup Flutter project dari nol dengan Clean Architecture dan GetX state management. (Part 3/4)
+description: Setup Flutter project dari nol dengan Clean Architecture, GetX, dan YoUI. (Part 3/5)
 ---
-# Workflow: Flutter Project Setup with GetX (Part 3/4)
+# Workflow: Flutter Project Setup with GetX + YoUI (Part 3/5)
 
-> **Navigation:** This workflow is split into 4 parts.
+> **Navigation:** This workflow is split into 5 parts.
 
 ## Deliverables
 
 ### 3. Example Feature Implementation
 
-**Description:** Contoh feature lengkap dengan GetX pattern.
+**Description:** Contoh feature lengkap dengan GetX pattern dan YoUI widgets.
 
 **Recommended Skills:** `senior-flutter-developer`
 
@@ -23,10 +23,10 @@ description: Setup Flutter project dari nol dengan Clean Architecture dan GetX s
    - Implement `ProductRepositoryImpl`
    - Setup API provider
 
-3. **Feature Layer (GetX Pattern):**
+3. **Feature Layer (GetX + YoUI Pattern):**
    - Controller dengan reactive state (.obs)
    - Binding untuk DI
-   - View dengan Obx/GetBuilder
+   - View dengan `YoCard`, `YoButton`, `YoShimmer`, `YoToast`
 
 **Output Format:**
 ```dart
@@ -47,15 +47,22 @@ class Product extends Equatable {
   });
   
   @override
-  List<Object?> get props => [id, name, price, description, createdAt];
+  List<Object?> get props =>
+      [id, name, price, description, createdAt];
 }
 
 // lib/domain/repositories/product_repository.dart
 abstract class ProductRepository {
   Future<Either<Failure, List<Product>>> getProducts();
-  Future<Either<Failure, Product>> getProductById(String id);
-  Future<Either<Failure, Product>> createProduct(Product product);
-  Future<Either<Failure, Product>> updateProduct(Product product);
+  Future<Either<Failure, Product>> getProductById(
+    String id,
+  );
+  Future<Either<Failure, Product>> createProduct(
+    Product product,
+  );
+  Future<Either<Failure, Product>> updateProduct(
+    Product product,
+  );
   Future<Either<Failure, Unit>> deleteProduct(String id);
 }
 
@@ -75,7 +82,9 @@ class ProductModel {
     required this.createdAt,
   });
   
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return ProductModel(
       id: json['id'],
       name: json['name'],
@@ -118,7 +127,8 @@ class ProductController extends GetxController {
   final RxList<Product> products = <Product>[].obs;
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
-  final Rx<Product?> selectedProduct = Rx<Product?>(null);
+  final Rx<Product?> selectedProduct =
+      Rx<Product?>(null);
   
   @override
   void onInit() {
@@ -146,7 +156,10 @@ class ProductController extends GetxController {
     }
   }
   
-  Future<void> createProduct(String name, double price) async {
+  Future<void> createProduct(
+    String name,
+    double price,
+  ) async {
     try {
       isLoading.value = true;
       
@@ -157,24 +170,17 @@ class ProductController extends GetxController {
         createdAt: DateTime.now(),
       );
       
-      final result = await _repository.createProduct(newProduct);
+      final result =
+          await _repository.createProduct(newProduct);
       
       result.fold(
         (failure) {
-          Get.snackbar(
-            'Error',
-            failure.message,
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // YoToast akan dipanggil dari View
+          errorMessage.value = failure.message;
         },
         (product) {
           products.add(product);
-          Get.back(); // Close dialog/form
-          Get.snackbar(
-            'Success',
-            'Product created successfully',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          Get.back();
         },
       );
     } finally {
@@ -188,15 +194,14 @@ class ProductController extends GetxController {
       
       result.fold(
         (failure) {
-          Get.snackbar('Error', failure.message);
+          errorMessage.value = failure.message;
         },
         (_) {
           products.removeWhere((p) => p.id == id);
-          Get.snackbar('Success', 'Product deleted');
         },
       );
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      errorMessage.value = e.toString();
     }
   }
   
@@ -218,12 +223,9 @@ import '../../../domain/repositories/product_repository.dart';
 class ProductBinding extends Bindings {
   @override
   void dependencies() {
-    // Repository
     Get.lazyPut<ProductRepository>(
       () => ProductRepositoryImpl(),
     );
-    
-    // Controller
     Get.lazyPut<ProductController>(
       () => ProductController(),
     );
@@ -233,6 +235,7 @@ class ProductBinding extends Bindings {
 // lib/features/products/views/product_list_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
 import '../../../routes/app_routes.dart';
 import '../controllers/product_controller.dart';
 import '../widgets/product_shimmer.dart';
@@ -253,45 +256,128 @@ class ProductListView extends GetView<ProductController> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value && controller.products.isEmpty) {
-          return const ProductShimmerList();
+        // Loading state — YoUI Shimmer
+        if (controller.isLoading.value &&
+            controller.products.isEmpty) {
+          return ListView.builder(
+            itemCount: 5,
+            padding: const EdgeInsets.all(16),
+            itemBuilder: (context, index) =>
+                Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 8),
+              child: YoShimmer.card(height: 80),
+            ),
+          );
         }
         
-        if (controller.errorMessage.value.isNotEmpty) {
+        // Error state — YoUI Button
+        if (controller
+            .errorMessage.value.isNotEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .error,
+                  ),
+                  const SizedBox(height: 16),
+                  YoText.bodyMedium(
+                    controller.errorMessage.value,
+                  ),
+                  const SizedBox(height: 16),
+                  YoButton.primary(
+                    text: 'Retry',
+                    onPressed:
+                        controller.fetchProducts,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        
+        // Empty state
+        if (controller.products.isEmpty) {
           return Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(controller.errorMessage.value),
-                ElevatedButton(
-                  onPressed: controller.fetchProducts,
-                  child: const Text('Retry'),
+                Icon(
+                  Icons.inventory_2_outlined,
+                  size: 48,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurfaceVariant,
+                ),
+                const SizedBox(height: 16),
+                YoText.titleMedium(
+                  'No products available',
+                ),
+                const SizedBox(height: 8),
+                YoText.bodyMedium(
+                  'Add your first product',
+                ),
+                const SizedBox(height: 24),
+                YoButton.primary(
+                  text: 'Add Product',
+                  onPressed: () => Get.toNamed(
+                    '${AppRoutes.products}/create',
+                  ),
                 ),
               ],
             ),
           );
         }
         
-        if (controller.products.isEmpty) {
-          return const Center(child: Text('No products available'));
-        }
-        
+        // Data state — YoUI Card
         return RefreshIndicator(
           onRefresh: controller.fetchProducts,
           child: ListView.builder(
+            padding: const EdgeInsets.all(16),
             itemCount: controller.products.length,
             itemBuilder: (context, index) {
-              final product = controller.products[index];
-              return ListTile(
-                title: Text(product.name),
-                subtitle: Text('\$${product.price}'),
-                onTap: () {
-                  controller.selectProduct(product);
-                  Get.toNamed(AppRoutes.productDetailPath(product.id));
-                },
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => _confirmDelete(product.id),
+              final product =
+                  controller.products[index];
+              return Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 8,
+                ),
+                child: YoCard(
+                  onTap: () {
+                    controller
+                        .selectProduct(product);
+                    Get.toNamed(
+                      AppRoutes.productDetailPath(
+                        product.id,
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    title: YoText.titleSmall(
+                      product.name,
+                    ),
+                    subtitle: YoText.bodySmall(
+                      '\$${product.price}',
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      onPressed: () =>
+                          _confirmDelete(
+                        context,
+                        product.id,
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
@@ -299,28 +385,40 @@ class ProductListView extends GetView<ProductController> {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed('${AppRoutes.products}/create'),
+        onPressed: () => Get.toNamed(
+          '${AppRoutes.products}/create',
+        ),
         child: const Icon(Icons.add),
       ),
     );
   }
   
-  void _confirmDelete(String id) {
+  void _confirmDelete(
+    BuildContext context,
+    String id,
+  ) {
     Get.dialog(
       AlertDialog(
         title: const Text('Delete Product'),
         content: const Text('Are you sure?'),
         actions: [
-          TextButton(
+          YoButton.ghost(
+            text: 'Cancel',
             onPressed: () => Get.back(),
-            child: const Text('Cancel'),
           ),
-          TextButton(
+          YoButton.primary(
+            text: 'Delete',
             onPressed: () {
               Get.back();
               controller.deleteProduct(id);
+              YoToast.success(
+                context: context,
+                message: 'Product deleted',
+              );
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            backgroundColor: Theme.of(context)
+                .colorScheme
+                .error,
           ),
         ],
       ),
@@ -335,7 +433,7 @@ class ProductListView extends GetView<ProductController> {
 
 ### 4. Error Handling
 
-**Description:** Setup error handling dengan GetX.
+**Description:** Setup error handling terstruktur.
 
 **Output Format:**
 ```dart
@@ -346,15 +444,21 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure([super.message = 'Server error']);
+  const ServerFailure(
+    [super.message = 'Server error'],
+  );
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure([super.message = 'No internet connection']);
+  const NetworkFailure(
+    [super.message = 'No internet connection'],
+  );
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure([super.message = 'Cache error']);
+  const CacheFailure(
+    [super.message = 'Cache error'],
+  );
 }
 
 // lib/core/error/exceptions.dart
@@ -365,10 +469,16 @@ class ServerException implements Exception {
 
 class NetworkException implements Exception {
   final String message;
-  NetworkException([this.message = 'No internet connection']);
+  NetworkException(
+    [this.message = 'No internet connection'],
+  );
 }
 
 // lib/core/widgets/error_view.dart
+import 'package:flutter/material.dart';
+import 'package:yo_ui/yo_ui.dart';
+
+/// Error state widget menggunakan YoUI components.
 class ErrorView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
@@ -381,22 +491,106 @@ class ErrorView extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 48, color: Colors.red),
-          const SizedBox(height: 16),
-          Text(message, textAlign: TextAlign.center),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: const Text('Retry'),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: colorScheme.errorContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                size: 40,
+                color: colorScheme.onErrorContainer,
+              ),
+            ),
+            const SizedBox(height: 16),
+            YoText.titleMedium(
+              'Something went wrong',
+            ),
+            const SizedBox(height: 8),
+            YoText.bodyMedium(message),
+            const SizedBox(height: 24),
+            YoButton.primary(
+              text: 'Retry',
+              onPressed: onRetry,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// lib/core/widgets/empty_state_view.dart
+import 'package:flutter/material.dart';
+import 'package:yo_ui/yo_ui.dart';
+
+/// Empty state widget menggunakan YoUI components.
+class EmptyStateView extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+  
+  const EmptyStateView({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.description,
+    this.actionLabel,
+    this.onAction,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: colorScheme
+                    .surfaceContainerHighest,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                size: 40,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            YoText.titleMedium(title),
+            const SizedBox(height: 8),
+            YoText.bodyMedium(description),
+            if (actionLabel != null &&
+                onAction != null) ...[
+              const SizedBox(height: 24),
+              YoButton.primary(
+                text: actionLabel!,
+                onPressed: onAction!,
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
 ```
 
+---

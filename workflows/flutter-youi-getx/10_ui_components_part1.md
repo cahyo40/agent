@@ -1,7 +1,7 @@
 ---
-description: Library widget reusable yang konsisten: AppButton, AppTextField, AppCard, shimmer, empty state, error widget, dan bot... (Part 1/2)
+description: Library widget reusable YoUI - Reference guide untuk menggunakan YoButton, YoCard, YoShimmer, YoToast, YoText, dll. (Part 1/2)
 ---
-# 10 - UI Components (Reusable Widget Library) (Part 1/2)
+# 10 - UI Components (YoUI Widget Library) (Part 1/2)
 
 > **Navigation:** This workflow is split into 2 parts.
 
@@ -9,235 +9,118 @@ description: Library widget reusable yang konsisten: AppButton, AppTextField, Ap
 
 ```yaml
 dependencies:
-  shimmer: ^3.0.0
-  google_fonts: ^6.2.1
-  cached_network_image: ^3.3.1
+  yo_ui:
+    git:
+      url: https://github.com/cahyo40/youi.git
+      ref: main
 ```
+
+> **Note:** YoUI sudah include shimmer, typography, dan theming.
+> Tidak perlu install `shimmer`, `google_fonts` terpisah karena YoUI handle semuanya.
 
 ---
 
 
 ## Deliverables
 
-### 1. AppButton
+### 1. YoButton (Pengganti AppButton)
 
-**File:** `lib/core/widgets/app_button.dart`
+YoUI menyediakan beberapa variant button siap pakai:
 
+**Usage:**
 ```dart
-import 'package:flutter/material.dart';
+import 'package:yo_ui/yo_ui.dart';
 
-enum AppButtonVariant { primary, secondary, destructive, ghost }
-enum AppButtonSize { small, medium, large }
+// Primary button (filled, prominent)
+YoButton.primary(
+  text: 'Save',
+  onPressed: () {},
+)
 
-class AppButton extends StatelessWidget {
-  const AppButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-    this.variant = AppButtonVariant.primary,
-    this.isLoading = false,
-    this.isFullWidth = true,
-    this.icon,
-    this.size = AppButtonSize.medium,
-  });
+// Secondary button
+YoButton.secondary(
+  text: 'Cancel',
+  onPressed: () {},
+)
 
-  final String label;
-  final VoidCallback? onPressed;
-  final AppButtonVariant variant;
-  final bool isLoading;
-  final bool isFullWidth;
-  final IconData? icon;
-  final AppButtonSize size;
+// Outline button
+YoButton.outline(
+  text: 'Edit',
+  onPressed: () {},
+)
 
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+// Ghost button (minimal, text-like)
+YoButton.ghost(
+  text: 'Skip',
+  onPressed: () {},
+)
 
-    final (bg, fg) = switch (variant) {
-      AppButtonVariant.primary => (colorScheme.primary, colorScheme.onPrimary),
-      AppButtonVariant.secondary => (
-          colorScheme.secondaryContainer,
-          colorScheme.onSecondaryContainer,
-        ),
-      AppButtonVariant.destructive => (colorScheme.error, colorScheme.onError),
-      AppButtonVariant.ghost => (Colors.transparent, colorScheme.primary),
-    };
+// Button with custom color
+YoButton.primary(
+  text: 'Delete',
+  onPressed: () {},
+  backgroundColor: Theme.of(context).colorScheme.error,
+)
 
-    final height = switch (size) {
-      AppButtonSize.small => 36.0,
-      AppButtonSize.medium => 48.0,
-      AppButtonSize.large => 56.0,
-    };
+// Disabled state (pass null onPressed)
+YoButton.primary(
+  text: 'Loading...',
+  onPressed: null,
+)
+```
 
-    final child = isLoading
-        ? SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(strokeWidth: 2, color: fg),
-          )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 18, color: fg),
-                const SizedBox(width: 8),
-              ],
-              Text(label,
-                  style: TextStyle(color: fg, fontWeight: FontWeight.w600)),
-            ],
-          );
+> **Mapping dari AppButton:**
+> - `AppButtonVariant.primary` → `YoButton.primary()`
+> - `AppButtonVariant.secondary` → `YoButton.secondary()`
+> - `AppButtonVariant.destructive` → `YoButton.primary(backgroundColor: error)`
+> - `AppButtonVariant.ghost` → `YoButton.ghost()`
 
-    final button = SizedBox(
-      height: height,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: bg,
-          foregroundColor: fg,
-          side: variant == AppButtonVariant.ghost
-              ? BorderSide(color: colorScheme.outline)
-              : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: child,
-      ),
-    );
+---
 
-    return isFullWidth ? SizedBox(width: double.infinity, child: button) : button;
-  }
-}
+### 2. YoText (Typography)
+
+YoUI menyediakan typography widgets yang konsisten dengan theme:
+
+**Usage:**
+```dart
+import 'package:yo_ui/yo_ui.dart';
+
+// Headings
+YoText.headlineLarge('Page Title')
+YoText.headlineMedium('Section Title')
+YoText.headlineSmall('Subsection')
+
+// Titles
+YoText.titleLarge('Card Title')
+YoText.titleMedium('List Title')
+YoText.titleSmall('Compact Title')
+
+// Body
+YoText.bodyLarge('Main content text')
+YoText.bodyMedium('Supporting text')
+YoText.bodySmall('Caption or footnote')
+
+// Labels
+YoText.labelLarge('Button Label')
+YoText.labelMedium('Form Label')
+YoText.labelSmall('Tag Label')
 ```
 
 ---
 
-### 2. AppTextField
+### 3. EmptyStateWidget + AppErrorWidget (YoUI version)
 
-**File:** `lib/core/widgets/app_text_field.dart`
+Gunakan YoUI components untuk state widgets:
 
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-class AppTextField extends StatefulWidget {
-  const AppTextField({
-    super.key,
-    required this.label,
-    this.controller,
-    this.hintText,
-    this.errorText,
-    this.helperText,
-    this.obscureText = false,
-    this.keyboardType,
-    this.textInputAction,
-    this.onChanged,
-    this.onSubmitted,
-    this.validator,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.maxLines = 1,
-    this.inputFormatters,
-    this.enabled = true,
-    this.autofocus = false,
-  });
-
-  final String label;
-  final TextEditingController? controller;
-  final String? hintText;
-  final String? errorText;
-  final String? helperText;
-  final bool obscureText;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onSubmitted;
-  final FormFieldValidator<String>? validator;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final int maxLines;
-  final List<TextInputFormatter>? inputFormatters;
-  final bool enabled;
-  final bool autofocus;
-
-  @override
-  State<AppTextField> createState() => _AppTextFieldState();
-}
-
-class _AppTextFieldState extends State<AppTextField> {
-  late bool _obscure;
-
-  @override
-  void initState() {
-    super.initState();
-    _obscure = widget.obscureText;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.label,
-          style: Theme.of(context)
-              .textTheme
-              .labelMedium
-              ?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 6),
-        TextFormField(
-          controller: widget.controller,
-          obscureText: _obscure,
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction,
-          onChanged: widget.onChanged,
-          onFieldSubmitted: widget.onSubmitted,
-          validator: widget.validator,
-          maxLines: widget.obscureText ? 1 : widget.maxLines,
-          inputFormatters: widget.inputFormatters,
-          enabled: widget.enabled,
-          autofocus: widget.autofocus,
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            errorText: widget.errorText,
-            helperText: widget.helperText,
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.obscureText
-                ? IconButton(
-                    icon: Icon(
-                      _obscure ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () => setState(() => _obscure = !_obscure),
-                  )
-                : widget.suffixIcon,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-```
-
----
-
-### 3. EmptyStateWidget + AppErrorWidget
-
-**File:** `lib/core/widgets/empty_state_widget.dart`
+**File:** `lib/core/widgets/empty_state_view.dart`
 
 ```dart
 import 'package:flutter/material.dart';
-import 'app_button.dart';
+import 'package:yo_ui/yo_ui.dart';
 
-class EmptyStateWidget extends StatelessWidget {
-  const EmptyStateWidget({
+/// Empty state widget menggunakan YoUI components.
+class EmptyStateView extends StatelessWidget {
+  const EmptyStateView({
     super.key,
     required this.icon,
     required this.title,
@@ -264,30 +147,27 @@ class EmptyStateWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest,
+                color: colorScheme
+                    .surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 40, color: colorScheme.onSurfaceVariant),
+              child: Icon(
+                icon,
+                size: 40,
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
-            Text(title,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center),
+            YoText.titleMedium(title),
             const SizedBox(height: 8),
-            Text(description,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                textAlign: TextAlign.center),
-            if (actionLabel != null && onAction != null) ...[
+            YoText.bodyMedium(description),
+            if (actionLabel != null &&
+                onAction != null) ...[
               const SizedBox(height: 24),
-              AppButton(
-                  label: actionLabel!,
-                  onPressed: onAction,
-                  isFullWidth: false),
+              YoButton.primary(
+                text: actionLabel!,
+                onPressed: onAction,
+              ),
             ],
           ],
         ),
@@ -297,14 +177,19 @@ class EmptyStateWidget extends StatelessWidget {
 }
 ```
 
-**File:** `lib/core/widgets/app_error_widget.dart`
+**File:** `lib/core/widgets/error_view.dart`
 
 ```dart
 import 'package:flutter/material.dart';
-import 'app_button.dart';
+import 'package:yo_ui/yo_ui.dart';
 
-class AppErrorWidget extends StatelessWidget {
-  const AppErrorWidget({super.key, required this.message, this.onRetry});
+/// Error state widget menggunakan YoUI components.
+class ErrorView extends StatelessWidget {
+  const ErrorView({
+    super.key,
+    required this.message,
+    this.onRetry,
+  });
 
   final String message;
   final VoidCallback? onRetry;
@@ -317,27 +202,34 @@ class AppErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error_outline_rounded,
-                size: 48, color: Theme.of(context).colorScheme.error),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .errorContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                size: 40,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onErrorContainer,
+              ),
+            ),
             const SizedBox(height: 16),
-            Text('Something went wrong',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
+            YoText.titleMedium(
+              'Something went wrong',
+            ),
             const SizedBox(height: 8),
-            Text(message,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                textAlign: TextAlign.center),
+            YoText.bodyMedium(message),
             if (onRetry != null) ...[
               const SizedBox(height: 24),
-              AppButton(
-                  label: 'Try Again',
-                  onPressed: onRetry,
-                  isFullWidth: false,
-                  icon: Icons.refresh),
+              YoButton.primary(
+                text: 'Try Again',
+                onPressed: onRetry,
+              ),
             ],
           ],
         ),
@@ -349,86 +241,146 @@ class AppErrorWidget extends StatelessWidget {
 
 ---
 
-### 4. ShimmerList
+### 4. YoShimmer (Pengganti ShimmerList)
 
-**File:** `lib/core/widgets/shimmer_widget.dart`
+YoUI menyediakan shimmer widgets yang otomatis adaptif dengan theme:
 
+**Usage:**
 ```dart
-import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:yo_ui/yo_ui.dart';
 
-class ShimmerWidget extends StatelessWidget {
-  const ShimmerWidget({
-    super.key,
-    required this.width,
-    required this.height,
-    this.borderRadius = 8,
-  });
+// Card shimmer (untuk list items)
+YoShimmer.card(height: 80)
 
-  final double width;
-  final double height;
-  final double borderRadius;
+// ListTile shimmer (classic list style)
+YoShimmer.listTile()
 
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Shimmer.fromColors(
-      baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-      highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-      ),
-    );
-  }
-}
+// Contoh penggunaan di ListView
+ListView.builder(
+  itemCount: 5,
+  padding: const EdgeInsets.all(16),
+  itemBuilder: (context, index) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: YoShimmer.card(height: 80),
+  ),
+)
 
-class ShimmerListItem extends StatelessWidget {
-  const ShimmerListItem({super.key});
+// Detail page shimmer
+Column(
+  children: [
+    YoShimmer.card(height: 200),
+    const SizedBox(height: 16),
+    YoShimmer.listTile(),
+    const SizedBox(height: 8),
+    YoShimmer.listTile(),
+  ],
+)
+```
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          ShimmerWidget(width: 48, height: 48, borderRadius: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ShimmerWidget(width: double.infinity, height: 14),
-                const SizedBox(height: 8),
-                ShimmerWidget(width: 120, height: 12),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+> **Note:** Tidak perlu manual `Shimmer.fromColors()`.
+> YoShimmer sudah handle baseColor/highlightColor sesuai tema.
 
-class ShimmerList extends StatelessWidget {
-  const ShimmerList({super.key, this.itemCount = 5});
+---
 
-  final int itemCount;
+### 5. YoToast (Pengganti Get.snackbar)
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: itemCount,
-      itemBuilder: (_, __) => const ShimmerListItem(),
-    );
-  }
-}
+YoUI menyediakan toast notifications yang lebih clean:
+
+**Usage:**
+```dart
+import 'package:yo_ui/yo_ui.dart';
+
+// Success toast
+YoToast.success(
+  context: context,
+  message: 'Data berhasil disimpan',
+)
+
+// Error toast
+YoToast.error(
+  context: context,
+  message: 'Gagal memuat data',
+)
+
+// Info toast
+YoToast.info(
+  context: context,
+  message: 'Checking for updates...',
+)
+
+// Warning toast
+YoToast.warning(
+  context: context,
+  message: 'Storage almost full',
+)
+```
+
+> **Mapping dari Get.snackbar:**
+> - `Get.snackbar('Berhasil', msg)` → `YoToast.success(context: ctx, message: msg)`
+> - `Get.snackbar('Error', msg)` → `YoToast.error(context: ctx, message: msg)`
+
+---
+
+### 6. YoCard (Pengganti Card)
+
+YoUI card dengan consistent styling:
+
+**Usage:**
+```dart
+import 'package:yo_ui/yo_ui.dart';
+
+// Basic card
+YoCard(
+  child: ListTile(
+    title: YoText.titleSmall('Product Name'),
+    subtitle: YoText.bodySmall('\$29.99'),
+  ),
+)
+
+// Tappable card
+YoCard(
+  onTap: () => Get.toNamed('/details'),
+  child: Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        YoText.titleMedium('Card Title'),
+        const SizedBox(height: 8),
+        YoText.bodyMedium('Card description'),
+      ],
+    ),
+  ),
+)
 ```
 
 ---
 
+### 7. YoModal (Bottom Sheets)
+
+YoUI bottom sheet modals:
+
+**Usage:**
+```dart
+import 'package:yo_ui/yo_ui.dart';
+
+// Show a bottom sheet
+YoModal.show(
+  context: context,
+  title: 'Select Option',
+  child: Column(
+    children: [
+      ListTile(
+        title: const Text('Option 1'),
+        onTap: () => Navigator.pop(context),
+      ),
+      ListTile(
+        title: const Text('Option 2'),
+        onTap: () => Navigator.pop(context),
+      ),
+    ],
+  ),
+)
+```
+
+---

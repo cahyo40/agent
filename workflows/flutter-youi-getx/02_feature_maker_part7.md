@@ -1,5 +1,5 @@
 ---
-description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX pattern. (Part 7/10)
+description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX + YoUI pattern. (Part 7/10)
 ---
 # Workflow: Flutter Feature Maker (GetX) (Part 7/10)
 
@@ -27,8 +27,8 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
 4. **Generate Presentation Layer**
    - Create `GetxController` dengan `.obs` reactive variables
    - Create `{FeatureName}Binding` untuk dependency injection
-   - Generate views (`GetView<Controller>`) untuk list dan detail
-   - Create widgets (list item, form, shimmer)
+   - Generate views (`GetView<Controller>`) dengan YoUI widgets (`YoCard`, `YoButton`, `YoText`)
+   - Create widgets (list item, form) — gunakan `YoShimmer` untuk loading
    - Implement state handling manual (`isLoading`, `errorMessage`, empty check)
 
 5. **Setup Bindings**
@@ -66,7 +66,7 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
    - Test CRUD operations
    - Verify shimmer loading tampil saat loading
    - Test navigation/routing
-   - Test `Get.snackbar()` feedback
+   - Test `YoToast` feedback
 
 
 ## Success Criteria
@@ -81,9 +81,11 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
 - [ ] Feature bisa di-navigate dengan `Get.toNamed()`
 - [ ] Navigation ke detail/create/edit berfungsi
 - [ ] `Obx()` reactive state berfungsi (loading, error, empty, data)
-- [ ] Shimmer loading implemented
-- [ ] CRUD operations berfungsi dengan `Get.snackbar()` feedback
-- [ ] `Get.dialog()` confirmation berfungsi
+- [ ] YoUI shimmer loading (`YoShimmer.card()`) implemented
+- [ ] CRUD operations berfungsi dengan `YoToast` feedback
+- [ ] `Get.dialog()` confirmation menggunakan `YoButton.ghost/primary`
+- [ ] `YoCard` digunakan untuk list items
+- [ ] `YoText` digunakan untuk typography
 - [ ] `flutter analyze` tidak ada error
 - [ ] Null safety handled dengan baik
 

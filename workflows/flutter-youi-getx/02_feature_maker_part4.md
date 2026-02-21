@@ -1,5 +1,5 @@
 ---
-description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX pattern. (Part 4/10)
+description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX + YoUI pattern. (Part 4/10)
 ---
 # Workflow: Flutter Feature Maker (GetX) (Part 4/10)
 
@@ -16,14 +16,16 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
 **Instructions:**
 Buat template untuk:
 1. GetxController dengan `.obs` reactive variables
-2. CRUD methods dengan `Get.snackbar()` feedback
+2. CRUD methods dengan `YoToast` feedback (dipanggil dari View layer)
 3. State management: `isLoading`, `errorMessage`, `selectedItem`
 4. `onInit()` untuk initial data fetch
 
 **Output Format:**
 ```dart
 // TEMPLATE: controllers/{feature}_controller.dart
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
 import '../../../domain/entities/{feature_name}_entity.dart';
 import '../../../domain/repositories/{feature_name}_repository.dart';
 
@@ -98,11 +100,7 @@ class {FeatureName}Controller extends GetxController {
       result.fold(
         (failure) {
           errorMessage.value = failure.message;
-          Get.snackbar(
-            'Error',
-            failure.message,
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // YoToast dipanggil dari View layer
         },
         (data) {
           selectedItem.value = data;
@@ -136,26 +134,17 @@ class {FeatureName}Controller extends GetxController {
 
       result.fold(
         (failure) {
-          Get.snackbar(
-            'Error',
-            failure.message,
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Get.theme.colorScheme.error,
-            colorText: Get.theme.colorScheme.onError,
-          );
+          errorMessage.value = failure.message;
+          // YoToast.error() dipanggil dari View layer
         },
         ({featureName}) {
           {featureName}s.add({featureName});
           Get.back(); // Tutup form/dialog
-          Get.snackbar(
-            'Berhasil',
-            '{FeatureName} berhasil dibuat',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // YoToast.success() dipanggil dari View layer
         },
       );
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      errorMessage.value = e.toString();
     } finally {
       isSubmitting.value = false;
     }
@@ -184,11 +173,8 @@ class {FeatureName}Controller extends GetxController {
 
       result.fold(
         (failure) {
-          Get.snackbar(
-            'Error',
-            failure.message,
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          errorMessage.value = failure.message;
+          // YoToast.error() dipanggil dari View layer
         },
         ({featureName}) {
           // Update item di list
@@ -201,15 +187,11 @@ class {FeatureName}Controller extends GetxController {
             selectedItem.value = {featureName};
           }
           Get.back();
-          Get.snackbar(
-            'Berhasil',
-            '{FeatureName} berhasil diupdate',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // YoToast.success() dipanggil dari View layer
         },
       );
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      errorMessage.value = e.toString();
     } finally {
       isSubmitting.value = false;
     }
@@ -224,11 +206,8 @@ class {FeatureName}Controller extends GetxController {
 
       result.fold(
         (failure) {
-          Get.snackbar(
-            'Error',
-            failure.message,
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          errorMessage.value = failure.message;
+          // YoToast.error() dipanggil dari View layer
         },
         (_) {
           {featureName}s.removeWhere((item) => item.id == id);
@@ -236,15 +215,11 @@ class {FeatureName}Controller extends GetxController {
           if (selectedItem.value?.id == id) {
             selectedItem.value = null;
           }
-          Get.snackbar(
-            'Berhasil',
-            '{FeatureName} berhasil dihapus',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // YoToast.success() dipanggil dari View layer
         },
       );
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      errorMessage.value = e.toString();
     }
   }
 
@@ -260,25 +235,29 @@ class {FeatureName}Controller extends GetxController {
   }
 
   /// Confirm delete dengan dialog
-  void confirmDelete(String id) {
+  void confirmDelete(String id, BuildContext context) {
     Get.dialog(
       AlertDialog(
         title: const Text('Hapus {FeatureName}'),
         content: const Text('Apakah Anda yakin ingin menghapus item ini?'),
         actions: [
-          TextButton(
+          YoButton.ghost(
+            text: 'Batal',
             onPressed: () => Get.back(),
-            child: const Text('Batal'),
           ),
-          TextButton(
+          YoButton.primary(
+            text: 'Hapus',
             onPressed: () {
-              Get.back(); // Tutup dialog
+              Get.back();
               delete{FeatureName}(id);
+              YoToast.success(
+                context: context,
+                message: '{FeatureName} berhasil dihapus',
+              );
             },
-            child: const Text(
-              'Hapus',
-              style: TextStyle(color: Colors.red),
-            ),
+            backgroundColor: Theme.of(context)
+                .colorScheme
+                .error,
           ),
         ],
       ),

@@ -27,7 +27,7 @@ workflows/flutter-youi/
 ├── 07_translation.md                # Translation & Localization (i18n)
 ├── 08_state_management_advanced.md  # Advanced GetX: Workers, StateMixin, pagination, optimistic
 ├── 09_offline_storage.md            # GetStorage cache, Hive, flutter_secure_storage
-├── 10_ui_components.md              # Reusable widget library (AppButton, Shimmer, etc.)
+├── 10_ui_components.md              # YoUI widget library (YoButton, YoCard, YoShimmer, YoToast, etc.)
 ├── 11_push_notifications.md         # FCM + local notifications + deep linking
 ├── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
 └── USAGE.md                         # Dokumentasi penggunaan lengkap
@@ -118,10 +118,10 @@ sdlc/flutter-youi/
 - Clean Architecture folder structure dengan GetX pattern
 - GetX reactive state management (`.obs` + `Obx()`)
 - Dependency injection dengan `Bindings`
-- Dependencies lengkap (Dio, GetX Routing, GetStorage)
+- Dependencies lengkap (Dio, GetX Routing, GetStorage, YoUI)
+- YoUI theme integration (`YoTheme.lightTheme/darkTheme`)
 - Example feature dengan semua states (loading, error, empty, data)
-- Shimmer loading skeletons
-- Error handling terstruktur
+- `YoShimmer` loading skeletons
 
 ### 02 - Feature Maker
 - Template generator untuk feature baru
@@ -129,7 +129,7 @@ sdlc/flutter-youi/
 - CRUD operations template
 - Controller dengan `GetxController`, Screen dengan `GetView`
 - Binding template untuk dependency injection
-- Shimmer loading widget template
+- YoUI widgets: `YoCard`, `YoButton`, `YoShimmer`, `YoToast`
 
 ### 03 - Backend Integration (REST API)
 - Dio setup dengan interceptors lengkap
@@ -175,12 +175,14 @@ sdlc/flutter-youi/
 - `flutter_secure_storage` untuk tokens
 - Reactive `ConnectivityService` dengan `.obs`
 
-### 10 - UI Components
-- `AppButton` (variants: primary, secondary, destructive, ghost)
-- `AppTextField` (password toggle, validation)
-- `EmptyStateWidget` dengan action button
-- `AppErrorWidget` dengan retry
-- `ShimmerList` untuk loading states
+### 10 - UI Components (YoUI)
+- `YoButton` (variants: primary, secondary, outline, ghost)
+- `YoText` (typography: headline, title, body, label)
+- `YoCard` (consistent card styling)
+- `YoShimmer.card()` dan `YoShimmer.listTile()` untuk loading
+- `YoToast.success/error/info/warning()` untuk notifications
+- `YoModal.show()` untuk bottom sheets
+- `EmptyStateView` dan `ErrorView` dengan YoUI components
 
 ### 11 - Push Notifications
 - FCM foreground/background/terminated handling
@@ -224,6 +226,12 @@ named routes, middlewares, transition animations, dan nested navigation.
 dependencies:
   # State Management + Routing + DI
   get: ^4.6.6
+
+  # UI Component Library
+  yo_ui:
+    git:
+      url: https://github.com/cahyo40/youi.git
+      ref: main
 
   # Network
   dio: ^5.4.0

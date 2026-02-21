@@ -1,5 +1,5 @@
 ---
-description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX pattern. (Sub-part 1/3)
+description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX + YoUI pattern. (Sub-part 1/3)
 ---
 # Workflow: Flutter Feature Maker (GetX) (Part 5/10)
 
@@ -24,10 +24,10 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
 // TEMPLATE: views/{feature}_list_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
 import '../../../routes/app_routes.dart';
 import '../controllers/{feature_name}_controller.dart';
 import 'widgets/{feature_name}_list_item.dart';
-import 'widgets/{feature_name}_shimmer.dart';
 
 class {FeatureName}ListView extends GetView<{FeatureName}Controller> {
   const {FeatureName}ListView({super.key});
@@ -47,8 +47,16 @@ class {FeatureName}ListView extends GetView<{FeatureName}Controller> {
       body: Obx(() {
         // State 1: Loading (initial load, list masih kosong)
         if (controller.isLoading.value && controller.{featureName}s.isEmpty) {
-          return const {FeatureName}ListShimmer();
-        }
+          return ListView.builder(
+            itemCount: 5,
+            padding: const EdgeInsets.all(16),
+            itemBuilder: (context, index) =>
+                Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 8),
+              child: YoShimmer.card(height: 80),
+            ),
+          );
 
         // State 2: Error
         if (controller.errorMessage.value.isNotEmpty &&
@@ -97,22 +105,19 @@ class {FeatureName}ListView extends GetView<{FeatureName}Controller> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.red,
+              color: Get.theme.colorScheme.error,
             ),
             const SizedBox(height: 16),
-            Text(
+            YoText.bodyLarge(
               controller.errorMessage.value,
-              textAlign: TextAlign.center,
-              style: Get.textTheme.bodyLarge,
             ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
+            YoButton.primary(
+              text: 'Coba Lagi',
               onPressed: controller.fetch{FeatureName}s,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Coba Lagi'),
             ),
           ],
         ),
@@ -131,18 +136,12 @@ class {FeatureName}ListView extends GetView<{FeatureName}Controller> {
             color: Colors.grey,
           ),
           const SizedBox(height: 16),
-          Text(
+          YoText.titleMedium(
             'Belum ada {featureName}',
-            style: Get.textTheme.titleMedium?.copyWith(
-              color: Colors.grey,
-            ),
           ),
           const SizedBox(height: 8),
-          Text(
+          YoText.bodyMedium(
             'Tap tombol + untuk menambahkan',
-            style: Get.textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
           ),
         ],
       ),
@@ -179,16 +178,22 @@ class {FeatureName}ListView extends GetView<{FeatureName}Controller> {
           ],
         ),
         actions: [
-          TextButton(
+          YoButton.ghost(
+            text: 'Batal',
             onPressed: () => Get.back(),
-            child: const Text('Batal'),
           ),
-          Obx(() => ElevatedButton(
+          Obx(() => YoButton.primary(
+                text: controller.isSubmitting.value
+                    ? 'Menyimpan...'
+                    : 'Simpan',
                 onPressed: controller.isSubmitting.value
                     ? null
                     : () {
                         if (nameController.text.trim().isEmpty) {
-                          Get.snackbar('Error', 'Nama tidak boleh kosong');
+                          YoToast.error(
+                            context: Get.context!,
+                            message: 'Nama tidak boleh kosong',
+                          );
                           return;
                         }
                         controller.create{FeatureName}(
@@ -198,13 +203,6 @@ class {FeatureName}ListView extends GetView<{FeatureName}Controller> {
                               : descController.text.trim(),
                         );
                       },
-                child: controller.isSubmitting.value
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Simpan'),
               )),
         ],
       ),

@@ -1,5 +1,5 @@
 ---
-description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX pattern. (Part 8/10)
+description: Generate feature baru dengan struktur Clean Architecture lengkap menggunakan GetX + YoUI pattern. (Part 8/10)
 ---
 # Workflow: Flutter Feature Maker (GetX) (Part 8/10)
 
@@ -152,6 +152,7 @@ class TodoModel {
 ```dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yo_ui/yo_ui.dart';
 import '../../../domain/entities/todo_entity.dart';
 import '../domain/repositories/todo_repository.dart';
 
@@ -223,22 +224,13 @@ class TodoController extends GetxController {
 
       result.fold(
         (failure) {
-          Get.snackbar(
-            'Error',
-            failure.message,
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red.shade100,
-          );
+          errorMessage.value = failure.message;
+          // YoToast.error() dipanggil dari View layer
         },
         (todo) {
           todos.add(todo);
           Get.back();
-          Get.snackbar(
-            'Berhasil',
-            'Todo berhasil ditambahkan',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green.shade100,
-          );
+          // YoToast.success() dipanggil dari View layer
         },
       );
     } finally {
@@ -259,7 +251,7 @@ class TodoController extends GetxController {
     final result = await _repository.updateTodo(updated);
 
     result.fold(
-      (failure) => Get.snackbar('Error', failure.message),
+      (failure) => errorMessage.value = failure.message,
       (updatedTodo) {
         todos[index] = updatedTodo;
       },
@@ -270,33 +262,40 @@ class TodoController extends GetxController {
     final result = await _repository.deleteTodo(id);
 
     result.fold(
-      (failure) => Get.snackbar('Error', failure.message),
+      (failure) => errorMessage.value = failure.message,
       (_) {
         todos.removeWhere((t) => t.id == id);
         if (selectedTodo.value?.id == id) {
           selectedTodo.value = null;
         }
-        Get.snackbar('Berhasil', 'Todo berhasil dihapus');
+          // YoToast.success() dipanggil dari View layer
       },
     );
   }
 
-  void confirmDelete(String id) {
+  void confirmDelete(String id, BuildContext context) {
     Get.dialog(
       AlertDialog(
         title: const Text('Hapus Todo'),
         content: const Text('Apakah Anda yakin ingin menghapus todo ini?'),
         actions: [
-          TextButton(
+          YoButton.ghost(
+            text: 'Batal',
             onPressed: () => Get.back(),
-            child: const Text('Batal'),
           ),
-          TextButton(
+          YoButton.primary(
+            text: 'Hapus',
             onPressed: () {
               Get.back();
               deleteTodo(id);
+              YoToast.success(
+                context: context,
+                message: 'Todo berhasil dihapus',
+              );
             },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+            backgroundColor: Theme.of(context)
+                .colorScheme
+                .error,
           ),
         ],
       ),
