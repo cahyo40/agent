@@ -486,3 +486,20 @@ See OpenAPI specification for complete reference.
 - Compliance audit
 - Architecture review
 - Disaster recovery plan update
+
+---
+
+## Cross-References
+
+- **Previous Phase** → `04_quality_security_deployment.md`
+- **Next Phase** → `07_project_handoff.md`
+- **Related** → `04_quality_security_deployment.md` (Test Plan, Threat Model)
+- **SDLC Mapping** → `../../other/sdlc/SDLC_MAPPING.md`
+
+## Tools & Resources
+- Monitoring: Prometheus, Grafana, Datadog, New Relic
+- Logging: ELK Stack, Splunk, Loki
+- Tracing: Jaeger, Zipkin, AWS X-Ray
+- Documentation: MkDocs, Docusaurus, GitBook, Notion
+- Incident Management: PagerDuty, Opsgenie, Incident.io
+- Status Pages: Statuspage.io, Cachet

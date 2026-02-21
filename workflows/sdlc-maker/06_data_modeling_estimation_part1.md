@@ -447,3 +447,46 @@ allocation, and risk buffer planning.
 | Notification system | 5 | Could | 4 |
 | Audit logging | 3 | Should | 4 |
 
+
+---
+
+## Workflow Validation Checklist
+
+### Pre-Execution
+- [ ] Requirement Analysis completed (`01_requirement_analysis.md`)
+- [ ] System architecture decided (`03_system_detailed_design.md`)
+- [ ] Technology stack confirmed
+- [ ] Business domain understood
+- [ ] Output folder structure created: `sdlc/06-data-modeling-estimation/`
+
+### During Execution
+- [ ] Data Dictionary created for all entities
+- [ ] All fields documented with types and constraints
+- [ ] Enumeration types defined
+- [ ] ERD created using PlantUML
+- [ ] Relationships mapped with correct cardinality
+- [ ] Migration Plan documented
+- [ ] UP and DOWN migration scripts written
+- [ ] Seed data created for development/testing
+- [ ] Project Estimation completed with story points
+- [ ] Sprint Plan created with milestones
+- [ ] Risk buffer added (≥15%)
+
+### Post-Execution
+- [ ] Data dictionary covers all entities from requirements
+- [ ] ERD renders successfully in PlantUML
+- [ ] Migration scripts tested on staging
+- [ ] Index strategy covers critical queries
+- [ ] Estimation reviewed with development team
+- [ ] Sprint plan aligns with team velocity
+- [ ] Documents approved by stakeholders
+
+---
+
+## Cross-References
+
+- **Previous Phase** → `01_requirement_analysis.md` (Requirements)
+- **Related** → `03_system_detailed_design.md` (System Architecture)
+- **Next Phase** → `04_quality_security_deployment.md` (Testing)
+- **Sprint Execution** → `../flutter-bloc/`, `../golang-backend/`
+- **SDLC Mapping** → `../../other/sdlc/SDLC_MAPPING.md`

@@ -466,6 +466,33 @@ skinparam componentStyle rectangle
 @enduml
 ```
 
+## Workflow Validation Checklist
+
+### Pre-Execution
+- [ ] UI/UX Design completed (`02_ui_ux_design.md`)
+- [ ] Technical requirements defined
+- [ ] Technology stack selected
+- [ ] Architecture patterns decided
+- [ ] Output folder structure created: `sdlc/03-system-detailed-design/`
+
+### During Execution
+- [ ] Use Case Diagram created (PlantUML)
+- [ ] Activity Diagram created (PlantUML)
+- [ ] System Architecture documented
+- [ ] Class Diagram created (PlantUML)
+- [ ] Sequence Diagrams created for critical flows (PlantUML)
+- [ ] API Specification written (OpenAPI 3.0)
+- [ ] All diagrams use PlantUML syntax (NOT Mermaid)
+- [ ] Diagrams reviewed with development team
+
+### Post-Execution
+- [ ] All UML diagrams render successfully
+- [ ] API specification is complete and versioned
+- [ ] Design review conducted with stakeholders
+- [ ] Documents committed to version control
+
+---
+
 ## Success Criteria
 - Use cases cover all functional requirements
 - Activity diagrams show complete business logic
