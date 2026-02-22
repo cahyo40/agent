@@ -1,9 +1,9 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.17.0
-> **Last Updated:** 2026-02-20
-> **Total Skills:** 278
-> **Total Workflows:** 8 collections (409+ files)
+> **Version:** 6.19.0
+> **Last Updated:** 2026-02-22
+> **Total Skills:** 280
+> **Total Workflows:** 10 collections (686+ files)
 
 ---
 
@@ -20,7 +20,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **278 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **280 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -49,8 +49,8 @@ Skill adalah instruksi terstruktur yang memberikan AI kemampuan spesifik dalam s
 | 🎨 UI/UX & Design | 12 | Design systems, illustrations |
 | ☁️ Cloud & DevOps | 18 | CI/CD, K8s, Terraform, Chaos Eng, Observability |
 | 💾 Data & Databases | 17 | MongoDB, PostgreSQL, Big Data, Search |
-| 🔐 Security | 13 | Pen testing, Bug Bounty, CTF, Red Team |
-| 🧪 Testing & QA | 6 | E2E, TDD, performance testing |
+| 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Security Testing |
+| 🧪 Testing & QA | 7 | E2E, TDD, performance testing, QA Engineering |
 | 📝 Documentation | 8 | Technical writing, UML, Architecture, API docs |
 | 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Library Systems |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
@@ -243,13 +243,14 @@ implementasi design dari Figma ke Flutter code
 
 ---
 
-### 🔐 Security & Hacking (13 Skills)
+### 🔐 Security & Hacking (14 Skills)
 
 | Skill | Description |
 |-------|-------------|
 | `senior-cybersecurity-engineer` | Application security, zero trust |
 | `senior-api-security-specialist` | OWASP Top 10, OAuth 2.0, JWT |
 | `senior-penetration-tester` | Vulnerability assessment, ethical hacking |
+| `security-testing-specialist` | 🆕 SAST, DAST, SCA, API security, OWASP testing |
 | `bug-bounty-hunter` | HackerOne, Bugcrowd, report writing |
 | `ctf-competitor` | CTF challenges: Web, Pwn, Crypto |
 | `red-team-operator` | Adversary simulation, social engineering |
@@ -285,10 +286,22 @@ implementasi design dari Figma ke Flutter code
 | GPS tracking / geofencing | `@geolocation-specialist` |
 | PDF generation | `@pdf-document-specialist` |
 | Video editing automation | `@video-editor-automation` |
+| QA test strategy & automation | `@senior-quality-assurance-engineer` |
+| Security testing (SAST/DAST) | `@security-testing-specialist` |
 
 ---
 
 ## Changelog
+
+### v6.19.0 (2026-02-22)
+
+- ✨ **2 New Skills Added** - QA Engineering & Security Testing
+- 🆕 **New Skills:**
+  - `senior-quality-assurance-engineer` - Test strategy, test automation, API testing, performance testing, CI/CD quality gates, bug management, QA metrics
+  - `security-testing-specialist` - OWASP Top 10 testing, SAST/DAST/SCA, API security, mobile security, vulnerability reporting, CVSS scoring
+- 📊 **Total Skills:** 280 (up from 278)
+- 🧪 **Testing & QA:** 7 skills (up from 6)
+- 🔐 **Security:** 14 skills (up from 13)
 
 ### v6.17.0 (2026-02-20)
 

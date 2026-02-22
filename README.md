@@ -2,12 +2,12 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-278-blue?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-280-blue?style=for-the-badge)
 ![Workflows](https://img.shields.io/badge/Workflows-686+-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.18.0-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.19.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 278 skills + 10 workflow collections (686+ files) untuk memperluas kemampuan AI Agent**
+**Koleksi 280 skills + 10 workflow collections (686+ files) untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -17,7 +17,7 @@
 
 ## ✨ Features
 
-- 🤖 **278 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **280 Specialized Skills** - Dari Flutter hingga AI/ML
 - 📋 **10 Workflow Collections (686+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
@@ -162,8 +162,8 @@ rm -rf temp-skills
 | 🎨 UI/UX & Design | 12 | Figma, design systems, mobile app design |
 | ☁️ Cloud & DevOps | 18 | AWS, K8s, Terraform, Chaos Eng, Observability |
 | 💾 Data & Databases | 17 | ETL, MongoDB, PostgreSQL, Big Data, Search |
-| 🔐 Security | 13 | Pen testing, Bug Bounty, CTF, Red Team |
-| 🧪 Testing & QA | 6 | E2E, TDD, API, performance testing |
+| 🔐 Security | 14 | Pen testing, Bug Bounty, CTF, Red Team, Security Testing |
+| 🧪 Testing & QA | 7 | E2E, TDD, API, performance testing, QA Engineering |
 | 📝 Documentation | 8 | Technical writing, Architecture, API docs |
 | 💼 Industry Apps | 40 | Healthcare, Trading, ERP, Fleet, Ride-Hailing, Dating, Social |
 | 🎮 Desktop & Games | 11 | Unreal, Godot, Unity Pro, DeFi Gaming |
@@ -275,7 +275,7 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 ```text
 agents/
 ├── .agent/
-│   ├── skills/           # 278 skill folders
+│   ├── skills/           # 280 skill folders
 │   │   ├── senior-flutter-developer/
 │   │   ├── senior-react-developer/
 │   │   └── ...
