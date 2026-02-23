@@ -521,12 +521,12 @@ Error Alert:
    - Design high-fidelity mockups
    - Build interactive prototype
 
-6. **Design System Creation** (Design System Architect)
+7. **Design System Creation** (Design System Architect)
    - Document all components
    - Create style guide
    - Prepare design tokens
 
-7. **Usability Review**
+8. **Usability Review**
    - Heuristic evaluation
    - Accessibility check (WCAG 2.1 AA)
    - Stakeholder presentation

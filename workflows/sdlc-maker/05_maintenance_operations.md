@@ -491,15 +491,8 @@ See OpenAPI specification for complete reference.
 
 ## Cross-References
 
-- **Previous Phase** → `04_quality_security_deployment.md`
-- **Next Phase** → `07_project_handoff.md`
-- **Related** → `04_quality_security_deployment.md` (Test Plan, Threat Model)
+- **Previous Phase** → `04_quality_security_deployment_part1.md`, `04_quality_security_deployment_part2.md`
+- **Next Phase** → `07_project_handoff_part1.md`
+- **Related** → `04_quality_security_deployment_part1.md` (Test Plan, Threat Model)
+- **Related** → `08_change_request.md` (Change Request Management)
 - **SDLC Mapping** → `../../other/sdlc/SDLC_MAPPING.md`
-
-## Tools & Resources
-- Monitoring: Prometheus, Grafana, Datadog, New Relic
-- Logging: ELK Stack, Splunk, Loki
-- Tracing: Jaeger, Zipkin, AWS X-Ray
-- Documentation: MkDocs, Docusaurus, GitBook, Notion
-- Incident Management: PagerDuty, Opsgenie, Incident.io
-- Status Pages: Statuspage.io, Cachet

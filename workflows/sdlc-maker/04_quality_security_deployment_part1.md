@@ -15,6 +15,7 @@ This workflow covers the Quality & Security phase and Data & Deployment phase. T
 **Output Files:**
 - `test-plan.md` - Test Plan and Automation Strategy
 - `threat-model.md` - Security Threat Model Document
+- `accessibility-test-plan.md` - Accessibility (WCAG) Compliance Plan
 - `database-schema.md` - Database Schema with ERD (PlantUML)
 - `deployment-architecture.md` - Deployment Architecture and Infrastructure
 - `cicd-pipeline.md` - CI/CD Pipeline Configuration
@@ -210,9 +211,107 @@ This workflow covers the Quality & Security phase and Data & Deployment phase. T
 
 ---
 
+#### 3. Accessibility Testing (WCAG Compliance)
+
+**Description:** Ensuring the application is accessible to all users, including those with disabilities.
+
+**Recommended Skills:** `accessibility-specialist`, `senior-quality-assurance-engineer`
+
+**Instructions:**
+1. Define WCAG compliance target (AA or AAA)
+2. Create automated accessibility test suite
+3. Define manual testing procedures
+4. Document assistive technology compatibility
+5. Establish accessibility review process for new features
+
+**Output Format:**
+```markdown
+# Accessibility Test Plan
+
+## 1. Compliance Target
+**Standard:** WCAG 2.1 Level AA
+**Legal Requirements:** [ADA, Section 508, EN 301 549, etc.]
+
+## 2. Automated Testing
+
+### Tools
+| Tool | Purpose | CI/CD Integration |
+|------|---------|-------------------|
+| axe-core | DOM analysis | ✅ Jest/Playwright plugin |
+| Lighthouse | Audit scoring | ✅ CLI in pipeline |
+| pa11y | Page scanning | ✅ CLI / Dashboard |
+| ESLint a11y | Static analysis | ✅ Pre-commit hook |
+
+### Automated Checks
+- [ ] All images have alt text (1.1.1)
+- [ ] Color contrast ratio ≥ 4.5:1 for text (1.4.3)
+- [ ] Color contrast ratio ≥ 3:1 for large text (1.4.3)
+- [ ] Form inputs have associated labels (1.3.1)
+- [ ] Focus order is logical (2.4.3)
+- [ ] ARIA roles are correct (4.1.2)
+- [ ] No keyboard traps (2.1.2)
+- [ ] Page has lang attribute (3.1.1)
+- [ ] Skip navigation link present (2.4.1)
+
+### CI/CD Integration
+```bash
+# Example: Playwright + axe-core
+npx playwright test --project=accessibility
+# Example: pa11y in pipeline
+npx pa11y https://staging.example.com --standard WCAG2AA
+```
+
+## 3. Manual Testing Procedures
+
+### Keyboard Navigation
+- [ ] All interactive elements reachable via Tab
+- [ ] Tab order follows visual layout
+- [ ] Focus indicator visible on all elements
+- [ ] Escape closes modals/dropdowns
+- [ ] Enter/Space activates buttons and links
+
+### Screen Reader Testing
+| Screen Reader | Browser | OS | Tester |
+|---------------|---------|-----|--------|
+| NVDA | Chrome/Firefox | Windows | [Name] |
+| VoiceOver | Safari | macOS/iOS | [Name] |
+| TalkBack | Chrome | Android | [Name] |
+
+### Visual Testing
+- [ ] Content readable at 200% zoom
+- [ ] No horizontal scrolling at 320px viewport
+- [ ] Animations respect prefers-reduced-motion
+- [ ] Information not conveyed by color alone
+- [ ] Text spacing adjustable without content loss
+
+## 4. Accessibility Checklist per Component
+
+| Component | Keyboard | Screen Reader | Contrast | Focus | Status |
+|-----------|:--------:|:-------------:|:--------:|:-----:|:------:|
+| Navigation | ✅ | ✅ | ✅ | ✅ | ✅ Pass |
+| Forms | ✅ | ⚠️ | ✅ | ✅ | 🔄 WIP |
+| Modals | ❌ | ❌ | ✅ | ❌ | ❌ Fail |
+| Data Tables | ✅ | ✅ | ✅ | ✅ | ✅ Pass |
+
+## 5. Remediation Process
+1. Log accessibility issue with WCAG criterion reference
+2. Assign severity (Critical/High/Medium/Low)
+3. Fix and verify with automated + manual testing
+4. Document in accessibility compliance report
+
+## 6. Success Criteria
+- Automated scan score ≥ 95% (axe-core)
+- Lighthouse accessibility score ≥ 90
+- Zero critical/high a11y defects
+- All key flows usable with keyboard only
+- All key flows usable with screen reader
+```
+
+---
+
 ### Phase 2: Data & Deployment
 
-#### 3. Database Schema (ERD)
+#### 4. Database Schema (ERD)
 
 **Description:** Logical and physical database structure and relationships.
 
@@ -308,7 +407,7 @@ orders ||--|{ order_items : contains
 
 ---
 
-#### 4. Deployment Diagram
+#### 5. Deployment Diagram
 
 **Description:** Physical hosting infrastructure and network configuration.
 
@@ -428,7 +527,7 @@ LB --> [API Pods x3]
 
 ---
 
-#### 5. CI/CD Pipeline Workflow
+#### 6. CI/CD Pipeline Workflow
 
 **Description:** Automated build, test, and deployment process.
 
@@ -521,6 +620,8 @@ stop
 - [ ] Output folder structure created: `sdlc/04-quality-security-deployment/`
 
 ### During Execution
+- [ ] Accessibility Test Plan created (WCAG 2.1 AA)
+- [ ] Automated a11y testing integrated in CI/CD
 - [ ] Test Plan created with automation strategy
 - [ ] Test pyramid defined (Unit 70%, Integration 20%, E2E 10%)
 - [ ] Threat Model created using STRIDE methodology
@@ -530,6 +631,7 @@ stop
 - [ ] Migration strategy planned
 
 ### Post-Execution
+- [ ] Accessibility compliance verified (axe-core ≥ 95%, Lighthouse ≥ 90)
 - [ ] Test plan covers all critical paths
 - [ ] Security threats identified with mitigations
 - [ ] Database schema is normalized and performant

@@ -405,6 +405,106 @@ components:
           minLength: 2
 ```
 
+---
+
+#### 7. API Versioning Strategy
+
+**Description:** Guidelines for evolving the API without breaking existing consumers.
+
+**Recommended Skills:** `api-design-specialist`, `senior-backend-developer`
+
+**Instructions:**
+1. Select versioning approach
+2. Define version lifecycle (active, deprecated, sunset)
+3. Document breaking vs non-breaking changes
+4. Create deprecation policy with timeline
+5. Plan migration support for consumers
+
+**Output Format:**
+```markdown
+# API Versioning Strategy
+
+## Versioning Approach
+
+### Comparison
+
+| Approach | Format | Pros | Cons |
+|----------|--------|------|------|
+| URL Path | `/api/v1/users` | Simple, explicit, cacheable | URL changes per version |
+| Header | `Accept: application/vnd.api.v1+json` | Clean URLs | Hidden, harder to test |
+| Query Param | `/api/users?version=1` | Easy to test | Pollutes query string |
+
+### Selected: **URL Path Versioning**
+**Rationale:** [Why this approach was chosen]
+
+**Base URL Pattern:**
+- Production: `https://api.example.com/v{major}`
+- Staging: `https://api-staging.example.com/v{major}`
+
+## Version Lifecycle
+
+| Phase | Duration | Description |
+|-------|----------|-------------|
+| **Active** | Current + 1 prev | Full support, bug fixes, new features |
+| **Deprecated** | 6 months after new version | Bug fixes only, deprecation warnings |
+| **Sunset** | After deprecation period | Read-only, then removed |
+
+## Breaking vs Non-Breaking Changes
+
+### Non-Breaking (no version bump)
+- Adding new endpoints
+- Adding optional request fields
+- Adding response fields
+- Adding new enum values
+- Relaxing validation rules
+
+### Breaking (requires version bump)
+- Removing endpoints
+- Removing/renaming response fields
+- Changing field types
+- Making optional fields required
+- Changing error response format
+- Changing authentication mechanism
+
+## Deprecation Policy
+
+### Deprecation Notice Template
+```json
+{
+  "deprecation": {
+    "endpoint": "/api/v1/users",
+    "deprecated_at": "2024-06-01",
+    "sunset_at": "2024-12-01",
+    "migration_guide": "https://docs.example.com/migration/v2",
+    "replacement": "/api/v2/users"
+  }
+}
+```
+
+### Deprecation Headers
+```
+Deprecation: true
+Sunset: Sat, 01 Dec 2024 00:00:00 GMT
+Link: <https://docs.example.com/migration/v2>; rel="successor-version"
+```
+
+### Migration Timeline
+1. **T+0:** New version released, old version marked deprecated
+2. **T+30d:** Deprecation warnings in API responses
+3. **T+90d:** Email notifications to active consumers
+4. **T+150d:** Rate limiting on deprecated endpoints
+5. **T+180d:** Sunset — deprecated endpoints return 410 Gone
+
+## Active Versions
+
+| Version | Status | Released | Sunset Date | Notes |
+|---------|--------|----------|-------------|-------|
+| v2 | ✅ Active | 2024-06-01 | - | Current |
+| v1 | ⚠️ Deprecated | 2024-01-01 | 2024-12-01 | Migration guide available |
+```
+
+---
+
 ## Workflow Steps
 
 1. **Architecture Planning** (Senior Software Architect)

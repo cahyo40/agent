@@ -66,10 +66,16 @@ sdlc/
 │   ├── migration-plan.md
 │   └── project-estimation.md
 │
-└── 07-project-handoff/
-    ├── handoff-checklist.md
-    ├── knowledge-transfer-plan.md
-    └── acceptance-signoff.md
+├── 07-project-handoff/
+│   ├── handoff-checklist.md
+│   ├── knowledge-transfer-plan.md
+│   └── acceptance-signoff.md
+│
+└── 08-change-request/
+    ├── change-request-log.md
+    ├── change-request-form.md
+    ├── impact-analysis.md
+    └── change-approval-workflow.md
 ```
 
 ## Urutan Penggunaan
@@ -90,6 +96,8 @@ sdlc/
 05 Maintenance & Operations
     ↓
 07 Project Handoff
+    ↓
+08 Change Request  ← digunakan kapan saja selama proyek
 ```
 
 ### Independent (Per Kebutuhan)
@@ -103,6 +111,7 @@ sdlc/
 | 05 | Post-launch, scaling |
 | 06 | Database redesign, sprint planning |
 | 07 | Handoff ke client/tim lain |
+| 08 | Scope change, fitur baru setelah baseline |
 
 ## Skills Quick-Reference
 
@@ -117,6 +126,7 @@ sdlc/
 | Maintenance | `senior-site-reliability-engineer`, `senior-technical-writer` |
 | Estimation | `project-estimator`, `senior-project-manager` |
 | Handoff | `senior-project-manager`, `senior-technical-writer` |
+| Change Request | `senior-project-manager`, `project-estimator`, `senior-software-architect` |
 
 > Lihat juga: [`other/sdlc/SDLC_MAPPING.md`](../../other/sdlc/SDLC_MAPPING.md) untuk mapping lengkap skill → dokumen.
 
@@ -249,6 +259,13 @@ untuk e-commerce application."
 "Jalankan workflow 07_project_handoff.md untuk handoff project e-commerce 
 ke client. Include handoff checklist, knowledge transfer plan, dan 
 acceptance sign-off document."
+```
+
+### Change Request
+```
+"Gunakan workflow 08_change_request.md untuk membuat change request form 
+untuk fitur baru: 'Wishlist functionality'. Requested by: Product Owner. 
+Prioritas: High. Include impact analysis pada timeline, cost, dan resources."
 ```
 
 ### ASCII Wireframes
