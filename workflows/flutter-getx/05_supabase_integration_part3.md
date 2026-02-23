@@ -3,8 +3,7 @@ description: Integrasi Supabase sebagai alternative backend dengan GetX state ma
 ---
 # Workflow: Supabase Integration (GetX)
 
-This part has been further split into 3 sub-parts:
+This part has been further split into 2 sub-parts:
 
 - [05_supabase_integration_part3_1.md](./05_supabase_integration_part3_1.md)
 - [05_supabase_integration_part3_2.md](./05_supabase_integration_part3_2.md)
-- [05_supabase_integration_part3_3.md](./05_supabase_integration_part3_3.md)

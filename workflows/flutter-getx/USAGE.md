@@ -82,18 +82,19 @@ dependencies:
   google_fonts: ^6.2.1
   
   # Utils
-  freezed_annotation: ^2.4.1
   json_annotation: ^4.8.1
   dartz: ^0.10.1
   equatable: ^2.0.5
 
 dev_dependencies:
-  json_serializable: ^6.7.1
-  freezed: ^2.4.7
-  build_runner: ^2.4.8
+  json_serializable: ^6.7.1   # Opsional
+  build_runner: ^2.4.9        # Hanya jika pakai json_serializable
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.0
 ```
 
-> **Catatan**: `build_runner` hanya digunakan untuk model serialization (`freezed` / `json_serializable`), BUKAN untuk state management atau routing. Tidak ada step code generation wajib di setiap workflow.
+> **Catatan**: `build_runner` hanya digunakan untuk model serialization (`json_serializable`), BUKAN untuk state management, routing, atau DI. Tidak memerlukan `freezed`, `freezed_annotation`, atau generator lainnya. Workflow ini sepenuhnya **no code generation** untuk logic utama.
 
 ---
 
@@ -415,9 +416,19 @@ Untuk project baru, ikuti urutan berikut:
 04_firebase_integration.md ATAU
 05_supabase_integration.md
     |
+08_state_management_advanced.md (advanced patterns)
+    |
+09_offline_storage.md (offline-first)
+    |
+10_ui_components.md (reusable widgets)
+    |
+11_push_notifications.md (jika diperlukan)
+    |
 07_translation.md (jika perlu multi-language)
     |
 06_testing_production.md
+    |
+12_performance_monitoring.md
 ```
 
 ### Penggunaan Independen
@@ -438,7 +449,7 @@ flutter pub get
 flutter run
 ```
 
-Code generation (`build_runner`) hanya diperlukan jika Anda menggunakan `freezed` atau `json_serializable` untuk model serialization.
+Code generation (`build_runner`) hanya diperlukan jika Anda menggunakan `json_serializable` untuk model serialization (opsional — bisa diganti dengan manual `fromJson`/`toJson`).
 
 ---
 
@@ -671,6 +682,148 @@ Production:
 - Memory management (controller disposal)
 
 Output to: sdlc/flutter-getx/06-testing-production/
+```
+
+#### 8. Advanced State Management
+
+```
+Setup advanced state management using workflow
+08_state_management_advanced.md from flutter-getx workflows:
+
+Patterns:
+- Workers: debounce search (400ms), ever for filter changes,
+  once for initial setup, interval for auto-save
+- StateMixin: obx() untuk loading/error/empty/data states
+- Pagination: infinite scroll dengan load-more indicator
+  dan isLoadingMore.obs
+- Optimistic Update: immediate UI update + rollback on error
+- Cross-Controller Communication: ever() untuk listen
+  auth state changes (clear cart on logout)
+
+Implement untuk features:
+- Product list dengan search + pagination + StateMixin
+- Product delete dengan optimistic update
+- Cart yang clear otomatis saat logout
+
+Output to: sdlc/flutter-getx/08-state-management-advanced/
+```
+
+#### 9. Offline Storage
+
+```
+Setup offline storage using workflow 09_offline_storage.md
+from flutter-getx workflows:
+
+Storage Layers:
+- GetStorage: Simple key-value cache dengan TTL (expiry)
+  sebagai GetxService
+- Hive: Complex data storage untuk offline-first
+  (products, orders, user data)
+- flutter_secure_storage: Encrypted storage untuk
+  tokens (access_token, refresh_token)
+- ConnectivityService: Reactive connectivity monitoring
+  dengan isConnectedRx.obs
+
+Patterns:
+- Offline-first repository: try remote → fallback cache
+- Cache invalidation dengan TTL (1 hour default)
+- Reactive connectivity status untuk UI indicators
+- Secure token storage dengan Android/iOS encryption
+
+Register di main.dart:
+- await Get.putAsync(() => StorageService().init());
+- await Get.putAsync(() => HiveService().init());
+- await Get.putAsync(() => ConnectivityService().init());
+
+Output to: sdlc/flutter-getx/09-offline-storage/
+```
+
+#### 10. UI Components
+
+```
+Setup reusable UI components using workflow
+10_ui_components.md from flutter-getx workflows:
+
+Widgets:
+- AppButton: variants (primary, secondary, destructive, ghost),
+  sizes (small, medium, large), loading state, icon support
+- AppTextField: label, validation, password toggle,
+  prefix/suffix icons, input formatters
+- AppCard: consistent card styling, onTap, elevation
+- EmptyStateWidget: icon, title, description, action button
+- AppErrorWidget: error message, retry button
+- ShimmerList: list shimmer loading (replace CircularProgressIndicator)
+- AppDialog: confirmation dialog dengan GetX (Get.dialog)
+- AppBottomSheet: action bottom sheet (Get.bottomSheet)
+
+Requirements:
+- Dark mode support untuk semua widgets
+- Material 3 color scheme integration
+- const constructors dimana memungkinkan
+- Responsive sizing
+
+Output to: sdlc/flutter-getx/10-ui-components/
+```
+
+#### 11. Push Notifications
+
+```
+Setup push notifications using workflow
+11_push_notifications.md from flutter-getx workflows:
+
+Services:
+- NotificationService extends GetxService:
+  FCM + flutter_local_notifications
+- FcmTokenController: register/unregister token ke backend
+
+Features:
+- FCM foreground handling → show local notification
+- Background/terminated message handling
+- Deep linking dari notification tap → Get.toNamed()
+  (product, order, chat, promo routes)
+- Token refresh listener → auto-update ke backend
+- Android notification channel (high importance)
+
+Bootstrap:
+- await Get.putAsync(() => NotificationService().init());
+- FcmTokenController.register() setelah login
+- FcmTokenController.unregister() sebelum logout
+
+Platform Setup:
+- Android: POST_NOTIFICATIONS permission
+- iOS: requestPermission (alert, badge, sound)
+
+Output to: sdlc/flutter-getx/11-push-notifications/
+```
+
+#### 12. Performance Monitoring
+
+```
+Setup performance monitoring using workflow
+12_performance_monitoring.md from flutter-getx workflows:
+
+Services:
+- Sentry Flutter: error monitoring + performance tracing
+  (DSN via --dart-define)
+- Firebase Crashlytics: crash reporting
+- PerformanceService: Firebase Performance traces + Sentry spans
+
+Error Handling:
+- ErrorHandler.initialize(): FlutterError.onError +
+  PlatformDispatcher.instance.onError
+- ErrorHandler.report(): dual reporting (Sentry + Crashlytics)
+- ErrorHandler.setUser()/clearUser(): user context per session
+- Integration dengan GetxController error flows
+
+Pre-Release Checklist:
+- App size < 30MB (Android), < 50MB (iOS)
+- Startup time < 2 detik (cold start)
+- Scroll 60fps, Memory < 150MB
+- Sentry DSN configured, Crashlytics enabled
+- All controllers disposed via Bindings
+- Workers tidak menyebabkan memory leak
+
+Output to: sdlc/flutter-getx/12-performance-monitoring/
 ```
 
 ---
@@ -1345,8 +1498,8 @@ sdlc/flutter-getx/
 ### Architecture & Patterns
 
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [GetX Pattern](https://github.com/nicoll-douglas/getx_pattern)
 - [GetX Snippets (VS Code Extension)](https://marketplace.visualstudio.com/items?itemName=get-snippets.get-snippets)
+- [Effective Dart](https://dart.dev/effective-dart)
 
 ### Community
 
@@ -1368,6 +1521,6 @@ Jika mengalami masalah atau butuh bantuan:
 
 ---
 
-**Versi Dokumentasi**: 1.0.0
-**Terakhir Update**: 2026-02-18
+**Versi Dokumentasi**: 1.1.0
+**Terakhir Update**: 2026-02-23
 **Compatible dengan**: Flutter 3.41.1+, Dart 3.11.0+, GetX 4.6.6+

@@ -3,8 +3,7 @@ description: Integrasi Firebase services untuk Flutter dengan GetX state managem
 ---
 # Workflow: Firebase Integration (GetX)
 
-This part has been further split into 3 sub-parts:
+This part has been further split into 2 sub-parts:
 
 - [04_firebase_integration_part6_1.md](./04_firebase_integration_part6_1.md)
 - [04_firebase_integration_part6_2.md](./04_firebase_integration_part6_2.md)
-- [04_firebase_integration_part6_3.md](./04_firebase_integration_part6_3.md)

@@ -3,8 +3,7 @@ description: Generate feature baru dengan struktur Clean Architecture lengkap me
 ---
 # Workflow: Flutter Feature Maker (GetX)
 
-This part has been further split into 3 sub-parts:
+This part has been further split into 2 sub-parts:
 
 - [02_feature_maker_part5_1.md](./02_feature_maker_part5_1.md)
 - [02_feature_maker_part5_2.md](./02_feature_maker_part5_2.md)
-- [02_feature_maker_part5_3.md](./02_feature_maker_part5_3.md)

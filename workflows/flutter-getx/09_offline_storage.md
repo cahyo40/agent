@@ -263,11 +263,11 @@ class ConnectivityService extends GetxService {
   final isConnectedRx = true.obs;
 
   Future<ConnectivityService> init() async {
-    final result = await _connectivity.checkConnectivity();
-    isConnectedRx.value = result != ConnectivityResult.none;
+    final results = await _connectivity.checkConnectivity();
+    isConnectedRx.value = !results.contains(ConnectivityResult.none);
 
-    _connectivity.onConnectivityChanged.listen((result) {
-      isConnectedRx.value = result != ConnectivityResult.none;
+    _connectivity.onConnectivityChanged.listen((results) {
+      isConnectedRx.value = !results.contains(ConnectivityResult.none);
       if (isConnectedRx.value) {
         Get.snackbar('Back Online', 'Connection restored');
       }
@@ -277,8 +277,8 @@ class ConnectivityService extends GetxService {
   }
 
   Future<bool> get isConnected async {
-    final result = await _connectivity.checkConnectivity();
-    return result != ConnectivityResult.none;
+    final results = await _connectivity.checkConnectivity();
+    return !results.contains(ConnectivityResult.none);
   }
 }
 ```
