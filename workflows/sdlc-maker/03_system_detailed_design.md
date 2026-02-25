@@ -14,7 +14,8 @@ This workflow covers the System Design and Detailed Design phases. The goal is t
 **Output Files:**
 - `use-case-diagram.md` - Use Case Diagram (Mermaid)
 - `activity-diagram.md` - Activity Diagram (Mermaid)
-- `system-architecture.md` - System Architecture Documentation
+- `system-architecture.md` - System Architecture Documentation (Tables)
+- `dependencies-specification.md` - Dependencies & Packages Specification
 - `class-diagram.md` - Class Diagram (Mermaid)
 - `sequence-diagram.md` - Sequence Diagram (Mermaid)
 - `api-specification.yaml` - OpenAPI 3.0 Specification
@@ -118,75 +119,170 @@ stateDiagram-v2
 
 ---
 
-#### 3. System Architecture Diagram
+#### 3. System Architecture
 
-**Description:** Structural layout of the tech stack and component communication.
+**Description:** Structural layout of the tech stack, component communication, and technology choices per layer.
 
 **Recommended Skills:** `senior-software-architect`, `software-architecture-patterns`
 
 **Instructions:**
-1. Identify architectural layers:
-   - Presentation layer
-   - Application/Business logic layer
-   - Data access layer
-   - Infrastructure layer
-2. Define component interactions
-3. Show external integrations
-4. Document data flow
-5. Include technology choices per component
+1. Define architecture style (Monolithic/Microservices/Serverless/etc.)
+2. Identify architectural layers and their responsibilities
+3. Map components per layer with chosen technology
+4. Define component interactions and data flow
+5. Show external integrations
+6. Present everything in clear tables
 
 **Output Format:**
 ```markdown
 ## System Architecture
 
 ### Architecture Style: [Microservices/Monolithic/Serverless/etc.]
+**Rationale:** [Why this architecture was chosen]
 
-### Component Diagram
-[Mermaid architecture diagram or flowchart]
+### Architectural Layers
 
-```mermaid
-flowchart TD
-    subgraph Client Layer
-        WebApp[Web App]
-        MobileApp[Mobile App]
-    end
+| Layer | Responsibility | Components |
+|-------|---------------|------------|
+| Presentation | User interface & client apps | Web App (React), Mobile App (Flutter) |
+| API Gateway | Routing, authentication, rate limiting | Nginx, JWT Auth Middleware |
+| Application/Service | Business logic & orchestration | User Service, Order Service, Payment Service |
+| Data Access | Persistence & caching | PostgreSQL, Redis Cache |
+| Infrastructure | Hosting, CI/CD, monitoring | Docker, Kubernetes, GitHub Actions |
 
-    subgraph API Gateway
-        LB[Load Balancer]
-        Auth[Authentication]
-    end
+### Component Communication
 
-    subgraph Service Layer
-        UserService[User Service]
-        OrderService[Order Service]
-        PaymentService[Payment Service]
-    end
-
-    subgraph Data Layer
-        DB[(PostgreSQL)]
-        Cache[(Redis Cache)]
-        Storage[(S3 Storage)]
-    end
-
-    WebApp --> LB
-    MobileApp --> LB
-    LB --> Auth
-    LB --> UserService
-    LB --> OrderService
-    LB --> PaymentService
-    UserService --> DB
-    OrderService --> Cache
-    OrderService --> DB
-    PaymentService --> DB
-```
+| Source | Target | Protocol | Description |
+|--------|--------|----------|-------------|
+| Web App | API Gateway | HTTPS/REST | Client requests |
+| Mobile App | API Gateway | HTTPS/REST | Client requests |
+| API Gateway | User Service | HTTP/gRPC | Internal routing |
+| Order Service | Payment Service | Async (Queue) | Payment processing |
+| All Services | Database | TCP/SQL | Data persistence |
+| All Services | Redis | TCP | Session & cache |
 
 ### Technology Stack
-- **Frontend:** React.js, TypeScript, TailwindCSS
-- **Backend:** Node.js, Express, TypeScript
-- **Database:** PostgreSQL 15
-- **Cache:** Redis
-- **Message Queue:** RabbitMQ
-- **Infrastructure:** Docker, Kubernetes
+
+| Category | Technology | Version | Purpose |
+|----------|------------|---------|----------|
+| Frontend | React.js | 18.x | Web UI framework |
+| Frontend | TypeScript | 5.x | Type safety |
+| Frontend | TailwindCSS | 3.x | Styling |
+| Backend | Node.js | 20.x LTS | Runtime |
+| Backend | Express | 4.x | HTTP framework |
+| Database | PostgreSQL | 15.x | Primary database |
+| Cache | Redis | 7.x | Caching |
+| Queue | RabbitMQ | 3.x | Message broker |
+| Infra | Docker | latest | Containerization |
+| Infra | Kubernetes | 1.28+ | Orchestration |
+
+### External Integrations
+
+| Service | Provider | Purpose | Auth Method |
+|---------|----------|---------|-------------|
+| Payment Gateway | Stripe/Midtrans | Payment processing | API Key |
+| Email Service | SendGrid | Transactional email | API Key |
+| Storage | AWS S3 | File uploads | IAM Role |
+| Monitoring | Sentry | Error tracking | DSN |
+```
+
+---
+
+#### 3b. Dependencies & Packages Specification
+
+**Description:** Detailed list of all third-party libraries, packages, and dependencies required for development. This ensures consistency across the team and prevents dependency conflicts.
+
+**Recommended Skills:** `senior-software-engineer`, `tech-stack-architect`
+
+**Instructions:**
+1. List all dependencies per platform/layer (frontend, backend, mobile, etc.)
+2. Categorize by purpose (core, state management, networking, UI, testing, dev tools)
+3. Specify version constraints (exact or range)
+4. Note if a dependency is a dev-only dependency
+5. Include rationale for non-obvious choices
+6. Document internal/private packages if applicable
+
+**Output Format:**
+```markdown
+## Dependencies & Packages Specification
+
+### Frontend (React/Next.js)
+
+| Category | Package | Version | Type | Purpose |
+|----------|---------|---------|------|----------|
+| Core | react | ^18.2.0 | prod | UI library |
+| Core | react-dom | ^18.2.0 | prod | DOM rendering |
+| Core | typescript | ^5.3.0 | dev | Type safety |
+| Routing | react-router-dom | ^6.20.0 | prod | Client-side routing |
+| State | zustand | ^4.4.0 | prod | State management |
+| State | @tanstack/react-query | ^5.0.0 | prod | Server state & caching |
+| Networking | axios | ^1.6.0 | prod | HTTP client |
+| Forms | react-hook-form | ^7.48.0 | prod | Form handling |
+| Validation | zod | ^3.22.0 | prod | Schema validation |
+| Styling | tailwindcss | ^3.4.0 | dev | Utility-first CSS |
+| UI Components | lucide-react | ^0.300.0 | prod | Icon library |
+| Animation | framer-motion | ^10.16.0 | prod | Animations |
+| Testing | vitest | ^1.0.0 | dev | Unit testing |
+| Testing | @testing-library/react | ^14.1.0 | dev | Component testing |
+| Linting | eslint | ^8.55.0 | dev | Code linting |
+| Formatting | prettier | ^3.1.0 | dev | Code formatting |
+
+### Backend (Node.js/Express)
+
+| Category | Package | Version | Type | Purpose |
+|----------|---------|---------|------|----------|
+| Core | express | ^4.18.0 | prod | HTTP framework |
+| Core | typescript | ^5.3.0 | dev | Type safety |
+| Auth | jsonwebtoken | ^9.0.0 | prod | JWT tokens |
+| Auth | bcryptjs | ^2.4.0 | prod | Password hashing |
+| Database | prisma | ^5.7.0 | prod | ORM |
+| Validation | zod | ^3.22.0 | prod | Input validation |
+| Logging | winston | ^3.11.0 | prod | Structured logging |
+| Testing | jest | ^29.7.0 | dev | Unit testing |
+| Testing | supertest | ^6.3.0 | dev | API testing |
+
+### Mobile (Flutter)
+
+| Category | Package | Version | Type | Purpose |
+|----------|---------|---------|------|----------|
+| Core | flutter | SDK | prod | UI framework |
+| State | flutter_riverpod | ^2.4.0 | prod | State management |
+| Routing | go_router | ^13.0.0 | prod | Declarative routing |
+| Networking | dio | ^5.4.0 | prod | HTTP client |
+| Storage | shared_preferences | ^2.2.0 | prod | Key-value storage |
+| Storage | hive | ^2.2.0 | prod | Local database |
+| Auth | flutter_secure_storage | ^9.0.0 | prod | Secure credential store |
+| UI | cached_network_image | ^3.3.0 | prod | Image caching |
+| Util | intl | ^0.19.0 | prod | Internationalization |
+| Testing | mockito | ^5.4.0 | dev | Mocking |
+| Linting | flutter_lints | ^3.0.0 | dev | Lint rules |
+
+### Internal/Private Packages
+
+| Package | Source | Version | Purpose |
+|---------|--------|---------|----------|
+| @company/ui-kit | npm private | ^2.0.0 | Shared UI components |
+| yo_ui | pub private | ^1.0.0 | Flutter UI component library |
+
+### Package Installation Commands
+
+**Frontend:**
+```bash
+npm install react react-dom react-router-dom zustand axios ...
+npm install -D typescript tailwindcss vitest eslint prettier ...
+```
+
+**Backend:**
+```bash
+npm install express jsonwebtoken bcryptjs prisma zod winston ...
+npm install -D typescript jest supertest ...
+```
+
+**Flutter:**
+```bash
+flutter pub add flutter_riverpod go_router dio shared_preferences ...
+flutter pub add dev:mockito dev:flutter_lints ...
+```
 ```
 
 ---
@@ -509,21 +605,22 @@ Link: <https://docs.example.com/migration/v2>; rel="successor-version"
 1. **Architecture Planning** (Senior Software Architect)
    - Select architecture pattern
    - Define technology stack
-   - Design high-level structure
+   - Design high-level structure (tables)
 
-2. **Use Case Analysis** (UML Specialist, Senior System Analyst)
+2. **Dependencies Specification** (Senior Software Engineer, Tech Stack Architect)
+   - List all required packages per platform
+   - Categorize by purpose
+   - Specify version constraints
+   - Document installation commands
+
+3. **Use Case Analysis** (UML Specialist, Senior System Analyst)
    - Identify actors
    - Document use cases
    - **Create Use Case Diagram (Mermaid ONLY)**
 
-3. **Process Modeling** (Senior System Analyst, UML Specialist)
+4. **Process Modeling** (Senior System Analyst, UML Specialist)
    - Map business processes
    - **Create Activity Diagrams (Mermaid ONLY)**
-
-4. **Component Design** (Senior Software Architect)
-   - Design system components
-   - Define interfaces
-   - Create architecture diagram
 
 5. **Class Design** (Senior Software Engineer, UML Specialist)
    - Design domain model
@@ -574,7 +671,8 @@ flowchart TD
 ### During Execution
 - [ ] Use Case Diagram created (Mermaid)
 - [ ] Activity Diagram created (Mermaid)
-- [ ] System Architecture documented
+- [ ] System Architecture documented (tables)
+- [ ] Dependencies & Packages Specification defined
 - [ ] Class Diagram created (Mermaid)
 - [ ] Sequence Diagrams created for critical flows (Mermaid)
 - [ ] API Specification written (OpenAPI 3.0)
@@ -592,7 +690,8 @@ flowchart TD
 ## Success Criteria
 - Use cases cover all functional requirements
 - Activity diagrams show complete business logic
-- Architecture diagram shows clear component separation
+- Architecture documentation shows clear component separation (tables)
+- Dependencies specification lists all required packages with versions
 - Class diagram accurately models domain entities
 - Sequence diagrams cover critical interaction paths
 - API specification is complete and versioned
