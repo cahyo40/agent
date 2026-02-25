@@ -14,63 +14,40 @@ flutter create --org com.example my_app
 cd my_app
 ```
 
-### Step 2: Install Dependencies
+### Step 2: Run YoDev Generator
 
 ```bash
-# State Management & DI
-flutter pub add get
-
-# YoUI Component Library
-flutter pub add yo_ui --git-url=https://github.com/cahyo40/youi.git --git-ref=main
-
-# Storage
-flutter pub add get_storage flutter_secure_storage
-
-# Network
-flutter pub add dio connectivity_plus
-
-# UI Utilities
-flutter pub add cached_network_image shimmer google_fonts
-
-# Utils
-flutter pub add equatable dartz intl
+# YoDev Generator mengkonfigurasi project Anda otomatis.
+dart run yo.dart init --state=getx
 ```
 
-### Step 3: Create Folder Structure
+### Step 3: Verify & Install Dependencies
 
-Buat folder structure sesuai Part 2.
+- Pastikan `yo.yaml` sudah bersarang di root project.
+- Jalankan sinkronasi package untuk mendownload YoUI & GetX:
+```bash
+flutter pub get
+```
 
-### Step 4: Setup Core Layer
+### Step 4: Setup Core Layer & App Properties
 
-1. Copy files dari Part 3 (error handling, shared widgets)
-2. Setup `app.dart` dengan `YoTheme.lightTheme(context)`
-3. Setup routing dan bindings
+1. Cek `/lib/main.dart` dan konfigurasi `YoTheme` di `app.dart`.
+2. Lakukan implementasi kustom seperti error handler pada file base `core/` jika terdapat `// TODO`.
+3. Verifikasi rute dan app bindings di `layer/routes`.
 
-### Step 5: Create Example Feature
-
-1. Buat Product domain layer (entity, repository interface)
-2. Buat Product data layer (model, repository impl)
-3. Buat Product feature (controller, binding, views dengan YoUI)
-
-### Step 6: Verify
+### Step 5: Verify Run Project
 
 ```bash
 flutter pub get
-flutter analyze
 flutter run
 ```
 
 ## Success Criteria
 
-- [ ] Project berjalan tanpa error
-- [ ] `flutter analyze` clean (no warnings)
-- [ ] YoUI Theme terapply (cek font, warna, border radius)
-- [ ] Product list menampilkan `YoCard` items
-- [ ] Loading state menampilkan `YoShimmer.card()`
-- [ ] Error state menampilkan `YoButton.primary` untuk retry
-- [ ] Empty state menampilkan `YoText` + `YoButton`
-- [ ] Delete dialog menggunakan `YoButton.ghost` dan `YoButton.primary`
-- [ ] Toast notifications menggunakan `YoToast.success/error`
-- [ ] Navigation berjalan (list → detail → create)
+- [ ] Project directory matching dengan standard target `yo.dart` (GetX version).
+- [ ] File konfigurasi `yo.yaml` ada di direktori root.
+- [ ] Project berjalan tanpa error & tidak ada conflict dependency YoUI.
+- [ ] `flutter analyze` clean (no warnings).
+- [ ] YoUI Theme terapply (cek font, warna, border radius) saat aplikasi launch pertama kali.
 
 ---

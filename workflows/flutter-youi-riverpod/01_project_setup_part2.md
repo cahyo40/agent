@@ -1,123 +1,55 @@
 ---
 description: Setup Flutter project dari nol dengan Clean Architecture, Riverpod, dan YoUI. (Part 2/5)
 ---
-# Workflow: Flutter Project Setup with Riverpod + YoUI + YoUI (Part 2/5)
+# Workflow: Flutter Project Setup with Riverpod + YoUI (Part 2/5)
 
 > **Navigation:** This workflow is split into 5 parts.
 
 ## Deliverables
 
-### 1. Project Structure Clean Architecture
+### 1. Project Initialization & Dependencies
 
-**Description:** Struktur folder lengkap dengan Clean Architecture pattern.
+**Description:** Setup project Flutter baru dan inisialisasi struktur Clean Architecture beserta integrasi komponen YoUI menggunakan YoDev Generator.
 
-**Recommended Skills:** `senior-flutter-developer`, `senior-ui-ux-designer`
+**Recommended Skills:** `senior-flutter-developer`
 
 **Instructions:**
-1. Buat folder structure berikut:
+1. Jalankan perintah inisialisasi project:
+   ```bash
+   flutter create --org com.example my_app
+   cd my_app
    ```
-   lib/
-   ├── bootstrap/              # App initialization
-   │   ├── app.dart           # Root widget (YoUI themed)
-   │   ├── bootstrap.dart     # App bootstrapping
-   │   └── observers/         # Riverpod observers
-   ├── core/                  # Shared infrastructure
-   │   ├── di/               # Dependency injection
-   │   ├── error/            # Error handling
-   │   ├── network/          # Dio setup, interceptors
-   │   ├── router/           # GoRouter configuration
-   │   ├── storage/          # Secure & local storage
-   │   └── theme/            # YoUI Theme integration
-   ├── features/             # Feature modules
-   │   └── example/          # Contoh feature
-   │       ├── data/         # Data layer
-   │       ├── domain/       # Domain layer
-   │       └── presentation/ # Presentation layer
-   ├── l10n/                 # Localization
-   ├── shared/               # Shared utilities
-   │   ├── extensions/
-   │   ├── mixins/
-   │   ├── utils/
-   │   └── widgets/
-   └── main.dart
+2. Jalankan YoDev Generator untuk inisialisasi arsitektur dan state management:
+   ```bash
+   dart run yo.dart init --state=riverpod
    ```
-2. Setup setiap folder dengan base files
-3. Konfigurasi import alias di `pubspec.yaml`
+3. Verifikasi hasil generate:
+   - Pastikan dependencies yang dibutuhkan (seperti `flutter_riverpod`, `riverpod_annotation`, `youi`, `go_router`, `dio`, dll) ditambahkan ke `pubspec.yaml`
+   - Pastikan file `yo.yaml` ter-generate di root project, yang berisi konfigurasi arsitektur dan state management.
+4. Jalankan perintah instalasi dependency:
+   ```bash
+   flutter pub get
+   ```
 
-**Output Format:**
-```yaml
-# pubspec.yaml
-name: my_app
-description: A new Flutter project with Riverpod + YoUI.
-
-publish_to: 'none'
-
-version: 1.0.0+1
-
-environment:
-  sdk: '>=3.11.0 <4.0.0'  # Updated untuk Flutter 3.41.1
-
-dependencies:
-  flutter:
-    sdk: flutter
-  
-  # State Management
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-  
-  # UI Component Library
-  youi:
-    git:
-      url: https://github.com/cahyo40/youi.git
-  
-  # Routing
-  go_router: ^14.0.0
-  
-  # Network
-  dio: ^5.4.0
-  connectivity_plus: ^6.0.0
-  
-  # Storage
-  hive_flutter: ^1.1.0
-  flutter_secure_storage: ^9.0.0
-  
-  # UI Utilities
-  cached_network_image: ^3.3.1
-  shimmer: ^3.0.0
-  flutter_screenutil: ^5.9.0
-  google_fonts: ^6.2.1
-  
-  # Utils
-  freezed_annotation: ^2.4.1
-  json_annotation: ^4.8.1
-  intl: ^0.19.0
-  equatable: ^2.0.5
-  dartz: ^0.10.1
-  
-  # Firebase (optional) - Updated untuk Flutter 3.41.1
-  # firebase_core: ^3.12.0
-  # firebase_auth: ^5.5.0
-  # cloud_firestore: ^5.6.0
-  # firebase_storage: ^12.4.0
-  # firebase_messaging: ^15.2.0
-  
-  # Supabase (optional)
-  # supabase_flutter: ^2.8.0
-  
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^4.0.0
-  build_runner: ^2.4.9
-  freezed: ^2.5.0
-  json_serializable: ^6.7.1
-  riverpod_generator: ^2.4.0
-  custom_lint: ^0.6.4
-  riverpod_lint: ^2.3.10
-  mocktail: ^1.0.0
-
-flutter:
-  uses-material-design: true
+**Output Format Validations:**
+Generator akan membuat struktur dasar `lib/` yang kurang lebih seperti ini:
+```
+lib/
+├── bootstrap/              # App initialization
+│   ├── app.dart           # Root widget (YoUI themed)
+│   ├── bootstrap.dart     # App bootstrapping
+│   └── observers/         # Riverpod observers
+├── core/                  # Shared infrastructure
+│   ├── di/               # Dependency injection
+│   ├── error/            # Error handling
+│   ├── network/          # Dio setup, interceptors
+│   ├── router/           # GoRouter configuration
+│   ├── storage/          # Secure & local storage
+│   └── theme/            # YoUI Theme integration
+├── features/             # Feature modules
+├── l10n/                 # Localization
+├── shared/               # Shared utilities
+└── main.dart
 ```
 
 ---
