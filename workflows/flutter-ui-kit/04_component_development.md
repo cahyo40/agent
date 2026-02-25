@@ -97,6 +97,40 @@ AppButton(
 ### Test Coverage: 95%
 ### Demo Screen: `example/lib/screens/button_demo.dart`
 
+### Architecture
+```mermaid
+classDiagram
+    class AppButton {
+        +String text
+        +ButtonVariant variant
+        +ButtonSize size
+        +bool isLoading
+        +bool isDisabled
+        +IconData icon
+        +VoidCallback onPressed
+        +build(BuildContext) Widget
+    }
+
+    class ButtonVariant {
+        <<enumeration>>
+        primary
+        secondary
+        outline
+        ghost
+        destructive
+    }
+
+    class ButtonSize {
+        <<enumeration>>
+        small
+        medium
+        large
+    }
+
+    AppButton --> ButtonVariant
+    AppButton --> ButtonSize
+```
+
 ---
 
 ## Component 2: AppTextField
@@ -637,6 +671,10 @@ Use this checklist for every component to ensure consistency and quality.
 - Test Coverage: 95% ✅
 - Accessibility: Pass ✅
 - Performance: 60fps ✅
+
+**Architecture:**
+- State Machine: Documented ✅
+- Class Diagram: Documented ✅
 
 **Documentation:**
 - API Docs: ✅

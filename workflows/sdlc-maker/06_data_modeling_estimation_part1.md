@@ -11,8 +11,7 @@ The goal is to design a robust data layer and create realistic project
 timelines, ensuring data integrity, performance, and accurate resource
 planning.
 
-**IMPORTANT: All ERD diagrams MUST use PlantUML syntax (.puml format).
-DO NOT use Mermaid diagrams.**
+**IMPORTANT: All ERD diagrams MUST use Mermaid syntax natively supported by Markdown.**
 
 
 ## Output Location
@@ -20,7 +19,7 @@ DO NOT use Mermaid diagrams.**
 
 **Output Files:**
 - `data-dictionary.md` - Complete Data Dictionary
-- `erd-diagram.puml` - Entity Relationship Diagram (PlantUML)
+- `erd-diagram.md` - Entity Relationship Diagram (Mermaid)
 - `migration-plan.md` - Migration Strategy & Scripts
 - `project-estimation.md` - Project Estimation & Timeline
 
@@ -122,103 +121,91 @@ relationships.
 4. Include cardinality notation
 5. Group related entities by domain/module
 
-**Output Format (PlantUML ONLY):**
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor #FEFEFE
-skinparam linetype ortho
+**Output Format (Mermaid ONLY):**
+```mermaid
+erDiagram
+    %% ==========================================
+    %% User Domain
+    %% ==========================================
 
-' ==========================================
-' User Domain
-' ==========================================
+    users {
+        UUID id PK
+        VARCHAR(255) email UK
+        VARCHAR(255) password_hash
+        VARCHAR(100) full_name
+        user_role role
+        BOOLEAN is_active
+        TIMESTAMP email_verified_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+        TIMESTAMP deleted_at
+    }
 
-entity "users" as users {
-  *id : UUID <<PK>>
-  --
-  *email : VARCHAR(255) <<UNIQUE>>
-  *password_hash : VARCHAR(255)
-  *full_name : VARCHAR(100)
-  *role : user_role
-  *is_active : BOOLEAN
-  email_verified_at : TIMESTAMP
-  *created_at : TIMESTAMP
-  *updated_at : TIMESTAMP
-  deleted_at : TIMESTAMP
-}
+    user_profiles {
+        UUID id PK
+        UUID user_id FK
+        VARCHAR(500) avatar_url
+        TEXT bio
+        VARCHAR(20) phone
+        TEXT address
+    }
 
-entity "user_profiles" as profiles {
-  *id : UUID <<PK>>
-  --
-  *user_id : UUID <<FK>>
-  avatar_url : VARCHAR(500)
-  bio : TEXT
-  phone : VARCHAR(20)
-  address : TEXT
-}
+    %% ==========================================
+    %% Product Domain
+    %% ==========================================
 
-' ==========================================
-' Product Domain
-' ==========================================
+    products {
+        UUID id PK
+        VARCHAR(200) name
+        VARCHAR(200) slug UK
+        TEXT description
+        DECIMAL(12_2) price
+        INTEGER stock
+        UUID category_id FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+        TIMESTAMP deleted_at
+    }
 
-entity "products" as products {
-  *id : UUID <<PK>>
-  --
-  *name : VARCHAR(200)
-  *slug : VARCHAR(200) <<UNIQUE>>
-  description : TEXT
-  *price : DECIMAL(12,2)
-  *stock : INTEGER
-  *category_id : UUID <<FK>>
-  *created_at : TIMESTAMP
-  *updated_at : TIMESTAMP
-  deleted_at : TIMESTAMP
-}
+    categories {
+        UUID id PK
+        VARCHAR(100) name
+        VARCHAR(100) slug UK
+        UUID parent_id FK
+    }
 
-entity "categories" as categories {
-  *id : UUID <<PK>>
-  --
-  *name : VARCHAR(100)
-  *slug : VARCHAR(100) <<UNIQUE>>
-  parent_id : UUID <<FK>>
-}
+    %% ==========================================
+    %% Order Domain
+    %% ==========================================
 
-' ==========================================
-' Order Domain
-' ==========================================
+    orders {
+        UUID id PK
+        UUID user_id FK
+        VARCHAR(50) order_number UK
+        order_status status
+        DECIMAL(12_2) total_amount
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-entity "orders" as orders {
-  *id : UUID <<PK>>
-  --
-  *user_id : UUID <<FK>>
-  *order_number : VARCHAR(50) <<UNIQUE>>
-  *status : order_status
-  *total_amount : DECIMAL(12,2)
-  *created_at : TIMESTAMP
-  *updated_at : TIMESTAMP
-}
+    order_items {
+        UUID id PK
+        UUID order_id FK
+        UUID product_id FK
+        INTEGER quantity
+        DECIMAL(12_2) unit_price
+    }
 
-entity "order_items" as order_items {
-  *id : UUID <<PK>>
-  --
-  *order_id : UUID <<FK>>
-  *product_id : UUID <<FK>>
-  *quantity : INTEGER
-  *unit_price : DECIMAL(12,2)
-}
+    %% ==========================================
+    %% Relationships
+    %% ==========================================
 
-' ==========================================
-' Relationships
-' ==========================================
-
-users ||--o| profiles : "has"
-users ||--o{ orders : "places"
-orders ||--|{ order_items : "contains"
-products ||--o{ order_items : "included in"
-categories ||--o{ products : "categorizes"
-categories ||--o{ categories : "parent"
-
-@enduml
+    users ||--o| user_profiles : "has"
+    users ||--o{ orders : "places"
+    orders ||--|{ order_items : "contains"
+    products ||--o{ order_items : "included in"
+    categories ||--o{ products : "categorizes"
+    categories ||--o{ categories : "parent"
 ```
 
 ---
@@ -463,7 +450,7 @@ allocation, and risk buffer planning.
 - [ ] Data Dictionary created for all entities
 - [ ] All fields documented with types and constraints
 - [ ] Enumeration types defined
-- [ ] ERD created using PlantUML
+- [ ] ERD created using Mermaid
 - [ ] Relationships mapped with correct cardinality
 - [ ] Migration Plan documented
 - [ ] UP and DOWN migration scripts written
@@ -474,7 +461,7 @@ allocation, and risk buffer planning.
 
 ### Post-Execution
 - [ ] Data dictionary covers all entities from requirements
-- [ ] ERD renders successfully in PlantUML
+- [ ] ERD renders successfully in Mermaid
 - [ ] Migration scripts tested on staging
 - [ ] Index strategy covers critical queries
 - [ ] Estimation reviewed with development team

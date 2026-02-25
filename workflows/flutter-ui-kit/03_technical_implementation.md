@@ -18,6 +18,7 @@ This workflow guides the technical implementation of the Flutter UI Kit package,
 
 ## Prerequisites
 - PRD Analysis completed (`01_prd_analysis.md`)
+- UI/UX Prototyping completed (`02_ui_ux_prototyping.md`) with `DESIGN.md` ready
 - Component priorities defined
 - Flutter SDK >=3.10.0 installed
 - Development environment setup
@@ -54,8 +55,29 @@ This workflow guides the technical implementation of the Flutter UI Kit package,
 ```markdown
 # Package Structure
 
-## Directory Layout
+## Architecture Overview
+```mermaid
+flowchart TD
+    subgraph Public API
+        Core[flutter_ui_kit.dart]
+    end
+
+    subgraph Internal Implementation src/
+        Theme[Theme Config & Extensions]
+        Tokens[Design Tokens]
+        Components[UI Components]
+        Utils[Utilities]
+    end
+
+    Core --> Theme
+    Core --> Components
+    Components --> Theme
+    Theme --> Tokens
+    Components --> Utils
 ```
+
+## Directory Layout
+```text
 flutter_ui_kit/
 │
 ├── lib/
@@ -173,11 +195,14 @@ linter:
 **Recommended Skills:** `design-system-engineer`, `senior-flutter-developer`
 
 **Instructions:**
-1. Implement color tokens:
-   - Define 8-10 color palettes (blue, purple, green, red, orange, teal, pink, slate)
-   - Each palette: 50-900 scale (10 shades)
-   - Semantic colors (success, warning, error, info)
-   - Light/dark theme variants
+1. Parse decisions from `DESIGN.md` (generated via Stitch AI in Phase 2):
+   - Extract primary, secondary, and semantic colors along with their specific Hex Codes.
+   - Map typography rules, border radii, and shadow (elevation) definitions.
+2. Implement color tokens:
+   - Define palettes based on `DESIGN.md` requirements.
+   - Create 50-900 scale for primary accents.
+   - Implement semantic colors (success, warning, error, info).
+   - Create Light/dark theme variants.
 2. Implement typography tokens:
    - Font families (primary, secondary, mono)
    - Font sizes (10 levels: xs to 5xl)
@@ -432,6 +457,38 @@ void main() {
 ```markdown
 # Theme System Implementation
 
+## Architecture Diagram
+```mermaid
+classDiagram
+    class ThemeConfig {
+      +ColorPalette colorPalette
+      +Brightness brightness
+      +String fontFamily
+      +double borderRadius
+      +toThemeData() ThemeData
+      -_getColorScheme() ColorScheme
+      -_getTextTheme() TextTheme
+    }
+
+    class AppThemes {
+      +lightBlue ThemeData
+      +darkBlue ThemeData
+      +lightPurple ThemeData
+      +darkPurple ThemeData
+    }
+
+    class ThemeProvider {
+      -ThemeConfig _config
+      +ThemeConfig config
+      +ThemeData theme
+      +setPalette(ColorPalette)
+      +toggleBrightness()
+    }
+
+    AppThemes ..> ThemeConfig : instantiates
+    ThemeProvider "1" *-- "1" ThemeConfig : manages
+```
+
 ## ThemeConfig Class
 
 ```dart
@@ -454,6 +511,7 @@ class ThemeConfig {
     final colors = _getColorScheme();
     final textTheme = _getTextTheme();
 
+    // The mapping here must strictly follow the output of your DESIGN.md
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
@@ -475,6 +533,10 @@ class ThemeConfig {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
       ),
+      extensions: [
+        // Map custom semantics and shapes not covered by ThemeData
+        // CustomThemeExtension(colors: colors, radii: radii) 
+      ],
     );
   }
 

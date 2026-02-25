@@ -44,6 +44,25 @@ This workflow guides the execution and tracking of the Flutter UI Kit developmen
 ```markdown
 # Sprint Plan - Flutter UI Kit
 
+## Project Roadmap Overview
+```mermaid
+gantt
+    title Flutter UI Kit Development Roadmap
+    dateFormat  YYYY-MM-DD
+    section Phase 1: Foundation
+    Project Setup & Tokens       :active, p1, 2026-02-24, 7d
+    Theme System & Architecture  :p2, after p1, 7d
+    section Phase 2: MVP Core
+    Button & Inputs              :p3, after p2, 7d
+    Cards, Dialogs & Indicators  :p4, after p3, 7d
+    section Phase 3: Core Plus
+    Navigation Components        :p5, after p4, 7d
+    Data Display & Layout        :p6, after p5, 7d
+    section Phase 4: Launch
+    Testing & Documentation      :p7, after p6, 7d
+    Launch Prep & Marketing      :p8, after p7, 7d
+```
+
 ## Sprint 1: Week 1 - Project Setup & Color Tokens
 
 **Sprint Goal:** Foundation complete - project structure and color tokens ready

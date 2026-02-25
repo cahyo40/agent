@@ -6,17 +6,17 @@ description: This workflow covers the System Design and Detailed Design phases.
 ## Overview
 This workflow covers the System Design and Detailed Design phases. The goal is to visualize system behavior, high-level structure, and define low-level technical specifications for implementation.
 
-**IMPORTANT: All UML diagrams MUST use PlantUML syntax (.puml format). DO NOT use Mermaid diagrams.**
+**IMPORTANT: All diagrams MUST use Mermaid syntax natively supported by Markdown.**
 
 ## Output Location
 **Base Folder:** `sdlc/03-system-detailed-design/`
 
 **Output Files:**
-- `use-case-diagram.puml` - Use Case Diagram (PlantUML)
-- `activity-diagram.puml` - Activity Diagram (PlantUML)
+- `use-case-diagram.md` - Use Case Diagram (Mermaid)
+- `activity-diagram.md` - Activity Diagram (Mermaid)
 - `system-architecture.md` - System Architecture Documentation
-- `class-diagram.puml` - Class Diagram (PlantUML)
-- `sequence-diagram.puml` - Sequence Diagram (PlantUML)
+- `class-diagram.md` - Class Diagram (Mermaid)
+- `sequence-diagram.md` - Sequence Diagram (Mermaid)
 - `api-specification.yaml` - OpenAPI 3.0 Specification
 
 ## Prerequisites
@@ -45,29 +45,24 @@ This workflow covers the System Design and Detailed Design phases. The goal is t
    - Generalization
 4. Group use cases by subsystems
 
-**Output Format (PlantUML ONLY):**
-```plantuml
-@startuml
-left to right direction
-skinparam packageStyle rectangle
-
-actor "Actor Name" as Actor1
-actor "Another Actor" as Actor2
-
-rectangle "System Name" {
-  usecase "Use Case 1" as UC1
-  usecase "Use Case 2" as UC2
-  usecase "Use Case 3" as UC3
-  
-  UC1 ..> UC2 : <<include>>
-  UC3 ..> UC1 : <<extend>>
-}
-
-Actor1 --> UC1
-Actor1 --> UC2
-Actor2 --> UC3
-
-@enduml
+**Output Format (Mermaid):**
+```mermaid
+flowchart LR
+    Actor1(["Actor Name"])
+    Actor2(["Another Actor"])
+    
+    subgraph System Name
+        UC1(["Use Case 1"])
+        UC2(["Use Case 2"])
+        UC3(["Use Case 3"])
+        
+        UC1 -. "<<include>>" .-> UC2
+        UC3 -. "<<extend>>" .-> UC1
+    end
+    
+    Actor1 --> UC1
+    Actor1 --> UC2
+    Actor2 --> UC3
 ```
 
 ---
@@ -86,28 +81,39 @@ Actor2 --> UC3
 5. Show parallel activities (fork/join)
 6. Include swimlanes for different actors/systems
 
-**Output Format (PlantUML ONLY):**
-```plantuml
-@startuml
-start
-
-:Activity 1;
-if (Decision?) then (yes)
-  :Activity 2;
-else (no)
-  :Activity 3;
-endif
-
-fork
-  :Parallel Activity A;
-fork again
-  :Parallel Activity B;
-end fork
-
-:Final Activity;
-
-stop
-@enduml
+**Output Format (Mermaid):**
+```mermaid
+stateDiagram-v2
+    [*] --> Activity1
+    Activity1: Activity 1
+    
+    state if_state <<choice>>
+    Activity1 --> if_state: Decision?
+    
+    if_state --> Activity2: yes
+    if_state --> Activity3: no
+    
+    Activity2: Activity 2
+    Activity3: Activity 3
+    
+    state fork_state <<fork>>
+    Activity2 --> fork_state
+    Activity3 --> fork_state
+    
+    fork_state --> ParallelA
+    fork_state --> ParallelB
+    
+    ParallelA: Parallel Activity A
+    ParallelB: Parallel Activity B
+    
+    state join_state <<join>>
+    ParallelA --> join_state
+    ParallelB --> join_state
+    
+    join_state --> FinalActivity
+    FinalActivity: Final Activity
+    
+    FinalActivity --> [*]
 ```
 
 ---
@@ -136,41 +142,42 @@ stop
 ### Architecture Style: [Microservices/Monolithic/Serverless/etc.]
 
 ### Component Diagram
-[PlantUML or text description]
+[Mermaid architecture diagram or flowchart]
 
-```plantuml
-@startuml
-!define RECTANGLE class
+```mermaid
+flowchart TD
+    subgraph Client Layer
+        WebApp[Web App]
+        MobileApp[Mobile App]
+    end
 
-rectangle "Client Layer" {
-  [Web App]
-  [Mobile App]
-}
+    subgraph API Gateway
+        LB[Load Balancer]
+        Auth[Authentication]
+    end
 
-rectangle "API Gateway" {
-  [Load Balancer]
-  [Authentication]
-}
+    subgraph Service Layer
+        UserService[User Service]
+        OrderService[Order Service]
+        PaymentService[Payment Service]
+    end
 
-rectangle "Service Layer" {
-  [User Service]
-  [Order Service]
-  [Payment Service]
-}
+    subgraph Data Layer
+        DB[(PostgreSQL)]
+        Cache[(Redis Cache)]
+        Storage[(S3 Storage)]
+    end
 
-rectangle "Data Layer" {
-  [PostgreSQL]
-  [Redis Cache]
-  [S3 Storage]
-}
-
-[Web App] --> [Load Balancer]
-[Mobile App] --> [Load Balancer]
-[Load Balancer] --> [User Service]
-[Load Balancer] --> [Order Service]
-[User Service] --> [PostgreSQL]
-[Order Service] --> [Redis Cache]
-@enduml
+    WebApp --> LB
+    MobileApp --> LB
+    LB --> Auth
+    LB --> UserService
+    LB --> OrderService
+    LB --> PaymentService
+    UserService --> DB
+    OrderService --> Cache
+    OrderService --> DB
+    PaymentService --> DB
 ```
 
 ### Technology Stack
@@ -204,42 +211,38 @@ rectangle "Data Layer" {
 5. Add visibility modifiers (+, -, #)
 6. Include stereotypes where appropriate
 
-**Output Format (PlantUML ONLY):**
-```plantuml
-@startuml
-skinparam classAttributeIconSize 0
+**Output Format (Mermaid):**
+```mermaid
+classDiagram
+    class User {
+      -UUID id
+      -String email
+      -String password
+      -DateTime createdAt
+      +login() AuthToken
+      +logout() void
+      +updateProfile(UserData data) User
+    }
 
-class User {
-  -id: UUID
-  -email: String
-  -password: String
-  -createdAt: DateTime
-  +login(): AuthToken
-  +logout(): void
-  +updateProfile(data: UserData): User
-}
+    class Order {
+      -UUID id
+      -UUID userId
+      -Decimal totalAmount
+      -OrderStatus status
+      +calculateTotal() Decimal
+      +processPayment() PaymentResult
+    }
 
-class Order {
-  -id: UUID
-  -userId: UUID
-  -totalAmount: Decimal
-  -status: OrderStatus
-  +calculateTotal(): Decimal
-  +processPayment(): PaymentResult
-}
+    class OrderItem {
+      -UUID id
+      -UUID orderId
+      -UUID productId
+      -Integer quantity
+      -Decimal price
+    }
 
-class OrderItem {
-  -id: UUID
-  -orderId: UUID
-  -productId: UUID
-  -quantity: Integer
-  -price: Decimal
-}
-
-User "1" --> "*" Order : places
-Order "1" *-- "*" OrderItem : contains
-
-@enduml
+    User "1" --> "*" Order : places
+    Order "1" *-- "*" OrderItem : contains
 ```
 
 ---
@@ -259,55 +262,51 @@ Order "1" *-- "*" OrderItem : contains
 6. Include return messages
 7. Add alt/opt/loop fragments for conditions
 
-**Output Format (PlantUML ONLY):**
-```plantuml
-@startuml
-actor User
-participant "Web App" as Web
-participant "API Gateway" as API
-participant "Order Service" as Order
-participant "Payment Service" as Payment
-database "Database" as DB
+**Output Format (Mermaid):**
+```mermaid
+sequenceDiagram
+    actor User
+    participant Web as Web App
+    participant API as API Gateway
+    participant Order as Order Service
+    participant Payment as Payment Service
+    participant DB as Database
 
-User -> Web: Click "Place Order"
-activate Web
+    User->>Web: Click "Place Order"
+    activate Web
 
-Web -> API: POST /api/orders
-activate API
+    Web->>API: POST /api/orders
+    activate API
 
-API -> Order: createOrder(data)
-activate Order
+    API->>Order: createOrder(data)
+    activate Order
 
-Order -> Order: validateData()
-Order -> DB: save(order)
-activate DB
-DB --> Order: orderId
+    Order->>Order: validateData()
+    Order->>DB: save(order)
+    activate DB
+    DB-->>Order: orderId
+    deactivate DB
 
-deactivate DB
+    Order->>Payment: processPayment(order)
+    activate Payment
 
-Order -> Payment: processPayment(order)
-activate Payment
+    Payment->>Payment: validateCard()
+    Payment->>DB: save(payment)
+    activate DB
+    DB-->>Payment: paymentId
+    deactivate DB
 
-Payment -> Payment: validateCard()
-Payment -> DB: save(payment)
-activate DB
-DB --> Payment: paymentId
-deactivate DB
+    Payment-->>Order: paymentResult
+    deactivate Payment
 
-Payment --> Order: paymentResult
-deactivate Payment
+    Order-->>API: orderConfirmation
+    deactivate Order
 
-Order --> API: orderConfirmation
-deactivate Order
+    API-->>Web: 201 Created
+    deactivate API
 
-API --> Web: 201 Created
-
-deactivate API
-
-Web --> User: Show success message
-deactivate Web
-
-@enduml
+    Web-->>User: Show success message
+    deactivate Web
 ```
 
 ---
@@ -515,11 +514,11 @@ Link: <https://docs.example.com/migration/v2>; rel="successor-version"
 2. **Use Case Analysis** (UML Specialist, Senior System Analyst)
    - Identify actors
    - Document use cases
-   - **Create Use Case Diagram (PlantUML ONLY)**
+   - **Create Use Case Diagram (Mermaid ONLY)**
 
 3. **Process Modeling** (Senior System Analyst, UML Specialist)
    - Map business processes
-   - **Create Activity Diagrams (PlantUML ONLY)**
+   - **Create Activity Diagrams (Mermaid ONLY)**
 
 4. **Component Design** (Senior Software Architect)
    - Design system components
@@ -528,42 +527,39 @@ Link: <https://docs.example.com/migration/v2>; rel="successor-version"
 
 5. **Class Design** (Senior Software Engineer, UML Specialist)
    - Design domain model
-   - **Create Class Diagram (PlantUML ONLY)**
+   - **Create Class Diagram (Mermaid ONLY)**
    - Define relationships
 
 6. **Interaction Design** (UML Specialist, Senior Software Architect)
    - Map key scenarios
-   - **Create Sequence Diagrams (PlantUML ONLY)**
+   - **Create Sequence Diagrams (Mermaid ONLY)**
 
 7. **API Design** (API Design Specialist, Senior Backend Developer)
    - Design REST endpoints
    - Create OpenAPI specification
    - Review with frontend team
 
-## UML Standards & Guidelines
+## Diagram Standards & Guidelines
 
-### MANDATORY: Use PlantUML ONLY
+### MANDATORY: Use Mermaid ONLY
 
-**DO NOT use Mermaid syntax.** All UML diagrams must be created using PlantUML.
+**Use Mermaid syntax.** All diagrams must be created using native Mermaid Markdown blocks. Mermaid is widely supported by modern markdown viewers (GitHub, Notion, VS Code) and doesn't require external rendering servers.
 
-### PlantUML Best Practices:
-1. Use `skinparam` for consistent styling
-2. Include `@startuml` and `@enduml` tags
-3. Use meaningful names for actors and components
-4. Add comments for complex logic
-5. Use stereotypes for clarity
-6. Keep diagrams focused (one concept per diagram)
+### Mermaid Best Practices:
+1. Always specify the diagram type first (e.g., `flowchart TD`, `sequenceDiagram`, `classDiagram`)
+2. Use descriptive IDs for nodes
+3. Apply subgraphs to organize components logically
+4. Add comments using `%%` syntax for complex logic
+5. Keep diagrams focused (one concept per diagram, avoid overly massive diagrams)
 
-### Example PlantUML Setup:
-```plantuml
-@startuml
-!theme plain
-skinparam backgroundColor #FEFEFE
-skinparam componentStyle rectangle
-
-' Your diagram here
-
-@enduml
+### Example Mermaid Setup:
+```mermaid
+flowchart TD
+    %% Basic initialization
+    Start([Start]) --> Action1[Action]
+    
+    %% Main logic
+    Action1 --> End([End])
 ```
 
 ## Workflow Validation Checklist
@@ -576,17 +572,17 @@ skinparam componentStyle rectangle
 - [ ] Output folder structure created: `sdlc/03-system-detailed-design/`
 
 ### During Execution
-- [ ] Use Case Diagram created (PlantUML)
-- [ ] Activity Diagram created (PlantUML)
+- [ ] Use Case Diagram created (Mermaid)
+- [ ] Activity Diagram created (Mermaid)
 - [ ] System Architecture documented
-- [ ] Class Diagram created (PlantUML)
-- [ ] Sequence Diagrams created for critical flows (PlantUML)
+- [ ] Class Diagram created (Mermaid)
+- [ ] Sequence Diagrams created for critical flows (Mermaid)
 - [ ] API Specification written (OpenAPI 3.0)
-- [ ] All diagrams use PlantUML syntax (NOT Mermaid)
+- [ ] All diagrams use native Mermaid Markdown syntax
 - [ ] Diagrams reviewed with development team
 
 ### Post-Execution
-- [ ] All UML diagrams render successfully
+- [ ] All diagrams render successfully in Markdown viewer
 - [ ] API specification is complete and versioned
 - [ ] Design review conducted with stakeholders
 - [ ] Documents committed to version control
@@ -600,11 +596,11 @@ skinparam componentStyle rectangle
 - Class diagram accurately models domain entities
 - Sequence diagrams cover critical interaction paths
 - API specification is complete and versioned
-- All UML diagrams use PlantUML syntax (NOT Mermaid)
+- All diagrams use native Mermaid Markdown syntax
 - Design is review-ready for development team
 
 ## Tools & Resources
-- PlantUML online editor: plantuml.com/plantuml
-- PlantUML VS Code extension
+- Mermaid Live Editor: mermaid.live
+- GitHub/GitLab native markdown viewer
 - OpenAPI Specification (Swagger)
 - ArchUnit for architecture testing

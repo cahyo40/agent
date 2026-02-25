@@ -14,7 +14,7 @@ Workflows untuk membuat Flutter UI Kit commercial product mengikuti dokumentasi 
 ```
 workflows/flutter-ui-kit/
 ├── 01_prd_analysis.md              # Analisis PRD, market, user personas, pricing
-├── 02_ascii_wireframe.md           # ASCII wireframe design untuk screens & flows
+├── 02_ui_ux_prototyping.md         # UI/UX prototyping dengan Stitch & DESIGN.md
 ├── 03_technical_implementation.md  # Package structure, design tokens, theme system
 ├── 04_component_development.md     # Component development dengan priority (P0-P3)
 ├── 05_gtm_launch.md                # Go-to-Market strategy dan launch execution
@@ -59,11 +59,11 @@ flutter-ui-kit/
 │   ├── risk-register.md
 │   └── progress-reports.md
 │
-└── wireframes/
-    ├── user-flows.md
-    ├── screen-wireframes.md
-    ├── component-layouts.md
-    └── interaction-annotations.md
+└── 02-ui-ux-prototyping/
+    ├── user-flows-wireframes.md
+    ├── ui-prompts.md
+    ├── DESIGN.md
+    └── component-anatomy.md
 ```
 
 ## Urutan Penggunaan
@@ -73,7 +73,7 @@ flutter-ui-kit/
 ```
 01 PRD Analysis
     ↓
-02 ASCII Wireframe Design
+02 UI/UX Prototyping
     ↓
 03 Technical Implementation
     ↓
@@ -90,7 +90,7 @@ flutter-ui-kit/
 Week 1-2:  Foundation
     │
     ├── 01 PRD Analysis ✅
-    ├── 02 ASCII Wireframe ✅
+    ├── 02 UI/UX Prototyping ✅
     └── 03 Technical Implementation ✅
             │
 Week 3-4:  MVP Part 1 (Core Components)
@@ -117,7 +117,7 @@ Week 8:    LAUNCH 🚀
 | Workflow | Agent Skills |
 |----------|-------------|
 | 01 PRD Analysis | `market-researcher`, `product-strategist`, `user-researcher`, `product-manager` |
-| 02 ASCII Wireframe | `senior-ui-ux-designer`, `ux-researcher`, `mobile-designer`, `interaction-designer` |
+| 02 UI/UX Prototyping | `senior-ui-ux-designer`, `stitch-enhance-prompt`, `stitch-design-md`, `interaction-designer` |
 | 03 Technical Implementation | `senior-flutter-developer`, `package-architect`, `design-system-engineer`, `api-design-specialist` |
 | 04 Component Development | `senior-flutter-developer`, `component-specialist`, `navigation-specialist`, `flutter-testing-specialist` |
 | 05 GTM Launch | `product-marketer`, `channel-manager`, `campaign-manager`, `content-marketer`, `growth-hacker` |
@@ -147,29 +147,23 @@ Week 8:    LAUNCH 🚀
 
 ---
 
-### 02 ASCII Wireframe Design
+### 02 UI/UX Prototyping
 
-**Purpose:** Create ASCII wireframes untuk demo screens dan user flows
+**Purpose:** Generate high-fidelity UI prototypes dan ekstrak Design System menggunakan Stitch AI
 
 **Input:** PRD requirements, component catalog
 
 **Output:**
-- User flow diagrams
-- Screen wireframes (desktop + mobile)
-- Component layout wireframes
-- Interaction annotations
+- User flow & ASCII Wireframes (`user-flows-wireframes.md`)
+- UI Prompts (`ui-prompts.md`)
+- High-fidelity screens (Stitch output)
+- Design System Source of Truth (`DESIGN.md`)
+- Interaction annotations (`component-anatomy.md`)
+
 
 **Duration:** 3-5 days
 
-**Wireframe Notation:**
-| Symbol | Element |
-|--------|---------|
-| `[Text]` | Button/CTA |
-| `(____)` | Text input |
-| `☐` `☑` | Checkbox |
-| `◉` `○` | Radio button |
-| `>>>` | Link/Navigation |
-| `🔍` `🛒` `👤` | Icons |
+**Recommended Skills:** `senior-ui-ux-designer`, `stitch-enhance-prompt`, `stitch-design-md`
 
 **Success Criteria:**
 - All key screens wireframed (desktop + mobile)
@@ -312,7 +306,7 @@ Post-Launch (Week 9+):
 ┌─────────────────────────────────────────────────────────────────┐
 │  WEEK 1-2: FOUNDATION                                           │
 │  ├── 01 PRD Analysis ✅                                         │
-│  ├── 02 ASCII Wireframe ✅                                      │
+│  ├── 02 UI/UX Prototyping ✅                                      │
 │  └── 03 Technical Implementation ✅                             │
 ├─────────────────────────────────────────────────────────────────┤
 │  WEEK 3-4: MVP PART 1                                           │
@@ -388,12 +382,13 @@ Target market: freelance developers di Indonesia dan Southeast Asia.
 Budget: $39-299. Goal: $5,000 MRR dalam 6 bulan."
 ```
 
-### ASCII Wireframe Design
+### UI/UX Prototyping
 ```
-"Gunakan workflow 02_ascii_wireframe.md untuk membuat wireframes demo app
-Flutter UI Kit. Create user flows untuk first-time onboarding, component
-browsing, dan purchase flow. Generate ASCII wireframes untuk desktop dan
-mobile screens. Include component state diagrams dan interaction annotations."
+"Gunakan workflow `02_ui_ux_prototyping.md` untuk menghasilkan UI prototypes.
+1. Buat ASCII wireframes dan user flows untuk Dashboard dan Component Browse.
+2. Enhance prompt dengan `stitch-enhance-prompt` berdasarkan wireframe tersebut.
+3. Generate high-fidelity screens dengan `mcp_stitch_generate_screen`.
+4. Ekstrak warna dan tipografi menjadi `DESIGN.md` menggunakan `stitch-design-md`."
 ```
 
 ### Technical Implementation

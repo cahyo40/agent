@@ -259,7 +259,7 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 | `nextjs-frontend` | 19 | Next.js 14 + TypeScript + Tailwind + Shadcn |
 | `nuxt-frontend` | 14 | Nuxt 3 + TypeScript + Tailwind + Shadcn-vue |
 | `python-backend` | 40 | Python + FastAPI + SQLAlchemy + Alembic |
-| `sdlc-maker` | 15 | SDLC documentation generator |
+| `sdlc-maker` | 16 | SDLC documentation generator |
 
 > 💡 File counts include split parts. Workflow files besar dipecah menjadi beberapa part (max 12K chars per file) agar optimal untuk AI processing.
 

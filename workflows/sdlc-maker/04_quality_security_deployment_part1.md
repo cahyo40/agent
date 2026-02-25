@@ -16,7 +16,7 @@ This workflow covers the Quality & Security phase and Data & Deployment phase. T
 - `test-plan.md` - Test Plan and Automation Strategy
 - `threat-model.md` - Security Threat Model Document
 - `accessibility-test-plan.md` - Accessibility (WCAG) Compliance Plan
-- `database-schema.md` - Database Schema with ERD (PlantUML)
+- `database-schema.md` - Database Schema with ERD (Mermaid)
 - `deployment-architecture.md` - Deployment Architecture and Infrastructure
 - `cicd-pipeline.md` - CI/CD Pipeline Configuration
 
@@ -155,7 +155,7 @@ This workflow covers the Quality & Security phase and Data & Deployment phase. T
 
 
 ## 2. Data Flow Diagram
-[PlantUML or textual representation of data flow]
+[Mermaid or textual representation of data flow]
 
 
 ## 3. Threat Inventory
@@ -342,41 +342,34 @@ npx pa11y https://staging.example.com --standard WCAG2AA
 
 ## Entity Relationship Diagram
 
-```plantuml
-@startuml
-!define table class
+```mermaid
+erDiagram
+    users {
+        UUID id PK
+        VARCHAR(255) email UK
+        VARCHAR(255) password_hash
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-table users {
-  *id: UUID <<PK>>
-  --
-  *email: VARCHAR(255) <<UNIQUE>>
-  *password_hash: VARCHAR(255)
-  *created_at: TIMESTAMP
-  updated_at: TIMESTAMP
-}
+    orders {
+        UUID id PK
+        UUID user_id FK
+        DECIMAL(10,2) total_amount
+        VARCHAR(50) status
+        TIMESTAMP created_at
+    }
 
-table orders {
-  *id: UUID <<PK>>
-  --
-  *user_id: UUID <<FK>>
-  *total_amount: DECIMAL(10,2)
-  *status: VARCHAR(50)
-  *created_at: TIMESTAMP
-}
+    order_items {
+        UUID id PK
+        UUID order_id FK
+        UUID product_id FK
+        INTEGER quantity
+        DECIMAL(10,2) price
+    }
 
-table order_items {
-  *id: UUID <<PK>>
-  --
-  *order_id: UUID <<FK>>
-  *product_id: UUID <<FK>>
-  *quantity: INTEGER
-  *price: DECIMAL(10,2)
-}
-
-users ||--o{ orders : places
-orders ||--|{ order_items : contains
-
-@enduml
+    users ||--o{ orders : "places"
+    orders ||--|{ order_items : "contains"
 ```
 
 
@@ -436,49 +429,46 @@ orders ||--|{ order_items : contains
 
 ## Infrastructure Overview
 
-```plantuml
-@startuml
-!define NODE node
-
-node "Internet" as Internet
-
-cloud "CDN" as CDN {
-  [CloudFront/Cloudflare]
-}
-
-node "Load Balancer" as LB {
-  [Nginx/ALB]
-}
-
-package "Kubernetes Cluster" {
-  package "Frontend Namespace" {
-    [Web App Pods x3]
-  }
-  
-  package "Backend Namespace" {
-    [API Pods x3]
-  }
-  
-  package "Database Namespace" {
-    [PostgreSQL Primary]
-    [PostgreSQL Replica]
-  }
-}
-
-cloud "External Services" {
-  [Redis Cache]
-  [S3 Storage]
-  [SendGrid SES]
-}
-
-Internet --> CDN
-CDN --> LB
-LB --> [Web App Pods x3]
-LB --> [API Pods x3]
-[API Pods x3] --> [PostgreSQL Primary]
-[API Pods x3] --> [Redis Cache]
-[API Pods x3] --> [S3 Storage]
-@enduml
+```mermaid
+flowchart TD
+    Internet((Internet))
+    
+    subgraph CDN [CDN]
+        CloudFront[CloudFront/Cloudflare]
+    end
+    
+    subgraph LB [Load Balancer]
+        Nginx[Nginx/ALB]
+    end
+    
+    subgraph K8s [Kubernetes Cluster]
+        subgraph Frontend [Frontend Namespace]
+            WebApp[Web App Pods x3]
+        end
+        
+        subgraph Backend [Backend Namespace]
+            API[API Pods x3]
+        end
+        
+        subgraph DB Namespace [Database Namespace]
+            PgPrimary[(PostgreSQL Primary)]
+            PgReplica[(PostgreSQL Replica)]
+        end
+    end
+    
+    subgraph External [External Services]
+        Redis[(Redis Cache)]
+        S3[(S3 Storage)]
+        Email[SendGrid SES]
+    end
+    
+    Internet --> CDN
+    CDN --> LB
+    LB --> WebApp
+    LB --> API
+    API --> PgPrimary
+    API --> Redis
+    API --> S3
 ```
 
 
@@ -555,57 +545,61 @@ LB --> [API Pods x3]
 
 ## Pipeline Overview
 
-```plantuml
-@startuml
-start
-
-:Developer pushes code;
-:GitHub Actions triggered;
-
-partition "Build Stage" {
-  :Checkout code;
-  :Install dependencies;
-  :Run linting;
-  :Compile/build;
-  :Build Docker image;
-  :Push to registry;
-}
-
-partition "Test Stage" {
-  :Unit tests;
-  :Integration tests;
-  :Security scan (SAST);
-  :Dependency check;
-  :Code coverage report;
-}
-
-if (All tests pass?) then (yes)
-  partition "Deploy to Staging" {
-    :Deploy to staging cluster;
-    :Run smoke tests;
-    :Performance tests;
-  }
-  
-  :Wait for approval;
-  
-  if (Approved?) then (yes)
-    partition "Deploy to Production" {
-      :Blue-Green deployment;
-      :Health checks;
-      :Switch traffic;
-      :Monitor metrics;
+```mermaid
+stateDiagram-v2
+    [*] --> DevPush: Developer pushes code
+    DevPush --> GithubActions: GitHub Actions triggered
+    
+    state BuildStage {
+        Checkout --> InstallDeps: Checkout code
+        InstallDeps --> Lint: Install dependencies
+        Lint --> Compile: Run linting
+        Compile --> Docker: Compile/build
+        Docker --> PushRegistry: Build Docker image
     }
-    :Deployment complete;
-  else (no)
-    :Deployment rejected;
-  endif
-else (no)
-  :Pipeline failed;
-  :Notify team;
-endif
-
-stop
-@enduml
+    
+    GithubActions --> BuildStage
+    
+    state TestStage {
+        UnitTests --> Integration: Unit tests
+        Integration --> Sast: Integration tests
+        Sast --> DepCheck: Security scan (SAST)
+        DepCheck --> CodeCov: Dependency check
+    }
+    
+    BuildStage --> TestStage
+    
+    state if_tests <<choice>>
+    TestStage --> if_tests: All tests pass?
+    
+    if_tests --> DeployStaging: yes
+    if_tests --> Failed: no
+    
+    state DeployStaging {
+        DeployK8s --> SmokeTest: Deploy to staging cluster
+        SmokeTest --> PerfTest: Run smoke tests
+    }
+    
+    DeployStaging --> WaitApprove: Wait for approval
+    
+    state if_approve <<choice>>
+    WaitApprove --> if_approve: Approved?
+    
+    if_approve --> DeployProd: yes
+    if_approve --> Rejected: no
+    
+    state DeployProd {
+        BlueGreen --> HealthCheck: Blue-Green deployment
+        HealthCheck --> SwitchTraf: Health checks
+        SwitchTraf --> Metrics: Switch traffic
+    }
+    
+    DeployProd --> Complete: Deployment complete
+    Complete --> [*]
+    
+    Rejected --> [*]: Deployment rejected
+    Failed --> Notify: Pipeline failed
+    Notify --> [*]: Notify team
 ```
 
 ---
@@ -626,7 +620,7 @@ stop
 - [ ] Test pyramid defined (Unit 70%, Integration 20%, E2E 10%)
 - [ ] Threat Model created using STRIDE methodology
 - [ ] Security controls documented
-- [ ] Database Schema designed (ERD in PlantUML)
+- [ ] Database Schema designed (ERD in Mermaid)
 - [ ] Table definitions documented
 - [ ] Migration strategy planned
 

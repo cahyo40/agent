@@ -197,7 +197,7 @@ and technology choices.
 
 **Materials:**
 - Architecture documentation
-- System diagram (PlantUML)
+- System diagram (Mermaid)
 - Technology decision records
 
 **Recording:** [Link to recording]
@@ -229,7 +229,7 @@ and conventions.
 
 
 ## Reference Materials Checklist
-- [ ] Architecture diagram (PlantUML)
+- [ ] Architecture diagram (Mermaid)
 - [ ] API documentation (Swagger)
 - [ ] Database ERD
 - [ ] Developer setup guide

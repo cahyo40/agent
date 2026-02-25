@@ -143,7 +143,7 @@ ON products USING GIN (to_tsvector('english', name || ' ' || description));
    - Establish naming conventions
 
 3. **ERD Design** (Database Modeling Specialist, UML Specialist)
-   - Create PlantUML ERD
+   - Create Mermaid ERD
    - Review relationships and cardinality
    - Validate against use cases
 
@@ -171,7 +171,7 @@ ON products USING GIN (to_tsvector('english', name || ' ' || description));
 
 ## Success Criteria
 - Data dictionary covers all entities from requirements
-- ERD uses PlantUML and is renderable
+- ERD uses Mermaid and is renderable
 - All relationships have correct cardinality
 - Migration plan includes UP and DOWN scripts
 - Index strategy covers critical query patterns
@@ -181,7 +181,7 @@ ON products USING GIN (to_tsvector('english', name || ' ' || description));
 
 
 ## Tools & Resources
-- ERD: PlantUML (plantuml.com/ie-diagram)
+- ERD: Mermaid Live Editor (mermaid.live)
 - Migration: golang-migrate, Prisma Migrate, Flyway
 - Estimation: Planning Poker, T-shirt Sizing
 - Project Management: Jira, Linear, Notion, GitHub Projects

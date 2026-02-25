@@ -543,7 +543,7 @@ Error Alert:
 ## Cross-References
 
 - **Previous Phase** → `01_requirement_analysis.md`
-- **Next Phase** → `03_system_detailed_design.md`
+- **Next Phase** → `02_ui_ux_design_part2.md` (for Stitch AI generation) or `03_system_detailed_design.md`
 - **Related** → `06_data_modeling_estimation.md` (for UI-related data display)
 - **SDLC Mapping** → `../../other/sdlc/SDLC_MAPPING.md`
 - **Implementation** → `../flutter-bloc/`, `../flutter-getx/`, `../nextjs-frontend/`
