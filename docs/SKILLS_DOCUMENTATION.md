@@ -293,6 +293,14 @@ implementasi design dari Figma ke Flutter code
 
 ## Changelog
 
+### v6.20.0 (2026-02-25)
+
+- ✨ **New Playbooks Added** - Created standalone Vibe Coding Playbooks
+- 📁 **New Directory:** `vibe-coding-guides/`
+  - `FLUTTER_VIBE_CODING.md` - Vibe coding playbook for Flutter and YoDev
+  - `GOLANG_VIBE_CODING.md` - Vibe coding playbook for Golang Backend
+- 🧹 **Cleanup:** Moved vibe coding documentation out of `yo-flutter-vibe-coder` and `yo-flutter-dev` skills to the new root directory.
+
 ### v6.19.0 (2026-02-22)
 
 - ✨ **2 New Skills Added** - QA Engineering & Security Testing
