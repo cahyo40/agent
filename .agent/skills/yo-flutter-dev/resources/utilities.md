@@ -123,15 +123,28 @@ YoAdaptive(
 )
 ```
 
-### YoSpacing
+### YoSpacing (Design Tokens)
+
+Gunakan YoSpacing untuk nilai token mentah atau `context` extensions.
+
+| Name | Spacing | Target |
+|------|---------|--------|
+| `xs` | 4.0 | Small elements |
+| `sm` | 8.0 | Inner padding |
+| `md` | 16.0 | Component spacing |
+| `lg` | 24.0 | Page margins |
+| `xl` | 32.0 | Section spacing |
+| `xxl`| 48.0 | Large sections |
 
 ```dart
-YoSpacing.xs   // 4.0
-YoSpacing.sm   // 8.0
-YoSpacing.md   // 16.0
-YoSpacing.lg   // 24.0
-YoSpacing.xl   // 32.0
-YoSpacing.xxl  // 48.0
+// Spacing values
+padding: EdgeInsets.all(YoSpacing.md),
+
+// Radius values
+radius: YoSpacing.radiusMd,
+
+// BorderRadius objects
+borderRadius: YoSpacing.borderRadiusMd,
 ```
 
 ### YoPadding
@@ -145,12 +158,22 @@ YoPadding.page(child: w)         // standard page padding
 
 ### YoSpace
 
+Gunakan `YoSpace` alih-alih `SizedBox` untuk mempertahankan konsistensi layout.
+
 ```dart
-const YoSpace.xs()   // SizedBox(height: 4)
-const YoSpace.sm()   // SizedBox(height: 8)
-const YoSpace.md()   // SizedBox(height: 16)
-const YoSpace.lg()   // SizedBox(height: 24)
-const YoSpace.xl()   // SizedBox(height: 32)
+// Fixed Height (Standard)
+const YoSpace.xs()   // 4
+const YoSpace.sm()   // 8
+const YoSpace.md()   // 16
+const YoSpace.lg()   // 24
+const YoSpace.xl()   // 32
+
+// Custom Height/Width
+const YoSpace.height(12)
+const YoSpace.width(20)
+
+// Responsive height (berbeda di mobile/desktop)
+YoSpace.adaptiveHeight(16)
 ```
 
 ## Picker Components

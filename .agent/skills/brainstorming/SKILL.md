@@ -1,229 +1,96 @@
 ---
 name: brainstorming
-description: "Creative problem-solving and ideation framework for features, architecture, products, and technical solutions"
+description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
 ---
 
-# Brainstorming
+# Brainstorming Ideas Into Designs
 
 ## Overview
 
-Transform vague ideas into clear, actionable plans through structured creative thinking.
+Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
 
-## When to Use This Skill
+Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
 
-- Use before designing new features
-- Use when exploring solution options
-- Use when facing complex problems
-- Use when the user has vague requirements
+<HARD-GATE>
+Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+</HARD-GATE>
 
-## How It Works
+## Anti-Pattern: "This Is Too Simple To Need A Design"
 
-### Step 1: Problem Framing
+Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
-```markdown
-## Problem Framing Canvas
+## Checklist
 
-### 1. WHAT is the problem?
-[Clear, specific statement in one sentence]
+You MUST create a task for each of these items and complete them in order:
 
-### 2. WHO is affected?
-- Primary users: [who]
-- Secondary stakeholders: [who]
-- Systems impacted: [what]
+1. **Explore project context** — check files, docs, recent commits
+2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
+3. **Propose 2-3 approaches** — with trade-offs and your recommendation
+4. **Present design** — in sections scaled to their complexity, get user approval after each section
+5. **Write design doc** — save to `docs/plans/YYYY-MM-DD-<topic>-design.md` and commit
+6. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
-### 3. WHY does it matter?
-- Business impact: [revenue, cost, efficiency]
-- User impact: [pain points, frustration]
-- Urgency: [timeline pressure]
+## Process Flow
 
-### 4. WHAT constraints exist?
-- Time: [deadline]
-- Budget: [resources available]
-- Technology: [stack limitations]
-- Skills: [team capabilities]
+```dot
+digraph brainstorming {
+    "Explore project context" [shape=box];
+    "Ask clarifying questions" [shape=box];
+    "Propose 2-3 approaches" [shape=box];
+    "Present design sections" [shape=box];
+    "User approves design?" [shape=diamond];
+    "Write design doc" [shape=box];
+    "Invoke writing-plans skill" [shape=doublecircle];
 
-### 5. WHAT does success look like?
-- Metric 1: [measurable outcome]
-- Metric 2: [measurable outcome]
-- Definition of done: [criteria]
+    "Explore project context" -> "Ask clarifying questions";
+    "Ask clarifying questions" -> "Propose 2-3 approaches";
+    "Propose 2-3 approaches" -> "Present design sections";
+    "Present design sections" -> "User approves design?";
+    "User approves design?" -> "Present design sections" [label="no, revise"];
+    "User approves design?" -> "Write design doc" [label="yes"];
+    "Write design doc" -> "Invoke writing-plans skill";
+}
 ```
 
-### Step 2: Ideation Techniques
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
 
-```markdown
-## Divergent Thinking (Generate Ideas)
+## The Process
 
-### "How Might We..." Questions
-- HMW make [task] faster?
-- HMW make [experience] more enjoyable?
-- HMW reduce [friction point]?
-- HMW help users [achieve goal]?
+**Understanding the idea:**
+- Check out the current project state first (files, docs, recent commits)
+- Ask questions one at a time to refine the idea
+- Prefer multiple choice questions when possible, but open-ended is fine too
+- Only one question per message - if a topic needs more exploration, break it into multiple questions
+- Focus on understanding: purpose, constraints, success criteria
 
-### Reverse Brainstorming
-"How could we make this WORSE?"
-→ Then flip each answer to find solutions
+**Exploring approaches:**
+- Propose 2-3 different approaches with trade-offs
+- Present options conversationally with your recommendation and reasoning
+- Lead with your recommended option and explain why
 
-### Analogies
-"How does [other industry] solve this?"
-- Uber → on-demand anything
-- Netflix → subscription model
-- Amazon → one-click purchasing
+**Presenting the design:**
+- Once you believe you understand what you're building, present the design
+- Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
+- Ask after each section whether it looks right so far
+- Cover: architecture, components, data flow, error handling, testing
+- Be ready to go back and clarify if something doesn't make sense
 
-### 10x Thinking
-"If we had unlimited resources, what would we build?"
-→ Then scale back to MVP
+## After the Design
 
-### SCAMPER Method
-- Substitute: What can we replace?
-- Combine: What can we merge?
-- Adapt: What can we copy from elsewhere?
-- Modify: What can we change?
-- Put to other uses: New applications?
-- Eliminate: What can we remove?
-- Reverse: What if we did the opposite?
-```
+**Documentation:**
+- Write the validated design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
+- Use elements-of-style:writing-clearly-and-concisely skill if available
+- Commit the design document to git
 
-### Step 3: Idea Prioritization
+**Implementation:**
+- Invoke the writing-plans skill to create a detailed implementation plan
+- Do NOT invoke any other skill. writing-plans is the next step.
 
-```markdown
-## Impact vs Effort Matrix
+## Key Principles
 
-           HIGH IMPACT
-                │
-    Quick Wins  │  Big Bets
-    (Do First)  │  (Plan Carefully)
-                │
-────────────────┼────────────────
-                │
-    Fill-ins    │  Time Sinks
-    (Do Later)  │  (Avoid)
-                │
-           LOW IMPACT
-    LOW EFFORT ─────── HIGH EFFORT
-
-## RICE Scoring
-
-| Idea | Reach | Impact | Confidence | Effort | Score |
-|------|-------|--------|------------|--------|-------|
-| A    | 1000  | 3      | 80%        | 2w     | 120   |
-| B    | 500   | 2      | 90%        | 1w     | 90    |
-| C    | 2000  | 1      | 50%        | 3w     | 33    |
-
-Score = (Reach × Impact × Confidence) / Effort
-
-## MoSCoW Prioritization
-
-- **Must Have**: Critical for launch
-- **Should Have**: Important but not critical
-- **Could Have**: Nice to have
-- **Won't Have**: Out of scope (for now)
-```
-
-### Step 4: Solution Validation
-
-```markdown
-## Quick Validation Checklist
-
-### Feasibility
-- [ ] Can we build this with current tech?
-- [ ] Do we have the skills?
-- [ ] Is the timeline realistic?
-
-### Viability
-- [ ] Does it solve the real problem?
-- [ ] Will users pay/use this?
-- [ ] Is ROI positive?
-
-### Desirability
-- [ ] Do users actually want this?
-- [ ] Have we validated with real users?
-- [ ] Does it fit user workflows?
-
-## Assumption Testing
-
-| Assumption | Risk Level | How to Test | Result |
-|------------|------------|-------------|--------|
-| Users want X | High | Survey | TBD |
-| Tech can handle Y | Medium | Prototype | TBD |
-| Market exists | High | Competitor research | TBD |
-```
-
-### Step 5: Action Planning
-
-```markdown
-## Next Steps Template
-
-### Immediate (This Week)
-- [ ] Validate assumption X
-- [ ] Create quick prototype
-- [ ] Get 5 user interviews
-
-### Short-term (This Sprint)
-- [ ] Build MVP core feature
-- [ ] Set up analytics
-- [ ] Get initial feedback
-
-### Medium-term (This Month)
-- [ ] Iterate based on feedback
-- [ ] Add supporting features
-- [ ] Prepare for launch
-
-### Success Metrics
-- North Star: [primary metric]
-- Leading indicator: [early signal]
-- Health metric: [sustainability check]
-```
-
-### Step 6: Creative Prompts
-
-```markdown
-## When You're Stuck
-
-### Perspective Shifts
-- "What would [competitor] do?"
-- "What would a beginner expect?"
-- "What would make this 10x simpler?"
-- "What if we had to launch in 1 day?"
-
-### Constraint Removal
-- "What if cost wasn't a factor?"
-- "What if we ignored legacy systems?"
-- "What if we started from scratch?"
-
-### User-Centric
-- "What's the user doing before/after using this?"
-- "What's the user's real goal?"
-- "What would delight the user?"
-
-### Patterns
-- "What's the simplest version that works?"
-- "What's the 80/20 solution?"
-- "What's already working that we can extend?"
-```
-
-## Best Practices
-
-### ✅ Do This
-
-- ✅ Separate ideation from evaluation
-- ✅ Encourage wild ideas first
-- ✅ Build on others' ideas ("Yes, and...")
-- ✅ Document ALL options
-- ✅ Use visual tools (diagrams, maps)
-- ✅ Time-box brainstorming sessions
-- ✅ Include diverse perspectives
-
-### ❌ Avoid This
-
-- ❌ Don't criticize during ideation
-- ❌ Don't jump to first solution
-- ❌ Don't ignore constraints
-- ❌ Don't skip user validation
-- ❌ Don't over-engineer before validating
-
-## Related Skills
-
-- `@senior-software-architect` - Technical architecture
-- `@senior-project-manager` - Project planning
-- `@startup-analyst` - Business validation
-- `@senior-ui-ux-designer` - User experience
+- **One question at a time** - Don't overwhelm with multiple questions
+- **Multiple choice preferred** - Easier to answer than open-ended when possible
+- **YAGNI ruthlessly** - Remove unnecessary features from all designs
+- **Explore alternatives** - Always propose 2-3 approaches before settling
+- **Incremental validation** - Present design, get approval before moving on
+- **Be flexible** - Go back and clarify when something doesn't make sense

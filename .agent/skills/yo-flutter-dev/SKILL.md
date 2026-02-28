@@ -54,7 +54,8 @@ Referensi detail untuk setiap area. Baca file yang relevan saat mengerjakan tuga
 2. **JANGAN mengarang komponen** — gunakan hanya yang ada di resources/
 3. **GUNAKAN GENERATOR** — `dart run yo.dart page:xxx`, bukan tulis manual
 4. **VERIFIKASI OUTPUT** — cari `// TODO` markers setelah generate
-5. **JANGAN MIX state management** — satu project satu SM
+5. **Wajib Pakai TOKENS** — gunakan `YoSpace` (bukan SizedBox) dan `context.yoRadius` (bukan hardcoded radius/BorderRadius).
+6. **JANGAN MIX state management** — satu project satu SM
 
 ## Quick Setup
 

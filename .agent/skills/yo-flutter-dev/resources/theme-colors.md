@@ -188,7 +188,6 @@ YoColors.info
 YoColors.light
 YoColors.dark
 ```
-
 ## YoShadow
 
 ```dart
@@ -196,6 +195,26 @@ YoShadow.sm    // subtle
 YoShadow.md    // medium
 YoShadow.lg    // large
 YoShadow.xl    // extra large
+```
+
+## Design Tokens: Radius
+
+Akses radius yang konsisten via `context` atau `YoSpacing`.
+
+| Token | Value | Context Extension |
+|-------|-------|-------------------|
+| **Radius Sm** | 4.0 | `context.yoRadiusSm` |
+| **Radius Md** | 8.0 | `context.yoRadiusMd` |
+| **Radius Lg** | 12.0 | `context.yoRadiusLg` |
+| **Radius Xl** | 16.0 | `context.yoRadiusXl` |
+
+**Usage Example:**
+```dart
+// Mendapatkan BorderRadius object
+borderRadius: context.yoBorderRadiusMd,
+
+// Mendapatkan nilai double radius
+radius: context.yoRadiusLg,
 ```
 
 ## ⚠️ Common Mistakes
