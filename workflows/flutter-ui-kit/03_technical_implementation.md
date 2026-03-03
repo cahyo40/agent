@@ -1,79 +1,148 @@
 ---
-description: This workflow covers the Technical Implementation phase for Flutter UI Kit package development.
+description: Technical Implementation untuk Flutter UI Kit package. Translate DESIGN.md ke Flutter ThemeData, tokens, dan component APIs.
 ---
 # Workflow: Technical Implementation - Flutter UI Kit
 
 ## Overview
-This workflow guides the technical implementation of the Flutter UI Kit package, covering architecture setup, design tokens, theme system, and component development standards.
+Workflow ini memandu implementasi teknis **Flutter UI Kit package** — mulai dari setup package, design tokens, theme system, hingga component API specifications. Input utamanya adalah `DESIGN.md` dari Phase 2.
+
+**CRITICAL:** Output dari fase ini SELALU berupa **Flutter package** (library yang di-publish ke pub.dev), BUKAN berupa aplikasi standalone. Semua code harus dirancang untuk dikonsumsi oleh developer lain via `import 'package:flutter_ui_kit/flutter_ui_kit.dart';`.
 
 ## Output Location
-**Base Folder:** `flutter-ui-kit/02-technical-implementation/`
+**Base Folder:** `flutter-ui-kit/03-technical-implementation/`
 
 **Output Files:**
 - `package-structure.md` - Package Directory Structure and Organization
-- `design-tokens.md` - Complete Design Tokens Implementation
-- `theme-system.md` - Theme Configuration and Pre-built Themes
-- `component-api-spec.md` - Component API Specifications and Examples
-- `testing-strategy.md` - Testing Approach and Coverage Requirements
+- `dependencies.md` - `pubspec.yaml` constraints (zero third-party in core)
+- `design-tokens.md` - Complete Design Tokens Implementation (from DESIGN.md)
+- `theme-system.md` - Theme Config Data Models (`AppThemeConfig`, `AppColorPalette`)
+- `component-api-spec.md` - Component API Patterns and Specifications
+- `testing-strategy.md` - Testing Approach (`flutter_test`, `golden_toolkit`)
 
 ## Prerequisites
-- PRD Analysis completed (`01_prd_analysis.md`)
-- UI/UX Prototyping completed (`02_ui_ux_prototyping.md`) with `DESIGN.md` ready
-- Component priorities defined
+- PRD Analysis selesai (`01_prd_analysis.md` → 5 dimensi UI Kit ter-extract)
+- UI/UX Prototyping selesai (`02_ui_ux_prototyping.md` → `DESIGN.md` ready)
+- Component priorities defined (P0/P1/P2 dari Phase 1)
 - Flutter SDK >=3.10.0 installed
-- Development environment setup
+
+---
+
+## Agent Behavior: Context Chain
+
+**GOLDEN RULE:** Agen TIDAK BOLEH mengabaikan output dari Phase 1 dan 2. Semua keputusan teknis HARUS di-drive oleh `DESIGN.md` dan dimensi UI Kit, bukan dari asumsi baru.
+
+### Prinsip Utama: OUTPUT = SELALU FLUTTER PACKAGE
+
+Semua code yang dihasilkan adalah untuk **package/library**, bukan app:
+- Public API via single entry point (`flutter_ui_kit.dart`)
+- **MINIMAL curated dependencies** — hanya yang benar-benar dibutuhkan:
+  - `google_fonts` — typography premium
+  - `intl` — internationalization (date/number/currency formatting)
+  - `flutter_localizations` (Flutter SDK) — multi-language support
+- Dev dependencies ok (flutter_test, mocktail, golden_toolkit)
+- Semua komponen harus theme-aware (menggunakan `Theme.of(context)`)
+- **DILARANG:** state management packages (Riverpod/BLoC/GetX), database (Hive/Sqflite/Isar), HTTP clients
+
+### Input dari Phase Sebelumnya
+
+```
+Phase 1 (PRD) → 5 Dimensi UI Kit (domain, gaya, scope, templates, platform)
+                           ↓
+Phase 2 (UI/UX) → DESIGN.md (colors, typography, spacing, radius, shadows)
+                           ↓
+Phase 3 (Technical) → ThemeData + Tokens + Component APIs
+```
+
+#### DESIGN.md → ThemeData Translation Rules
+
+Agen WAJIB menerjemahkan setiap section dari `DESIGN.md` ke Flutter code:
+
+| DESIGN.md Section | Flutter Implementation | File |
+|-------------------|----------------------|------|
+| Color Palette (Light) | `ColorScheme` + `ThemeData.colorScheme` | `lib/src/tokens/colors.dart` |
+| Color Palette (Dark) | `ColorScheme` dark variant | `lib/src/theme/dark_theme.dart` |
+| Typography Scale | `TextTheme` + font package | `lib/src/tokens/typography.dart` |
+| Spacing System | `AppSpacing` constants class | `lib/src/tokens/spacing.dart` |
+| Border Radius | `AppRadius` constants + component defaults | `lib/src/tokens/radius.dart` |
+| Elevation/Shadows | `AppShadows` + `BoxShadow` lists | `lib/src/tokens/shadows.dart` |
+
+#### Domain-Specific Component Handling
+
+Jika Phase 1 mendeteksi target domain (e-commerce, fintech, dll), Phase 3 harus:
+- Include domain components sebagai **optional sub-package** atau folder terpisah
+- Core components (AppButton, AppCard, dll) = WAJIB, zero-dependency
+- Domain components (ProductCard, BalanceCard, dll) = OPSIONAL, boleh di folder terpisah
+
+```text
+lib/src/components/
+├── core/              # P0 - WAJIB ada (AppButton, AppCard, AppTextField...)
+├── navigation/        # P0 - WAJIB ada (AppBottomNav, AppTabBar...)
+├── feedback/          # P0 - WAJIB ada (AppDialog, AppSnackBar...)
+├── data_display/      # P1 - Core (AppAvatar, AppBadge, AppChip...)
+└── domain/            # P1 - OPSIONAL, berdasarkan target domain
+    ├── ecommerce/     # ProductCard, CartItem, PriceTag (jika domain = e-commerce)
+    ├── fintech/       # BalanceCard, TransactionItem (jika domain = fintech)
+    └── dashboard/     # StatCard, DataTable (jika domain = dashboard)
+```
+
+---
 
 ## Deliverables
 
 ### 1. Package Structure
 
-**Description:** Define and implement the complete package directory structure.
+**Description:** Setup package directory structure mengikuti Flutter/Dart best practices untuk distribusi via pub.dev.
 
-**Recommended Skills:** `senior-flutter-developer`, `package-architect`
+**Recommended Skills:** `senior-flutter-developer`
 
 **Instructions:**
-1. Create package structure following Dart/Flutter best practices:
-   - Public API exports (single entry point)
-   - Internal implementation (src/ folder)
+1. Create package structure:
+   - Single entry point (`flutter_ui_kit.dart`) — single import untuk user
+   - Internal implementation dalam `src/` folder
    - Component organization by category
    - Test structure mirroring source
 2. Configure package metadata:
-   - pubspec.yaml with proper dependencies
-   - analysis_options.yaml with linter rules
-   - README.md with package overview
-   - LICENSE file (MIT recommended)
-3. Setup example app structure:
-   - Demo screens for each component
+   - `pubspec.yaml` dengan ZERO third-party di dependencies
+   - `analysis_options.yaml` dengan strict linting (very_good_analysis)
+   - `README.md`, `CHANGELOG.md`, `LICENSE` (MIT)
+3. Setup example app structure (showcase):
+   - Demo screen per component
    - Theme switching capability
    - Code example display
-4. Configure CI/CD:
+4. Setup CI/CD:
    - GitHub Actions for tests
+   - Coverage reporting (>85% gate)
    - Automated pub.dev publishing
-   - Code coverage reporting
 
 **Output Format:**
 ```markdown
 # Package Structure
 
-## Architecture Overview
+## Architecture
 ```mermaid
 flowchart TD
-    subgraph Public API
-        Core[flutter_ui_kit.dart]
+    subgraph "Public API"
+        Core["flutter_ui_kit.dart (single import)"]
     end
 
-    subgraph Internal Implementation src/
-        Theme[Theme Config & Extensions]
-        Tokens[Design Tokens]
-        Components[UI Components]
-        Utils[Utilities]
+    subgraph "Internal (src/)"
+        Tokens["Design Tokens"]
+        Theme["Theme System"]
+        Components["UI Components"]
+        Utils["Utilities"]
+    end
+
+    subgraph "Optional Domain"
+        Domain["domain/ (e-commerce, fintech, etc.)"]
     end
 
     Core --> Theme
     Core --> Components
+    Core --> Domain
     Components --> Theme
     Theme --> Tokens
     Components --> Utils
+    Domain --> Components
 ```
 
 ## Directory Layout
@@ -81,99 +150,164 @@ flowchart TD
 flutter_ui_kit/
 │
 ├── lib/
-│   ├── flutter_ui_kit.dart           # Main export (public API)
+│   ├── flutter_ui_kit.dart            # Main export (PUBLIC API)
 │   │
-│   ├── src/
-│   │   ├── tokens/                   # Design Tokens (Internal)
-│   │   │   ├── colors.dart
-│   │   │   ├── typography.dart
-│   │   │   ├── spacing.dart
-│   │   │   ├── radius.dart
-│   │   │   ├── shadows.dart
-│   │   │   └── tokens.dart           # Export all tokens
-│   │   │
-│   │   ├── theme/                    # Theme Configuration
-│   │   │   ├── light_theme.dart
-│   │   │   ├── dark_theme.dart
-│   │   │   ├── theme_config.dart
-│   │   │   └── theme.dart            # Export themes
-│   │   │
-│   │   ├── components/               # UI Components
-│   │   │   ├── button/
-│   │   │   │   ├── button.dart
-│   │   │   │   ├── button_styles.dart
-│   │   │   │   └── button_variants.dart
-│   │   │   ├── input/
-│   │   │   ├── card/
-│   │   │   ├── navigation/
-│   │   │   ├── feedback/
-│   │   │   ├── data_display/
-│   │   │   └── layout/
-│   │   │
-│   │   └── utils/                    # Internal Utilities
-│   │       ├── extensions.dart
-│   │       └── constants.dart
-│   │
-│   └── assets/                       # Assets (if needed)
-│       └── images/
+│   └── src/
+│       ├── tokens/                    # Design Tokens
+│       │   ├── colors.dart            # Color palettes (from DESIGN.md)
+│       │   ├── typography.dart        # Font scales (from DESIGN.md)
+│       │   ├── spacing.dart           # Spacing system (from DESIGN.md)
+│       │   ├── radius.dart            # Border radius (from DESIGN.md)
+│       │   ├── shadows.dart           # Shadow/elevation (from DESIGN.md)
+│       │   └── tokens.dart            # Export barrel
+│       │
+│       ├── theme/                     # Theme Configuration
+│       │   ├── theme_config.dart      # ThemeConfig class
+│       │   ├── color_palette.dart     # AppColorPalette enum/class
+│       │   ├── light_theme.dart       # Light ThemeData builder
+│       │   ├── dark_theme.dart        # Dark ThemeData builder
+│       │   ├── themes.dart            # Pre-built AppThemes (8×2=16)
+│       │   └── theme.dart             # Export barrel
+│       │
+│       ├── components/                # UI Components
+│       │   ├── core/                  # P0 Core Components
+│       │   │   ├── button/
+│       │   │   │   ├── app_button.dart
+│       │   │   │   ├── button_variant.dart
+│       │   │   │   └── button_size.dart
+│       │   │   ├── text_field/
+│       │   │   ├── card/
+│       │   │   ├── checkbox/
+│       │   │   └── switch/
+│       │   │
+│       │   ├── navigation/            # Navigation Components
+│       │   │   ├── bottom_nav/
+│       │   │   └── tab_bar/
+│       │   │
+│       │   ├── feedback/              # Feedback Components
+│       │   │   ├── dialog/
+│       │   │   ├── snackbar/
+│       │   │   └── toast/
+│       │   │
+│       │   ├── data_display/          # Data Display Components
+│       │   │   ├── avatar/
+│       │   │   ├── badge/
+│       │   │   └── chip/
+│       │   │
+│       │   └── domain/               # OPTIONAL Domain Components
+│       │       ├── ecommerce/         # (if target domain = e-commerce)
+│       │       ├── fintech/           # (if target domain = fintech)
+│       │       └── dashboard/         # (if target domain = dashboard)
+│       │
+│       └── utils/                     # Internal Utilities
+│           ├── extensions.dart
+│           └── constants.dart
 │
-├── example/                          # Demo Application
+├── example/                           # Showcase App (Clean Architecture + Dummy Data)
 │   ├── lib/
-│   │   ├── main.dart
-│   │   ├── screens/
-│   │   │   ├── home_screen.dart
-│   │   │   ├── button_demo.dart
-│   │   │   ├── input_demo.dart
-│   │   │   └── ...
-│   │   └── theme/
-│   │       └── app_theme.dart
-│   ├── pubspec.yaml
-│   └── README.md
+│   │   ├── main.dart                  # Entry point, ThemeProvider setup
+│   │   │
+│   │   ├── core/                      # App-level concerns
+│   │   │   ├── theme/
+│   │   │   │   └── theme_provider.dart  # ChangeNotifier for theme switching
+│   │   │   └── di/
+│   │   │       └── service_locator.dart # Manual DI (constructor injection)
+│   │   │
+│   │   ├── domain/                    # Abstract interfaces + models
+│   │   │   ├── models/
+│   │   │   │   ├── product.dart       # Data class (domain-dependent)
+│   │   │   │   ├── user.dart
+│   │   │   │   └── transaction.dart
+│   │   │   └── repositories/
+│   │   │       ├── product_repository.dart    # Abstract interface
+│   │   │       ├── user_repository.dart
+│   │   │       └── transaction_repository.dart
+│   │   │
+│   │   ├── data/                      # Concrete implementations
+│   │   │   ├── dummy/                 # Hardcoded dummy data (NO database)
+│   │   │   │   ├── dummy_products.dart
+│   │   │   │   ├── dummy_users.dart
+│   │   │   │   └── dummy_transactions.dart
+│   │   │   └── repositories/
+│   │   │       ├── dummy_product_repository.dart  # implements ProductRepository
+│   │   │       ├── dummy_user_repository.dart
+│   │   │       └── dummy_transaction_repository.dart
+│   │   │
+│   │   └── presentation/             # Screens + state providers
+│   │       ├── providers/
+│   │       │   ├── product_provider.dart    # ChangeNotifier (built-in)
+│   │       │   ├── theme_provider.dart      # ValueNotifier<ThemeMode>
+│   │       │   └── catalog_provider.dart
+│   │       └── screens/
+│   │           ├── catalog_screen.dart      # All components grid
+│   │           ├── component_detail.dart    # Single component preview + knobs
+│   │           ├── theme_builder.dart       # Live theme switching
+│   │           ├── button_demo.dart         # Per-component demos
+│   │           ├── text_field_demo.dart
+│   │           └── template_screens/        # Domain template screens
+│   │               ├── login_screen.dart
+│   │               ├── dashboard_screen.dart
+│   │               └── settings_screen.dart
+│   └── pubspec.yaml                   # go_router only (for navigation)
 │
-├── test/                             # Widget Tests
-│   ├── button_test.dart
-│   ├── input_test.dart
-│   └── ...
+├── test/                              # Tests (mirror src/)
+│   ├── tokens/
+│   ├── theme/
+│   ├── components/
+│   └── goldens/
 │
-├── docs/                             # Documentation
-│   ├── GETTING_STARTED.md
-│   ├── CUSTOMIZATION.md
-│   └── COMPONENTS/
-│
-├── CHANGELOG.md                      # Version History
-├── README.md                         # Package Documentation
-├── pubspec.yaml                      # Package Configuration
-├── analysis_options.yaml             # Linter Rules
-└── LICENSE                           # License File
+├── pubspec.yaml                       # ZERO third-party deps
+├── analysis_options.yaml              # Strict linting
+├── CHANGELOG.md
+├── README.md
+└── LICENSE                            # MIT
 ```
 
-## pubspec.yaml Configuration
+## pubspec.yaml (MINIMAL Curated Dependencies)
 ```yaml
 name: flutter_ui_kit
-description: A beautiful, production-ready Flutter UI Kit with customizable components and themes.
+description: A beautiful, production-ready Flutter UI Kit with i18n support.
 version: 1.0.0
 homepage: https://flutteruikit.com
-repository: https://github.com/yourusername/flutter_ui_kit
-issue_tracker: https://github.com/yourusername/flutter_ui_kit/issues
+repository: https://github.com/username/flutter_ui_kit
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
   flutter: '>=3.10.0'
 
+# MINIMAL curated — only essentials
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:          # i18n support (Flutter SDK, bukan third-party)
+    sdk: flutter
+  google_fonts: ^6.0.0            # Premium typography (Inter, Outfit, Plus Jakarta Sans)
+  intl: ^0.19.0                   # Date/number/currency formatting + ARB translations
 
+# DILARANG ditambah: riverpod, bloc, getx, hive, sqflite, isar, dio, http
+
+# Dev deps — OK
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
   mocktail: ^1.0.0
   very_good_analysis: ^5.0.0
-
-flutter:
-  uses-material-design: true
+  golden_toolkit: ^0.15.0
 ```
+
+### Dependency Policy
+
+| Package | Kategori | Alasan | Wajib? |
+|---------|----------|--------|--------|
+| `flutter` | SDK | Core framework | ✅ Wajib |
+| `flutter_localizations` | SDK | Multi-language support | ✅ Wajib |
+| `google_fonts` | Typography | Font premium tanpa bundle .ttf besar | ✅ Wajib |
+| `intl` | i18n | Date, number, currency formatting + ARB | ✅ Wajib |
+| `go_router` | Navigation | **Hanya di example app** | ⚠️ Example only |
+| ~~riverpod/bloc/getx~~ | State mgmt | **DILARANG** — pembeli pilih sendiri | ❌ Dilarang |
+| ~~hive/sqflite/isar~~ | Database | **DILARANG** — bukan concern UI Kit | ❌ Dilarang |
+| ~~dio/http~~ | Networking | **DILARANG** — bukan concern UI Kit | ❌ Dilarang |
 
 ## analysis_options.yaml
 ```yaml
@@ -186,64 +320,550 @@ linter:
 ```
 ```
 
+## Showcase App Architecture (Clean Architecture + Dummy Data)
+
+**CRITICAL:** Showcase app (`example/`) menggunakan **clean architecture** untuk mendemonstrasikan UI Kit dalam konteks real, tapi TANPA database. Semua data = dummy/hardcoded.
+
+### Why Clean Architecture di Showcase App?
+- Pembeli lihat **cara profesional** pakai UI Kit dalam arsitektur nyata
+- Pattern yang ditunjukkan bisa di-copy ke project pembeli
+- Tanpa database = zero config, clone → run → lihat langsung
+- Built-in state management = compatible dengan SEMUA state management pilihan pembeli
+
+### Architecture Layers
+
+```mermaid
+flowchart TD
+    subgraph "Presentation Layer"
+        Screens["Screens (demo screens)"]
+        Providers["Providers (ChangeNotifier)"]
+    end
+
+    subgraph "Domain Layer"
+        Models["Models (Product, User...)"]
+        RepoInterface["Repository Interfaces (abstract)"]
+    end
+
+    subgraph "Data Layer"
+        DummyData["Dummy Data (hardcoded List)"]
+        DummyRepo["DummyRepository (implements interface)"]
+    end
+
+    Screens --> Providers
+    Providers --> RepoInterface
+    DummyRepo --> RepoInterface
+    DummyRepo --> DummyData
+    Screens --> |"uses"| UIKit["flutter_ui_kit widgets"]
+```
+
+### State Management: Built-in Only
+
+```dart
+// ✅ GUNAKAN (bawaan Flutter, zero dependency)
+ChangeNotifier          // untuk state kompleks (ProductProvider, CartProvider)
+ValueNotifier<T>        // untuk state sederhana (ThemeMode, selectedIndex)
+ListenableBuilder       // untuk listen ChangeNotifier
+ValueListenableBuilder  // untuk listen ValueNotifier
+
+// ❌ JANGAN GUNAKAN di showcase app (third-party)
+Riverpod, BLoC, GetX, Provider package
+```
+
+### Contoh Implementasi
+
+**Domain Model:**
+```dart
+// example/lib/domain/models/product.dart
+class Product {
+  final String id;
+  final String name;
+  final String description;
+  final double price;
+  final String imageUrl;
+  final String category;
+
+  const Product({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.imageUrl,
+    required this.category,
+  });
+}
+```
+
+**Abstract Repository:**
+```dart
+// example/lib/domain/repositories/product_repository.dart
+abstract class ProductRepository {
+  List<Product> getProducts();
+  Product? getProductById(String id);
+  List<Product> getProductsByCategory(String category);
+  List<String> getCategories();
+}
+```
+
+**Dummy Data:**
+```dart
+// example/lib/data/dummy/dummy_products.dart
+final dummyProducts = [
+  const Product(
+    id: '1',
+    name: 'Wireless Headphones',
+    description: 'Premium noise-cancelling headphones',
+    price: 79.99,
+    imageUrl: 'assets/images/headphones.png',
+    category: 'Electronics',
+  ),
+  // ... 15-20 items per domain
+];
+```
+
+**Repository Implementation:**
+```dart
+// example/lib/data/repositories/dummy_product_repository.dart
+class DummyProductRepository implements ProductRepository {
+  @override
+  List<Product> getProducts() => dummyProducts;
+
+  @override
+  Product? getProductById(String id) =>
+      dummyProducts.where((p) => p.id == id).firstOrNull;
+
+  @override
+  List<Product> getProductsByCategory(String category) =>
+      dummyProducts.where((p) => p.category == category).toList();
+
+  @override
+  List<String> getCategories() =>
+      dummyProducts.map((p) => p.category).toSet().toList();
+}
+```
+
+**State Provider (ChangeNotifier):**
+```dart
+// example/lib/presentation/providers/product_provider.dart
+class ProductProvider extends ChangeNotifier {
+  final ProductRepository _repository;
+
+  ProductProvider(this._repository);
+
+  List<Product> get products => _repository.getProducts();
+  List<String> get categories => _repository.getCategories();
+
+  String _selectedCategory = 'All';
+  String get selectedCategory => _selectedCategory;
+
+  List<Product> get filteredProducts => _selectedCategory == 'All'
+      ? products
+      : _repository.getProductsByCategory(_selectedCategory);
+
+  void selectCategory(String category) {
+    _selectedCategory = category;
+    notifyListeners();
+  }
+}
+```
+
+**Demo Screen (menggunakan UI Kit widgets):**
+```dart
+// example/lib/presentation/screens/product_list_demo.dart
+class ProductListDemo extends StatelessWidget {
+  final ProductProvider provider;
+  const ProductListDemo({super.key, required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: provider,
+      builder: (context, _) => Column(
+        children: [
+          // UI Kit: AppChip untuk filter
+          Wrap(
+            children: provider.categories.map((cat) =>
+              AppChip(
+                label: cat,
+                isSelected: provider.selectedCategory == cat,
+                onTap: () => provider.selectCategory(cat),
+              ),
+            ).toList(),
+          ),
+          // UI Kit: AppCard untuk product items
+          Expanded(
+            child: GridView.builder(
+              itemCount: provider.filteredProducts.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (context, index) {
+                final product = provider.filteredProducts[index];
+                return AppCard(
+                  child: Column(
+                    children: [
+                      AppAvatar(imageUrl: product.imageUrl, size: AvatarSize.lg),
+                      Text(product.name),
+                      Text('\$${product.price}'),
+                      AppButton(
+                        text: 'Add to Cart',
+                        variant: ButtonVariant.primary,
+                        size: ButtonSize.small,
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### Showcase App Dependencies (example/pubspec.yaml)
+```yaml
+# example/pubspec.yaml — hanya go_router untuk navigation
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_ui_kit:
+    path: ../                    # Link ke parent package
+  go_router: ^14.0.0            # Navigation saja
+
+# TIDAK ADA: riverpod, bloc, getx, hive, sqflite, isar
+# State management = ChangeNotifier + ValueNotifier (built-in)
+# Data = dummy (hardcoded lists)
+```
+
+### Domain-Specific Dummy Data
+
+Models dan dummy data disesuaikan berdasarkan target domain dari Phase 1:
+
+| Domain | Models | Dummy Items |
+|--------|--------|-------------|
+| E-Commerce | Product, CartItem, Category, Order | 20 products, 5 categories |
+| Fintech | Account, Transaction, Card, Transfer | 15 transactions, 3 accounts |
+| Social Media | Post, UserProfile, Comment, Story | 15 posts, 10 users |
+| Dashboard | Metric, ChartData, Activity, User | 10 metrics, 20 activities |
+| General | Item, Category, User | 10 items, 5 users |
+
 ---
+
+### 1b. Internationalization (i18n) & Localization Setup
+
+**Description:** Setup multi-language support dan Google Fonts integration di package.
+
+**Recommended Skills:** `senior-flutter-developer`, `internationalization-specialist`
+
+**Instructions:**
+1. Setup Flutter localization infrastructure
+2. Create ARB files untuk bahasa yang didukung
+3. Configure Google Fonts sebagai default typography
+4. Buat localized component labels
+
+#### Directory Structure
+```text
+lib/src/
+├── l10n/                             # Localization
+│   ├── app_localizations.dart        # Generated (dart run intl)
+│   ├── arb/
+│   │   ├── app_en.arb                # English (default)
+│   │   ├── app_id.arb                # Bahasa Indonesia
+│   │   ├── app_es.arb                # Spanish
+│   │   ├── app_ja.arb                # Japanese
+│   │   └── app_zh.arb                # Chinese
+│   └── l10n.dart                     # Export barrel + helper
+│
+├── typography/                       # Google Fonts integration
+│   ├── app_text_theme.dart           # TextTheme builder using google_fonts
+│   └── font_config.dart              # Font family selector
+```
+
+#### l10n.yaml Configuration
+```yaml
+# l10n.yaml di root package
+arb-dir: lib/src/l10n/arb
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+```
+
+#### Supported Locales
+```dart
+// lib/src/l10n/l10n.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'app_localizations.dart';
+
+/// Supported locales for the UI Kit.
+class AppL10n {
+  static const supportedLocales = [
+    Locale('en'),    // English (default)
+    Locale('id'),    // Bahasa Indonesia
+    Locale('es'),    // Spanish
+    Locale('ja'),    // Japanese
+    Locale('zh'),    // Chinese
+  ];
+
+  static const localizationsDelegates = [
+    AppLocalizations.delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
+}
+```
+
+#### ARB File Template (English — Default)
+```json
+// lib/src/l10n/arb/app_en.arb
+{
+  "@@locale": "en",
+
+  "buttonLoading": "Loading...",
+  "buttonRetry": "Retry",
+  "buttonCancel": "Cancel",
+  "buttonConfirm": "Confirm",
+  "buttonSave": "Save",
+  "buttonDelete": "Delete",
+  "buttonEdit": "Edit",
+  "buttonClose": "Close",
+  "buttonBack": "Back",
+  "buttonNext": "Next",
+
+  "dialogAlertTitle": "Alert",
+  "dialogConfirmTitle": "Are you sure?",
+  "dialogDeleteMessage": "This action cannot be undone.",
+
+  "searchHint": "Search...",
+  "searchNoResults": "No results found",
+  "searchClear": "Clear",
+
+  "emptyStateTitle": "Nothing here yet",
+  "emptyStateDescription": "Start by adding your first item",
+
+  "validationRequired": "This field is required",
+  "validationEmail": "Enter a valid email",
+  "validationMinLength": "Must be at least {length} characters",
+  "@validationMinLength": {
+    "placeholders": { "length": { "type": "int" } }
+  },
+
+  "dateFormatShort": "MM/dd/yyyy",
+  "currencySymbol": "$"
+}
+```
+
+#### ARB File (Bahasa Indonesia)
+```json
+// lib/src/l10n/arb/app_id.arb
+{
+  "@@locale": "id",
+  "buttonLoading": "Memuat...",
+  "buttonRetry": "Coba Lagi",
+  "buttonCancel": "Batal",
+  "buttonConfirm": "Konfirmasi",
+  "buttonSave": "Simpan",
+  "buttonDelete": "Hapus",
+  "buttonEdit": "Ubah",
+  "buttonClose": "Tutup",
+  "buttonBack": "Kembali",
+  "buttonNext": "Berikutnya",
+  "dialogAlertTitle": "Peringatan",
+  "dialogConfirmTitle": "Apakah Anda yakin?",
+  "dialogDeleteMessage": "Tindakan ini tidak dapat dibatalkan.",
+  "searchHint": "Cari...",
+  "searchNoResults": "Tidak ada hasil",
+  "emptyStateTitle": "Belum ada data",
+  "emptyStateDescription": "Mulai dengan menambahkan item pertama"
+}
+```
+
+#### Google Fonts Integration
+```dart
+// lib/src/typography/app_text_theme.dart
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
+
+/// Builds a TextTheme using Google Fonts.
+///
+/// Default font: Inter. Can be overridden per-kit via [fontFamily].
+class AppTextTheme {
+  /// Creates a complete TextTheme using the specified Google Font.
+  static TextTheme textTheme({String fontFamily = 'Inter'}) {
+    final baseTextTheme = GoogleFonts.getTextTheme(fontFamily);
+    return baseTextTheme.copyWith(
+      displayLarge: baseTextTheme.displayLarge?.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+      // ... customize all text styles
+    );
+  }
+
+  /// Available font presets for the UI Kit.
+  static const availableFonts = [
+    'Inter',             // Modern, clean
+    'Plus Jakarta Sans', // Friendly, rounded
+    'Outfit',            // Geometric, modern
+    'DM Sans',           // Classic, professional
+    'Poppins',           // Popular, versatile
+  ];
+}
+```
+
+#### Component Localization Pattern
+```dart
+// Komponen HARUS mendukung localized labels:
+
+/// A confirmation dialog with localized default labels.
+class AppDialog extends StatelessWidget {
+  /// Title of the dialog. Falls back to localized default.
+  final String? title;
+
+  /// Cancel button text. Falls back to localized default.
+  final String? cancelText;
+
+  /// Confirm button text. Falls back to localized default.
+  final String? confirmText;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(title ?? l10n.dialogConfirmTitle),
+      actions: [
+        AppButton(
+          text: cancelText ?? l10n.buttonCancel,
+          variant: ButtonVariant.ghost,
+          onPressed: () => Navigator.pop(context),
+        ),
+        AppButton(
+          text: confirmText ?? l10n.buttonConfirm,
+          variant: ButtonVariant.primary,
+          onPressed: onConfirm,
+        ),
+      ],
+    );
+  }
+}
+```
+
+#### i18n Quality Rules
+- SEMUA component string defaults harus di-localize via ARB
+- User-passed strings (label, title) = override, TIDAK perlu di-localize (pembeli atur sendiri)
+- Format date/number/currency menggunakan `intl` package (DateFormat, NumberFormat)
+- Min. 2 bahasa: English (default) + Bahasa Indonesia
+- ARB files = source of truth untuk translations
 
 ### 2. Design Tokens Implementation
 
-**Description:** Implement the complete design tokens system for colors, typography, spacing, and more.
+**Description:** Translate `DESIGN.md` dari Phase 2 menjadi Dart code. Setiap hex code, font size, spacing value di DESIGN.md harus ter-implementasi 1:1.
 
-**Recommended Skills:** `design-system-engineer`, `senior-flutter-developer`
+**Recommended Skills:** `senior-flutter-developer`
+
+**CRITICAL RULE:** Values di file ini HARUS match persis dengan `DESIGN.md`. Jika DESIGN.md bilang `primary: #3b82f6`, maka code harus `Color(0xFF3B82F6)` — tidak boleh diubah tanpa update DESIGN.md.
 
 **Instructions:**
-1. Parse decisions from `DESIGN.md` (generated via Stitch AI in Phase 2):
-   - Extract primary, secondary, and semantic colors along with their specific Hex Codes.
-   - Map typography rules, border radii, and shadow (elevation) definitions.
+1. Parse `DESIGN.md` — extract semua token values
 2. Implement color tokens:
-   - Define palettes based on `DESIGN.md` requirements.
-   - Create 50-900 scale for primary accents.
-   - Implement semantic colors (success, warning, error, info).
-   - Create Light/dark theme variants.
-2. Implement typography tokens:
+   - Primary palette (10-shade scale: 50-900)
+   - 8 color palette options (blue, purple, green, red, orange, teal, pink, slate)
+   - Semantic colors (success, warning, error, info)
+   - Light AND dark variants
+3. Implement typography tokens:
    - Font families (primary, secondary, mono)
-   - Font sizes (10 levels: xs to 5xl)
-   - Font weights (100-900)
-   - Line heights (tight to loose)
-   - Letter spacing
-3. Implement spacing tokens:
-   - Base unit: 4px or 8px grid
-   - Scale: 0-24 (0px to 96px)
-   - Semantic spacing (padding, gap, margin)
-4. Implement radius tokens:
-   - Scale: none, sm, md, lg, xl, xxl, full
-   - Component-specific defaults
-5. Implement shadow tokens:
-   - Elevation scale (sm, md, lg, xl, inner)
-   - Consistent shadow system
+   - Font sizes (xs to 5xl)
+   - Font weights, line heights, letter spacing
+4. Implement spacing tokens (4px grid base)
+5. Implement border radius tokens
+6. Implement shadow/elevation tokens
+7. Write unit tests verifying all token values match DESIGN.md
 
 **Output Format:**
 ```markdown
 # Design Tokens Implementation
 
+## DESIGN.md Reference
+Source: `flutter-ui-kit/02-ui-ux-prototyping/DESIGN.md`
+All values below MUST match DESIGN.md exactly.
+
+## Theme & Component Data Models
+
+```dart
+// lib/src/theme/theme_config.dart
+
+/// Configuration class for building Flutter ThemeData.
+///
+/// Map of DESIGN.md sections:
+/// - Colors → AppColorPalette
+/// - Typography → fontFamilyPrimary
+/// - Radius → defaultBorderRadius
+class AppThemeConfig {
+  final AppColorPalette colors;
+  final String fontFamilyPrimary;
+  final double defaultBorderRadius;
+  final ThemeMode themeMode;
+
+  const AppThemeConfig({
+    required this.colors,
+    this.fontFamilyPrimary = 'Inter',
+    this.defaultBorderRadius = 12.0,
+    this.themeMode = ThemeMode.light,
+  });
+
+  /// Translates config to Flutter ThemeData.
+  ThemeData toThemeData() { /* ... */ }
+}
+
+/// Color palette container mapped from DESIGN.md.
+class AppColorPalette {
+  final Color primary;
+  final Color onPrimary;
+  final Color secondary;
+  final Color surface;
+  final Color background;
+  final Color error;
+  final Color success;
+  final Color warning;
+
+  const AppColorPalette({
+    required this.primary,
+    required this.onPrimary,
+    required this.secondary,
+    required this.surface,
+    required this.background,
+    required this.error,
+    required this.success,
+    required this.warning,
+  });
+}
+```
+
 ## Color Tokens
 
-### Primary Palette (Blue Example)
+### Primary Palette (from DESIGN.md)
 ```dart
 // lib/src/tokens/colors.dart
+// Values MUST match DESIGN.md Color Palette section
 
 class AppColors {
-  // Primary - Blue (10-shade scale)
-  static const Color blue50 = Color(0xFFEFF6FF);
-  static const Color blue100 = Color(0xFFDBEAFE);
-  static const Color blue200 = Color(0xFFBFDBFE);
-  static const Color blue300 = Color(0xFF93C5FD);
-  static const Color blue400 = Color(0xFF60A5FA);
-  static const Color blue500 = Color(0xFF3B82F6);  // Primary base
-  static const Color blue600 = Color(0xFF2563EB);  // Primary dark
-  static const Color blue700 = Color(0xFF1D4ED8);
-  static const Color blue800 = Color(0xFF1E40AF);
-  static const Color blue900 = Color(0xFF1E3A8A);
+  // Primary shade scale
+  static const Color primary50 = Color(0xFFEFF6FF);
+  static const Color primary100 = Color(0xFFDBEAFE);
+  static const Color primary200 = Color(0xFFBFDBFE);
+  static const Color primary300 = Color(0xFF93C5FD);
+  static const Color primary400 = Color(0xFF60A5FA);
+  static const Color primary500 = Color(0xFF3B82F6);  // Base
+  static const Color primary600 = Color(0xFF2563EB);
+  static const Color primary700 = Color(0xFF1D4ED8);
+  static const Color primary800 = Color(0xFF1E40AF);
+  static const Color primary900 = Color(0xFF1E3A8A);
 
-  // Semantic Colors
+  // Semantic
   static const Color success = Color(0xFF22C55E);
   static const Color warning = Color(0xFFF59E0B);
   static const Color error = Color(0xFFEF4444);
@@ -251,10 +871,10 @@ class AppColors {
 }
 ```
 
-### Color Palettes
+### 8 Color Palettes
 ```dart
 enum ColorPalette {
-  blue,      // Default - Tech, Professional
+  blue,      // Tech, Professional
   purple,    // Creative, Modern
   green,     // Finance, Health
   red,       // Bold, Energy
@@ -265,78 +885,62 @@ enum ColorPalette {
 }
 ```
 
-## Typography Tokens
-
+## Typography Tokens (from DESIGN.md)
 ```dart
 // lib/src/tokens/typography.dart
+// Values MUST match DESIGN.md Typography Scale section
 
 class AppTypography {
-  // Font Families
   static const String fontFamilyPrimary = 'Inter';
   static const String fontFamilySecondary = 'Poppins';
   static const String fontFamilyMono = 'JetBrains Mono';
 
-  // Font Sizes (based on 8px grid)
-  static const double fontSizeXS = 12.0;    // 0.75rem
-  static const double fontSizeSM = 14.0;    // 0.875rem
-  static const double fontSizeBase = 16.0;  // 1rem
-  static const double fontSizeLG = 18.0;    // 1.125rem
-  static const double fontSizeXL = 20.0;    // 1.25rem
-  static const double fontSize2XL = 24.0;   // 1.5rem
-  static const double fontSize3XL = 30.0;   // 1.875rem
-  static const double fontSize4XL = 36.0;   // 2.25rem
-  static const double fontSize5XL = 48.0;   // 3rem
+  static const double fontSizeXS = 12.0;
+  static const double fontSizeSM = 14.0;
+  static const double fontSizeBase = 16.0;
+  static const double fontSizeLG = 18.0;
+  static const double fontSizeXL = 20.0;
+  static const double fontSize2XL = 24.0;
+  static const double fontSize3XL = 30.0;
+  static const double fontSize4XL = 36.0;
+  static const double fontSize5XL = 48.0;
 
-  // Font Weights
-  static const FontWeight weightThin = FontWeight.w100;
   static const FontWeight weightRegular = FontWeight.w400;
   static const FontWeight weightMedium = FontWeight.w500;
+  static const FontWeight weightSemiBold = FontWeight.w600;
   static const FontWeight weightBold = FontWeight.w700;
 
-  // Line Heights
   static const double lineHeightTight = 1.25;
   static const double lineHeightNormal = 1.5;
   static const double lineHeightRelaxed = 1.625;
-
-  // Letter Spacing
-  static const double letterSpacingTight = -0.0125;
-  static const double letterSpacingNormal = 0.0;
-  static const double letterSpacingWide = 0.025;
 }
 ```
 
-## Spacing Tokens
-
+## Spacing Tokens (from DESIGN.md)
 ```dart
 // lib/src/tokens/spacing.dart
+// Base: 4px grid from DESIGN.md Spacing System section
 
 class AppSpacing {
-  // Based on 4px grid system
   static const double space0 = 0.0;
-  static const double space1 = 4.0;     // 0.25rem
-  static const double space2 = 8.0;     // 0.5rem
-  static const double space3 = 12.0;    // 0.75rem
-  static const double space4 = 16.0;    // 1rem
-  static const double space5 = 20.0;    // 1.25rem
-  static const double space6 = 24.0;    // 1.5rem
-  static const double space8 = 32.0;    // 2rem
-  static const double space10 = 40.0;   // 2.5rem
-  static const double space12 = 48.0;   // 3rem
-  static const double space16 = 64.0;   // 4rem
+  static const double space1 = 4.0;     // xs
+  static const double space2 = 8.0;     // sm
+  static const double space3 = 12.0;
+  static const double space4 = 16.0;    // md
+  static const double space5 = 20.0;
+  static const double space6 = 24.0;    // lg
+  static const double space8 = 32.0;    // xl
+  static const double space10 = 40.0;
+  static const double space12 = 48.0;   // 2xl
 
-  // Semantic Spacing
+  // Semantic aliases
   static const double paddingXS = space2;
   static const double paddingMD = space4;
   static const double paddingLG = space6;
-
-  static const double gapXS = space1;
-  static const double gapMD = space3;
-  static const double gapLG = space6;
 }
 ```
 
-## Border Radius Tokens
-
+## Border Radius Tokens (from DESIGN.md)
 ```dart
 // lib/src/tokens/radius.dart
 
@@ -349,7 +953,7 @@ class AppRadius {
   static const double xxl = 24.0;
   static const double full = 9999.0;
 
-  // Component-specific
+  // Component defaults
   static const double button = md;
   static const double input = md;
   static const double card = lg;
@@ -357,8 +961,7 @@ class AppRadius {
 }
 ```
 
-## Shadow Tokens
-
+## Shadow Tokens (from DESIGN.md)
 ```dart
 // lib/src/tokens/shadows.dart
 
@@ -379,11 +982,6 @@ class AppShadows {
       offset: Offset(0, 4),
       blurRadius: 6,
     ),
-    BoxShadow(
-      color: Color(0x04000000),
-      offset: Offset(0, 2),
-      blurRadius: 4,
-    ),
   ];
 
   static const List<BoxShadow> lg = [
@@ -392,30 +990,22 @@ class AppShadows {
       offset: Offset(0, 10),
       blurRadius: 15,
     ),
-    BoxShadow(
-      color: Color(0x04000000),
-      offset: Offset(0, 4),
-      blurRadius: 6,
-    ),
   ];
 }
 ```
 
 ## Token Tests
-
 ```dart
 // test/tokens/colors_test.dart
-
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_ui_kit/src/tokens/colors.dart';
+// Verify values match DESIGN.md
 
 void main() {
   group('AppColors', () {
-    test('blue500 is correct ARGB value', () {
-      expect(AppColors.blue500.value, equals(0xFF3B82F6));
+    test('primary500 matches DESIGN.md', () {
+      expect(AppColors.primary500.value, equals(0xFF3B82F6));
     });
 
-    test('all semantic colors are defined', () {
+    test('all semantic colors defined', () {
       expect(AppColors.success, isNotNull);
       expect(AppColors.warning, isNotNull);
       expect(AppColors.error, isNotNull);
@@ -430,34 +1020,26 @@ void main() {
 
 ### 3. Theme System Implementation
 
-**Description:** Build a flexible theme system with pre-built themes and customization support.
+**Description:** Build flexible theme system dengan 8 palettes × 2 brightness = 16 pre-built themes.
 
-**Recommended Skills:** `design-system-engineer`, `senior-flutter-developer`
+**Recommended Skills:** `senior-flutter-developer`
 
 **Instructions:**
-1. Create ThemeConfig class:
-   - Color palette selection
+1. Create `ThemeConfig` class:
+   - Color palette selection (8 options)
    - Brightness (light/dark)
-   - Font family selection
-   - Border radius customization
-2. Implement pre-built themes:
-   - 8 color palettes × 2 brightness = 16 themes
-   - Consistent theme naming
-   - Easy theme switching
-3. Create theme extension system:
-   - Custom theme creation
-   - Theme inheritance
-   - Partial theme overrides
-4. Implement theme persistence:
-   - Save user preference
-   - Auto-detect system theme
-   - Smooth theme transitions
+   - Font family customizeable
+   - Border radius customizeable
+   - `toThemeData()` method → Flutter `ThemeData`
+2. Implement 16 pre-built themes (8 palettes × light/dark)
+3. Theme extension system untuk custom themes
+4. Theme provider (ChangeNotifier) untuk runtime switching
 
 **Output Format:**
 ```markdown
 # Theme System Implementation
 
-## Architecture Diagram
+## Architecture
 ```mermaid
 classDiagram
     class ThemeConfig {
@@ -466,8 +1048,6 @@ classDiagram
       +String fontFamily
       +double borderRadius
       +toThemeData() ThemeData
-      -_getColorScheme() ColorScheme
-      -_getTextTheme() TextTheme
     }
 
     class AppThemes {
@@ -475,22 +1055,20 @@ classDiagram
       +darkBlue ThemeData
       +lightPurple ThemeData
       +darkPurple ThemeData
+      ...(16 total)
     }
 
     class ThemeProvider {
       -ThemeConfig _config
-      +ThemeConfig config
-      +ThemeData theme
       +setPalette(ColorPalette)
       +toggleBrightness()
     }
 
-    AppThemes ..> ThemeConfig : instantiates
-    ThemeProvider "1" *-- "1" ThemeConfig : manages
+    AppThemes ..> ThemeConfig
+    ThemeProvider *-- ThemeConfig
 ```
 
 ## ThemeConfig Class
-
 ```dart
 // lib/src/theme/theme_config.dart
 
@@ -507,22 +1085,18 @@ class ThemeConfig {
     this.borderRadius = AppRadius.md,
   });
 
+  /// Builds Flutter ThemeData from this config.
+  /// Mapping strictly follows DESIGN.md contract.
   ThemeData toThemeData() {
     final colors = _getColorScheme();
     final textTheme = _getTextTheme();
 
-    // The mapping here must strictly follow the output of your DESIGN.md
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
       colorScheme: colors,
       textTheme: textTheme,
       fontFamily: fontFamily,
-      buttonTheme: ButtonThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-      ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
@@ -533,129 +1107,54 @@ class ThemeConfig {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
       ),
-      extensions: [
-        // Map custom semantics and shapes not covered by ThemeData
-        // CustomThemeExtension(colors: colors, radii: radii) 
-      ],
-    );
-  }
-
-  ColorScheme _getColorScheme() {
-    // Implementation based on colorPalette
-    switch (colorPalette) {
-      case ColorPalette.blue:
-        return _buildBlueColorScheme();
-      case ColorPalette.purple:
-        return _buildPurpleColorScheme();
-      // ... other palettes
-    }
-  }
-
-  TextTheme _getTextTheme() {
-    return TextTheme(
-      displayLarge: GoogleFonts.inter(
-        fontSize: AppTypography.fontSize5XL,
-        fontWeight: AppTypography.weightBold,
-        height: AppTypography.lineHeightTight,
-      ),
-      // ... other text styles
     );
   }
 }
 ```
 
-## Pre-built Themes
-
+## Pre-built Themes (16 total)
 ```dart
 // lib/src/theme/themes.dart
 
 class AppThemes {
-  // Light Themes
-  static ThemeData get lightBlue {
-    return const ThemeConfig(
-      colorPalette: ColorPalette.blue,
-      brightness: Brightness.light,
-    ).toThemeData();
-  }
+  static ThemeData get lightBlue =>
+    const ThemeConfig(colorPalette: ColorPalette.blue).toThemeData();
 
-  static ThemeData get lightPurple {
-    return const ThemeConfig(
-      colorPalette: ColorPalette.purple,
-      brightness: Brightness.light,
-    ).toThemeData();
-  }
-
-  static ThemeData get lightGreen {
-    return const ThemeConfig(
-      colorPalette: ColorPalette.green,
-      brightness: Brightness.light,
-    ).toThemeData();
-  }
-
-  // Dark Themes
-  static ThemeData get darkBlue {
-    return const ThemeConfig(
+  static ThemeData get darkBlue =>
+    const ThemeConfig(
       colorPalette: ColorPalette.blue,
       brightness: Brightness.dark,
     ).toThemeData();
-  }
 
-  static ThemeData get darkPurple {
-    return const ThemeConfig(
-      colorPalette: ColorPalette.purple,
-      brightness: Brightness.dark,
-    ).toThemeData();
-  }
-
-  // ... 10 more themes
+  // ... 14 more (purple, green, red, orange, teal, pink, slate × light/dark)
 }
 ```
 
-## Theme Usage Example
-
+## Developer Usage
 ```dart
-// In user's app
-
+// In user's app — simple integration
 import 'package:flutter_ui_kit/flutter_ui_kit.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My App',
-      theme: AppThemes.lightBlue,
-      darkTheme: AppThemes.darkBlue,
-      themeMode: ThemeMode.system,  // Auto-detect
-      home: HomeScreen(),
-    );
-  }
-}
+MaterialApp(
+  theme: AppThemes.lightBlue,
+  darkTheme: AppThemes.darkBlue,
+  themeMode: ThemeMode.system,
+);
 
 // Custom theme
-class CustomThemeApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeConfig(
-        colorPalette: ColorPalette.purple,
-        brightness: Brightness.light,
-        borderRadius: AppRadius.lg,
-      ).toThemeData(),
-      home: HomeScreen(),
-    );
-  }
-}
+MaterialApp(
+  theme: ThemeConfig(
+    colorPalette: ColorPalette.purple,
+    borderRadius: AppRadius.lg,
+  ).toThemeData(),
+);
 ```
 
-## Theme Switching Implementation
-
+## Theme Provider (Runtime Switching)
 ```dart
-// Theme provider for runtime switching
-
 class ThemeProvider extends ChangeNotifier {
   ThemeConfig _config = const ThemeConfig();
 
-  ThemeConfig get config => _config;
   ThemeData get theme => _config.toThemeData();
 
   void setPalette(ColorPalette palette) {
@@ -683,30 +1182,40 @@ class ThemeProvider extends ChangeNotifier {
 
 ### 4. Component API Specification
 
-**Description:** Define consistent API patterns for all components.
+**Description:** Definisikan API patterns yang konsisten untuk semua komponen UI Kit.
 
-**Recommended Skills:** `api-design-specialist`, `senior-flutter-developer`
+**Recommended Skills:** `senior-flutter-developer`, `api-design-specialist`
 
 **Instructions:**
 1. Establish API design principles:
-   - Consistent naming conventions
-   - Parameter ordering (required → optional)
+   - Naming: `App` prefix (AppButton, AppTextField, AppCard)
+   - Parameter order: Key → Required → Optional → Callbacks
    - Null safety throughout
-   - Clear documentation (dartdoc)
+   - dartdoc on all public APIs
 2. Define component base patterns:
-   - StatelessWidget vs StatefulWidget guidelines
-   - Key propagation
-   - Style/theme inheritance
-3. Create API templates for each component category:
-   - Buttons: text, variant, size, icon, states
-   - Inputs: controller, label, validation, states
-   - Cards: content, elevation, actions
-   - Navigation: items, currentIndex, callbacks
-4. Document all public APIs with dartdoc:
-   - Class-level documentation
-   - Parameter descriptions
-   - Usage examples
-   - See also references
+   - When StatelessWidget vs StatefulWidget
+   - Theme inheritance via `Theme.of(context)`
+   - Consistent state handling (default, hover, pressed, disabled, loading, error)
+3. Create API specifications for ALL P0 components
+4. If domain-specific: create API specs for domain components (P1)
+
+**P0 Components — WAJIB dimiliki API spec:**
+
+| Component | Variants | Sizes | States | Key Properties |
+|-----------|----------|-------|--------|----------------|
+| AppButton | primary, secondary, outline, ghost, destructive | sm, md, lg | default, hover, pressed, disabled, loading | text, icon, onPressed |
+| AppTextField | default, search, password | - | empty, focused, filled, error, disabled | controller, label, hint, errorText |
+| AppCard | default, image, outlined | - | default, hover, pressed | child, elevation, onTap |
+| AppCheckbox | default | - | unchecked, checked, indeterminate, disabled | value, onChanged, label |
+| AppSwitch | default | - | off, on, disabled | value, onChanged, label |
+| AppDropdown | default | - | closed, open, selected, error | items, value, onChanged |
+| AppDialog | alert, confirm, custom | - | closed, open | title, content, actions |
+| AppSnackBar | info, success, warning, error | - | hidden, visible | message, action, duration |
+| AppAvatar | image, initials, icon | xs, sm, md, lg, xl | default | imageUrl, initials, size |
+| AppChip | default, selected, removable | sm, md | default, selected, disabled | label, onTap, onDelete |
+| AppBadge | default, dot | - | visible, hidden | content, color, child |
+| AppBottomNav | default | - | default | items, currentIndex, onTap |
+| AppTabBar | default | - | default | tabs, controller |
 
 **Output Format:**
 ```markdown
@@ -714,71 +1223,40 @@ class ThemeProvider extends ChangeNotifier {
 
 ## API Design Principles
 
-### Naming Conventions
-- Components: `App` prefix + descriptive name (AppButton, AppTextField)
-- Enums: PascalCase + descriptive variants (ButtonVariant.primary)
-- Parameters: camelCase, boolean with is/has prefix
-- Constants: lowerCamelCase for static const
+### Naming
+- `App` prefix: AppButton, AppTextField, AppCard
+- Enums: PascalCase (ButtonVariant.primary)
+- Booleans: is/has prefix (isLoading, hasIcon)
 
-### Parameter Ordering
-1. Key (always first)
+### Parameter Order
+1. Key (always super.key)
 2. Required parameters
-3. Optional parameters (most common → least common)
-4. Callbacks (always last)
+3. Optional (common → rare)
+4. Callbacks (last)
 
-### Example: AppButton API
-
+## AppButton API
 ```dart
-/// A customizable button widget with multiple variants and sizes.
+/// A customizable button with multiple variants and sizes.
 ///
-/// ## Features:
-/// - 5 visual variants (primary, secondary, outline, ghost, destructive)
-/// - 3 sizes (small, medium, large)
-/// - Loading state with indicator
-/// - Disabled state
-/// - Optional icon
-///
-/// ## Example usage:
 /// ```dart
 /// AppButton(
 ///   text: 'Submit',
 ///   variant: ButtonVariant.primary,
-///   size: ButtonSize.medium,
-///   icon: Icons.arrow_forward,
 ///   onPressed: () => print('Pressed!'),
 /// )
 /// ```
-///
-/// See also:
-/// - [ButtonVariant] for available variants
-/// - [ButtonSize] for available sizes
 class AppButton extends StatelessWidget {
-  /// The text to display on the button
   final String text;
-
-  /// The visual style variant
   final ButtonVariant variant;
-
-  /// The size of the button
   final ButtonSize size;
-
-  /// Whether the button is in loading state
   final bool isLoading;
-
-  /// Whether the button is disabled
   final bool isDisabled;
-
-  /// Optional icon to display before the text
   final IconData? icon;
-
-  /// Callback when button is pressed
   final VoidCallback? onPressed;
-
-  /// Optional custom width
   final double? width;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.text,
     this.variant = ButtonVariant.primary,
     this.size = ButtonSize.medium,
@@ -787,79 +1265,31 @@ class AppButton extends StatelessWidget {
     this.icon,
     this.onPressed,
     this.width,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Implementation
-  }
+  });
 }
+
+enum ButtonVariant { primary, secondary, outline, ghost, destructive }
+enum ButtonSize { small, medium, large }
 ```
 
-### Example: AppTextField API
-
+## AppTextField API
 ```dart
-/// A customizable text field with label, validation, and icons.
-///
-/// ## Features:
-/// - Label and hint text
-/// - Error state with message
-/// - Prefix and suffix icons
-/// - Multiple keyboard types
-/// - Obscure text mode
-/// - Enabled/disabled state
-///
-/// ## Example usage:
-/// ```dart
-/// AppTextField(
-///   controller: _emailController,
-///   label: 'Email',
-///   hint: 'Enter your email',
-///   errorText: 'Invalid email format',
-///   prefixIcon: Icons.email_outlined,
-///   keyboardType: TextInputType.emailAddress,
-///   onChanged: (value) => _validateEmail(value),
-/// )
-/// ```
+/// A text field with label, validation, and icon support.
 class AppTextField extends StatelessWidget {
-  /// Controller for text input
   final TextEditingController? controller;
-
-  /// Label text displayed above the field
   final String? label;
-
-  /// Hint text displayed when empty
   final String? hint;
-
-  /// Error text displayed below the field
   final String? errorText;
-
-  /// Icon displayed before the input
   final IconData? prefixIcon;
-
-  /// Icon or widget displayed after the input
   final Widget? suffixIcon;
-
-  /// Whether to obscure the text (for passwords)
   final bool obscureText;
-
-  /// Type of keyboard to show
   final TextInputType keyboardType;
-
-  /// Number of lines (null for single line)
   final int? maxLines;
-
-  /// Whether the field is enabled
   final bool enabled;
-
-  /// Callback when text changes
   final ValueChanged<String>? onChanged;
 
-  /// Callback when field is tapped
-  final VoidCallback? onTap;
-
   const AppTextField({
-    Key? key,
+    super.key,
     this.controller,
     this.label,
     this.hint,
@@ -871,316 +1301,187 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.enabled = true,
     this.onChanged,
-    this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Implementation
-  }
+  });
 }
 ```
 
-## Component States
+[... repeat for each P0 component ...]
 
-All components must handle these states consistently:
+## Component States (ALL components must implement)
 
-| State | Description | Visual Treatment |
-|-------|-------------|------------------|
-| **Default** | Normal, idle state | Standard styling |
-| **Hover** | Pointer hovering (desktop/web) | Slightly elevated, color shift |
-| **Focused** | Keyboard focused | Outline/border highlight |
-| **Pressed** | Being tapped/clicked | Depressed, color darken |
-| **Disabled** | Not interactive | Grayed out, reduced opacity |
-| **Loading** | Processing action | Spinner, disabled interaction |
-| **Error** | Validation failed | Red border, error message |
+| State | Visual Treatment | Accessibility |
+|-------|-----------------|---------------|
+| Default | Standard styling | Announce role |
+| Hover | Color shift, elevation +1 | - |
+| Focused | Focus ring: 2px primary, offset 2px | Announce "focused" |
+| Pressed | Scale 0.98, color darken | - |
+| Disabled | Opacity 0.5, gray tint | Announce "disabled" |
+| Loading | Spinner, disable interactions | Announce "loading" |
+| Error | Red border, error message | Announce error text |
 
 ## Accessibility Requirements
-
-```dart
-// All components must include proper semantics
-
-Semantics(
-  label: 'Submit form button',
-  button: true,
-  enabled: !isDisabled,
-  child: AppButton(
-    text: 'Submit',
-    isDisabled: isDisabled,
-  ),
-)
-
-// Minimum touch target: 48x48 dp
-// Color contrast: WCAG 2.1 AA (4.5:1)
-// Support screen readers (TalkBack, VoiceOver)
-// Respect text scale factor
-```
+- Minimum touch target: 48×48 dp
+- Color contrast: WCAG 2.1 AA (4.5:1)
+- Screen reader support (Semantics widget)
+- Respect textScaleFactor
 ```
 
 ---
 
 ### 5. Testing Strategy
 
-**Description:** Define comprehensive testing approach for quality assurance.
+**Description:** Testing strategy untuk memastikan kualitas UI Kit (>85% coverage).
 
-**Recommended Skills:** `flutter-testing-specialist`, `qa-engineer`
+**Recommended Skills:** `senior-flutter-developer`
 
 **Instructions:**
-1. Define test coverage requirements:
-   - Core components: >90%
-   - Theme system: >85%
-   - Utils: >80%
+1. Coverage targets:
+   - P0 Components: >90%
+   - Theme System: >85%
+   - Design Tokens: >80%
    - Overall: >85%
-2. Create test templates for each component type:
-   - Rendering tests (basic display)
-   - Interaction tests (tap, input)
-   - State tests (loading, disabled, error)
-   - Accessibility tests (semantics)
-   - Theme tests (light/dark mode)
-3. Setup test infrastructure:
-   - Mocking utilities (mocktail)
-   - Golden test setup
-   - CI integration
-4. Implement continuous testing:
-   - Pre-commit hooks
-   - GitHub Actions workflow
-   - Coverage reporting
+2. Test types per component:
+   - Rendering (basic display)
+   - Interaction (tap, input)
+   - State (loading, disabled, error)
+   - Accessibility (semantics)
+   - Theme (light/dark mode)
+3. Golden tests for visual regression
+4. CI/CD integration (GitHub Actions)
 
 **Output Format:**
 ```markdown
 # Testing Strategy
 
 ## Coverage Requirements
+| Category | Target | Priority |
+|----------|--------|----------|
+| P0 Components | >90% | Critical |
+| P1 Components | >85% | High |
+| Theme System | >85% | High |
+| Design Tokens | >80% | Medium |
+| **Overall** | **>85%** | **Gate** |
 
-| Component Type | Minimum Coverage | Priority |
-|----------------|------------------|----------|
-| Core Components (P0) | 90% | Critical |
-| Enhanced Components (P1) | 85% | High |
-| Theme System | 85% | High |
-| Utils | 80% | Medium |
-| **Overall** | **85%** | **Required** |
-
-## Test Types
-
-### 1. Widget Tests (Unit Tests)
+## Test Template per Component
 
 ```dart
-// test/button_test.dart
-
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_ui_kit/flutter_ui_kit.dart';
+// test/components/button_test.dart
 
 void main() {
   group('AppButton', () {
-    testWidgets('renders text correctly', (tester) async {
+    // 1. Rendering
+    testWidgets('renders text', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: AppButton(text: 'Test Button'),
-          ),
-        ),
+        MaterialApp(home: Scaffold(body: AppButton(text: 'Test'))),
       );
-
-      expect(find.text('Test Button'), findsOneWidget);
+      expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('calls onPressed when tapped', (tester) async {
-      bool wasPressed = false;
-
+    // 2. Interaction
+    testWidgets('calls onPressed', (tester) async {
+      var pressed = false;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: AppButton(
               text: 'Test',
-              onPressed: () => wasPressed = true,
+              onPressed: () => pressed = true,
             ),
           ),
         ),
       );
-
       await tester.tap(find.byType(AppButton));
-      expect(wasPressed, isTrue);
+      expect(pressed, isTrue);
     });
 
-    testWidgets('shows loading indicator when isLoading is true', (tester) async {
+    // 3. States
+    testWidgets('shows spinner when loading', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AppButton(
-              text: 'Test',
-              isLoading: true,
-            ),
+            body: AppButton(text: 'Test', isLoading: true),
           ),
         ),
       );
-
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('does not call onPressed when disabled', (tester) async {
-      bool wasPressed = false;
-
+    testWidgets('does not respond when disabled', (tester) async {
+      var pressed = false;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: AppButton(
               text: 'Test',
               isDisabled: true,
-              onPressed: () => wasPressed = true,
+              onPressed: () => pressed = true,
             ),
           ),
         ),
       );
-
       await tester.tap(find.byType(AppButton));
-      expect(wasPressed, isFalse);
+      expect(pressed, isFalse);
     });
 
-    testWidgets('applies correct variant styles', (tester) async {
+    // 4. Variants
+    testWidgets('renders all variants', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: Column(
-              children: [
-                AppButton(text: 'Primary', variant: ButtonVariant.primary),
-                AppButton(text: 'Secondary', variant: ButtonVariant.secondary),
-                AppButton(text: 'Outline', variant: ButtonVariant.outline),
-              ],
-            ),
+            body: Column(children: [
+              AppButton(text: 'P', variant: ButtonVariant.primary),
+              AppButton(text: 'S', variant: ButtonVariant.secondary),
+              AppButton(text: 'O', variant: ButtonVariant.outline),
+            ]),
           ),
         ),
       );
-
-      // Verify all variants render
-      expect(find.text('Primary'), findsOneWidget);
-      expect(find.text('Secondary'), findsOneWidget);
-      expect(find.text('Outline'), findsOneWidget);
+      expect(find.byType(AppButton), findsNWidgets(3));
     });
 
-    testWidgets('respects accessibility requirements', (tester) async {
+    // 5. Accessibility
+    testWidgets('has correct semantics', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AppButton(
-              text: 'Submit',
-              onPressed: () {},
-            ),
+            body: AppButton(text: 'Submit', onPressed: () {}),
           ),
         ),
       );
-
-      final button = find.byType(AppButton);
-      expect(tester.getSemantics(button), matchesSemantics(
-        label: 'Submit',
-        isButton: true,
-        isEnabled: true,
-      ));
+      expect(
+        tester.getSemantics(find.byType(AppButton)),
+        matchesSemantics(label: 'Submit', isButton: true),
+      );
     });
   });
 }
 ```
 
-### 2. Golden Tests
-
+## Golden Tests
 ```dart
-// test/button_golden_test.dart
-
-import 'package:flutter_test/flutter_test.dart';
-import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:flutter_ui_kit/flutter_ui_kit.dart';
+// test/goldens/button_golden_test.dart
 
 void main() {
-  group('AppButton Golden Tests', () {
-    testGoldens('renders all variants correctly', (tester) async {
-      final builder = GoldenBuilder.grid(columns: 2, widthToHeightRatio: 1);
+  testGoldens('AppButton all variants', (tester) async {
+    final builder = GoldenBuilder.grid(columns: 2);
+    builder.addScenario('Primary', AppButton(text: 'Primary'));
+    builder.addScenario('Secondary', AppButton(text: 'Sec', variant: ButtonVariant.secondary));
+    builder.addScenario('Outline', AppButton(text: 'Out', variant: ButtonVariant.outline));
+    builder.addScenario('Disabled', AppButton(text: 'Dis', isDisabled: true));
 
-      builder.addScenario(
-        'Primary',
-        AppButton(text: 'Primary', variant: ButtonVariant.primary),
-      );
-      builder.addScenario(
-        'Secondary',
-        AppButton(text: 'Secondary', variant: ButtonVariant.secondary),
-      );
-      builder.addScenario(
-        'Outline',
-        AppButton(text: 'Outline', variant: ButtonVariant.outline),
-      );
-      builder.addScenario(
-        'Ghost',
-        AppButton(text: 'Ghost', variant: ButtonVariant.ghost),
-      );
-
-      await tester.pumpWidgetBuilder(
-        MaterialTheme(AppThemes.lightBlue),
-        wrapper: materialAppWrapper(theme: AppThemes.lightBlue),
-      );
-
-      await expectLater(
-        find.byType(GoldenBuilder),
-        matchesGoldenFile('goldens/button_variants.png'),
-      );
-    });
+    await tester.pumpWidgetBuilder(builder.build());
+    await expectLater(
+      find.byType(GoldenBuilder),
+      matchesGoldenFile('goldens/button_variants.png'),
+    );
   });
 }
 ```
 
-### 3. Integration Tests
-
-```dart
-// test/integration/theme_switching_test.dart
-
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:flutter_ui_kit/flutter_ui_kit.dart';
-
-void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  group('Theme Switching Integration', () {
-    testWidgets('switches between light and dark themes', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppThemes.lightBlue,
-          darkTheme: AppThemes.darkBlue,
-          themeMode: ThemeMode.light,
-          home: Scaffold(
-            body: AppButton(text: 'Test'),
-          ),
-        ),
-      );
-
-      // Verify light theme
-      final context = tester.element(find.byType(Scaffold));
-      expect(Theme.of(context).brightness, equals(Brightness.light));
-
-      // Switch to dark
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppThemes.lightBlue,
-          darkTheme: AppThemes.darkBlue,
-          themeMode: ThemeMode.dark,
-          home: Scaffold(
-            body: AppButton(text: 'Test'),
-          ),
-        ),
-      );
-
-      // Verify dark theme
-      expect(Theme.of(context).brightness, equals(Brightness.dark));
-    });
-  });
-}
-```
-
-## CI/CD Integration
-
+## CI/CD
 ```yaml
 # .github/workflows/test.yml
-
 name: Tests
-
 on:
   push:
     branches: [main, develop]
@@ -1193,110 +1494,92 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16.0'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run tests
-        run: flutter test --coverage
-
-      - name: Check coverage
+        with: { flutter-version: '3.16.0' }
+      - run: flutter pub get
+      - run: flutter test --coverage
+      - name: Coverage Gate (>85%)
         run: |
-          coverage=$(grep -A 2 "lines" coverage/lcov.info | grep -c "DA:[0-9]*,1")
-          total=$(grep -A 2 "lines" coverage/lcov.info | grep -c "DA:")
-          percentage=$((coverage * 100 / total))
-          if [ $percentage -lt 85 ]; then
-            echo "Coverage $percentage% is below 85% threshold"
-            exit 1
-          fi
-          echo "Coverage: $percentage%"
+          # Fail if coverage < 85%
+          echo "Checking coverage threshold..."
+```
+```
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-```
-```
+---
 
 ## Workflow Steps
 
-1. **Package Setup** (Senior Flutter Developer)
-   - Create directory structure
-   - Configure pubspec.yaml
-   - Setup analysis options
-   - Initialize Git repository
-   - Duration: 1 day
+1. **Package Setup** — Directory structure, pubspec.yaml, analysis options. 1 hari.
+2. **Design Tokens** — Parse DESIGN.md → Dart code (colors, typography, spacing, radius, shadows). 3-4 hari.
+3. **Theme System** — ThemeConfig, 16 pre-built themes, ThemeProvider. 3-4 hari.
+4. **Component APIs** — API specs for 13+ P0 components + domain components if applicable. 2-3 hari.
+5. **Testing Setup** — Test infrastructure, templates, CI/CD, golden tests. 2 hari.
 
-2. **Design Tokens** (Design System Engineer)
-   - Implement color tokens (8 palettes)
-   - Implement typography tokens
-   - Implement spacing/radius/shadows
-   - Write token tests
-   - Duration: 3-4 days
-
-3. **Theme System** (Design System Engineer)
-   - Create ThemeConfig class
-   - Implement 16 pre-built themes
-   - Add theme switching
-   - Write theme tests
-   - Duration: 3-4 days
-
-4. **Component APIs** (API Design Specialist)
-   - Define API patterns
-   - Document API specifications
-   - Create component templates
-   - Duration: 2-3 days
-
-5. **Testing Setup** (Testing Specialist)
-   - Setup test infrastructure
-   - Create test templates
-   - Configure CI/CD
-   - Duration: 2 days
+**Total:** 10-14 hari
 
 ## Success Criteria
-- Package structure follows Flutter best practices
-- All design tokens implemented and tested
-- Theme system supports 16+ themes
-- Component APIs documented with dartdoc
-- Test coverage >85%
-- CI/CD pipeline functional
-- Example app demonstrates all features
+
+### Quality Gates
+- [ ] Produk = Flutter PACKAGE (bukan standalone app)
+- [ ] `pubspec.yaml` has ZERO third-party dependencies
+- [ ] All tokens match `DESIGN.md` values exactly
+- [ ] 8 color palettes × 2 brightness = 16 pre-built themes
+- [ ] `ThemeConfig.toThemeData()` produces valid Flutter ThemeData
+- [ ] 13+ P0 component APIs defined with dartdoc
+- [ ] All components handle 7 states consistently
+- [ ] Accessibility: 48×48 touch targets, WCAG AA contrast, Semantics
+- [ ] Test coverage >85%
+- [ ] CI/CD pipeline configured
+- [ ] Single import: `import 'package:flutter_ui_kit/flutter_ui_kit.dart';`
+- [ ] Domain components in separate folder (if applicable)
+
+### Content Depth Minimums
+| Deliverable | Min. Lines | Key Sections |
+|-------------|------------|-------------|
+| package-structure.md | 100 | Architecture diagram, directory layout, pubspec.yaml, analysis_options |
+| design-tokens.md | 200 | Colors (8 palettes), Typography, Spacing, Radius, Shadows + tests |
+| theme-system.md | 150 | ThemeConfig class, 16 themes, ThemeProvider, usage examples |
+| component-api-spec.md | 200 | 13+ component APIs, states table, accessibility requirements |
+| testing-strategy.md | 150 | Coverage targets, test templates, golden tests, CI/CD yaml |
+
+---
 
 ## Cross-References
 
-- **Previous Phase** → `02_ascii_wireframe.md`
-- **Component Development** → `04_component_development.md`
-- **Source Spec** → `../../docs/flutter-ui-kit/02_TECHNICAL_SPEC.md`
+- **Previous Phase** → `02_ui_ux_prototyping.md` (DESIGN.md is primary input)
+- **Next Phase** → `04_component_development.md` (builds components from these specs)
+- **Source PRD** → `../../docs/flutter-ui-kit/01_PRD.md`
+- **Technical Spec** → `../../docs/flutter-ui-kit/02_TECHNICAL_SPEC.md`
+- **Component Catalog** → `../../docs/flutter-ui-kit/03_COMPONENT_CATALOG.md`
 
 ## Tools & Templates
 - Flutter SDK >=3.10.0
 - VS Code / Android Studio
-- Very Good Analysis package
-- Mocktail for mocking
-- Golden Toolkit for golden tests
-- GitHub Actions for CI
+- very_good_analysis package
+- mocktail for mocking
+- golden_toolkit for visual regression
+- GitHub Actions for CI/CD
 
 ---
 
 ## Workflow Validation Checklist
 
 ### Pre-Execution
-- [ ] PRD analysis reviewed
-- [ ] Flutter SDK installed (>=3.10.0)
-- [ ] Development environment ready
-- [ ] Output folder created
+- [ ] `DESIGN.md` from Phase 2 is available and finalized
+- [ ] 5 dimensi UI kit from Phase 1 available (terutama target domain)
+- [ ] Flutter SDK >=3.10.0 installed
+- [ ] Output folder `flutter-ui-kit/03-technical-implementation/` created
 
 ### During Execution
-- [ ] Package structure created
-- [ ] Design tokens implemented (all 8 palettes)
-- [ ] Theme system working (16+ themes)
-- [ ] Component APIs documented
-- [ ] Test infrastructure setup
-- [ ] CI/CD pipeline configured
+- [ ] Package structure follows Flutter best practices
+- [ ] Token values match DESIGN.md exactly
+- [ ] Theme system produces valid ThemeData for all 16 combos
+- [ ] Component APIs consistent (naming, params, states)
+- [ ] Tests written alongside implementation
 
 ### Post-Execution
-- [ ] All deliverables documented
+- [ ] All 5+ deliverable files at correct path
+- [ ] Token↔DESIGN.md parity verified
 - [ ] Tests passing (>85% coverage)
-- [ ] Example app functional
-- [ ] Code reviewed
-- [ ] Ready for component development
+- [ ] Example app demonstrates all themes
+- [ ] Ready for Phase 4 (component development)
+- [ ] Quality Gates passed

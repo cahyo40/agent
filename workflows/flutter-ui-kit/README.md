@@ -1,450 +1,302 @@
-# Flutter UI Kit Workflows
+# Flutter UI Kit Workflow
 
-Workflows untuk membuat Flutter UI Kit commercial product mengikuti dokumentasi di `docs/flutter-ui-kit/`. Setiap workflow menghasilkan deliverables yang siap digunakan untuk development dan launch.
+> **Produk: Flutter UI Kit** — Component library yang dijual ke developer Flutter.
+> Bukan app, bukan SaaS, bukan jasa. Yang berubah per project adalah *tema, domain, dan scope*.
 
-## System Requirements
-
-- Agent dengan skill yang sesuai per fase (lihat tabel di bawah)
-- Flutter SDK >=3.10.0
-- Development environment (VS Code / Android Studio)
-- GitHub account untuk repository dan CI/CD
-
-## Struktur Workflows
-
-```
-workflows/flutter-ui-kit/
-├── 01_prd_analysis.md              # Analisis PRD, market, user personas, pricing
-├── 02_ui_ux_prototyping.md         # UI/UX prototyping dengan Stitch & DESIGN.md
-├── 03_technical_implementation.md  # Package structure, design tokens, theme system
-├── 04_component_development.md     # Component development dengan priority (P0-P3)
-├── 05_gtm_launch.md                # Go-to-Market strategy dan launch execution
-├── 06_roadmap_execution.md         # Sprint planning, milestone tracking, risk management
-└── README.md                       # Dokumentasi ini
-```
-
-## Output Folder Structure
-
-```
-flutter-ui-kit/
-├── 01-prd-analysis/
-│   ├── market-analysis.md
-│   ├── user-personas.md
-│   ├── requirements-validation.md
-│   └── pricing-strategy.md
-│
-├── 02-technical-implementation/
-│   ├── package-structure.md
-│   ├── design-tokens.md
-│   ├── theme-system.md
-│   ├── component-api-spec.md
-│   └── testing-strategy.md
-│
-├── 03-component-development/
-│   ├── mvp-components.md
-│   ├── core-components.md
-│   ├── enhanced-components.md
-│   └── component-checklist.md
-│
-├── 04-gtm-launch/
-│   ├── distribution-channels.md
-│   ├── launch-timeline.md
-│   ├── marketing-content.md
-│   ├── sales-funnel.md
-│   └── metrics-tracking.md
-│
-├── 05-roadmap-execution/
-│   ├── sprint-plan.md
-│   ├── milestone-tracking.md
-│   ├── resource-management.md
-│   ├── risk-register.md
-│   └── progress-reports.md
-│
-└── 02-ui-ux-prototyping/
-    ├── user-flows-wireframes.md
-    ├── ui-prompts.md
-    ├── DESIGN.md
-    └── component-anatomy.md
-```
-
-## Urutan Penggunaan
-
-### Sequential (Proyek Baru)
-
-```
-01 PRD Analysis
-    ↓
-02 UI/UX Prototyping
-    ↓
-03 Technical Implementation
-    ↓
-04 Component Development
-    ↓
-05 Go-to-Market Launch  ← dapat paralel dengan 04 (minggu 7-8)
-    ↓
-06 Roadmap Execution  ← berjalan sepanjang proyek
-```
-
-### Timeline Overview
-
-```
-Week 1-2:  Foundation
-    │
-    ├── 01 PRD Analysis ✅
-    ├── 02 UI/UX Prototyping ✅
-    └── 03 Technical Implementation ✅
-            │
-Week 3-4:  MVP Part 1 (Core Components)
-    │
-    └── 04 Component Development (P0) 🔄
-            │
-Week 5-6:  MVP Part 2 (Enhanced Components)
-    │
-    └── 04 Component Development (P1) ⏳
-            │
-Week 7:    Polish & Documentation
-    │
-    ├── 04 Component Development (final) ⏳
-    └── 05 GTM Launch (preparation) ⏳
-            │
-Week 8:    LAUNCH 🚀
-    │
-    ├── 05 GTM Launch (execution) ⏳
-    └── 06 Roadmap Execution (ongoing) 🔄
-```
-
-## Skills Quick-Reference
-
-| Workflow | Agent Skills |
-|----------|-------------|
-| 01 PRD Analysis | `market-researcher`, `product-strategist`, `user-researcher`, `product-manager` |
-| 02 UI/UX Prototyping | `senior-ui-ux-designer`, `stitch-enhance-prompt`, `stitch-design-md`, `interaction-designer` |
-| 03 Technical Implementation | `senior-flutter-developer`, `package-architect`, `design-system-engineer`, `api-design-specialist` |
-| 04 Component Development | `senior-flutter-developer`, `component-specialist`, `navigation-specialist`, `flutter-testing-specialist` |
-| 05 GTM Launch | `product-marketer`, `channel-manager`, `campaign-manager`, `content-marketer`, `growth-hacker` |
-| 06 Roadmap Execution | `project-manager`, `scrum-master`, `resource-manager`, `risk-manager` |
-
-## Workflow Details
-
-### 01 PRD Analysis
-
-**Purpose:** Analisis dan validasi Product Requirements Document
-
-**Input:** PRD draft dari `docs/flutter-ui-kit/01_PRD.md`
-
-**Output:**
-- Market analysis dengan competitor research
-- User personas yang divalidasi
-- Requirements yang diprioritaskan
-- Pricing strategy yang validated
-
-**Duration:** 5-7 days
-
-**Success Criteria:**
-- Market analysis validated with data sources
-- User personas based on real interviews (15+ users)
-- Requirements prioritized with MoSCoW method
-- Pricing strategy supported by research
+Workflow SDLC lengkap untuk membuat, mendesain, membangun, dan meluncurkan **Flutter UI Kit** sebagai produk komersial. Cukup berikan prompt sederhana — agen akan menginterpretasi, memperkaya, dan mengeksekusi seluruh pipeline.
 
 ---
 
-### 02 UI/UX Prototyping
+## Cara Pakai (Quick Start)
 
-**Purpose:** Generate high-fidelity UI prototypes dan ekstrak Design System menggunakan Stitch AI
-
-**Input:** PRD requirements, component catalog
-
-**Output:**
-- User flow & ASCII Wireframes (`user-flows-wireframes.md`)
-- UI Prompts (`ui-prompts.md`)
-- High-fidelity screens (Stitch output)
-- Design System Source of Truth (`DESIGN.md`)
-- Interaction annotations (`component-anatomy.md`)
-
-
-**Duration:** 3-5 days
-
-**Recommended Skills:** `senior-ui-ux-designer`, `stitch-enhance-prompt`, `stitch-design-md`
-
-**Success Criteria:**
-- All key screens wireframed (desktop + mobile)
-- User flows documented for all major journeys
-- Component layouts show all variants/states
-- Interaction annotations clear and actionable
-
----
-
-### 03 Technical Implementation
-
-**Purpose:** Setup technical foundation untuk Flutter UI Kit package
-
-**Input:** Technical spec dari `docs/flutter-ui-kit/02_TECHNICAL_SPEC.md`
-
-**Output:**
-- Package structure yang follow Flutter best practices
-- Design tokens (8 color palettes, typography, spacing, etc.)
-- Theme system dengan 16+ pre-built themes
-- Component API specifications
-- Testing strategy dengan >85% coverage target
-
-**Duration:** 7-10 days
-
-**Success Criteria:**
-- All design tokens implemented and tested
-- Theme system supports 16+ themes
-- Component APIs documented with dartdoc
-- Test infrastructure setup with CI/CD
-
----
-
-### 04 Component Development
-
-**Purpose:** Systematic development of UI components
-
-**Input:** Component catalog dari `docs/flutter-ui-kit/03_COMPONENT_CATALOG.md`
-
-**Output:**
-- MVP: 13 components (Week 1-4)
-- Core: 20+ components (Week 5-8)
-- Enhanced: 15+ components (Month 3)
-- Component checklist dan quality gates
-
-**Duration:** 8 weeks (MVP), 12 weeks (full)
-
-**Component Priority:**
-| Priority | Components | Timeline |
-|----------|------------|----------|
-| P0 (Critical) | 13 | Week 1-4 |
-| P1 (High) | 20 | Week 5-8 |
-| P2 (Medium) | 15+ | Month 3 |
-| P3 (Future) | 8+ | Month 4+ |
-
-**Success Criteria:**
-- MVP: 13 components dengan >85% test coverage
-- All components pass accessibility checks
-- Demo app showcases all components
-- Documentation complete
-
----
-
-### 05 GTM Launch
-
-**Purpose:** Launch dan marketing execution
-
-**Input:** GTM strategy dari `docs/flutter-ui-kit/04_GTM_STRATEGY.md`
-
-**Output:**
-- Distribution channels setup (pub.dev, Gumroad, GitHub, landing page)
-- Launch week execution (Product Hunt, social media, community)
-- Marketing content calendar
-- Sales funnel optimization
-- Metrics tracking dashboard
-
-**Duration:** 2 weeks prep + ongoing
-
-**Launch Timeline:**
+### Contoh Prompt Sederhana
 ```
-Pre-Launch (Week 6-7):
-├── Foundation setup
-├── Hype building
-└── Waitlist creation
-
-Launch Week (Week 8):
-├── Day 1: Product Hunt
-├── Day 2: Storytelling
-├── Day 3: Demo Day
-├── Day 4: Community
-└── Day 5: Wrap-up
-
-Post-Launch (Week 9+):
-├── Momentum maintenance
-├── Content creation
-└── Growth initiatives
+"Saya ingin UI Kit e-commerce modern minimalis"
 ```
 
-**Success Criteria:**
-- Launch week: 50+ sales, 500+ Product Hunt upvotes
-- Month 1: $780 MRR, 20 customers
-- Month 6: $5,000 MRR, 200 customers
+Agen akan otomatis:
+1. **Interpretasi** → UI Kit bertema e-commerce, gaya modern minimalis
+2. **PRD** → Analisis market UI Kit, personas developer, pricing $39/$99/$299
+3. **UI/UX** → Generate showcase screens via Stitch AI, extract DESIGN.md
+4. **Technical** → Setup package, tokens dari DESIGN.md, 16 themes
+5. **Components** → Build 13 P0 + domain components (ProductCard, CartItem, dll)
+6. **Launch** → pub.dev, Gumroad, landing page, Product Hunt
+7. **Track** → Sprint planning, milestones, risk management
 
----
-
-### 06 Roadmap Execution
-
-**Purpose:** Project execution dan tracking
-
-**Input:** Roadmap dari `docs/flutter-ui-kit/05_ROADMAP.md`
-
-**Output:**
-- Weekly sprint plans
-- Milestone tracking (5 milestones)
-- Resource management (time, budget, tools)
-- Risk register
-- Progress reports
-
-**Duration:** 8 weeks (MVP)
-
-**Milestones:**
-| Milestone | Week | Deliverables |
-|-----------|------|--------------|
-| M1: Foundation | Week 2 | Design tokens, theme system |
-| M2: Core Components | Week 4 | 9 MVP components |
-| M3: Enhanced | Week 6 | 20+ additional components |
-| M4: Polish & Docs | Week 7 | Tests, documentation |
-| M5: Launch Ready | Week 8 | Published, live, first sales |
-
-**Success Criteria:**
-- All milestones achieved on time
-- Sprint goals met 80%+ of weeks
-- Budget within 10% of plan
-- Product launched by Week 8
-
----
-
-## Project Timeline Summary
-
+### Contoh Prompt Lainnya
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  WEEK 1-2: FOUNDATION                                           │
-│  ├── 01 PRD Analysis ✅                                         │
-│  ├── 02 UI/UX Prototyping ✅                                      │
-│  └── 03 Technical Implementation ✅                             │
-├─────────────────────────────────────────────────────────────────┤
-│  WEEK 3-4: MVP PART 1                                           │
-│  └── 04 Component Development (P0 components) 🔄               │
-├─────────────────────────────────────────────────────────────────┤
-│  WEEK 5-6: MVP PART 2                                           │
-│  └── 04 Component Development (P1 components) ⏳               │
-├─────────────────────────────────────────────────────────────────┤
-│  WEEK 7: POLISH                                                 │
-│  ├── 04 Component Development (final) ⏳                       │
-│  └── 05 GTM Launch (prep) ⏳                                    │
-├─────────────────────────────────────────────────────────────────┤
-│  WEEK 8: LAUNCH 🚀                                              │
-│  ├── 05 GTM Launch (execution) ⏳                               │
-│  └── 06 Roadmap Execution (ongoing) 🔄                         │
-└─────────────────────────────────────────────────────────────────┘
+"UI Kit fintech dark premium"
+"UI Kit social media colorful"
+"UI Kit dashboard enterprise"
+"UI Kit general purpose"     ← default, multi-domain
 ```
 
 ---
 
-## Resource Requirements
+## Konsep Kunci: 5 Dimensi UI Kit
 
-### Time Commitment
+Setiap prompt di-parse menjadi 5 dimensi. Yang tidak disebutkan user = auto-filled:
 
-| Role | Week 1-2 | Week 3-4 | Week 5-6 | Week 7-8 | Total |
-|------|----------|----------|----------|----------|-------|
-| Senior Flutter Dev | 80h | 80h | 80h | 80h | 320h |
-| Design System Eng | 80h | 40h | 20h | 20h | 160h |
-| Project Manager | 20h | 20h | 20h | 40h | 100h |
-| Product Marketer | 0h | 0h | 20h | 80h | 100h |
-| **Total** | **180h** | **140h** | **140h** | **220h** | **680h** |
+| # | Dimensi | Contoh | Default |
+|---|---------|--------|---------|
+| 1 | **Target Domain** | e-commerce, fintech, social, dashboard | General-purpose |
+| 2 | **Gaya Desain** | modern minimalis, dark premium, glassmorphism | Modern clean |
+| 3 | **Scope Kit** | MVP (30 komponen), Full (50+), Enterprise | MVP |
+| 4 | **Template Screens** | Login, Dashboard, Cart, Profile | Login, Dashboard, Settings |
+| 5 | **Platform** | Mobile-first, Web, Desktop, Responsive | Mobile-first |
 
-### Budget
+Dimensi ini mengalir ke SEMUA phase:
+
+```
+User Prompt → Parse 5 Dimensi → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
+                                  PRD       UI/UX     Technical  Components  Launch    Track
+```
+
+---
+
+## 6 Phase Workflow
+
+```
+Phase 1: PRD Analysis
+    ↓ (5 dimensi, pricing, personas)
+Phase 2: UI/UX Prototyping (Stitch AI)
+    ↓ (DESIGN.md, wireframes, screens)
+Phase 3: Technical Implementation
+    ↓ (tokens, themes, API specs)
+Phase 4: Component Development
+    ↓ (13 P0 + P1 + domain components)
+Phase 5: GTM Launch                    ← paralel dengan Phase 4 akhir
+    ↓ (channels, marketing, launch)
+Phase 6: Roadmap Execution             ← berjalan sepanjang project
+    (sprints, milestones, tracking)
+```
+
+---
+
+## Detail per Phase
+
+### Phase 1: PRD Analysis
+**File:** `01_prd_analysis.md`
+**Output Folder:** `flutter-ui-kit/01-prd-analysis/`
+
+| Output File | Isi |
+|-------------|-----|
+| `market-analysis.md` | Market size, kompetitor UI Kit (GetWidget, Shadcn Flutter, VelocityX) |
+| `user-personas.md` | Developer personas (freelancer, agency CTO, junior dev) |
+| `requirements-validation.md` | Component & theme requirements, prioritas P0/P1/P2 |
+| `pricing-strategy.md` | License tiers: Individual $39 / Team $99 / Enterprise $299 |
+
+**Key:** Menginterpretasi prompt sederhana → output kaya. Produk = SELALU UI Kit.
+
+---
+
+### Phase 2: UI/UX Prototyping (Stitch AI)
+**File:** `02_ui_ux_prototyping.md`
+**Output Folder:** `flutter-ui-kit/02-ui-ux-prototyping/`
+
+| Output File | Isi |
+|-------------|-----|
+| `user-flows-wireframes.md` | ASCII wireframes showcase app (5-8 screens) |
+| `ui-prompts.md` | Stitch-enhanced prompts per screen |
+| `DESIGN.md` | **Source of Truth** — colors, typography, spacing, radius, shadows |
+| `component-anatomy.md` | State machines, animation specs, accessibility per P0 component |
+
+**Key:** Menggunakan Stitch AI skills (`stitch-enhance-prompt`, `mcp_stitch_generate_screen_from_text`, `stitch-design-md`). Output utama = `DESIGN.md`.
+
+**Mandatory Screens (selalu ada):**
+1. Component Catalog — grid semua komponen
+2. Component Detail — preview + code + knobs
+3. Theme Builder — live color picker
+
+**Domain Template Screens (berdasarkan target domain):**
+| Domain | Screens |
+|--------|---------|
+| E-Commerce | Home Feed, Product Detail, Cart |
+| Fintech | Wallet Dashboard, Transfer, History |
+| Social Media | Feed, Profile, Stories |
+| Dashboard | Analytics, User Management |
+| General | Login, Dashboard, Settings |
+
+---
+
+### Phase 3: Technical Implementation
+**File:** `03_technical_implementation.md`
+**Output Folder:** `flutter-ui-kit/03-technical-implementation/`
+
+| Output File | Isi |
+|-------------|-----|
+| `package-structure.md` | Directory layout, pubspec.yaml (minimal curated deps) |
+| `dependencies.md` | Dependency policy (google_fonts, intl, flutter_localizations) |
+| `design-tokens.md` | Colors (8 palettes), typography (Google Fonts), spacing, radius, shadows |
+| `theme-system.md` | ThemeConfig class, 16 pre-built themes, ThemeProvider |
+| `component-api-spec.md` | 13+ P0 component API definitions |
+| `testing-strategy.md` | Coverage targets (>85%), golden tests, CI/CD |
+
+**Key:** Translate `DESIGN.md` → Flutter `ThemeData`. Values must match 1:1.
+
+**Dependencies (MINIMAL curated):**
+- `google_fonts` — typography premium (Inter, Outfit, Plus Jakarta Sans)
+- `intl` — date, number, currency formatting + ARB translations
+- `flutter_localizations` (SDK) — multi-language support (EN, ID, ES, JA, ZH)
+- **DILARANG:** state management (Riverpod/BLoC/GetX), database, HTTP clients
+
+**Showcase App Architecture (di `example/`):**
+- **Clean Architecture:** domain → data → presentation layers
+- **Dummy Data:** Hardcoded lists (NO database — Hive/Sqflite/Isar)
+- **State Management:** Built-in only (`ChangeNotifier` + `ValueNotifier`)
+- **Navigation:** `go_router` (satu-satunya third-party di example app)
+- **TIDAK BOLEH:** Riverpod, BLoC, GetX — supaya compatible dengan semua pembeli
+
+---
+
+### Phase 4: Component Development
+**File:** `04_component_development.md`
+**Output Folder:** `flutter-ui-kit/04-component-development/`
+
+| Output File | Isi |
+|-------------|-----|
+| `mvp-components.md` | 13 P0 components (AppButton, AppTextField, AppCard, dll) |
+| `core-components.md` | 15-20 P1 components (navigation, enhanced inputs, feedback) |
+| `domain-components.md` | Domain-specific (ProductCard, BalanceCard, dll) jika applicable |
+| `enhanced-components.md` | P2 plan (AppDataTable, AppTimeline, AppDatePicker, dll) |
+| `component-checklist.md` | Per-component quality gate (35+ items) |
+
+**P0 Components (13 WAJIB):**
+
+| Component | Category | Variants |
+|-----------|----------|----------|
+| AppButton | Core | primary, secondary, outline, ghost, destructive × 3 sizes |
+| AppTextField | Core | default, search, password |
+| AppCheckbox | Core | with label |
+| AppRadio | Core | with label |
+| AppSwitch | Core | toggle |
+| AppDropdown | Core | select |
+| AppCard | Surface | default, outlined |
+| AppImageCard | Surface | with image |
+| AppSnackBar | Feedback | info, success, warning, error |
+| AppDialog | Feedback | alert, confirm, custom |
+| AppLoadingIndicator | Feedback | circular, linear |
+| AppAvatar | Display | image, initials, icon × 5 sizes |
+| AppChip | Display | default, selected, removable |
+
+**Key:** Setiap komponen harus pass quality gate: implementation → tests (>90%) → accessibility → dartdoc → demo.
+
+---
+
+### Phase 5: GTM Launch
+**File:** `05_gtm_launch.md`
+**Output Folder:** `flutter-ui-kit/05-gtm-launch/`
+
+| Output File | Isi |
+|-------------|-----|
+| `distribution-channels.md` | pub.dev (free tier), Gumroad (paid), GitHub, Landing Page |
+| `launch-timeline.md` | Pre-launch W6-7, Launch Week W8, Post-launch W9+ |
+| `marketing-content.md` | 4 content pillars, calendar, Twitter/blog templates |
+| `sales-funnel.md` | Awareness → Interest → Consideration → Conversion → Retention |
+| `metrics-tracking.md` | KPIs, revenue projections, analytics stack |
+
+**Key:** Target buyer = developer Flutter. Pricing dari Phase 1: $39/$99/$299.
+
+---
+
+### Phase 6: Roadmap Execution
+**File:** `06_roadmap_execution.md`
+**Output Folder:** `flutter-ui-kit/06-roadmap-execution/`
+
+| Output File | Isi |
+|-------------|-----|
+| `sprint-plan.md` | 8 weekly sprints, daily tasks |
+| `milestone-tracking.md` | 5 milestones (Foundation → MVP → Core → Polish → Launch) |
+| `resource-management.md` | Capacity, budget, time tracking |
+| `risk-register.md` | Technical, project, market risks + mitigation |
+| `progress-reports.md` | Weekly + monthly report templates |
+
+**Key:** Sprint tasks HARUS merujuk ke deliverables Phase 3-5. Tidak boleh invent tasks baru.
+
+---
+
+## Timeline Overview
+
+```
+┌──────────────────────────────────────────────────────┐
+│  WEEK 1-2: FOUNDATION                                │
+│  ├─ Phase 1: PRD Analysis                            │
+│  ├─ Phase 2: UI/UX Prototyping (Stitch AI)           │
+│  └─ Phase 3: Technical Implementation (tokens+themes)│
+├──────────────────────────────────────────────────────┤
+│  WEEK 3-4: MVP (P0 Components)                       │
+│  └─ Phase 4: 13 core components                      │
+├──────────────────────────────────────────────────────┤
+│  WEEK 5-6: CORE (P1 Components)                      │
+│  └─ Phase 4: Navigation + enhanced + domain          │
+├──────────────────────────────────────────────────────┤
+│  WEEK 7: POLISH                                      │
+│  ├─ Phase 4: Final testing & docs                    │
+│  └─ Phase 5: Pre-launch setup                        │
+├──────────────────────────────────────────────────────┤
+│  WEEK 8: LAUNCH 🚀                                   │
+│  ├─ Phase 5: Launch week execution                   │
+│  └─ Phase 6: Ongoing tracking                        │
+└──────────────────────────────────────────────────────┘
+```
+
+## Milestones
+
+| # | Milestone | Week | Acceptance Criteria |
+|---|-----------|------|---------------------|
+| M1 | Foundation | W2 | Tokens + 16 themes working |
+| M2 | MVP | W4 | 13 P0 components, >90% coverage |
+| M3 | Core | W6 | 15-20 P1 components, >85% coverage |
+| M4 | Polish | W7 | Full docs, >85% overall coverage, example app polished |
+| M5 | Launch | W8 | pub.dev + Gumroad live, first sale made |
+
+---
+
+## Skills yang Digunakan
+
+| Phase | Skills & Tools |
+|-------|---------------|
+| 1 PRD | `brainstorming`, `prd`, `senior-ui-ux-designer` |
+| 2 UI/UX | `stitch-enhance-prompt`, `mcp_stitch_generate_screen_from_text`, `stitch-design-md`, `senior-ui-ux-designer` |
+| 3 Technical | `senior-flutter-developer` |
+| 4 Components | `senior-flutter-developer` |
+| 5 GTM | `senior-technical-writer`, content & marketing skills |
+| 6 Roadmap | `senior-project-manager` |
+
+---
+
+## Budget Estimate
 
 | Category | Amount |
 |----------|--------|
-| One-time costs | $240 |
-| 6-month recurring | $420 |
-| Platform fees (10% of sales) | ~$1,365 |
-| **Total** | **~$2,025** |
+| Domain + Hosting (6 months) | ~$140 |
+| Email marketing (6 months) | ~$180 |
+| Analytics (6 months) | ~$54 |
+| Design assets | ~$100 |
+| Gumroad fees (~10% revenue) | ~$1,365 |
+| **Total (6 months)** | **~$1,840** |
 
-### Tools
-
-**Free:**
-- Flutter SDK
-- VS Code / Android Studio
-- Git & GitHub
-- Figma (free tier)
-
-**Paid:**
-- Vercel Pro: $20/month
-- Email Marketing: $30/month
-- Analytics: $9/month
+**Revenue Target:** $13,650 dalam 6 bulan (100 customers × avg $39 + upgrades)
 
 ---
 
 ## Related Documentation
 
-| Document | Location |
-|----------|----------|
+| Document | Path |
+|----------|------|
 | PRD | `../../docs/flutter-ui-kit/01_PRD.md` |
 | Technical Spec | `../../docs/flutter-ui-kit/02_TECHNICAL_SPEC.md` |
 | Component Catalog | `../../docs/flutter-ui-kit/03_COMPONENT_CATALOG.md` |
 | GTM Strategy | `../../docs/flutter-ui-kit/04_GTM_STRATEGY.md` |
 | Roadmap | `../../docs/flutter-ui-kit/05_ROADMAP.md` |
 
-## Example Agent Prompts
-
-### PRD Analysis
-```
-"Jalankan workflow 01_prd_analysis.md untuk Flutter UI Kit commercial product.
-Target market: freelance developers di Indonesia dan Southeast Asia.
-Budget: $39-299. Goal: $5,000 MRR dalam 6 bulan."
-```
-
-### UI/UX Prototyping
-```
-"Gunakan workflow `02_ui_ux_prototyping.md` untuk menghasilkan UI prototypes.
-1. Buat ASCII wireframes dan user flows untuk Dashboard dan Component Browse.
-2. Enhance prompt dengan `stitch-enhance-prompt` berdasarkan wireframe tersebut.
-3. Generate high-fidelity screens dengan `mcp_stitch_generate_screen`.
-4. Ekstrak warna dan tipografi menjadi `DESIGN.md` menggunakan `stitch-design-md`."
-```
-
-### Technical Implementation
-```
-"Gunakan workflow 03_technical_implementation.md untuk setup Flutter UI Kit
-package dengan 8 color palettes, 16 pre-built themes, dan component API
-specifications. Target: >85% test coverage."
-```
-
-### Component Development
-```
-"Jalankan workflow 04_component_development.md untuk MVP phase (Week 1-4).
-Implement 13 P0 components: AppButton, AppTextField, AppCheckbox, AppRadio,
-AppSwitch, AppDropdown, AppCard, AppImageCard, AppSnackBar, AppDialog,
-AppLoadingIndicator, AppAvatar, AppChip. Include demo app screens."
-```
-
-### GTM Launch
-```
-"Gunakan workflow 05_gtm_launch.md untuk launch week preparation. Setup
-distribution channels (pub.dev, Gumroad, GitHub, landing page), create
-launch timeline untuk Week 8, dan prepare marketing content calendar."
-```
-
-### Roadmap Execution
-```
-"Jalankan workflow 06_roadmap_execution.md untuk 8-week sprint planning.
-Create weekly sprint plans, setup milestone tracking (5 milestones),
-dan prepare risk register dengan mitigation plans."
-```
-
 ---
 
-## Workflow Validation Checklist
+## Pre-Project Checklist
 
-### Pre-Project
-- [ ] All source documentation reviewed
-- [ ] Team assembled and roles assigned
-- [ ] Development environment ready
-- [ ] Budget approved
-- [ ] Tools and accounts setup
-
-### During Project
-- [ ] Weekly sprints executed
-- [ ] Milestone reviews conducted
-- [ ] Progress reports submitted
-- [ ] Risks monitored and mitigated
-- [ ] Quality gates passed
-
-### Post-Launch
-- [ ] Product launched successfully
-- [ ] First sales made
-- [ ] Customer feedback collected
-- [ ] Retrospective completed
-- [ ] Lessons documented
-
----
-
-**Note:** Workflows ini dirancang untuk technology-agnostic implementation. Untuk specific Flutter patterns dan best practices, refer to official Flutter documentation dan package guidelines.
+- [ ] Flutter SDK >=3.10.0 installed
+- [ ] Development environment ready (VS Code / Android Studio)
+- [ ] GitHub account for repository + CI/CD
+- [ ] Stitch AI MCP tools accessible
+- [ ] Budget approved (~$1,840 / 6 months)
+- [ ] Timeline committed (8 weeks for MVP + launch)

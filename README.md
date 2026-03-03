@@ -3,11 +3,11 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-280-blue?style=for-the-badge)
-![Workflows](https://img.shields.io/badge/Workflows-686+-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.19.0-green?style=for-the-badge)
+![Workflows](https://img.shields.io/badge/Workflows-700+-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.20.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 280 skills + 10 workflow collections (686+ files) untuk memperluas kemampuan AI Agent**
+**Koleksi 280 skills + 12 workflow collections (700+ files) untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -18,7 +18,7 @@
 ## ✨ Features
 
 - 🤖 **280 Specialized Skills** - Dari Flutter hingga AI/ML
-- 📋 **10 Workflow Collections (686+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
+- 📋 **12 Workflow Collections (700+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
@@ -255,6 +255,8 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 | `flutter-riverpod` | 47 | Flutter + Riverpod + Clean Architecture |
 | `flutter-youi-getx` | 108 | Flutter + GetX + YoUI component library |
 | `flutter-youi-riverpod` | 47 | Flutter + Riverpod + YoUI component library |
+| `flutter-ui-kit` | 8 | 📋 Flutter UI Kit planning — PRD, UI/UX, technical spec, components, GTM, roadmap |
+| `flutter-ui-kit-vibe` | 8 | ⚡ Flutter UI Kit execution — init, add component/theme/locale, quality check, publish |
 | `golang-backend` | 76 | Go + Gin/Fiber + GORM + Clean Architecture |
 | `nextjs-frontend` | 19 | Next.js 14 + TypeScript + Tailwind + Shadcn |
 | `nuxt-frontend` | 14 | Nuxt 3 + TypeScript + Tailwind + Shadcn-vue |
@@ -286,6 +288,8 @@ agents/
 │   ├── flutter-riverpod/      # 47 workflow files
 │   ├── flutter-youi-getx/     # 108 workflow files (YoUI + GetX)
 │   ├── flutter-youi-riverpod/ # 47 workflow files (YoUI + Riverpod)
+│   ├── flutter-ui-kit/        # 8 files — Planning workflows (PRD → Roadmap)
+│   ├── flutter-ui-kit-vibe/   # 8 files — Execution workflows (init → publish)
 │   ├── golang-backend/        # 76 workflow files
 │   ├── nextjs-frontend/       # 19 workflow files
 │   ├── nuxt-frontend/         # 14 workflow files
@@ -297,7 +301,8 @@ agents/
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
 │   ├── ROADMAP.md
-│   └── ANTIGRAVITY_SKILLS_GUIDE.md
+│   ├── ANTIGRAVITY_SKILLS_GUIDE.md
+│   └── flutter-ui-kit/        # 5 output docs (PRD, Tech Spec, Catalog, GTM, Roadmap)
 ├── README.md
 └── LICENSE
 ```

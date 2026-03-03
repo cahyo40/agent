@@ -1,871 +1,436 @@
 ---
-description: This workflow covers the Roadmap Execution phase for Flutter UI Kit with detailed timeline and milestone tracking.
+description: Roadmap Execution untuk Flutter UI Kit. Sprint planning, milestone tracking, resource management, dan risk register.
 ---
 # Workflow: Roadmap Execution - Flutter UI Kit
 
 ## Overview
-This workflow guides the execution and tracking of the Flutter UI Kit development roadmap, from MVP through launch and beyond, with detailed weekly sprints, milestone gates, and resource management.
+Workflow ini memandu eksekusi dan tracking roadmap pengembangan **Flutter UI Kit** — dari sprint planning, milestone gates, resource tracking, hingga risk management. Ini adalah "project management backbone" yang mengikat semua phase.
+
+**CRITICAL:** Workflow ini BUKAN tentang membangun fitur baru — ini tentang **mengelola eksekusi** Phase 1-5. Semua sprint goals dan milestones harus align dengan deliverables di workflow sebelumnya.
 
 ## Output Location
-**Base Folder:** `flutter-ui-kit/05-roadmap-execution/`
+**Base Folder:** `flutter-ui-kit/06-roadmap-execution/`
 
 **Output Files:**
-- `sprint-plan.md` - Weekly Sprint Plans and Tasks
-- `milestone-tracking.md` - Milestone Definitions and Progress
-- `resource-management.md` - Time, Tools, and Budget Tracking
-- `risk-register.md` - Risk Management and Mitigation
-- `progress-reports.md` - Weekly Progress and Status Reports
+- `sprint-plan.md` - Weekly Sprint Plans (8 weeks + beyond)
+- `milestone-tracking.md` - 5 Milestone Definitions and Progress
+- `resource-management.md` - Time, Budget, Tool Tracking
+- `risk-register.md` - Risk Matrix, Mitigation Plans
+- `progress-reports.md` - Weekly Status Reports
 
 ## Prerequisites
-- All previous workflows completed or in progress
-- Development team ready
-- Timeline committed (8 weeks for MVP)
+- All previous workflows reviewed (Phase 1-5)
+- Development timeline committed (8 weeks for MVP+launch)
 - Budget allocated
+- Team/individual capacity confirmed
+
+---
+
+## Agent Behavior: Context Chain
+
+**GOLDEN RULE:** Sprint tasks dan milestones HARUS merujuk ke deliverables spesifik dari Phase 1-5. Agen tidak boleh mendefinisikan tasks yang tidak ada di workflow manapun.
+
+### Master Roadmap → Workflow Mapping
+
+```
+Sprint 1-2 → Phase 3: Technical Implementation (tokens, themes)
+Sprint 3-4 → Phase 4: Component Development (P0 MVP, 13 components)
+Sprint 5-6 → Phase 4: Component Development (P1 Core, 15-20 components)
+Sprint 7   → Phase 5: GTM Launch (pre-launch, content creation)
+Sprint 8   → Phase 5: GTM Launch (launch week, post-launch start)
+```
+
+**Milestone ↔ Phase Mapping:**
+
+| Milestone | Target | Phase | Key Deliverable |
+|-----------|--------|-------|----------------|
+| M1: Foundation | Week 2 | Phase 3 | Tokens + 16 themes working |
+| M2: MVP Components | Week 4 | Phase 4 | 13 P0 components, >90% coverage |
+| M3: Core Components | Week 6 | Phase 4 | 15-20 P1 components |
+| M4: Polish & Docs | Week 7 | Phase 3+4 | >85% coverage, docs, example app |
+| M5: Launch Ready | Week 8 | Phase 5 | Channels live, first sale |
 
 ---
 
 ## Deliverables
 
-### 1. Sprint Plan (Weekly Breakdown)
+### 1. Sprint Plan (8-Week Breakdown)
 
-**Description:** Detailed week-by-week sprint plans with daily tasks.
-
-**Recommended Skills:** `project-manager`, `scrum-master`
+**Description:** Weekly sprint plans dengan daily tasks, mapped ke deliverables workflow sebelumnya.
 
 **Instructions:**
-1. Break down 8-week roadmap into weekly sprints
-2. Define sprint goals for each week
-3. Create daily task breakdowns
-4. Assign responsibilities
-5. Setup sprint tracking board
-6. Conduct weekly sprint reviews
+1. Break 8-week roadmap into weekly sprints
+2. Setiap sprint punya clear goal linked ke milestone
+3. Daily task breakdowns dengan hour estimates
+4. Track planned vs actual hours
 
-**Output Format:**
-```markdown
-# Sprint Plan - Flutter UI Kit
+**Sprint Overview:**
 
-## Project Roadmap Overview
 ```mermaid
 gantt
     title Flutter UI Kit Development Roadmap
     dateFormat  YYYY-MM-DD
-    section Phase 1: Foundation
-    Project Setup & Tokens       :active, p1, 2026-02-24, 7d
-    Theme System & Architecture  :p2, after p1, 7d
-    section Phase 2: MVP Core
-    Button & Inputs              :p3, after p2, 7d
-    Cards, Dialogs & Indicators  :p4, after p3, 7d
-    section Phase 3: Core Plus
-    Navigation Components        :p5, after p4, 7d
-    Data Display & Layout        :p6, after p5, 7d
-    section Phase 4: Launch
-    Testing & Documentation      :p7, after p6, 7d
-    Launch Prep & Marketing      :p8, after p7, 7d
+    section Phase 3: Foundation
+    Setup & Tokens           :active, s1, 2026-03-10, 7d
+    Theme System             :s2, after s1, 7d
+    section Phase 4: MVP
+    Buttons & Inputs         :s3, after s2, 7d
+    Cards, Feedback, Display :s4, after s3, 7d
+    section Phase 4: Core
+    Navigation Components    :s5, after s4, 7d
+    Enhanced + Domain        :s6, after s5, 7d
+    section Phase 5: Launch
+    Polish & Pre-Launch      :s7, after s6, 7d
+    Launch Week              :s8, after s7, 7d
 ```
 
-## Sprint 1: Week 1 - Project Setup & Color Tokens
-
-**Sprint Goal:** Foundation complete - project structure and color tokens ready
-
-**Duration:** 7 days (Feb 24 - Mar 2, 2026)
-
-### Daily Breakdown
-
-#### Day 1: Project Setup
-- [ ] Create Flutter package structure
-- [ ] Configure pubspec.yaml
-- [ ] Setup analysis_options.yaml
-- [ ] Create directory structure
-- [ ] Setup Git repository
-- [ ] Create initial README.md
-
-**Owner:** Senior Flutter Developer
-**Estimated Hours:** 6
-
-#### Day 2: Git & CI Setup
-- [ ] Initialize Git repository
-- [ ] Create .gitignore
-- [ ] Setup GitHub Actions for tests
-- [ ] Configure branch protection
-- [ ] Create initial commit
-
-**Owner:** Senior Flutter Developer
-**Estimated Hours:** 4
-
-#### Day 3-4: Color Tokens
-- [ ] Define primary color palette (blue)
-- [ ] Define semantic colors
-- [ ] Define neutral colors
-- [ ] Create light theme colors
-- [ ] Create dark theme colors
-- [ ] Create 8 color palette variants
-- [ ] Write color token tests
-
-**Owner:** Design System Engineer
-**Estimated Hours:** 12
-
-#### Day 5: Typography Tokens
-- [ ] Define font families
-- [ ] Define font sizes (10 levels)
-- [ ] Define font weights
-- [ ] Define line heights
-- [ ] Define letter spacing
-- [ ] Create text themes
-
-**Owner:** Design System Engineer
-**Estimated Hours:** 6
-
-#### Day 6: Spacing & Radius Tokens
-- [ ] Define spacing scale (4px grid)
-- [ ] Define border radius scale
-- [ ] Define shadow scale
-- [ ] Create semantic spacing
-- [ ] Write token tests
-
-**Owner:** Design System Engineer
-**Estimated Hours:** 6
-
-#### Day 7: Sprint Review & Buffer
-- [ ] Review all tokens
-- [ ] Fix any issues
-- [ ] Prepare for theme system
-- [ ] Sprint retrospective
-
-**Owner:** All
-**Estimated Hours:** 4
-
----
-
-### Sprint 1 Deliverables
-- ✅ Project structure complete
-- ✅ Color tokens (8 palettes)
-- ✅ Typography tokens
-- ✅ Spacing, radius, shadow tokens
-- ✅ CI/CD pipeline setup
-
-### Sprint 1 Metrics
-- **Planned Hours:** 38
-- **Actual Hours:** TBD
-- **Tasks Completed:** TBD / 20
-- **Blockers:** None
-
----
-
-## Sprint 2: Week 2 - Theme System
-
-**Sprint Goal:** Theme system working - 16 pre-built themes ready
-
-**Duration:** 7 days (Mar 3 - Mar 9, 2026)
-
-### Daily Breakdown
-
-#### Day 1-2: Theme Configuration
-- [ ] Create ThemeConfig class
-- [ ] Implement color palette switching
-- [ ] Implement brightness (light/dark)
-- [ ] Create ThemeData from config
-- [ ] Write theme tests
-
-**Owner:** Design System Engineer
-**Estimated Hours:** 12
-
-#### Day 3-4: Pre-built Themes
-- [ ] Create light blue theme
-- [ ] Create dark blue theme
-- [ ] Create 6 additional themes
-- [ ] Test theme switching
-- [ ] Document theme usage
-
-**Owner:** Design System Engineer
-**Estimated Hours:** 12
-
-#### Day 5: Component Base Styles
-- [ ] Create base button theme
-- [ ] Create base input theme
-- [ ] Create base card theme
-- [ ] Integrate with ThemeData
-
-**Owner:** Senior Flutter Developer
-**Estimated Hours:** 6
-
-#### Day 6-7: Buffer & Documentation
-- [ ] Write theme documentation
-- [ ] Create theme examples
-- [ ] Review and fix issues
-- [ ] Sprint review
-
-**Owner:** All
-**Estimated Hours:** 10
-
----
-
-## Sprint 3-8: Similar Format
-
-[Continue for all 8 weeks following the roadmap in docs/flutter-ui-kit/05_ROADMAP.md]
-
----
-
-## Sprint Dependencies
-
-```
-Sprint 1 (Setup) → Sprint 2 (Theme) → Sprint 3 (Button/Input)
-                                          ↓
-Sprint 4 (More Inputs/Cards) ←────────────┘
-                                          ↓
-Sprint 5 (Navigation) → Sprint 6 (Data Display)
-                                          ↓
-Sprint 7 (Testing/Docs) → Sprint 8 (Launch)
-```
-
----
-
-## Sprint Board Setup
-
-### Kanban Board Columns
-
-```
-Backlog | To Do (This Sprint) | In Progress | Review | Done
-```
-
-### Task Card Template
+**Sprint Detail Format:**
 
 ```markdown
-### [Task Name]
+## Sprint [N]: Week [N] — [Sprint Goal]
 
-**Sprint:** Week X
-**Priority:** High/Medium/Low
-**Estimate:** X hours
-**Owner:** @username
-**Status:** To Do / In Progress / Review / Done
+**Goal:** [1-line goal linked ke milestone]
+**Phase:** [Phase 3/4/5 reference]
+**Duration:** 5 working days
 
-**Description:**
-[What needs to be done]
+### Daily Breakdown
 
-**Acceptance Criteria:**
-- [ ] Criteria 1
-- [ ] Criteria 2
+#### Day 1: [Topic]
+- [ ] Task 1 — [detail]
+- [ ] Task 2 — [detail]
+**Hours:** [planned]
 
-**Dependencies:**
-- [Link to dependent tasks]
+#### Day 2: [Topic]
+...
 
-**Notes:**
-[Any additional context]
+#### Day 5: Sprint Review + Buffer
+- [ ] Review deliverables
+- [ ] Fix issues
+- [ ] Retrospective
+
+### Sprint Deliverables
+- ✅ [Deliverable 1]
+- ✅ [Deliverable 2]
+
+### Sprint Metrics
+- Planned Hours: [X]
+- Actual Hours: TBD
+- Tasks Completed: TBD / [total]
+- Blockers: [count]
 ```
-```
+
+**Sprint Summary Table:**
+
+| Sprint | Week | Goal | Phase | Est. Hours |
+|--------|------|------|-------|------------|
+| S1 | W1 | Project setup + design tokens | Phase 3 | 38h |
+| S2 | W2 | Theme system (16 themes) | Phase 3 | 40h |
+| S3 | W3 | AppButton, AppTextField, Checkbox, Radio, Switch, Dropdown | Phase 4 | 40h |
+| S4 | W4 | AppCard, AppDialog, AppSnackBar, AppAvatar, AppChip + tests | Phase 4 | 38h |
+| S5 | W5 | Navigation (BottomNav, TabBar, Drawer, AppBar, etc.) | Phase 4 | 42h |
+| S6 | W6 | Enhanced inputs + feedback + domain components | Phase 4 | 40h |
+| S7 | W7 | Polish, docs, testing, pre-launch setup | Phase 3+4+5 | 40h |
+| S8 | W8 | Launch week execution | Phase 5 | 44h |
+
+**Total: 322 hours over 8 weeks**
 
 ---
 
 ### 2. Milestone Tracking
 
-**Description:** Define and track major milestones throughout the project.
-
-**Recommended Skills:** `project-manager`
+**Description:** 5 milestone gates dengan criteria yang HARUS dipenuhi sebelum lanjut.
 
 **Instructions:**
-1. Define 5 major milestones from roadmap
-2. Create milestone criteria and deliverables
-3. Setup milestone review meetings
-4. Track progress toward each milestone
-5. Document milestone completion
+1. Definisikan 5 milestone dengan deliverable + acceptance criteria
+2. Setiap milestone = go/no-go decision point
+3. Track progress weekly
 
-**Output Format:**
+**Milestone Overview:**
+```
+┌─────────────────────────────────────────────────────┐
+│  M1: Foundation              │  Week 2    │ Status  │
+├─────────────────────────────────────────────────────┤
+│  M2: MVP Components          │  Week 4    │ Status  │
+├─────────────────────────────────────────────────────┤
+│  M3: Core Components         │  Week 6    │ Status  │
+├─────────────────────────────────────────────────────┤
+│  M4: Polish & Docs           │  Week 7    │ Status  │
+├─────────────────────────────────────────────────────┤
+│  M5: Launch Ready            │  Week 8    │ Status  │
+└─────────────────────────────────────────────────────┘
+```
+
+**Milestone Detail Format:**
+
 ```markdown
-# Milestone Tracking
+## Milestone [N]: [Name]
 
-## Milestone Overview
+**Target:** Week [N]
+**Status:** 🟢 On Track | 🟡 At Risk | 🔴 Behind | ⚪ Not Started
+**Completion:** [X]%
 
+### Acceptance Criteria (ALL must pass)
+- [ ] Criteria 1
+- [ ] Criteria 2
+- [ ] ...
+
+### Deliverables
+| Deliverable | Status | Owner | Due |
+|-------------|--------|-------|-----|
+| [item] | ✅/🔄/⏳ | [who] | Week [N] |
+
+### Go/No-Go Decision
+- [ ] All acceptance criteria met
+- [ ] Quality gate passed
+- [ ] Team agrees to proceed
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  M1: Foundation              │  Week 2    │  🟢 On Track       │
-├─────────────────────────────────────────────────────────────────┤
-│  M2: Core Components         │  Week 4    │  ⚪ Not Started    │
-├─────────────────────────────────────────────────────────────────┤
-│  M3: Enhanced Components     │  Week 6    │  ⚪ Not Started    │
-├─────────────────────────────────────────────────────────────────┤
-│  M4: Polish & Docs           │  Week 7    │  ⚪ Not Started    │
-├─────────────────────────────────────────────────────────────────┤
-│  M5: Launch Ready            │  Week 8    │  ⚪ Not Started    │
-└─────────────────────────────────────────────────────────────────┘
-```
 
----
+**Milestone Acceptance Criteria:**
 
-## Milestone 1: Foundation
-
-**Target Date:** March 9, 2026 (Week 2)
-**Status:** 🟡 In Progress
-**Completion:** 60%
-
-### Deliverables
-
-| Deliverable | Status | Owner | Due Date |
-|-------------|--------|-------|----------|
-| Project structure | ✅ Complete | Dev Lead | Week 1 |
-| Color tokens (8 palettes) | ✅ Complete | Design Eng | Week 1 |
-| Typography tokens | ✅ Complete | Design Eng | Week 1 |
-| Spacing/radius/shadows | ✅ Complete | Design Eng | Week 1 |
-| ThemeConfig class | 🔄 In Progress | Design Eng | Week 2 |
-| 16 pre-built themes | 🔄 In Progress | Design Eng | Week 2 |
-| Theme documentation | ⏳ Pending | Design Eng | Week 2 |
-
-### Milestone Criteria
-- [x] All design tokens implemented
-- [x] Token tests passing (>90% coverage)
-- [ ] Theme system functional
-- [ ] 16 themes available
-- [ ] Documentation complete
-
-### Risks & Issues
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Color palette design takes longer | Medium | Use existing palette as base |
-
----
-
-## Milestone 2: Core Components (MVP Part 1)
-
-**Target Date:** March 23, 2026 (Week 4)
-**Status:** ⚪ Not Started
-**Completion:** 0%
-
-### Deliverables
-
-| Deliverable | Status | Owner | Due Date |
-|-------------|--------|-------|----------|
-| AppButton (5 variants) | ⏳ Pending | Dev Lead | Week 3 |
-| AppTextField | ⏳ Pending | Dev Lead | Week 3 |
-| AppCheckbox, AppRadio, AppSwitch | ⏳ Pending | Dev Lead | Week 4 |
-| AppDropdown | ⏳ Pending | Dev Lead | Week 4 |
-| AppCard, AppImageCard | ⏳ Pending | Dev Lead | Week 4 |
-| AppSnackBar, AppDialog | ⏳ Pending | Dev Lead | Week 4 |
-| AppLoadingIndicator, AppSkeleton | ⏳ Pending | Dev Lead | Week 4 |
-
-### Milestone Criteria
-- [ ] 9 core components implemented
-- [ ] All components tested (>85% coverage)
-- [ ] Demo screens created
-- [ ] API documentation complete
-
----
-
-## Milestone 3: Enhanced Components (MVP Part 2)
-
-**Target Date:** April 6, 2026 (Week 6)
-**Status:** ⚪ Not Started
-**Completion:** 0%
-
-### Deliverables
-- Navigation components (6)
-- Enhanced inputs (4)
-- Feedback components (4)
-- Data display (4)
-- Layout components (4)
-
-### Milestone Criteria
-- [ ] 20+ additional components
-- [ ] Demo app functional
-- [ ] All tests passing
-
----
-
-## Milestone 4: Polish & Documentation
-
-**Target Date:** April 13, 2026 (Week 7)
-**Status:** ⚪ Not Started
-**Completion:** 0%
-
-### Deliverables
-- Test coverage >85%
-- Complete API documentation
-- README and guides
-- Demo app polish
-
-### Milestone Criteria
-- [ ] >85% test coverage
-- [ ] All public APIs documented
-- [ ] Getting started guide
-- [ ] Demo app complete
-
----
-
-## Milestone 5: Launch Ready
-
-**Target Date:** April 20, 2026 (Week 8)
-**Status:** ⚪ Not Started
-**Completion:** 0%
-
-### Deliverables
-- Package published on pub.dev
-- Gumroad store live
-- Landing page live
-- Marketing materials ready
-- First 10 beta customers
-
-### Milestone Criteria
-- [ ] All launch checklist items complete
-- [ ] First sale made
-- [ ] Support system ready
-
----
-
-## Milestone Review Cadence
-
-### Weekly Check-ins
-- **When:** Every Friday
-- **Duration:** 30 minutes
-- **Attendees:** Core team
-- **Agenda:**
-  - Progress since last week
-  - Blockers and issues
-  - Next week's priorities
-
-### Milestone Reviews
-- **When:** End of each milestone (Week 2, 4, 6, 7, 8)
-- **Duration:** 1 hour
-- **Attendees:** All stakeholders
-- **Agenda:**
-  - Milestone deliverables review
-  - Quality check
-  - Go/no-go decision for next phase
-```
+| Milestone | Criteria |
+|-----------|----------|
+| **M1: Foundation** | All tokens implemented + tested, 16 themes working, package structure complete |
+| **M2: MVP Core** | 13 P0 components complete, >90% test coverage, demo screens exist |
+| **M3: Core Plus** | 15-20 P1 components complete, >85% coverage, domain components (if any) |
+| **M4: Polish** | Overall >85% coverage, all public APIs documented, example app polished |
+| **M5: Launch** | pub.dev published, Gumroad live, landing page live, first sale made |
 
 ---
 
 ### 3. Resource Management
 
-**Description:** Track time, tools, and budget throughout the project.
-
-**Recommended Skills:** `project-manager`, `resource-manager`
+**Description:** Track waktu, budget, dan tools.
 
 **Instructions:**
-1. Define resource requirements (time, people, tools)
-2. Create budget allocation
-3. Track actual vs planned hours
-4. Monitor tool usage and costs
-5. Adjust resource allocation as needed
+1. Define capacity per role per week
+2. Track actual vs planned hours
+3. Monitor budget burn rate
 
-**Output Format:**
+**Capacity Plan:**
+
+| Role | W1-2 | W3-4 | W5-6 | W7-8 | Total |
+|------|------|------|------|------|-------|
+| Flutter Dev | 40h/w | 40h/w | 40h/w | 40h/w | 320h |
+| Content/Marketing | 0h | 0h | 5h/w | 30h/w | 70h |
+| **Total** | 80h | 80h | 90h | 140h | **390h** |
+
+**Budget:**
+
+| Category | Amount | Notes |
+|----------|--------|-------|
+| Domain | $20/year | flutteruikit.com |
+| Hosting | $20/month | Vercel Pro |
+| Email marketing | $30/month | ConvertKit |
+| Analytics | $9/month | Plausible |
+| Design assets | $100 one-time | Icons, images |
+| **6-month total** | ~$700 | Excluding platform fees |
+| Gumroad fees | ~10% of revenue | Est. $1,365 on $13,650 |
+
+**Time Tracking Template:**
 ```markdown
-# Resource Management
-
-## Time Commitment
-
-### Weekly Hours by Role
-
-| Role | Week 1-2 | Week 3-4 | Week 5-6 | Week 7-8 | Total |
-|------|----------|----------|----------|----------|-------|
-| Senior Flutter Dev | 40h | 40h | 40h | 40h | 160h |
-| Design System Eng | 40h | 20h | 10h | 10h | 80h |
-| Project Manager | 10h | 10h | 10h | 20h | 50h |
-| Content Marketer | 0h | 0h | 10h | 40h | 50h |
-| **Total** | **90h** | **70h** | **70h** | **110h** | **340h** |
-
-### Time Tracking Template
-
-```markdown
-## Week X Time Log
-
-| Date | Team Member | Task | Hours | Notes |
-|------|-------------|------|-------|-------|
-| Mon | John | Project setup | 6 | Completed early |
-| Mon | John | Color tokens | 2 | In progress |
-| Tue | Sarah | Theme system | 6 | On track |
-...
-
-**Week Total:** XX hours
-**Cumulative:** XX hours
-**Budget Remaining:** XX hours
-```
-
----
-
-## Budget Allocation
-
-### One-Time Costs
-
-| Item | Budget | Actual | Variance |
-|------|--------|--------|----------|
-| Domain (flutteruikit.com) | $20/year | $20 | $0 |
-| Hosting (Vercel Pro) | $20/month | $0 | $20 |
-| Design Assets | $100 | $0 | $100 |
-| Marketing Tools | $100 | $0 | $100 |
-| **Subtotal** | **$240** | **$20** | **$220** |
-
-### Recurring Costs
-
-| Item | Monthly | 6 Months |
-|------|---------|----------|
-| Hosting | $20 | $120 |
-| Email Marketing | $30 | $180 |
-| Analytics Tools | $20 | $120 |
-| **Total** | **$70** | **$420** |
-
-### Platform Fees
-
-| Platform | Fee Structure | Estimated 6mo |
-|----------|---------------|---------------|
-| Gumroad | 10% of sales | $1,365 (10% of $13,650) |
-| pub.dev | Free | $0 |
-| GitHub | Free | $0 |
-
-### Total Budget
-
-| Category | Amount |
-|----------|--------|
-| One-time costs | $240 |
-| 6-month recurring | $420 |
-| Platform fees (est.) | $1,365 |
-| **Total** | **$2,025** |
-
----
-
-## Tool Stack
-
-### Development Tools (Free)
-- Flutter SDK
-- VS Code / Android Studio
-- Git & GitHub
-- Figma (free tier)
-
-### Paid Tools
-
-| Tool | Purpose | Cost | Status |
-|------|---------|------|--------|
-| Vercel Pro | Hosting | $20/mo | Active |
-| ConvertKit | Email marketing | $30/mo | Planned |
-| Plausible | Analytics | $9/mo | Planned |
-| Canva Pro | Graphics | $13/mo | Optional |
-
----
-
-## Resource Allocation
-
-### Current Allocation
-
-```
-Week 1-2: Foundation Phase
-├── Senior Flutter Dev: 100% (40h/week)
-├── Design System Eng: 100% (40h/week)
-└── Project Manager: 25% (10h/week)
-
-Week 3-4: Core Components
-├── Senior Flutter Dev: 100% (40h/week)
-├── Design System Eng: 50% (20h/week)
-└── Project Manager: 25% (10h/week)
-
-Week 5-6: Enhanced Components
-├── Senior Flutter Dev: 100% (40h/week)
-├── Design System Eng: 25% (10h/week)
-└── Project Manager: 25% (10h/week)
-
-Week 7-8: Launch Preparation
-├── Senior Flutter Dev: 100% (40h/week)
-├── Content Marketer: 100% (40h/week)
-└── Project Manager: 50% (20h/week)
-```
+## Week [N] Time Log
+| Date | Task | Hours | Notes |
+|------|------|-------|-------|
+| Mon | [task] | [h] | [notes] |
+| ... | | | |
+**Week Total:** [Xh] / Planned: [Yh]
+**Cumulative:** [Zh]
 ```
 
 ---
 
 ### 4. Risk Register
 
-**Description:** Identify, track, and mitigate project risks.
-
-**Recommended Skills:** `project-manager`, `risk-manager`
+**Description:** Identifikasi, scoring, dan mitigasi risiko project.
 
 **Instructions:**
-1. Identify technical, project, and market risks
-2. Assess probability and impact for each risk
-3. Define mitigation strategies
-4. Assign risk owners
-5. Review and update weekly
+1. Identifikasi technical, project, dan market risks
+2. Score: Probability × Impact
+3. Define mitigation plans untuk High risks
+4. Review weekly
 
-**Output Format:**
-```markdown
-# Risk Register
-
-## Technical Risks
-
-| Risk ID | Description | Probability | Impact | Score | Mitigation | Owner | Status |
-|---------|-------------|:-----------:|:------:|:-----:|------------|-------|--------|
-| T-001 | Flutter breaking changes | Medium | Medium | 🟡 | Pin Flutter version, test on stable | Tech Lead | Open |
-| T-002 | Test coverage too low | Low | Medium | 🟢 | Daily test writing, CI enforcement | QA Lead | Open |
-| T-003 | Performance issues | Low | High | 🟢 | Profile early, use best practices | Tech Lead | Open |
-| T-004 | Design tokens inconsistent | Medium | Low | 🟢 | Design review before implementation | Design Eng | Closed |
-
-## Project Risks
-
-| Risk ID | Description | Probability | Impact | Score | Mitigation | Owner | Status |
-|---------|-------------|:-----------:|:------:|:-----:|------------|-------|--------|
-| P-001 | Scope creep | High | High | 🔴 | Stick to MVP, move extras to backlog | PM | Monitoring |
-| P-002 | Burnout (solo developer) | Medium | High | 🟡 | Take breaks, realistic goals | Tech Lead | Open |
-| P-003 | Timeline slip | Medium | Medium | 🟡 | Buffer days built in | PM | Open |
-| P-004 | Key person unavailable | Low | High | 🟢 | Documentation, cross-training | PM | Open |
-
-## Market Risks
-
-| Risk ID | Description | Probability | Impact | Score | Mitigation | Owner | Status |
-|---------|-------------|:-----------:|:------:|:-----:|------------|-------|--------|
-| M-001 | Low launch traction | Medium | High | 🟡 | Extend early bird, increase content | Marketer | Open |
-| M-002 | Negative reviews | Low | High | 🟢 | Rapid response, fix issues | PM | Open |
-| M-003 | Competitor price drop | Low | Medium | 🟢 | Emphasize quality + support | PM | Open |
-| M-004 | Piracy / cracked versions | High | Low | 🟢 | Focus on value-add (support, updates) | PM | Open |
-
----
-
-## Risk Scoring Matrix
-
+**Risk Matrix:**
 ```
               Impact
           Low   Med   High
         ┌─────┬─────┬─────┐
   Low   │ 🟢  │ 🟢  │ 🟡  │
         ├─────┼─────┼─────┤
-Prob Med │ 🟢  │ 🟡  │ 🔴  │
+Prob Med│ 🟢  │ 🟡  │ 🔴  │
         ├─────┼─────┼─────┤
   High  │ 🟡  │ 🔴  │ 🔴  │
         └─────┴─────┴─────┘
-
-Score = Probability × Impact
-🟢 1-2: Low Risk    🟡 3-4: Medium Risk    🔴 6-9: High Risk
 ```
 
----
+**Risk Register:**
 
-## Risk Mitigation Plans
+| ID | Category | Risk | Prob | Impact | Score | Mitigation | Status |
+|----|----------|------|:----:|:------:|:-----:|------------|--------|
+| T-001 | Technical | Flutter breaking changes | Med | Med | 🟡 | Pin SDK version, test on stable | Open |
+| T-002 | Technical | Test coverage too low | Low | Med | 🟢 | CI gate at 85%, daily testing | Open |
+| T-003 | Technical | Performance issues | Low | High | 🟡 | Profile early, const constructors | Open |
+| P-001 | Project | Scope creep | High | High | 🔴 | Strict MVP, backlog extras | Monitoring |
+| P-002 | Project | Burnout (solo dev) | Med | High | 🔴 | 40h/week max, breaks, celebrate wins | Monitoring |
+| P-003 | Project | Timeline slip | Med | Med | 🟡 | Buffer days, cut P2 if needed | Open |
+| M-001 | Market | Low launch traction | Med | High | 🔴 | Extend early bird, more content | Open |
+| M-002 | Market | Competitor price drop | Low | Med | 🟢 | Emphasize quality + support | Open |
+| M-003 | Market | Package piracy | High | Low | 🟡 | Focus on value-add (support) | Open |
 
-### P-001: Scope Creep (High Priority)
+**Mitigation Plans (High Priority):**
 
-**Symptoms:**
-- New feature requests during development
-- "Nice to have" features being discussed
-- Timeline pressure increasing
+**P-001: Scope Creep**
+- Trigger: New feature request mid-sprint
+- Action: Add to backlog, evaluate at sprint boundary only
+- Owner: Project lead
 
-**Mitigation Actions:**
-1. Maintain strict MVP definition
-2. Use backlog for all new ideas
-3. Weekly scope review with team
-4. Change request process for additions
+**P-002: Burnout Prevention**
+- Trigger: Working >50h/week for 2+ weeks
+- Action: Reduce scope, defer P2, take 1-day break
+- Owner: Self-management
 
-**Trigger:** When new feature is requested mid-sprint
-
-**Owner:** Project Manager
-
----
-
-### P-002: Burnout Prevention
-
-**Symptoms:**
-- Working >50 hours/week consistently
-- Decreased code quality
-- Irritability, lack of motivation
-
-**Prevention:**
-1. Enforce 40-hour work weeks
-2. Mandatory breaks
-3. Weekly check-ins on wellbeing
-4. Celebrate small wins
-
-**Owner:** Tech Lead
-```
+**M-001: Low Launch Traction**
+- Trigger: <20 sales in first 2 weeks
+- Action: Increase content output, extend 40% discount, join more communities
+- Owner: Marketing
 
 ---
 
 ### 5. Progress Reports
 
-**Description:** Weekly progress reports and status updates.
-
-**Recommended Skills:** `project-manager`
+**Description:** Weekly status reports — template untuk tracking progress.
 
 **Instructions:**
-1. Create weekly status report template
-2. Collect progress from team members
-3. Update milestone and sprint tracking
-4. Identify blockers and issues
-5. Share with stakeholders
+1. Submit every Friday
+2. Cover: completed, in progress, blockers, next week, metrics
+3. Include team health check
 
-**Output Format:**
+**Weekly Report Template:**
+
 ```markdown
-# Weekly Progress Report
+# Weekly Progress Report — Week [N]
 
-## Week 1 (Feb 24 - Mar 2, 2026)
-
-### Executive Summary
-
-**Overall Status:** 🟢 On Track
+## Executive Summary
+**Status:** 🟢 On Track | 🟡 At Risk | 🔴 Behind
 
 **Highlights:**
-- Project structure created and configured
-- All design tokens implemented
-- CI/CD pipeline setup
-- Team aligned and productive
+- [Key accomplishment 1]
+- [Key accomplishment 2]
 
 **Key Metrics:**
-- Planned Hours: 90
-- Actual Hours: 88
-- Tasks Completed: 18/20 (90%)
-- Blockers: 0
+- Planned Hours: [X] | Actual: [Y]
+- Tasks Completed: [N] / [Total]
+- Blockers: [count]
 
----
+## Sprint [N] Progress
+### Completed ✅
+- [Task 1]
+- [Task 2]
 
-### Sprint 1 Progress
+### In Progress 🔄
+- [Task 3] — [X]% complete
 
-#### Completed This Week
-✅ Project structure created
-✅ pubspec.yaml configured
-✅ analysis_options.yaml setup
-✅ Color tokens (8 palettes)
-✅ Typography tokens
-✅ Spacing tokens
-✅ Radius tokens
-✅ Shadow tokens
-✅ Git repository setup
-✅ GitHub Actions CI/CD
+### Blocked 🔴
+- [Task 4] — reason: [blocker]
 
-#### In Progress
-🔄 Color token tests (90% complete)
-🔄 Theme planning
+## Milestone Status
+- M[N]: [Name] — [X]% complete — 🟢/🟡/🔴
 
-#### Not Started
-⏳ Theme system implementation
-⏳ Pre-built themes
+## Next Week Plan
+- Sprint Goal: [goal]
+- Key Tasks: [1], [2], [3]
 
----
-
-### Milestone 1 Status
-
-**Completion:** 60%
-**On Track:** Yes
-**Next Week:** Theme system implementation
-
----
-
-### Issues & Blockers
-
-| Issue | Impact | Resolution | Owner |
-|-------|--------|------------|-------|
-| None | - | - | - |
-
----
-
-### Next Week Plan (Week 2)
-
-**Sprint Goal:** Theme system complete with 16 pre-built themes
-
-**Key Deliverables:**
-- ThemeConfig class
-- 16 pre-built themes
-- Theme documentation
-
-**Capacity:**
-- Senior Flutter Dev: 40h
-- Design System Eng: 40h
-- Project Manager: 10h
-
----
-
-### Team Health
-
-| Team Member | Workload | Morale | Notes |
-|-------------|----------|--------|-------|
-| John (Dev) | Good | High | Great progress |
-| Sarah (Design) | Good | High | Enjoying token work |
-
----
-
-## Week 2 Template
-
-[Similar format for subsequent weeks]
-
----
-
-## Monthly Summary
-
-### Month 1 Summary (Weeks 1-4)
-
-**Overall Status:** 🟢 On Track
-
-**Accomplishments:**
-- Foundation complete (Week 2)
-- Core components complete (Week 4)
-- 13 MVP components ready
-
-**Metrics:**
-- Total Hours: 340 (planned) vs 335 (actual)
-- Components: 13/13 complete
-- Test Coverage: 91%
-
-**Next Month:** Enhanced components (Week 5-6)
+## Team Health
+| Metric | Rating |
+|--------|--------|
+| Workload | Good / Heavy / Light |
+| Morale | High / Medium / Low |
+| Blockers | None / [describe] |
 ```
+
+**Monthly Summary Template:**
+```markdown
+# Month [N] Summary
+
+**Overall:** 🟢/🟡/🔴
+**Hours:** [planned] vs [actual]
+**Components:** [N] / [target]
+**Coverage:** [X]%
+**Key Wins:** [1], [2]
+**Key Risks:** [1], [2]
+**Next Month:** [focus area]
 ```
+
+---
 
 ## Workflow Steps
 
-1. **Sprint Planning** (Project Manager)
-   - Break roadmap into weekly sprints
-   - Define sprint goals
-   - Create task breakdowns
-   - Duration: 2-3 days (initial)
-
-2. **Daily Execution** (All Team Members)
-   - Complete assigned tasks
-   - Update task status
-   - Log hours worked
-   - Duration: Ongoing
-
-3. **Weekly Review** (Project Manager)
-   - Collect progress reports
-   - Update milestone tracking
-   - Identify blockers
-   - Plan next week
-   - Duration: 2-3 hours
-
-4. **Milestone Review** (All Stakeholders)
-   - Review deliverables
-   - Quality check
-   - Go/no-go decision
-   - Duration: 1 hour per milestone
+1. **Initial Planning** — Create sprint plan, define milestones, setup tracking. 1-2 hari.
+2. **Daily Execution** — Complete tasks, update status, log hours. Ongoing.
+3. **Weekly Review** — Progress report, sprint retro, plan next sprint. 2-3 jam/minggu.
+4. **Milestone Gate** — Review deliverables, quality check, go/no-go. 1 jam per milestone.
 
 ## Success Criteria
-- All 5 milestones achieved on time
-- Sprint goals met 80%+ of weeks
-- Budget within 10% of plan
-- Team health maintained (no burnout)
-- Product launched by Week 8
+
+### Quality Gates
+- [ ] Sprint plans cover ALL 8 weeks mapped ke Phase 3-5 deliverables
+- [ ] 5 milestones defined dengan clear acceptance criteria
+- [ ] Milestones aligned dengan Phase outputs (not invented tasks)
+- [ ] Risk register has >5 identified risks with mitigation plans
+- [ ] Budget tracking active
+- [ ] Weekly progress reports submitted on time
+- [ ] Sprints goals met ≥80% of weeks
+- [ ] All milestones achieved (or explicitly re-scoped with justification)
+- [ ] Product launched by Week 8
+- [ ] Team health maintained (no burnout signals)
+
+### Content Depth Minimums
+| Deliverable | Min. Lines | Key Sections |
+|-------------|------------|-------------|
+| sprint-plan.md | 150 | 8 sprint summaries, daily breakdowns for S1-S2 |
+| milestone-tracking.md | 100 | 5 milestones with acceptance criteria, deliverable tables |
+| resource-management.md | 60 | Capacity plan, budget table, time tracking template |
+| risk-register.md | 80 | Risk matrix, 8+ risks, mitigation plans for 🔴 risks |
+| progress-reports.md | 60 | Weekly + monthly report templates |
+
+---
 
 ## Cross-References
 
-- **Previous Phase** → `05_gtm_launch.md`
+- **Phase 1** → `01_prd_analysis.md` (PRD, pricing, personas)
+- **Phase 2** → `02_ui_ux_prototyping.md` (DESIGN.md, wireframes)
+- **Phase 3** → `03_technical_implementation.md` (tokens, themes, APIs)
+- **Phase 4** → `04_component_development.md` (P0/P1/P2 components)
+- **Phase 5** → `05_gtm_launch.md` (distribution, marketing, launch)
 - **Source Roadmap** → `../../docs/flutter-ui-kit/05_ROADMAP.md`
-- **Component Dev** → `04_component_development.md`
-- **GTM Launch** → `05_gtm_launch.md`
 
 ## Tools & Templates
-- Jira/Trello/Notion for sprint boards
+- GitHub Projects / Notion for sprint boards
 - Google Sheets for time tracking
-- GitHub Projects for issue tracking
-- Slack/Discord for communication
-- Loom for async updates
+- GitHub Issues for task tracking
+- Mermaid for Gantt charts
 
 ---
 
 ## Workflow Validation Checklist
 
 ### Pre-Execution
-- [ ] Roadmap reviewed and committed
-- [ ] Team assembled and available
-- [ ] Tools and budget approved
-- [ ] Sprint board created
+- [ ] All 5 previous workflow files reviewed
+- [ ] 8-week timeline committed
+- [ ] Capacity + budget confirmed
+- [ ] Sprint board created (kanban: Backlog → To Do → In Progress → Review → Done)
+- [ ] Output folder `flutter-ui-kit/06-roadmap-execution/` created
 
 ### During Execution
-- [ ] Weekly sprints executed
-- [ ] Daily standups held
-- [ ] Progress reports submitted
-- [ ] Milestones reviewed
-- [ ] Risks monitored and mitigated
+- [ ] Weekly sprints running
+- [ ] Progress reports submitted Friday
+- [ ] Milestones reviewed at gate points
+- [ ] Risk register updated weekly
+- [ ] Hours tracked
 
 ### Post-Execution
-- [ ] All milestones achieved
+- [ ] All 5 deliverable files at correct path
+- [ ] All milestones achieved or re-scoped
 - [ ] Product launched
 - [ ] Retrospective completed
-- [ ] Lessons documented
+- [ ] Lessons learned documented
+- [ ] Quality Gates passed
