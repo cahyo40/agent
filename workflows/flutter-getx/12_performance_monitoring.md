@@ -1,6 +1,36 @@
 ---
 description: Setup error monitoring, crash reporting, dan performance profiling untuk production GetX app.
 ---
+# Workflow: Performance & Monitoring (Sentry + Crashlytics)
+
+// turbo-all
+
+## Overview
+
+Setup error monitoring, crash reporting, dan performance
+profiling untuk production GetX app.
+
+
+## Prerequisites
+
+- Project setup dari `01_project_setup.md` selesai
+- Firebase configured (`06_firebase_integration.md`)
+- Testing selesai (`11_testing_production.md`)
+
+
+## Agent Behavior
+
+- **Jangan hardcode Sentry DSN** — gunakan env vars.
+- **Set user context** setelah login untuk error attribution.
+- **Upload debug symbols** — ke Sentry dan Firebase.
+- **Wrap `runApp`** dengan error handlers.
+
+
+## Recommended Skills
+
+- `observability-engineer` — Monitoring & tracing
+- `senior-site-reliability-engineer` — SRE practices
+
 # 12 - Performance & Monitoring (Sentry + Crashlytics)
 
 **Goal:** Setup error monitoring, crash reporting, dan performance profiling untuk production GetX app.

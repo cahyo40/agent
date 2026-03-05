@@ -14,23 +14,38 @@ Workflows untuk development Flutter dengan GetX state management dan Clean Archi
 - ✅ Semua dependencies menggunakan versi terbaru yang stable
 - ✅ **No code generation** — tidak memerlukan build_runner, freezed, atau generator lainnya
 
+## Quick Start
+
+> **Baru pertama kali?** Baca **`example.md`** untuk contoh prompt
+> yang bisa langsung di-copy-paste per workflow.
+
 ## Struktur Workflows
 
 ```
 workflows/flutter-getx/
+├── README.md
+├── USAGE.md
+├── example.md               ← ⭐ Contoh prompt per workflow
+│
+│  ## Phase 1: Foundation
 ├── 01_project_setup.md              # Setup project Flutter + GetX + Clean Architecture
 ├── 02_feature_maker.md              # Generator untuk membuat feature baru
-├── 03_backend_integration.md        # REST API integration dengan Dio
-├── 04_firebase_integration.md       # Firebase (Auth, Firestore, Storage, FCM)
-├── 05_supabase_integration.md       # Supabase (Auth, PostgreSQL, Realtime, Storage)
-├── 06_testing_production.md         # Testing + CI/CD + Production deployment
-├── 07_translation.md                # Translation & Localization (i18n)
-├── 08_state_management_advanced.md  # Advanced GetX: Workers, StateMixin, pagination, optimistic
-├── 09_offline_storage.md            # GetStorage cache, Hive, flutter_secure_storage
-├── 10_ui_components.md              # Reusable widget library (AppButton, Shimmer, etc.)
-├── 11_push_notifications.md         # FCM + local notifications + deep linking
-├── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
-└── USAGE.md                         # Dokumentasi penggunaan lengkap
+├── 03_ui_components.md              # Reusable widget library (AppButton, Shimmer, etc.)
+│
+│  ## Phase 2: Data & Patterns
+├── 04_state_management_advanced.md  # Advanced GetX: Workers, StateMixin, pagination, optimistic
+├── 05_backend_integration.md        # REST API integration dengan Dio
+├── 06_firebase_integration.md       # Firebase (Auth, Firestore, Storage, FCM)
+├── 07_supabase_integration.md       # Supabase (Auth, PostgreSQL, Realtime, Storage)
+├── 08_offline_storage.md            # GetStorage cache, Hive, flutter_secure_storage
+│
+│  ## Phase 3: Enhancements (opsional)
+├── 09_translation.md                # Translation & Localization (i18n)
+├── 10_push_notifications.md         # FCM + local notifications + deep linking
+│
+│  ## Phase 4: Quality & Deploy
+├── 11_testing_production.md         # Testing + CI/CD + Production deployment
+└── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
 ```
 
 ## Output Folder Structure
@@ -127,34 +142,31 @@ sdlc/flutter-getx/
 
 ## Urutan Penggunaan
 
-### Core (Wajib)
-1. **01_project_setup.md** - Setup project dari nol
-2. **02_feature_maker.md** - Generate feature baru (bisa dijalankan berkali-kali)
+### 🏗️ Phase 1: Foundation (Wajib)
+1. **01_project_setup.md** — Setup project dari nol
+2. **02_feature_maker.md** — Generate feature baru (bisa dijalankan berkali-kali)
+3. **03_ui_components.md** — Reusable widget library
 
-### Backend (Pilih salah satu atau beberapa)
-3. **03_backend_integration.md** - Untuk REST API
-4. **04_firebase_integration.md** - Untuk Firebase
-5. **05_supabase_integration.md** - Untuk Supabase
+### 📊 Phase 2: Data & Patterns
+4. **04_state_management_advanced.md** — Advanced GetX patterns (Workers, StateMixin, pagination)
+5. **05_backend_integration.md** — Untuk REST API
+6. **06_firebase_integration.md** — Untuk Firebase
+7. **07_supabase_integration.md** — Untuk Supabase
+8. **08_offline_storage.md** — Offline-first storage (GetStorage, Hive, SecureStorage)
 
-### Enhancement (Gunakan sesuai kebutuhan)
-6. **08_state_management_advanced.md** - Advanced GetX patterns (Workers, StateMixin, pagination)
-7. **09_offline_storage.md** - Offline-first storage (GetStorage, Hive, SecureStorage)
-8. **10_ui_components.md** - Reusable widget library
-9. **11_push_notifications.md** - Push notifications (FCM + local)
-10. **07_translation.md** - Translation & Localization (i18n)
+> **Pilih backend:** Gunakan **05** (REST API), **06** (Firebase), atau **07** (Supabase) — tidak perlu semua.
 
-### Production (Terakhir)
-11. **06_testing_production.md** - Testing dan deployment
-12. **12_performance_monitoring.md** - Monitoring di production
+### 🌍 Phase 3: Enhancements (Opsional)
+9. **09_translation.md** — Translation & Localization (i18n)
+10. **10_push_notifications.md** — Push notifications (FCM + local)
 
-### Workflow Optional:
-- **07_translation.md** - Gunakan jika app membutuhkan multiple languages
-- **11_push_notifications.md** - Gunakan jika app butuh push notifications
-- **08-12** - Semua bisa dijalankan independen sesuai kebutuhan project
+### ✅ Phase 4: Quality & Deploy
+11. **11_testing_production.md** — Testing dan deployment
+12. **12_performance_monitoring.md** — Monitoring di production
 
 ## Fitur Utama
 
-### 01 - Project Setup
+### 01 — Project Setup
 - Clean Architecture folder structure dengan GetX pattern
 - GetX reactive state management (`.obs` + `Obx()`)
 - Dependency injection dengan `Bindings`
@@ -163,7 +175,7 @@ sdlc/flutter-getx/
 - Shimmer loading skeletons
 - Error handling terstruktur
 
-### 02 - Feature Maker
+### 02 — Feature Maker
 - Template generator untuk feature baru
 - Auto-generate domain, data, presentation layers
 - CRUD operations template
@@ -171,7 +183,21 @@ sdlc/flutter-getx/
 - Binding template untuk dependency injection
 - Shimmer loading widget template
 
-### 03 - Backend Integration (REST API)
+### 03 — UI Components
+- `AppButton` (variants: primary, secondary, destructive, ghost)
+- `AppTextField` (password toggle, validation)
+- `EmptyStateWidget` dengan action button
+- `AppErrorWidget` dengan retry
+- `ShimmerList` untuk loading states
+
+### 04 — Advanced State Management
+- Workers: `debounce`, `ever`, `once`, `interval`
+- `StateMixin` dengan `obx()` untuk loading/error/empty/data
+- Pagination dengan load-more + `isLoadingMore.obs`
+- Optimistic update dengan rollback
+- Cross-controller communication via `ever()`
+
+### 05 — Backend Integration (REST API)
 - Dio setup dengan interceptors lengkap
 - Auth interceptor dengan token refresh
 - Retry interceptor (3x untuk 5xx errors)
@@ -179,19 +205,42 @@ sdlc/flutter-getx/
 - Repository pattern dengan offline-first
 - Pagination dengan infinite scroll
 
-### 04 - Firebase Integration
+### 06 — Firebase Integration
 - Firebase Auth (email/password, Google Sign-In)
 - Cloud Firestore CRUD + real-time streams
 - Firebase Storage (upload dengan progress)
 - Firebase Cloud Messaging (push notifications)
 - Security Rules + Offline persistence
 
-### 05 - Supabase Integration
+### 07 — Supabase Integration
 - Supabase Auth (magic link, OAuth, phone)
 - PostgreSQL dengan Row Level Security (RLS)
 - Realtime subscriptions + Supabase Storage
 
-### 06 - Testing & Production
+### 08 — Offline Storage
+- `GetStorage` cache dengan TTL
+- Offline-first repository pattern
+- Hive untuk complex data
+- `flutter_secure_storage` untuk tokens
+- Reactive `ConnectivityService` dengan `.obs`
+
+### 09 — Translation & Localization
+- Easy Localization setup + JSON translation files (EN, ID, MS, TH, VN)
+- Locale controller dengan `GetxController`
+- Language selector widget + Locale persistence dengan `GetStorage`
+
+### 10 — Push Notifications
+- FCM foreground/background/terminated handling
+- `flutter_local_notifications` sebagai `GetxService`
+- Deep link navigation via `Get.toNamed()`
+- `FcmTokenController` untuk register/unregister
+
+### 11 — Testing & Production
+- Unit tests dengan mocktail, Widget tests, Integration tests
+- GitHub Actions CI/CD pipeline + Fastlane
+- Performance optimization + Production checklist
+
+### 12 — Performance & Monitoring
 - Unit tests dengan mocktail, Widget tests, Integration tests
 - GitHub Actions CI/CD pipeline + Fastlane
 - Performance optimization + Production checklist
@@ -289,8 +338,8 @@ dependencies:
 
   # Utils
   json_annotation: ^4.8.1
-  dartz: ^0.10.1
   equatable: ^2.0.5
+  # Result<T> sealed class — defined in core/error/result.dart (replaces dartz)
 
 dev_dependencies:
   json_serializable: ^6.7.1   # Opsional — bisa diganti manual fromJson/toJson
@@ -302,6 +351,7 @@ dev_dependencies:
 
 > **Note:** Tidak memerlukan `freezed`, `freezed_annotation`, `riverpod_generator`, `riverpod_lint`, atau `custom_lint`.
 > Code generation (`build_runner`) hanya diperlukan jika menggunakan `json_serializable` — bisa diganti dengan manual `fromJson`/`toJson`.
+> **Error handling** menggunakan `Result<T>` sealed class bawaan (bukan `dartz`).
 
 ## Best Practices yang Diikuti
 
@@ -309,7 +359,7 @@ dev_dependencies:
 - ✅ Clean Architecture dengan clear separation
 - ✅ `GetxController` dengan proper lifecycle (`onInit`, `onClose`)
 - ✅ `Bindings` untuk dependency injection per route
-- ✅ Repository pattern dengan Either type
+- ✅ Repository pattern dengan `Result<T>` sealed class
 - ✅ Offline-first strategy dengan `GetStorage`
 - ✅ Error handling terstruktur + Shimmer loading skeletons
 - ✅ `Workers` untuk debounce search (300-500ms)
@@ -435,6 +485,6 @@ flutter test test/path/to/test.dart -v
 
 **Note:** Workflows ini dirancang untuk production-ready Flutter apps dengan best practices industry standard. GetX dipilih untuk simplicity — all-in-one solution (state management, routing, DI) tanpa code generation.
 
-**Versi Dokumentasi**: 1.1.0 
-**Terakhir Update**: 2026-02-23 
+**Versi Dokumentasi**: 2.0.0 
+**Terakhir Update**: 2026-03-05 
 **Compatible dengan**: Flutter 3.41.1+, Dart 3.11.0+, GetX 4.6.6+

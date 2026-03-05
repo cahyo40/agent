@@ -13,12 +13,18 @@ Workflows untuk development Flutter dengan Riverpod state management dan Clean A
 - ✅ Firebase packages updated ke v3.x.x untuk kompatibilitas
 - ✅ Semua dependencies menggunakan versi terbaru yang stable
 
+## Quick Start
+
+> **Baru pertama kali?** Baca **`example.md`** untuk contoh prompt
+> yang bisa langsung di-copy-paste per workflow.
+
 ## Struktur Workflows
 
 ```
 workflows/flutter-riverpod/
 ├── README.md
 ├── USAGE.md
+├── example.md               ← ⭐ Contoh prompt per workflow
 │
 │  ## Phase 1: Foundation
 ├── 01_project_setup.md              # Setup project Flutter + Riverpod + Clean Architecture

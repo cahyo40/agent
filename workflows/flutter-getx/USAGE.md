@@ -83,8 +83,8 @@ dependencies:
   
   # Utils
   json_annotation: ^4.8.1
-  dartz: ^0.10.1
   equatable: ^2.0.5
+  # Result<T> sealed class — defined in core/error/result.dart (replaces dartz)
 
 dev_dependencies:
   json_serializable: ^6.7.1   # Opsional
@@ -408,25 +408,32 @@ GetX built-in translations adalah pilihan utama karena sudah terintegrasi dengan
 Untuk project baru, ikuti urutan berikut:
 
 ```
+Phase 1: Foundation
 01_project_setup.md
     |
 02_feature_maker.md (untuk setiap feature baru)
     |
-03_backend_integration.md ATAU
-04_firebase_integration.md ATAU
-05_supabase_integration.md
+03_ui_components.md (reusable widgets)
+
+Phase 2: Data & Patterns
     |
-08_state_management_advanced.md (advanced patterns)
+04_state_management_advanced.md (advanced patterns)
     |
-09_offline_storage.md (offline-first)
+05_backend_integration.md ATAU
+06_firebase_integration.md ATAU
+07_supabase_integration.md
     |
-10_ui_components.md (reusable widgets)
+08_offline_storage.md (offline-first)
+
+Phase 3: Enhancements (opsional)
     |
-11_push_notifications.md (jika diperlukan)
+09_translation.md (jika perlu multi-language)
     |
-07_translation.md (jika perlu multi-language)
+10_push_notifications.md (jika diperlukan)
+
+Phase 4: Quality & Deploy
     |
-06_testing_production.md
+11_testing_production.md
     |
 12_performance_monitoring.md
 ```
