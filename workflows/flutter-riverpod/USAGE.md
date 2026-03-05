@@ -71,7 +71,8 @@ dependencies:
   # Utils
   freezed_annotation: ^2.4.1
   json_annotation: ^4.8.1
-  dartz: ^0.10.1
+  # Result<T> sealed class — replaces dartz
+  # Defined in core/error/result.dart
   equatable: ^2.0.5
 ```
 
@@ -565,8 +566,8 @@ return DataView();
 ### 2. Repository Pattern
 
 ```dart
-// ✅ DO: Use Either untuk error handling
-Future<Either<Failure, List<Product>>> getProducts();
+// ✅ DO: Use Result<T> sealed class untuk error handling
+Future<Result<List<Product>>> getProducts();
 
 // ❌ DON'T: Return raw data atau throw exceptions
 Future<List<Product>> getProducts(); // Tidak ada error handling

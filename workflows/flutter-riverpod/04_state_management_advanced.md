@@ -1,17 +1,38 @@
 ---
-description: Pola-pola advanced Riverpod untuk production apps: family providers, pagination, optimistic updates, dan cross-provid...
+description: Pola-pola advanced Riverpod untuk production apps — family providers, pagination, optimistic updates, dan cross-provider communication.
 ---
-# 08 - Advanced State Management (Riverpod Patterns)
+# Workflow: Advanced State Management (Riverpod Patterns)
 
-**Goal:** Pola-pola advanced Riverpod untuk production apps: family providers, pagination, optimistic updates, dan cross-provider communication.
+// turbo-all
 
-**Output:** `sdlc/flutter-riverpod/08-state-management-advanced/`
+## Overview
 
-**Time Estimate:** 3-4 jam
+Pola-pola advanced Riverpod untuk production apps: family providers,
+pagination, optimistic updates, dan cross-provider communication.
 
----
+
+## Prerequisites
+
+- Project setup dari `01_project_setup.md` selesai
+- Feature(s) created dengan `02_feature_maker.md`
+
+
+## Agent Behavior
+
+- **Gunakan `@riverpod` annotation** — bukan manual Provider.
+- **Selalu gunakan `AsyncNotifier`** untuk async state.
+- **Implement proper dispose** — cancel subscriptions, timers.
+- **Gunakan `ref.invalidateSelf()`** — bukan manual state reset.
+
+
+## Recommended Skills
+
+- `senior-flutter-developer` — Advanced Flutter patterns
+- `debugging-specialist` — Debugging state issues
+
 
 ## Deliverables
+
 
 ### 1. Family Provider (Parameterized)
 
@@ -336,11 +357,16 @@ class UserProfileController extends _$UserProfileController {
 ---
 
 ## Success Criteria
-- Family provider buat satu instance per ID
-- Pagination load more berfungsi dengan infinite scroll
-- Optimistic delete rollback saat error
-- Cart clear otomatis saat logout
-- Debounced search tidak spam API
+
+- [ ] Family provider buat satu instance per ID
+- [ ] Pagination load more berfungsi dengan infinite scroll
+- [ ] Optimistic delete rollback saat error
+- [ ] Cart clear otomatis saat logout
+- [ ] Debounced search tidak spam API
+
 
 ## Next Steps
-- `09_offline_storage.md` - Offline storage
+
+Setelah advanced state management selesai:
+1. `05_backend_integration.md` — REST API integration
+2. `08_offline_storage.md` — Offline-first storage

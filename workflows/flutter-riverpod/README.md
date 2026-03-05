@@ -17,169 +17,106 @@ Workflows untuk development Flutter dengan Riverpod state management dan Clean A
 
 ```
 workflows/flutter-riverpod/
+├── README.md
+├── USAGE.md
+│
+│  ## Phase 1: Foundation
 ├── 01_project_setup.md              # Setup project Flutter + Riverpod + Clean Architecture
 ├── 02_feature_maker.md              # Generator untuk membuat feature baru
-├── 03_backend_integration.md        # REST API integration dengan Dio
-├── 04_firebase_integration.md       # Firebase (Auth, Firestore, Storage, FCM)
-├── 05_supabase_integration.md       # Supabase (Auth, PostgreSQL, Realtime, Storage)
-├── 06_testing_production.md         # Testing + CI/CD + Production deployment
-├── 07_translation.md                # Translation & Localization (i18n)
-├── 08_state_management_advanced.md  # Advanced Riverpod: family, pagination, optimistic updates
-├── 09_offline_storage.md            # Hive cache, Isar DB, flutter_secure_storage
-├── 10_ui_components.md              # Reusable widget library (AppButton, Shimmer, etc.)
-├── 11_push_notifications.md         # FCM + local notifications + deep linking
-├── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
-└── USAGE.md                         # Dokumentasi penggunaan lengkap
+├── 03_ui_components.md              # Reusable widget library (AppButton, Shimmer, etc.)
+│
+│  ## Phase 2: Data & Patterns
+├── 04_state_management_advanced.md  # Advanced Riverpod: family, pagination, optimistic updates
+├── 05_backend_integration.md        # REST API integration dengan Dio
+├── 06_firebase_integration.md       # Firebase (Auth, Firestore, Storage, FCM)
+├── 07_supabase_integration.md       # Supabase (Auth, PostgreSQL, Realtime, Storage)
+├── 08_offline_storage.md            # Hive cache, Drift DB, flutter_secure_storage
+│
+│  ## Phase 3: Enhancements
+├── 09_translation.md                # Translation & Localization (i18n)
+├── 10_push_notifications.md         # FCM + local notifications + deep linking
+│
+│  ## Phase 4: Quality & Deploy
+├── 11_testing_production.md         # Testing + CI/CD + Production deployment
+└── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
 ```
 
 ## Output Folder Structure
 
-Ketika workflows dijalankan, hasil akan disimpan di:
+Ketika workflows dijalankan, hasil disimpan langsung di project Flutter.
+Setiap workflow menambahkan file ke lokasi yang sesuai:
 
 ```
-sdlc/flutter-riverpod/
-├── 01-project-setup/
-│   ├── project-structure.md
-│   ├── pubspec.yaml
-│   ├── lib/
-│   │   ├── bootstrap/
-│   │   ├── core/
-│   │   ├── features/example/
-│   │   └── main.dart
-│   └── README.md
-│
-├── 02-feature-maker/
-│   ├── feature-templates/
-│   └── examples/
-│
-├── 03-backend-integration/
-│   ├── dio-setup.md
-│   ├── interceptors/
-│   ├── error-handling.md
-│   └── repository-pattern.md
-│
-├── 04-firebase-integration/
-│   ├── firebase-setup.md
-│   ├── auth/
-│   ├── firestore/
-│   ├── storage/
-│   └── fcm/
-│
-├── 05-supabase-integration/
-│   ├── supabase-setup.md
-│   ├── auth/
-│   ├── database/
-│   ├── realtime/
-│   └── storage/
-│
-└── 06-testing-production/
-    ├── testing/
-    ├── ci-cd/
-    ├── performance/
-    └── deployment/
-
-└── 07-translation/
-    ├── assets/translations/
-    ├── lib/core/locale/
-    └── language-selector.md
+lib/
+├── bootstrap/          # 01: App initialization
+├── core/
+│   ├── error/          # 01/08: Failures, Result<T>
+│   ├── network/        # 05: Dio, interceptors
+│   ├── router/         # 01: GoRouter
+│   ├── locale/         # 09: Localization
+│   ├── notifications/  # 10: FCM + local
+│   ├── storage/        # 08: Hive, Drift, secure
+│   ├── theme/          # 01: App theme
+│   └── widgets/        # 03: UI components
+├── features/
+│   └── {feature}/
+│       ├── domain/     # 02: Entities, repos, use cases
+│       ├── data/       # 02/05/06/07: Models, repos impl
+│       └── presentation/ # 02/04: Controllers, screens
+└── main.dart
 ```
 
 ## Urutan Penggunaan
 
-1. **01_project_setup.md** - Setup project dari nol
-2. **02_feature_maker.md** - Generate feature baru (bisa dijalankan berkali-kali)
-3. Pilih salah satu atau beberapa:
-   - **03_backend_integration.md** - Untuk REST API
-   - **04_firebase_integration.md** - Untuk Firebase
-   - **05_supabase_integration.md** - Untuk Supabase
-4. **08_state_management_advanced.md** - Advanced Riverpod patterns
-5. **09_offline_storage.md** - Offline-first storage
-6. **10_ui_components.md** - Reusable widget library
-7. **11_push_notifications.md** - Push notifications (jika diperlukan)
-8. **07_translation.md** - Translation & Localization (opsional)
-9. **06_testing_production.md** - Testing dan deployment
-10. **12_performance_monitoring.md** - Monitoring di production
+### Phase 1: Foundation (wajib)
+1. **`01_project_setup.md`** — Setup project dari nol
+2. **`02_feature_maker.md`** — Generate feature baru (bisa dijalankan berkali-kali)
+3. **`03_ui_components.md`** — Reusable widget library
+
+### Phase 2: Data & Patterns
+4. **`04_state_management_advanced.md`** — Advanced Riverpod patterns
+5. Pilih salah satu atau beberapa backend:
+   - **`05_backend_integration.md`** — Untuk REST API
+   - **`06_firebase_integration.md`** — Untuk Firebase
+   - **`07_supabase_integration.md`** — Untuk Supabase
+6. **`08_offline_storage.md`** — Offline-first storage
+
+### Phase 3: Enhancements (opsional)
+7. **`09_translation.md`** — Translation & Localization
+8. **`10_push_notifications.md`** — Push notifications
+
+### Phase 4: Quality & Deploy
+9. **`11_testing_production.md`** — Testing dan deployment
+10. **`12_performance_monitoring.md`** — Monitoring di production
 
 ### Workflow Optional:
-- **07_translation.md** - Gunakan jika app membutuhkan multiple languages
-- **11_push_notifications.md** - Gunakan jika app butuh push notifications
+- **`09_translation.md`** — Gunakan jika app butuh multiple languages
+- **`10_push_notifications.md`** — Gunakan jika app butuh push notifications
+
+
+## Recommended Skills
+
+Setiap workflow memiliki "Recommended Skills" section.
+Berikut ringkasan skills yang relevan:
+
+| Workflow | Skills |
+|----------|--------|
+| 01 Project Setup | `senior-flutter-developer` |
+| 02 Feature Maker | `senior-flutter-developer` |
+| 03 UI Components | `design-system-architect`, `senior-ui-ux-designer` |
+| 04 State Mgmt | `senior-flutter-developer`, `debugging-specialist` |
+| 05 Backend | `senior-backend-developer`, `api-design-specialist` |
+| 06 Firebase | `senior-firebase-developer` |
+| 07 Supabase | `senior-supabase-developer` |
+| 08 Offline Storage | `senior-flutter-developer` |
+| 09 Translation | `internationalization-specialist` |
+| 10 Push Notifications | `notification-system-architect` |
+| 11 Testing | `senior-quality-assurance-engineer` |
+| 12 Monitoring | `observability-engineer` |
 
 ## Fitur Utama
 
-### 01 - Project Setup
-- Clean Architecture folder structure
-- Riverpod dengan code generation
-- Dependencies lengkap (Dio, GoRouter, Hive, Freezed)
-- Example feature dengan semua states (loading, error, empty, data)
-- Shimmer loading skeletons
-- Error handling terstruktur
-
-### 02 - Feature Maker
-- Template generator untuk feature baru
-- Auto-generate domain, data, presentation layers
-- CRUD operations template
-- Controller dengan Riverpod AsyncNotifier
-- Screen template dengan semua states
-- Shimmer loading widget template
-
-### 03 - Backend Integration (REST API)
-- Dio setup dengan interceptors lengkap
-- Auth interceptor dengan token refresh
-- Retry interceptor (3x untuk 5xx errors)
-- Error mapper (DioException → AppException)
-- Repository pattern dengan offline-first
-- Pagination dengan infinite scroll
-- Optimistic updates
-
-### 04 - Firebase Integration
-- Firebase Auth (email/password, Google Sign-In)
-- Cloud Firestore CRUD + real-time streams
-- Firebase Storage (upload dengan progress)
-- Firebase Cloud Messaging (push notifications)
-- Security Rules
-- Offline persistence
-
-### 05 - Supabase Integration
-- Supabase Auth (magic link, OAuth, phone)
-- PostgreSQL dengan Row Level Security (RLS)
-- Realtime subscriptions
-- Supabase Storage
-- RLS policies dan best practices
-
-### 06 - Testing & Production
-- Unit tests dengan mocktail
-- Widget tests
-- Integration tests
-- GitHub Actions CI/CD pipeline
-- Fastlane configuration
-- Performance optimization
-- Production checklist
-
-### 07 - Translation & Localization
-- Easy Localization setup
-- JSON translation files (EN, ID, MS, TH, VN)
-- Locale controller dengan Riverpod
-- Language selector widget
-- String extensions untuk translation
-- Dynamic values dengan interpolation
-- Locale persistence
-
-### 08 - Advanced State Management
-- Family providers (parameterized, per-ID instances)
-- Pagination dengan load-more
-- Optimistic updates dengan rollback
-- Cross-provider communication
-- Debounced search
-- keepAlive + invalidate pattern
-
-### 09 - Offline Storage
-- Hive cache dengan TTL
-- Offline-first repository pattern
-- Isar database (complex queries, full-text search)
-- flutter_secure_storage untuk tokens
-- Connectivity service + stream
-
-### 10 - UI Components
+### 03 — UI Components
 - AppButton (variants: primary, secondary, destructive, ghost)
 - AppTextField (password toggle, validation)
 - AppCard (tap, leading, trailing)
@@ -188,14 +125,72 @@ sdlc/flutter-riverpod/
 - ShimmerList untuk loading states
 - AppBottomSheet (draggable)
 
-### 11 - Push Notifications
+### 04 — Advanced State Management
+- Family providers (parameterized, per-ID instances)
+- Pagination dengan load-more
+- Optimistic updates dengan rollback
+- Cross-provider communication
+- Debounced search
+- keepAlive + invalidate pattern
+
+### 05 — Backend Integration (REST API)
+- Dio setup dengan interceptors lengkap
+- Auth interceptor dengan token refresh
+- Retry interceptor (3x untuk 5xx errors)
+- Error mapper (DioException → AppException)
+- Repository pattern dengan offline-first
+- Pagination dengan infinite scroll
+- Optimistic updates
+
+### 06 — Firebase Integration
+- Firebase Auth (email/password, Google Sign-In)
+- Cloud Firestore CRUD + real-time streams
+- Firebase Storage (upload dengan progress)
+- Firebase Cloud Messaging (push notifications)
+- Security Rules
+- Offline persistence
+
+### 07 — Supabase Integration
+- Supabase Auth (magic link, OAuth, phone)
+- PostgreSQL dengan Row Level Security (RLS)
+- Realtime subscriptions
+- Supabase Storage
+- RLS policies dan best practices
+
+### 08 — Offline Storage
+- Hive cache dengan TTL
+- Offline-first repository pattern
+- Drift database (complex queries, full-text search)
+- flutter_secure_storage untuk tokens
+- Connectivity service + stream
+- Result<T> sealed class (replaces dartz)
+
+### 09 — Translation & Localization
+- Easy Localization setup
+- JSON translation files (EN, ID, MS, TH, VN)
+- Locale controller dengan Riverpod
+- Language selector widget
+- String extensions untuk translation
+- Dynamic values dengan interpolation
+- Locale persistence
+
+### 10 — Push Notifications
 - FCM foreground/background/terminated handling
 - flutter_local_notifications
 - Deep link navigation dari notification payload
 - FCM token management (register/unregister)
 - Scheduled local notifications
 
-### 12 - Performance & Monitoring
+### 11 — Testing & Production
+- Unit tests dengan mocktail
+- Widget tests
+- Integration tests
+- GitHub Actions CI/CD pipeline
+- Fastlane configuration
+- Performance optimization
+- Production checklist
+
+### 12 — Performance & Monitoring
 - Sentry error monitoring + performance tracing
 - Firebase Crashlytics crash reporting
 - Global error handler (Flutter + Dart async)
@@ -235,9 +230,11 @@ dependencies:
   
   # Storage
   hive_flutter: ^1.1.0
-  flutter_secure_storage: ^9.0.0
+  drift: ^2.22.0
+  sqlite3_flutter_libs: ^0.5.28
+  flutter_secure_storage: ^9.2.0
   
-  # Firebase (optional) - Updated untuk Flutter 3.41.1
+  # Firebase (optional)
   firebase_core: ^3.12.0
   firebase_auth: ^5.5.0
   cloud_firestore: ^5.6.0
@@ -245,7 +242,7 @@ dependencies:
   firebase_messaging: ^15.2.0
   
   # Supabase (optional)
-  supabase_flutter: ^2.8.0
+  supabase_flutter: ^2.3.0
   
   # Translation (optional)
   easy_localization: ^3.0.7
@@ -254,8 +251,11 @@ dependencies:
   # Utils
   freezed_annotation: ^2.4.1
   json_annotation: ^4.8.1
-  dartz: ^0.10.1
   equatable: ^2.0.5
+  
+  # Error Handling
+  # Result<T> sealed class — defined in core/error/result.dart
+  # No third-party dependency needed (replaces dartz)
 
 dev_dependencies:
   build_runner: ^2.4.9
@@ -267,6 +267,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.0
+  drift_dev: ^2.22.0
 ```
 
 ## Best Practices yang Diikuti
@@ -274,7 +275,7 @@ dev_dependencies:
 ### ✅ Do This
 - ✅ Clean Architecture dengan clear separation
 - ✅ Riverpod dengan code generation
-- ✅ Repository pattern dengan Either type
+- ✅ Repository pattern dengan Result<T> sealed class
 - ✅ Offline-first strategy
 - ✅ Error handling terstruktur
 - ✅ Shimmer loading skeletons

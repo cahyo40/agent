@@ -1,13 +1,35 @@
 ---
 description: Setup error monitoring, crash reporting, performance profiling, dan analytics untuk production Flutter app.
 ---
-# 12 - Performance & Monitoring (Sentry + Crashlytics + DevTools)
+# Workflow: Performance & Monitoring (Sentry + Crashlytics)
 
-**Goal:** Setup error monitoring, crash reporting, performance profiling, dan analytics untuk production Flutter app.
+// turbo-all
 
-**Output:** `sdlc/flutter-riverpod/12-performance-monitoring/`
+## Overview
 
-**Time Estimate:** 2-3 jam
+Setup error monitoring, crash reporting, performance profiling,
+dan analytics untuk production Flutter app.
+
+
+## Prerequisites
+
+- Project setup dari `01_project_setup.md` selesai
+- Firebase configured (`06_firebase_integration.md`)
+- Testing selesai (`11_testing_production.md`)
+
+
+## Agent Behavior
+
+- **Jangan hardcode Sentry DSN** — gunakan env vars.
+- **Set user context** setelah login untuk error attribution.
+- **Upload debug symbols** — ke Sentry dan Firebase.
+- **Wrap `runApp`** dengan error handlers.
+
+
+## Recommended Skills
+
+- `observability-engineer` — Monitoring & tracing
+- `senior-site-reliability-engineer` — SRE practices
 
 ---
 
@@ -318,11 +340,15 @@ class PerformanceOverlayWrapper extends StatelessWidget {
 ---
 
 ## Success Criteria
-- Sentry menangkap unhandled exceptions di production
-- Firebase Crashlytics menampilkan crash reports
-- Performance traces tampil di Firebase Console
-- User context (ID, email) ter-set setelah login
-- Debug symbols ter-upload ke Sentry untuk readable stack traces
+
+- [ ] Sentry menangkap unhandled exceptions di production
+- [ ] Firebase Crashlytics menampilkan crash reports
+- [ ] Performance traces tampil di Firebase Console
+- [ ] User context (ID, email) ter-set setelah login
+- [ ] Debug symbols ter-upload ke Sentry
+
 
 ## Selesai! 🎉
+
 Semua 12 workflows flutter-riverpod sudah lengkap.
+Gunakan `README.md` dan `USAGE.md` untuk referensi.

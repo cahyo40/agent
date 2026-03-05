@@ -1,13 +1,35 @@
 ---
-description: Setup push notifications lengkap: FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari no...
+description: Setup push notifications lengkap — FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari notification tap.
 ---
-# 11 - Push Notifications (FCM + Local Notifications + Deep Linking)
+# Workflow: Push Notifications (FCM + Local + Deep Linking)
 
-**Goal:** Setup push notifications lengkap: FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari notification tap.
+// turbo-all
 
-**Output:** `sdlc/flutter-riverpod/11-push-notifications/`
+## Overview
 
-**Time Estimate:** 3-4 jam
+Setup push notifications lengkap: FCM untuk remote,
+flutter_local_notifications untuk local, dan deep linking
+dari notification tap.
+
+
+## Prerequisites
+
+- Project setup dari `01_project_setup.md` selesai
+- Firebase configured (`06_firebase_integration.md`)
+
+
+## Agent Behavior
+
+- **Setup Android notification channel** — required untuk Android 8+.
+- **Handle semua 3 states** — foreground, background, terminated.
+- **Selalu register/unregister token** saat login/logout.
+- **Gunakan GoRouter** untuk deep link navigation.
+
+
+## Recommended Skills
+
+- `notification-system-architect` — Notification system design
+- `senior-firebase-developer` — Firebase services
 
 ---
 
@@ -363,11 +385,16 @@ Future<void> bootstrap() async {
 ---
 
 ## Success Criteria
-- FCM token berhasil di-register ke backend setelah login
-- Notifikasi tampil saat app di foreground (local notification)
-- Tap notifikasi navigate ke halaman yang benar (deep link)
-- Token refresh otomatis ter-update ke backend
-- Local notification bisa di-schedule
+
+- [ ] FCM token berhasil di-register ke backend setelah login
+- [ ] Notifikasi tampil saat app di foreground (local notification)
+- [ ] Tap notifikasi navigate ke halaman yang benar (deep link)
+- [ ] Token refresh otomatis ter-update ke backend
+- [ ] Local notification bisa di-schedule
+
 
 ## Next Steps
-- `12_performance_monitoring.md` - Performance & monitoring
+
+Setelah push notifications selesai:
+1. `11_testing_production.md` — Testing & CI/CD
+2. `12_performance_monitoring.md` — Monitoring
