@@ -295,14 +295,10 @@ agents/
 │   ├── nuxt-frontend/         # 14 workflow files
 │   ├── python-backend/        # 40 workflow files
 │   └── sdlc-maker/            # 15 workflow files
-├── vibe-coding-guides/
-│   ├── FLUTTER_VIBE_CODING.md
-│   └── GOLANG_VIBE_CODING.md
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
 │   ├── ROADMAP.md
-│   ├── ANTIGRAVITY_SKILLS_GUIDE.md
-│   └── flutter-ui-kit/        # 5 output docs (PRD, Tech Spec, Catalog, GTM, Roadmap)
+│   └── ANTIGRAVITY_SKILLS_GUIDE.md
 ├── README.md
 └── LICENSE
 ```
