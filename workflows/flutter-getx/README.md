@@ -1,490 +1,52 @@
 # Flutter GetX Workflows
 
-Workflows untuk development Flutter dengan GetX state management dan Clean Architecture.
-
-## System Requirements
-
-- **Flutter SDK:** 3.41.1+ (stable channel)
-- **Dart SDK:** 3.11.0+
-- **Tested on:** Flutter 3.41.1 • Dart 3.11.0 • DevTools 2.54.1
-
-### Compatibility Notes:
-- ✅ **Fully compatible** dengan Flutter 3.41.1
-- ✅ Firebase packages updated ke v3.x.x untuk kompatibilitas
-- ✅ Semua dependencies menggunakan versi terbaru yang stable
-- ✅ **No code generation** — tidak memerlukan build_runner, freezed, atau generator lainnya
+Production-ready Flutter development workflows menggunakan **GetX** state management dan **Clean Architecture**.
 
 ## Quick Start
 
-> **Baru pertama kali?** Baca **`example.md`** untuk contoh prompt
-> yang bisa langsung di-copy-paste per workflow.
-
-## Struktur Workflows
-
 ```
-workflows/flutter-getx/
-├── README.md
-├── USAGE.md
-├── example.md               ← ⭐ Contoh prompt per workflow
-│
-│  ## Phase 1: Foundation
-├── 01_project_setup.md              # Setup project Flutter + GetX + Clean Architecture
-├── 02_feature_maker.md              # Generator untuk membuat feature baru
-├── 03_ui_components.md              # Reusable widget library (AppButton, Shimmer, etc.)
-│
-│  ## Phase 2: Data & Patterns
-├── 04_state_management_advanced.md  # Advanced GetX: Workers, StateMixin, pagination, optimistic
-├── 05_backend_integration.md        # REST API integration dengan Dio
-├── 06_firebase_integration.md       # Firebase (Auth, Firestore, Storage, FCM)
-├── 07_supabase_integration.md       # Supabase (Auth, PostgreSQL, Realtime, Storage)
-├── 08_offline_storage.md            # GetStorage cache, Hive, flutter_secure_storage
-│
-│  ## Phase 3: Enhancements (opsional)
-├── 09_translation.md                # Translation & Localization (i18n)
-├── 10_push_notifications.md         # FCM + local notifications + deep linking
-│
-│  ## Phase 4: Quality & Deploy
-├── 11_testing_production.md         # Testing + CI/CD + Production deployment
-└── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
+Gunakan workflow @flutter-getx/01_project_setup
+
+Setup Flutter project "[nama_app]" dengan Clean Architecture + GetX
 ```
 
-## Output Folder Structure
+## Workflow Index
 
-Ketika workflows dijalankan, hasil akan disimpan di:
+| # | File | Deskripsi | Fase |
+|---|------|-----------|------|
+| 01 | `01_project_setup.md` | Project setup, folder structure, DI | 🏗 Foundation |
+| 02 | `02_feature_maker.md` | Buat feature baru (domain → data → UI) | 🏗 Foundation |
+| 03 | `03_ui_components.md` | AppButton, Shimmer, EmptyState, AppCard | 🏗 Foundation |
+| 04 | `04_state_management_advanced.md` | Pagination, Workers, StateMixin, cross-Controller | 🔌 Backend |
+| 05 | `05_backend_integration.md` | Dio, interceptors, REST API, pagination | 🔌 Backend |
+| 06 | `06_firebase_integration.md` | Firebase Auth, Firestore, Storage, FCM | 🔌 Backend |
+| 07 | `07_supabase_integration.md` | Supabase Auth, PostgreSQL, Realtime | 🔌 Backend |
+| 08 | `08_offline_storage.md` | GetStorage, Hive, SecureStorage | ✨ Enhancement |
+| 09 | `09_translation.md` | easy_localization, LocaleController | ✨ Enhancement |
+| 10 | `10_push_notifications.md` | FCM, local notifications, deep linking | 🚀 Deploy |
+| 11 | `11_testing_production.md` | Unit Tests, Widget Tests, CI/CD | ✅ Quality |
+| 12 | `12_performance_monitoring.md` | Firebase Crashlytics, Sentry, Security | 🚀 Deploy |
+
+## Architecture
 
 ```
-sdlc/flutter-getx/
-├── 01-project-setup/
-│   ├── project-structure.md
-│   ├── pubspec.yaml
-│   ├── lib/
-│   │   ├── app/
-│   │   │   ├── bindings/
-│   │   │   └── routes/
-│   │   ├── core/
-│   │   ├── features/example/
-│   │   │   ├── bindings/
-│   │   │   ├── controllers/
-│   │   │   ├── data/
-│   │   │   ├── domain/
-│   │   │   └── presentation/
-│   │   └── main.dart
-│   └── README.md
-│
-├── 02-feature-maker/
-│   ├── feature-templates/
-│   └── examples/
-│
-├── 03-backend-integration/
-│   ├── dio-setup.md
-│   ├── interceptors/
-│   ├── error-handling.md
-│   └── repository-pattern.md
-│
-├── 04-firebase-integration/
-│   ├── firebase-setup.md
-│   ├── auth/
-│   ├── firestore/
-│   ├── storage/
-│   └── fcm/
-│
-├── 05-supabase-integration/
-│   ├── supabase-setup.md
-│   ├── auth/
-│   ├── database/
-│   ├── realtime/
-│   └── storage/
-│
-├── 06-testing-production/
-│   ├── testing/
-│   ├── ci-cd/
-│   ├── performance/
-│   └── deployment/
-│
-├── 07-translation/
-│   ├── assets/translations/
-│   ├── lib/core/locale/
-│   └── language-selector.md
-│
-├── 08-state-management-advanced/
-│   ├── workers-pattern.md
-│   ├── state-mixin.md
-│   ├── pagination.md
-│   └── optimistic-update.md
-│
-├── 09-offline-storage/
-│   ├── get-storage-service.md
-│   ├── hive-service.md
-│   ├── secure-storage.md
-│   └── connectivity-service.md
-│
-├── 10-ui-components/
-│   ├── app-button.md
-│   ├── app-text-field.md
-│   ├── shimmer-widgets.md
-│   ├── empty-state.md
-│   ├── error-widget.md
-│   ├── app-card.md
-│   ├── app-dialog.md
-│   └── app-bottom-sheet.md
-│
-├── 11-push-notifications/
-│   ├── notification-service.md
-│   ├── fcm-token-controller.md
-│   └── deep-linking.md
-│
-└── 12-performance-monitoring/
-    ├── sentry-setup.md
-    ├── crashlytics.md
-    ├── performance-tracing.md
-    └── error-handler.md
+presentation → domain ← data
+     ↑            ↑       ↑
+Controllers   UseCases  Repository
+  Screens     Entities  DataSources
+  Widgets     Repos     Models (JSON)
 ```
 
-## Urutan Penggunaan
-
-### 🏗️ Phase 1: Foundation (Wajib)
-1. **01_project_setup.md** — Setup project dari nol
-2. **02_feature_maker.md** — Generate feature baru (bisa dijalankan berkali-kali)
-3. **03_ui_components.md** — Reusable widget library
-
-### 📊 Phase 2: Data & Patterns
-4. **04_state_management_advanced.md** — Advanced GetX patterns (Workers, StateMixin, pagination)
-5. **05_backend_integration.md** — Untuk REST API
-6. **06_firebase_integration.md** — Untuk Firebase
-7. **07_supabase_integration.md** — Untuk Supabase
-8. **08_offline_storage.md** — Offline-first storage (GetStorage, Hive, SecureStorage)
-
-> **Pilih backend:** Gunakan **05** (REST API), **06** (Firebase), atau **07** (Supabase) — tidak perlu semua.
-
-### 🌍 Phase 3: Enhancements (Opsional)
-9. **09_translation.md** — Translation & Localization (i18n)
-10. **10_push_notifications.md** — Push notifications (FCM + local)
-
-### ✅ Phase 4: Quality & Deploy
-11. **11_testing_production.md** — Testing dan deployment
-12. **12_performance_monitoring.md** — Monitoring di production
-
-## Fitur Utama
-
-### 01 — Project Setup
-- Clean Architecture folder structure dengan GetX pattern
-- GetX reactive state management (`.obs` + `Obx()`)
-- Dependency injection dengan `Bindings`
-- Dependencies lengkap (Dio, GetX Routing, GetStorage)
-- Example feature dengan semua states (loading, error, empty, data)
-- Shimmer loading skeletons
-- Error handling terstruktur
-
-### 02 — Feature Maker
-- Template generator untuk feature baru
-- Auto-generate domain, data, presentation layers
-- CRUD operations template
-- Controller dengan `GetxController`, Screen dengan `GetView`
-- Binding template untuk dependency injection
-- Shimmer loading widget template
-
-### 03 — UI Components
-- `AppButton` (variants: primary, secondary, destructive, ghost)
-- `AppTextField` (password toggle, validation)
-- `EmptyStateWidget` dengan action button
-- `AppErrorWidget` dengan retry
-- `ShimmerList` untuk loading states
-
-### 04 — Advanced State Management
-- Workers: `debounce`, `ever`, `once`, `interval`
-- `StateMixin` dengan `obx()` untuk loading/error/empty/data
-- Pagination dengan load-more + `isLoadingMore.obs`
-- Optimistic update dengan rollback
-- Cross-controller communication via `ever()`
-
-### 05 — Backend Integration (REST API)
-- Dio setup dengan interceptors lengkap
-- Auth interceptor dengan token refresh
-- Retry interceptor (3x untuk 5xx errors)
-- Error mapper (DioException → AppException)
-- Repository pattern dengan offline-first
-- Pagination dengan infinite scroll
-
-### 06 — Firebase Integration
-- Firebase Auth (email/password, Google Sign-In)
-- Cloud Firestore CRUD + real-time streams
-- Firebase Storage (upload dengan progress)
-- Firebase Cloud Messaging (push notifications)
-- Security Rules + Offline persistence
-
-### 07 — Supabase Integration
-- Supabase Auth (magic link, OAuth, phone)
-- PostgreSQL dengan Row Level Security (RLS)
-- Realtime subscriptions + Supabase Storage
-
-### 08 — Offline Storage
-- `GetStorage` cache dengan TTL
-- Offline-first repository pattern
-- Hive untuk complex data
-- `flutter_secure_storage` untuk tokens
-- Reactive `ConnectivityService` dengan `.obs`
-
-### 09 — Translation & Localization
-- Easy Localization setup + JSON translation files (EN, ID, MS, TH, VN)
-- Locale controller dengan `GetxController`
-- Language selector widget + Locale persistence dengan `GetStorage`
-
-### 10 — Push Notifications
-- FCM foreground/background/terminated handling
-- `flutter_local_notifications` sebagai `GetxService`
-- Deep link navigation via `Get.toNamed()`
-- `FcmTokenController` untuk register/unregister
-
-### 11 — Testing & Production
-- Unit tests dengan mocktail, Widget tests, Integration tests
-- GitHub Actions CI/CD pipeline + Fastlane
-- Performance optimization + Production checklist
-
-### 12 — Performance & Monitoring
-- Unit tests dengan mocktail, Widget tests, Integration tests
-- GitHub Actions CI/CD pipeline + Fastlane
-- Performance optimization + Production checklist
-
-### 07 - Translation & Localization
-- Easy Localization setup + JSON translation files (EN, ID, MS, TH, VN)
-- Locale controller dengan `GetxController`
-- Language selector widget + Locale persistence dengan `GetStorage`
-
-### 08 - Advanced State Management
-- Workers: `debounce`, `ever`, `once`, `interval`
-- `StateMixin` dengan `obx()` untuk loading/error/empty/data
-- Pagination dengan load-more + `isLoadingMore.obs`
-- Optimistic update dengan rollback
-- Cross-controller communication via `ever()`
-
-### 09 - Offline Storage
-- `GetStorage` cache dengan TTL
-- Offline-first repository pattern
-- Hive untuk complex data
-- `flutter_secure_storage` untuk tokens
-- Reactive `ConnectivityService` dengan `.obs`
-
-### 10 - UI Components
-- `AppButton` (variants: primary, secondary, destructive, ghost)
-- `AppTextField` (password toggle, validation)
-- `EmptyStateWidget` dengan action button
-- `AppErrorWidget` dengan retry
-- `ShimmerList` untuk loading states
-
-### 11 - Push Notifications
-- FCM foreground/background/terminated handling
-- `flutter_local_notifications` sebagai `GetxService`
-- Deep link navigation via `Get.toNamed()`
-- `FcmTokenController` untuk register/unregister
-
-### 12 - Performance & Monitoring
-- Sentry error monitoring + performance tracing
-- Firebase Crashlytics crash reporting
-- Global error handler (Flutter + Dart async)
-- User context (ID, email) untuk error attribution
-- Pre-release performance checklist
-
-## State Management
-
-Semua workflows menggunakan **GetX** reactive state management:
-- Reactive variables dengan `.obs` extension
-- UI rebuilds dengan `Obx()` widget
-- `GetxController` lifecycle (`onInit`, `onReady`, `onClose`)
-- `StateMixin` untuk loading/error/data states
-- Workers (`ever`, `once`, `debounce`, `interval`) untuk reactive side effects
-- Tidak memerlukan code generation — simple dan langsung
-
-## Architecture Pattern
-
-**Clean Architecture** dengan GetX pattern:
-- **Domain**: Entities, Repository contracts, Use cases
-- **Data**: Models, Repository implementations, Data sources
-- **Presentation**: Controllers (`GetxController`), Screens (`GetView`), Widgets
-
-**Dependency Injection** via `Bindings` — setiap route punya binding class yang mendaftarkan
-dependencies dengan `Get.lazyPut()`. Controller otomatis di-dispose saat route di-pop.
-
-**Routing** via `GetMaterialApp` + `GetPage` — built-in routing dengan support untuk
-named routes, middlewares, transition animations, dan nested navigation.
-
-## Dependencies Utama
-
-```yaml
-dependencies:
-  # State Management + Routing + DI
-  get: ^4.6.6
-
-  # Network
-  dio: ^5.4.0
-  connectivity_plus: ^6.0.0
-
-  # Storage
-  get_storage: ^2.1.1
-  flutter_secure_storage: ^9.0.0
-
-  # Firebase (optional) - Updated untuk Flutter 3.41.1
-  firebase_core: ^3.12.0
-  firebase_auth: ^5.5.0
-  cloud_firestore: ^5.6.0
-  firebase_storage: ^12.4.0
-  firebase_messaging: ^15.2.0
-
-  # Supabase (optional)
-  supabase_flutter: ^2.8.0
-
-  # Translation (optional)
-  easy_localization: ^3.0.7
-  intl: ^0.19.0
-
-  # Utils
-  json_annotation: ^4.8.1
-  equatable: ^2.0.5
-  # Result<T> sealed class — defined in core/error/result.dart (replaces dartz)
-
-dev_dependencies:
-  json_serializable: ^6.7.1   # Opsional — bisa diganti manual fromJson/toJson
-  build_runner: ^2.4.9        # Hanya jika pakai json_serializable
-  flutter_test:
-    sdk: flutter
-  mocktail: ^1.0.0
-```
-
-> **Note:** Tidak memerlukan `freezed`, `freezed_annotation`, `riverpod_generator`, `riverpod_lint`, atau `custom_lint`.
-> Code generation (`build_runner`) hanya diperlukan jika menggunakan `json_serializable` — bisa diganti dengan manual `fromJson`/`toJson`.
-> **Error handling** menggunakan `Result<T>` sealed class bawaan (bukan `dartz`).
-
-## Best Practices yang Diikuti
-
-### ✅ Do This
-- ✅ Clean Architecture dengan clear separation
-- ✅ `GetxController` dengan proper lifecycle (`onInit`, `onClose`)
-- ✅ `Bindings` untuk dependency injection per route
-- ✅ Repository pattern dengan `Result<T>` sealed class
-- ✅ Offline-first strategy dengan `GetStorage`
-- ✅ Error handling terstruktur + Shimmer loading skeletons
-- ✅ `Workers` untuk debounce search (300-500ms)
-- ✅ Pagination untuk long lists + const constructors
-- ✅ Unit test coverage ≥ 80%
-- ✅ `Get.lazyPut()` untuk lazy initialization
-- ✅ `GetView` instead of `StatelessWidget` + `Get.find()`
-
-### ❌ Avoid This
-- ❌ Hardcode API URLs
-- ❌ Skip error handling atau connectivity check
-- ❌ Load semua data sekaligus
-- ❌ Use `CircularProgressIndicator` untuk initial load
-- ❌ `Get.put()` tanpa `Bindings` (memory leak risk)
-- ❌ Akses controller sebelum binding dijalankan
-- ❌ Nested `Obx()` yang tidak perlu
-- ❌ Mutable state tanpa `.obs`
-
-## Testing
-
-### Unit Tests
-- Use cases, Repositories (dengan mocking), Controllers, Services
-
-### Widget Tests
-- Screens dengan semua states, User interactions, Form validation, Navigation
-
-### Integration Tests
-- End-to-end flows, Complete user journeys
-
-### Testing Commands
-
-```bash
-# Run semua tests
-flutter test
-
-# Run single test file
-flutter test test/path/to/test.dart
-
-# Run tests dengan coverage
-flutter test --coverage
-
-# Run tests dengan verbose output
-flutter test -v
-```
-
-## CI/CD
-
-GitHub Actions workflows untuk:
-- Code analysis (`flutter analyze`)
-- Unit tests dengan coverage
-- Widget tests
-- Build APK/IPA
-- Deploy ke Play Store/App Store (via Fastlane)
-
-## Production Checklist
-
-Sebelum release, pastikan:
-- [ ] All tests passing
-- [ ] Code coverage ≥ 80%
-- [ ] No analyzer warnings
-- [ ] Performance optimized (DevTools)
-- [ ] App signing configured
-- [ ] Store listings prepared
-- [ ] Privacy policy
-- [ ] App icons & screenshots
-
-## Troubleshooting
-
-### Get.find() Not Found
-```
-"UserController" not found. You need to call "Get.put(UserController())"
-```
-**Solusi:** Pastikan `Binding` sudah terdaftar di `GetPage`, atau panggil `Get.put()` sebelum `Get.find()`.
-
-### Binding Tidak Dijalankan
-Controller tidak ter-initialize saat navigasi. Gunakan **named route** (`Get.toNamed('/user')`)
-agar binding jalan, atau pass binding manual: `Get.to(() => Screen(), binding: MyBinding())`.
-
-### GetStorage Initialization Error
-```
-GetStorage not initialized. Call GetStorage.init() first.
-```
-**Solusi:** Pastikan `await GetStorage.init()` dipanggil di `main()` sebelum `runApp()`.
-
-### Memory Leak - Controller Tidak Di-dispose
-Gunakan `SmartManagement.full` (default) di `GetMaterialApp` untuk auto-dispose.
-Jika `Get.put()` manual, pastikan cleanup di `onClose()` atau panggil `Get.delete<T>()`.
-
-### Dependency Conflicts
-```bash
-flutter pub upgrade
-flutter pub outdated
-```
-
-### Testing Issues
-```bash
-# Setup GetX untuk testing
-Get.testMode = true;
-
-# Run single test
-flutter test test/path/to/test.dart -v
-```
-
-## Next Steps Setelah Workflows
-
-1. Monitor production performance
-2. Setup analytics dan crash reporting
-3. Collect user feedback
-4. Plan iterations dan new features
-5. Regular maintenance dan updates
-
-## Resources
-
-- [Flutter Documentation](https://docs.flutter.dev)
-- [GetX Documentation](https://pub.dev/packages/get)
-- [GetX GitHub](https://github.com/jonataslaw/getx)
-- [GetStorage Documentation](https://pub.dev/packages/get_storage)
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Flutter Testing](https://docs.flutter.dev/testing)
-- [Effective Dart](https://dart.dev/effective-dart)
-
----
-
-**Note:** Workflows ini dirancang untuk production-ready Flutter apps dengan best practices industry standard. GetX dipilih untuk simplicity — all-in-one solution (state management, routing, DI) tanpa code generation.
-
-**Versi Dokumentasi**: 2.0.0 
-**Terakhir Update**: 2026-03-05 
-**Compatible dengan**: Flutter 3.41.1+, Dart 3.11.0+, GetX 4.6.6+
+### Key Patterns
+
+- **State Management:** `GetxController` dengan `.obs` variables dan `Obx()`
+- **Advanced State:** `StateMixin` dan `Workers` (`debounce`, `ever`, dll)
+- **DI:** `Get.put()`, `Get.lazyPut()` via `Bindings` per route
+- **Error:** `Result<T>` sealed class (no `dartz`)
+- **Nav:** `GetMaterialApp` dengan named routes (`Get.toNamed`) dan `GetMiddleware`
+- **Network:** `Dio` + Auth/Retry/Logging interceptors
+
+## Documentation
+
+Lihat [USAGE.md](./USAGE.md) untuk panduan lengkap, contoh prompt, dan troubleshooting.
+Lihat [examples.md](./examples.md) untuk copy-paste prompts siap pakai.

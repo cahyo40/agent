@@ -2395,7 +2395,104 @@ description: Integrasi Firebase services untuk Flutter dengan GetX state managem
 ---
 # Workflow: Firebase Integration (GetX) (Part 7/7)
 
-> **Navigation:** This workflow is split into 7 parts.
+
+
+## 6. Background Processing & Isolates dengan GetX
+
+### Parsing Data Firestore Besar dengan `Isolate.run()`
+Sama seperti Riverpod & BLoC, hindari UI freeze saat memuat list Firebase yang besar:
+
+```dart
+// lib/core/utils/firebase_parser.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+/// Worker function yang harus dipanggil di Isolate.run
+/// Tidak boleh bergantung pada Get.find()!
+List<ProductEntity> _parseProductsSync(Map<String, dynamic> message) {
+  final docsData = message['docs'] as List<Map<String, dynamic>>;
+  return docsData.map((data) => ProductModel.fromJson(data)).toList();
+}
+
+extension QuerySnapshotMapper on QuerySnapshot<Map<String, dynamic>> {
+  /// Extract raw data dari snapshot untuk parsing di background isolate
+  Future<List<ProductEntity>> parseInBackground() async {
+    // 1. Ekstrak data raw agar bisa melewati batas isolate
+    final rawData = docs.map((doc) => {
+      ...doc.data(),
+      'id': doc.id,
+    }).toList();
+
+    // 2. Jalankan parsing di isolate terpisah
+    return await Isolate.run(() => _parseProductsSync({'docs': rawData}));
+  }
+}
+```
+
+Implementasi di GetX Controller/Repository:
+```dart
+class ProductRepository {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<Result<List<ProductEntity>>> getLargeDataset() async {
+    try {
+      final snapshot = await _firestore.collection('products').limit(1000).get();
+      // Gunakan background isolate untuk JSON terberat
+      final products = await snapshot.parseInBackground();
+      return Success(products);
+    } catch (e) {
+      return Failure(FailureReason.unknown, message: e.toString());
+    }
+  }
+}
+```
+
+### Firebase Workmanager Background Sync
+Gunakan `workmanager` untuk sinkronisasi firestore di background:
+
+1. Setup `workmanager` di `main.dart`:
+```dart
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) async {
+    // PENTING: Inisialisasi Firebase & Envied di isolate worker!
+    await Firebase.initializeApp();
+    
+    if (taskName == "sync_firestore_background") {
+      try {
+        final firestore = FirebaseFirestore.instance;
+        // Lakukan background operasi tanpa mengaitkan Get.find() UI instances
+        await firestore.collection('background_logs').add({
+            'timestamp': FieldValue.serverTimestamp(),
+            'event': 'Workmanager sync executed',
+        });
+        return Future.value(true);
+      } catch (err) {
+        return Future.value(false); // gagal, akan retry sesuai policy
+      }
+    }
+    return Future.value(true);
+  });
+}
+```
+
+2. Register dan trigger dari GetX Controller:
+```dart
+class SyncController extends GetxController {
+  void scheduleBackgroundSync() {
+    Workmanager().registerPeriodicTask(
+      "1",
+      "sync_firestore_background",
+      frequency: const Duration(hours: 1), // Minimum 15 menit
+      constraints: Constraints(
+        networkType: NetworkType.connected, // Hanya saat ada internet
+        requiresBatteryNotLow: true,
+      ),
+    );
+  }
+}
+```
+
+---
 
 ## Workflow Steps
 
@@ -2441,13 +2538,24 @@ description: Integrasi Firebase services untuk Flutter dengan GetX state managem
    - Implement `Get.toNamed()` untuk navigation dari notifikasi
    - Subscribe ke topics sesuai kebutuhan
 
-7. **Test Integration**
+7. **Isolates untuk Parsing Data Firestore Besar**
+   - Gunakan `Isolate.run()` untuk avoid UI freeze saat mem-parsing JSON yang besar (contoh: load initial data ribuan dokumen Firestore).
+   - Pastikan implementasi parsing function pure dan independent dari GetxController/GetxService.
+
+8. **Background Workmanager dengan Firebase**
+   - Register Firestore sync task di Workmanager.
+   - Panggil Firestore secara periodik secara background (misal: ambil notifikasi baru atau update location user).
+   - Inisialisasi Firebase di dalam isolate Workmanager sebelum mengakses Firestore.
+
+9. **Test Integration**
    - Test authentication flows (login, register, logout, Google sign-in)
    - Test Firestore CRUD operations dan real-time stream
    - Test file upload/download dengan progress tracking
    - Test push notifications (foreground, background, terminated)
    - Verify security rules di Firebase console
    - Test offline persistence
+   - Test parsing isolate berjalan lancar
+   - Test background worker dapat ter-start otomatis
 
 
 ## Success Criteria
@@ -2470,7 +2578,10 @@ description: Integrasi Firebase services untuk Flutter dengan GetX state managem
 - [ ] Notification tap navigasi dengan `Get.toNamed()` berfungsi
 - [ ] Background message handler sebagai top-level function
 - [ ] Offline persistence enabled untuk Firestore
+- [ ] Parsing Firestore queries yang besar (1000+ items) menggunakan `Isolate.run()`
+- [ ] Firebase Workmanager di-setup untuk background sync
 - [ ] No memory leaks - stream subscriptions di-cancel di `onClose()`
+
 
 
 ## Security Best Practices

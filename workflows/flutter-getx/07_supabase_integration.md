@@ -2239,6 +2239,105 @@ description: Integrasi Supabase sebagai alternative backend dengan GetX state ma
    - Test file upload dan delete
    - Test controller lifecycle (`onInit` / `onClose`)
 
+9. **Isolates untuk Parsing Data Supabase Besar**
+   - Gunakan `Isolate.run()` untuk avoid UI freeze saat mem-parsing JSON yang besar (contoh: load initial data ribuan rows Supabase).
+   - Pastikan implementasi parsing function pure dan independent dari GetxController/Service.
+
+10. **Background Workmanager dengan Supabase**
+    - Register Supabase sync task di Workmanager.
+    - Panggil Supabase secara periodik secara background (misal: ambil notifikasi baru atau update location user).
+    - Inisialisasi SupabaseClient di dalam isolate Workmanager sebelum mengakses data.
+
+
+## Background Processing & Isolates dengan GetX
+
+### Parsing Data Supabase Besar dengan `Isolate.run()`
+Hindari UI freeze saat memuat list Supabase yang besar:
+
+```dart
+// lib/core/utils/supabase_parser.dart
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+/// Worker function yang harus dipanggil di Isolate.run
+/// Tidak boleh bergantung pada Get.find()!
+List<ProductEntity> _parseProductsSync(List<dynamic> data) {
+  return data.map((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
+}
+
+extension PostgrestListMapper on List<dynamic> {
+  /// Extract raw data dari response untuk parsing di background isolate
+  Future<List<ProductEntity>> parseInBackground() async {
+    // Jalankan parsing di isolate terpisah
+    return await Isolate.run(() => _parseProductsSync(this));
+  }
+}
+```
+
+Implementasi di GetX Controller/Repository:
+```dart
+class ProductRepository {
+  final SupabaseClient _supabase = Supabase.instance.client;
+
+  Future<Result<List<ProductEntity>>> getLargeDataset() async {
+    try {
+      final response = await _supabase.from('products').select().limit(1000);
+      // Gunakan background isolate untuk JSON terberat
+      final products = await response.parseInBackground();
+      return Success(products);
+    } catch (e) {
+      return Failure(FailureReason.unknown, message: e.toString());
+    }
+  }
+}
+```
+
+### Supabase Workmanager Background Sync
+Gunakan `workmanager` untuk sinkronisasi Supabase di background:
+
+1. Setup `workmanager` di `main.dart`:
+```dart
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) async {
+    // PENTING: Inisialisasi Supabase di isolate worker menggunakan envied
+    await Supabase.initialize(
+      url: Env.supabaseUrl,
+      anonKey: Env.supabaseAnonKey,
+    );
+    
+    if (taskName == "sync_supabase_background") {
+      try {
+        final supabase = Supabase.instance.client;
+        // Lakukan background operasi tanpa mengaitkan Get.find() UI instances
+        await supabase.from('background_logs').insert({
+            'event': 'Workmanager sync executed',
+        });
+        return Future.value(true);
+      } catch (err) {
+        return Future.value(false); // gagal, akan retry sesuai policy
+      }
+    }
+    return Future.value(true);
+  });
+}
+```
+
+2. Register dan trigger dari GetX Controller:
+```dart
+class SyncController extends GetxController {
+  void scheduleBackgroundSync() {
+    Workmanager().registerPeriodicTask(
+      "1",
+      "sync_supabase_background",
+      frequency: const Duration(hours: 1), // Minimum 15 menit
+      constraints: Constraints(
+        networkType: NetworkType.connected, // Hanya saat ada internet
+        requiresBatteryNotLow: true,
+      ),
+    );
+  }
+}
+```
 
 ## Success Criteria
 
@@ -2261,6 +2360,8 @@ description: Integrasi Supabase sebagai alternative backend dengan GetX state ma
 - [ ] Storage RLS policies configured
 - [ ] Error handling implemented untuk semua Supabase exceptions
 - [ ] Semua bindings terdefinisi (Initial, Product, Realtime, Upload)
+- [ ] Parsing Supabase queries yang besar (1000+ items) menggunakan `Isolate.run()`
+- [ ] Supabase Workmanager di-setup untuk background sync
 
 
 ## RLS Best Practices
