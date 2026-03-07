@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Integrasi Firebase v10 (modular) sebagai backend-as-a-service: Auth, Firestore database, Storage, dan Push Notificati...
 ---
 # 06 - Firebase Integration (Auth + Firestore + Storage + FCM)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Integrasi Firebase v10 (modular) sebagai backend-as-a-service: Auth, Firestore database, Storage, dan Push Notifications (FCM).
 

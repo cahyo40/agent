@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Template untuk membuat UI components menggunakan Shadcn/UI primitives dengan pola Atomic Design.
 ---
 # 02 - Component Generator (Atomic Design + Shadcn/UI)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Template untuk membuat UI components menggunakan Shadcn/UI primitives dengan pola Atomic Design.
 

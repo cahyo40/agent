@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Setup form handling dengan React Hook Form v7 dan Zod schema validation yang konsisten dengan backend.
 ---
 # 07 - Forms & Validation (React Hook Form + Zod)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Setup form handling dengan React Hook Form v7 dan Zod schema validation yang konsisten dengan backend.
 

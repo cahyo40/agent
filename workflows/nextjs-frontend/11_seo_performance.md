@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Optimasi SEO dengan Next.js Metadata API dan performance tuning untuk Core Web Vitals.
 ---
 # 11 - SEO & Performance
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Optimasi SEO dengan Next.js Metadata API dan performance tuning untuk Core Web Vitals.
 

@@ -14,19 +14,30 @@ Workflows untuk development frontend modern dengan Next.js 14+ (App Router), Typ
 ```
 workflows/nextjs-frontend/
 ├── README.md                        # Overview (file ini)
+├── USAGE.md                         # Quick start
+├── example.md               ← ⭐ Contoh prompt per workflow
+│
+│  ## Phase 1: Foundation
 ├── 01_project_setup.md              # Setup Next.js + TypeScript + Tailwind + Shadcn
 ├── 02_component_generator.md        # UI component templates (Atomic Design)
+│
+│  ## Phase 2: Data & State
 ├── 03_api_client_integration.md     # Axios + TanStack Query + OpenAPI types
+├── 07_forms_validation.md           # React Hook Form + Zod
+├── 08_state_management.md           # Zustand + TanStack Query patterns
+│
+│  ## Phase 3: Backend & Auth (Pilih Salah Satu)
 ├── 04_auth_nextauth.md              # NextAuth.js (connect ke custom backend)
 ├── 05_supabase_integration.md       # Supabase Auth + Realtime DB + Storage
 ├── 06_firebase_integration.md       # Firebase Auth + Firestore + FCM
-├── 07_forms_validation.md           # React Hook Form + Zod
-├── 08_state_management.md           # Zustand + TanStack Query patterns
+│
+│  ## Phase 4: Enhancements & UI
 ├── 09_layout_dashboard.md           # Dashboard layout + dark mode + charts
+│
+│  ## Phase 5: Quality, SEO & Deploy
 ├── 10_testing_quality.md            # Vitest + Playwright + Storybook
 ├── 11_seo_performance.md            # Metadata API + Core Web Vitals
-├── 12_deployment.md                 # Vercel + Docker + CI/CD
-└── USAGE.md                         # Quick start + example prompts
+└── 12_deployment.md                 # Vercel + Docker + CI/CD
 ```
 
 ## Output Location
@@ -38,20 +49,28 @@ sdlc/nextjs-frontend/<workflow-name>/
 
 ## Urutan Penggunaan
 
-| # | Workflow | Kapan Digunakan | Wajib? |
-|---|---------|-----------------|--------|
-| 01 | Project Setup | Selalu pertama | ✅ Ya |
-| 02 | Component Generator | Per komponen baru | ✅ Ya |
-| 03 | API Client | Jika pakai custom backend | ✅ Ya |
-| 04 | Auth NextAuth | Jika auth via custom backend | ⚡ Pilih salah satu |
-| 05 | Supabase | Jika pakai Supabase | ⚡ Pilih salah satu |
-| 06 | Firebase | Jika pakai Firebase | ⚡ Pilih salah satu |
-| 07 | Forms & Validation | Selalu (ada form) | ✅ Ya |
-| 08 | State Management | Setelah 03/04/05/06 | ✅ Ya |
-| 09 | Layout & Dashboard | Untuk admin panel | 📝 Recommended |
-| 10 | Testing | Sebelum release | ✅ Ya |
-| 11 | SEO & Performance | Untuk public-facing | 📝 Recommended |
-| 12 | Deployment | Sebelum production | ✅ Ya |
+### Phase 1: Foundation (Wajib)
+1. **`01_project_setup.md`** — Setup project Next.js baru
+2. **`02_component_generator.md`** — UI components setup
+
+### Phase 2: Data & State (Wajib)
+3. **`03_api_client_integration.md`** — Axios & TanStack Query
+4. **`07_forms_validation.md`** — Form handling & Validation (Zod)
+5. **`08_state_management.md`** — Zustand (Global state)
+
+### Phase 3: Backend & Auth (Pilih Salah Satu)
+Mulai fitur dengan menghubungkan backend-nya:
+- **`04_auth_nextauth.md`** — Untuk Custom Backend & NextAuth
+- **`05_supabase_integration.md`** — Supabase Auth, DB, dan Storage
+- **`06_firebase_integration.md`** — Firebase Auth, Firestore, dan FCM
+
+### Phase 4: Enhancements & UI (Opsional)
+- **`09_layout_dashboard.md`** — Dashboard UI
+
+### Phase 5: Quality, SEO & Deploy (Wajib via Production)
+- **`10_testing_quality.md`** — Vitest & Playwright testing
+- **`11_seo_performance.md`** — SEO tags & Metadata
+- **`12_deployment.md`** — Vercel & CI/CD deployment
 
 ## Tech Stack
 

@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Setup state management dengan Zustand untuk client state dan TanStack Query untuk server state, dengan pola yang jela...
 ---
 # 08 - State Management (Zustand + TanStack Query)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Setup state management dengan Zustand untuk client state dan TanStack Query untuk server state, dengan pola yang jelas untuk memisahkan keduanya.
 

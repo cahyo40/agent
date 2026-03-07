@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Implementasi authentication menggunakan NextAuth.js v5 (Auth.js) dengan Credentials Provider untuk connect ke custom ...
 ---
 # 04 - Authentication with NextAuth.js
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Implementasi authentication menggunakan NextAuth.js v5 (Auth.js) dengan Credentials Provider untuk connect ke custom backend Go/Python.
 

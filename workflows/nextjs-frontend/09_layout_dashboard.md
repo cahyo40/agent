@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Template layout untuk dashboard admin dengan sidebar collapsible, header, dark mode toggle, dan integrasi chart.
 ---
 # 09 - Layout & Dashboard (Sidebar + Dark Mode + Charts)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Template layout untuk dashboard admin dengan sidebar collapsible, header, dark mode toggle, dan integrasi chart.
 

@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Deploy Next.js ke Vercel (rekomendasi) atau self-hosted dengan Docker.
 ---
 # 12 - Deployment (Vercel + Docker + CI/CD)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Deploy Next.js ke Vercel (rekomendasi) atau self-hosted dengan Docker.
 

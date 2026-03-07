@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Setup HTTP client dengan Axios dan server state management dengan TanStack Query v5 untuk berkomunikasi dengan backen...
 ---
 # 03 - API Client Integration (Axios + TanStack Query)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Setup HTTP client dengan Axios dan server state management dengan TanStack Query v5 untuk berkomunikasi dengan backend Go/Python.
 

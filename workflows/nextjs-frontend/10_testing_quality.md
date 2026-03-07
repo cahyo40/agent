@@ -1,7 +1,13 @@
+// turbo-all
 ---
 description: Setup testing dengan Vitest untuk unit tests dan Playwright untuk E2E tests.
 ---
 # 10 - Testing & Quality (Vitest + Playwright)
+
+## Agent Behavior
+- **Auto-execute:** Jalankan perintah bash menggunakan `run_command` (gunakan `// turbo-all` mode jika didukung).
+- **Proactive:** Buat file, modifikasi kode, dan jalankan setup sesuai instruksi tanpa perlu konfirmasi per langkah.
+- **Explain Briefly:** Berikan ringkasan singkat setelah menyelesaikan satu bagian besar.
 
 **Goal:** Setup testing dengan Vitest untuk unit tests dan Playwright untuk E2E tests.
 
