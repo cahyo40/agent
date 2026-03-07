@@ -41,10 +41,14 @@ workflows/flutter-riverpod/
 │  ## Phase 3: Enhancements
 ├── 09_translation.md                # Translation & Localization (i18n)
 ├── 10_push_notifications.md         # FCM + local notifications + deep linking
+├── 13_environment_flavors.md        # Environment Config & Flavors (envied)
+├── 15_advanced_ui_semantics.md      # Advanced UI (Slivers, Animations, A11y)
+├── 16_background_processing.md      # Isolates & Background Processing
 │
 │  ## Phase 4: Quality & Deploy
 ├── 11_testing_production.md         # Testing + CI/CD + Production deployment
-└── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
+├── 12_performance_monitoring.md     # Sentry, Firebase Crashlytics, performance tracing
+└── 14_security_hardening.md         # Security hardening (Cert pinning, Biometrics)
 ```
 
 ## Output Folder Structure
@@ -90,14 +94,22 @@ lib/
 ### Phase 3: Enhancements (opsional)
 7. **`09_translation.md`** — Translation & Localization
 8. **`10_push_notifications.md`** — Push notifications
+9. **`13_environment_flavors.md`** — Setup flavors dan env variables rahasia
+10. **`15_advanced_ui_semantics.md`** — Advanced Animations, Slivers, dan Accessibility
+11. **`16_background_processing.md`** — Isolates & background tasks
 
-### Phase 4: Quality & Deploy
-9. **`11_testing_production.md`** — Testing dan deployment
-10. **`12_performance_monitoring.md`** — Monitoring di production
+### Phase 4: Quality, Security & Deploy
+12. **`14_security_hardening.md`** — Security hardening (SSL Pinning, Bio-auth)
+13. **`11_testing_production.md`** — Testing dan production build
+14. **`12_performance_monitoring.md`** — Monitoring di production (Sentry/Crashlytics)
 
 ### Workflow Optional:
 - **`09_translation.md`** — Gunakan jika app butuh multiple languages
 - **`10_push_notifications.md`** — Gunakan jika app butuh push notifications
+- **`13_environment_flavors.md`** — Jika membedakan environment dev/stg/prod
+- **`15_advanced_ui_semantics.md`** — Jika app memiliki kompleksitas frame motion
+- **`16_background_processing.md`** — Jika app menghitung data berat
+- **`14_security_hardening.md`** — Jika app enterprise class yang ketat regulasi
 
 
 ## Recommended Skills
@@ -119,6 +131,10 @@ Berikut ringkasan skills yang relevan:
 | 10 Push Notifications | `notification-system-architect` |
 | 11 Testing | `senior-quality-assurance-engineer` |
 | 12 Monitoring | `observability-engineer` |
+| 13 Env Flavors | `senior-flutter-developer`, `senior-devops-engineer` |
+| 14 Security | `senior-cybersecurity-engineer`, `senior-flutter-developer` |
+| 15 Advanced UI | `senior-ui-ux-designer`, `accessibility-specialist` |
+| 16 Background | `senior-flutter-developer`, `performance-testing-specialist` |
 
 ## Fitur Utama
 
