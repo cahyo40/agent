@@ -1,13 +1,17 @@
 ---
 description: Setup push notifications lengkap: FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari no...
 ---
-# 12 - Push Notifications (FCM + Local Notifications + Deep Linking)
+# Workflow: Push Notifications (FCM + Local + Deep Linking) — Flutter BLoC
 
-**Goal:** Setup push notifications lengkap: FCM untuk remote, flutter_local_notifications untuk local, dan deep linking dari notification tap menggunakan go_router.
+// turbo-all
 
-**Output:** `sdlc/flutter-bloc/12-push-notifications/`
+## Overview
 
-**Time Estimate:** 3-4 jam
+Setup push notifications lengkap:
+- **FCM** untuk remote push notifications
+- **flutter_local_notifications** untuk foreground display
+- **Deep linking** dari notification tap menggunakan GoRouter
+- **FcmTokenCubit** untuk register/unregister token
 
 ---
 

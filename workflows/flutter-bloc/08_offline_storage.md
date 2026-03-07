@@ -1,13 +1,19 @@
 ---
 description: Implementasi offline-first storage dengan Hive untuk cache, Isar untuk complex queries, dan flutter_secure_storage un...
 ---
-# 10 - Offline Storage (Hive + Isar + SecureStorage)
+# Workflow: Offline Storage (Hive + Isar + SecureStorage) — Flutter BLoC
 
-**Goal:** Implementasi offline-first storage dengan Hive untuk cache, Isar untuk complex queries, dan flutter_secure_storage untuk sensitive data. Menggunakan `get_it` untuk DI.
+// turbo-all
 
-**Output:** `sdlc/flutter-bloc/10-offline-storage/`
+## Overview
 
-**Time Estimate:** 3-4 jam
+Implementasi offline-first storage dengan:
+- **Hive** untuk cache sederhana dengan TTL
+- **Isar** untuk complex queries dan full-text search  
+- **flutter_secure_storage** untuk sensitive data (tokens)
+- **ConnectivityCubit** untuk reactive connectivity state
+
+> **Catatan:** Jangan gunakan `dartz`. Gunakan `Result<T>` sealed class dari `core/error/result.dart`.
 
 ---
 
@@ -91,9 +97,9 @@ class CacheService {
 **File:** `lib/features/product/data/repositories/product_repository_impl.dart`
 
 ```dart
-import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/error/result.dart';
 import '../../../../core/network/connectivity_cubit.dart';
 import '../../../../core/storage/cache_service.dart';
 import '../../domain/entities/product.dart';
@@ -115,7 +121,7 @@ class ProductRepositoryImpl implements ProductRepository {
   static const _cacheKey = 'products_list';
 
   @override
-  Future<Either<Failure, List<Product>>> getProducts() async {
+  Future<Result<List<Product>>> getProducts() async {
     if (connectivity.state.isConnected) {
       try {
         final products = await remote.getProducts();
@@ -124,7 +130,7 @@ class ProductRepositoryImpl implements ProductRepository {
           products.map((p) => p.toJson()).toList(),
           ttl: const Duration(hours: 1),
         );
-        return Right(products);
+        return Success(products);
       } catch (e) {
         return _fromCache();
       }
@@ -132,15 +138,15 @@ class ProductRepositoryImpl implements ProductRepository {
     return _fromCache();
   }
 
-  Either<Failure, List<Product>> _fromCache() {
+  Result<List<Product>> _fromCache() {
     final cached = cache.get<List<Product>>(
       _cacheKey,
       (json) => (json as List)
           .map((e) => Product.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
-    if (cached != null) return Right(cached);
-    return const Left(CacheFailure('No cached data available'));
+    if (cached != null) return Success(cached);
+    return const ResultFailure(CacheFailure(message: 'No cached data available'));
   }
 }
 ```
@@ -328,4 +334,5 @@ class SecureStorageService {
 - `ConnectivityCubit` reactive dengan `BlocBuilder`
 
 ## Next Steps
-- `11_ui_components.md` - Reusable UI components
+- UI components → `11_ui_components.md`
+- Push notifications → `12_push_notifications.md`

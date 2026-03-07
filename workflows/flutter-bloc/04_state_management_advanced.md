@@ -1,15 +1,15 @@
 ---
 description: Pola-pola advanced BLoC untuk production apps: pagination, optimistic updates, cross-Bloc communication, dan EventTra...
 ---
-# 09 - Advanced BLoC Patterns (Pagination, Optimistic, Cross-Bloc)
+# Workflow: Advanced BLoC Patterns — Flutter BLoC
 
-**Goal:** Pola-pola advanced BLoC untuk production apps: pagination, optimistic updates, cross-Bloc communication, dan EventTransformer.
+// turbo-all
 
-**Output:** `sdlc/flutter-bloc/09-advanced-patterns/`
+## Overview
 
-**Time Estimate:** 3-4 jam
+Pola-pola advanced BLoC untuk production apps: pagination, optimistic updates, cross-Bloc communication, dan EventTransformer.
 
-> **Note:** Workflow ini melengkapi `08_bloc_patterns.md` dengan fokus pada pola production yang lebih spesifik.
+> **Note:** Workflow ini melengkapi `03_backend_integration.md` dengan fokus pada pola production yang lebih spesifik.
 
 ---
 
