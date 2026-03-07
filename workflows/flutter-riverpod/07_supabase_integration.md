@@ -31,6 +31,7 @@ dengan Row Level Security (RLS).
 
 - `senior-supabase-developer` — Supabase services
 - `postgresql-specialist` — Database & RLS
+- `python-async-specialist` — Concurrency & Parallelism (Dart isolates equivalent)
 
 
 ## Workflow Steps
@@ -454,13 +455,58 @@ CREATE INDEX idx_products_user_id
     ON products(user_id);
 ```
 
-### Step 7: Test Integration
+### Step 7: Isolate Parsing & Background Sync
+
+Sama halnya dengan REST API, jika query mereturn record yang sangat besar (ribuan rows), pindahkan proses konversi JSON ke `Isolate.run()` agar tidak menyebabkan frame drop.
+
+```dart
+// features/product/data/datasources/product_supabase_ds.dart
+import 'dart:isolate';
+
+  Future<List<ProductModel>> getMassiveProducts() async {
+    final response = await _productsTable.select().limit(10000);
+
+    // Casting dynamic response ke format List<Map> yang didukung native
+    final rawData = List<Map<String, dynamic>>.from(response as List);
+
+    return await Isolate.run(() {
+      return rawData.map((json) => ProductModel.fromJson(json)).toList();
+    });
+  }
+```
+
+Jadwalkan sinkronisasi background jika Anda butuh mekanisme hybrid-offline (Supabase saat ini belum memiliki offline persistence official secanggih Firebase).
+
+```yaml
+dependencies:
+  workmanager: ^0.5.2
+```
+
+```dart
+// lib/bootstrap/background_worker.dart
+import 'package:workmanager/workmanager.dart';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case 'syncSupabaseTask':
+        // Logika sync background misal via SQLite -> Supabase
+        break;
+    }
+    return Future.value(true);
+  });
+}
+```
+
+### Step 8: Test Integration
 
 - Test auth flows
 - Test CRUD operations
 - Test RLS policies
 - Test realtime subscriptions
 - Test file upload
+- Test background processing (Isolate dan periodic sync)
 
 
 ## Success Criteria
@@ -474,6 +520,8 @@ CREATE INDEX idx_products_user_id
 - [ ] File upload/download berfungsi
 - [ ] Storage RLS policies configured
 - [ ] Error handling untuk semua Supabase exceptions
+- [ ] Heavy database query diparsing menggunakan `Isolate.run()`
+- [ ] Background sync task terdaftar (opsional memakai workmanager)
 
 
 ## Next Steps

@@ -599,6 +599,56 @@ abstract class SupabaseModule {
 }
 ```
 
+### Step 8: Isolates untuk Parsing JSON Data Besar dari Supabase
+
+Jika Supabase mengembalikan banyak records dan memberatkan main UI thread saat parsing, manfaatkan `Isolate.run`:
+
+```dart
+// features/products/data/repositories/product_repository_impl.dart
+import 'dart:isolate';
+
+  @override
+  Future<Result<List<Product>>> getMassiveProducts() async {
+    try {
+      final data = await _supabase.from(_table).select().limit(5000) as List<dynamic>;
+      
+      final productsList = await Isolate.run<List<Product>>(() {
+        return data.map((json) => ProductModel.fromJson(json as Map<String, dynamic>).toEntity()).toList();
+      });
+
+      return Success(productsList);
+    } on PostgrestException catch (e) {
+      return ResultFailure(ServerFailure(message: e.message));
+    }
+  }
+```
+
+### Step 9: Background Workmanager dengan Supabase
+
+Supabase client juga harus di-initialize di dalam isolate Workmanager jika mengakses DB.
+
+```dart
+// lib/bootstrap/background_worker.dart
+import 'package:workmanager/workmanager.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    await Supabase.initialize(
+      url: const String.fromEnvironment('SUPABASE_URL'),
+      anonKey: const String.fromEnvironment('SUPABASE_ANON_KEY'),
+    );
+    switch (task) {
+      case 'syncSupabase':
+        // logic sinkronisasi local DB ke Supabase
+        break;
+    }
+    return Future.value(true);
+  });
+}
+```
+
 
 ## Success Criteria
 

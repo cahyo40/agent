@@ -12,9 +12,7 @@ Panduan lengkap penggunaan workflows untuk development Flutter dengan Riverpod d
 
 ---
 
-## Overview
-
-Workflows ini dirancang untuk eksekusi end-to-end development Flutter menggunakan pendekatan AI agentic. Total terdapat **16 workflows** yang mencakup dari setup, UI/state, integrasi data, fitur pro, hingga quality & security.
+Workflows ini dirancang untuk eksekusi end-to-end development Flutter menggunakan pendekatan AI agentic. Total terdapat **12 workflows** yang mencakup dari setup, UI/state, integrasi data, fitur pro, hingga quality & security.
 
 ---
 
@@ -45,14 +43,10 @@ Berikut daftar fungsionalitas tiap workflow:
 ### Phase 3: Pro Enhancements
 - **`09_translation.md`**: i18n localization (multi-bahasa).
 - **`10_push_notifications.md`**: FCM dan local notification dengan deep linking routing.
-- **`13_environment_flavors.md`**: Setup env variables, `.env` file via `envied`, build flavors.
-- **`15_advanced_ui_semantics.md`**: Custom ScrollView (Slivers), complex animations, Accessibility (Semantics).
-- **`16_background_processing.md`**: Isolate processing, Worker manager untuk heavy computational tasks.
 
 ### Phase 4: Quality, Security & Deploy
 - **`11_testing_production.md`**: Unit, Widget, Integration tests dengan Mocktail.
-- **`12_performance_monitoring.md`**: Sentry tracing dan Firebase Crashlytics.
-- **`14_security_hardening.md`**: SSL Pinning, Root/Jailbreak detection, Biometrics, Obfuscation.
+- **`12_performance_monitoring.md`**: Sentry tracing, Firebase Crashlytics, dan Security Hardening (SSL Pinning, root detection).
 
 ---
 
@@ -68,7 +62,7 @@ Phase 2
 04_state_management_advanced.md  →  (Pilih: 05_backend / 06_firebase / 07_supabase)  →  08_offline_storage.md
 
 Phase 3 & 4
-13_environment_flavors.md  →  15_advanced_ui_semantics.md  →  14_security_hardening.md  →  11_testing_production.md
+09_translation.md  →  10_push_notifications.md  →  11_testing_production.md  →  12_performance_monitoring.md
 ```
 
 ### Prompt Dasar
@@ -83,4 +77,4 @@ Buka file **`example.md`** di folder ini untuk melihat kumpulan lengkap prompt (
 
 - **Setup Project:** "Tolong jalankan `01_project_setup.md` dengan nama package `com.example.app`"
 - **Build Feature:** "Generate fitur 'Profile' menggunakan `02_feature_maker.md`"
-- **Hardening:** "Tolong aplikasikan `14_security_hardening.md` untuk implementasi SSL pinning"
+- **Performance & Security:** "Tolong aplikasikan `12_performance_monitoring.md` untuk implementasi SSL pinning"

@@ -16,16 +16,16 @@ Setup Flutter project "[nama_app]" dengan Clean Architecture + flutter_bloc + ge
 |---|------|-----------|------|
 | 01 | `01_project_setup.md` | Project setup, folder structure, DI | 🏗 Foundation |
 | 02 | `02_feature_maker.md` | Buat feature baru (domain → data → UI) | 🏗 Foundation |
-| 03 | `03_backend_integration.md` | Dio, interceptors, REST API, pagination | 🔌 Backend |
-| 04 | `04_firebase_integration.md` | Firebase Auth, Firestore, Storage, FCM | 🔌 Backend |
-| 05 | `05_supabase_integration.md` | Supabase Auth, PostgreSQL, Realtime | 🔌 Backend |
-| 06 | `06_testing_production.md` | blocTest, MockBloc, CI/CD | ✅ Quality |
-| 07 | `07_translation.md` | easy_localization, LocaleCubit | ✨ Enhancement |
-| 09 | `09_state_management_advanced.md` | Pagination, optimistic, cross-Bloc | ✨ Enhancement |
-| 10 | `10_offline_storage.md` | Hive, Isar, SecureStorage, ConnectivityCubit | ✨ Enhancement |
-| 11 | `11_ui_components.md` | AppButton, Shimmer, EmptyState, AppCard | ✨ Enhancement |
-| 12 | `12_push_notifications.md` | FCM, local notifications, deep linking | 🚀 Deploy |
-| 13 | `13_performance_monitoring.md` | Firebase Performance, Sentry | 🚀 Deploy |
+| 03 | `03_ui_components.md` | AppButton, Shimmer, EmptyState, AppCard | 🏗 Foundation |
+| 04 | `04_state_management_advanced.md` | Pagination, optimistic, cross-Bloc | 🔌 Backend |
+| 05 | `05_backend_integration.md` | Dio, interceptors, REST API | 🔌 Backend |
+| 06 | `06_firebase_integration.md` | Firebase Auth, Firestore, Storage, FCM | 🔌 Backend |
+| 07 | `07_supabase_integration.md` | Supabase Auth, PostgreSQL, Realtime | 🔌 Backend |
+| 08 | `08_offline_storage.md` | Hive, Isar, SecureStorage, ConnectivityCubit | ✨ Enhancement |
+| 09 | `09_translation.md` | easy_localization, LocaleCubit | ✨ Enhancement |
+| 10 | `10_push_notifications.md` | FCM, local notifications, deep linking | 🚀 Deploy |
+| 11 | `11_testing_production.md` | blocTest, MockBloc, CI/CD | ✅ Quality |
+| 12 | `12_performance_monitoring.md` | Firebase Performance, Sentry, Security | 🚀 Deploy |
 
 ## Architecture
 

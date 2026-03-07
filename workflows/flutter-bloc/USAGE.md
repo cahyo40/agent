@@ -74,33 +74,33 @@ dev_dependencies:
 
 Workflows diorganisasi dalam 4 fase:
 
-### Fase 1: Foundation (Wajib)
+### Fase 1: Foundation
 | File | Deskripsi |
 |------|-----------|
 | `01_project_setup.md` | Project setup, Clean Architecture, get_it + injectable |
 | `02_feature_maker.md` | Feature generator (Domain → Data → Presentation) |
+| `03_ui_components.md` | AppButton, AppTextField, Shimmer, EmptyState |
 
-### Fase 2: Data & Backend
+### Fase 2: Data & Patterns
 | File | Deskripsi |
 |------|-----------|
-| `03_backend_integration.md` | REST API, Dio, interceptors, pagination BLoC |
-| `04_firebase_integration.md` | Firebase Auth, Firestore, Storage, FCM |
-| `05_supabase_integration.md` | Supabase Auth, PostgreSQL, Realtime, Storage |
+| `04_state_management_advanced.md` | Riverpod AsyncNotifier, family, pagination, debounce. |
+| `05_backend_integration.md` | REST API, Dio, interceptors, pagination BLoC |
+| `06_firebase_integration.md` | Firebase Auth, Firestore, Storage, FCM |
+| `07_supabase_integration.md` | Supabase Auth, PostgreSQL, Realtime, Storage |
+| `08_offline_storage.md` | Hive cache, Isar queries, SecureStorage |
 
 ### Fase 3: Enhancement
 | File | Deskripsi |
 |------|-----------|
-| `06_testing_production.md` | blocTest, MockBloc, CI/CD, integration tests |
-| `07_translation.md` | easy_localization, LocaleCubit, multi-bahasa |
-| `09_state_management_advanced.md` | Pagination, optimistic updates, cross-Bloc |
-| `10_offline_storage.md` | Hive cache, Isar queries, SecureStorage |
-| `11_ui_components.md` | AppButton, AppTextField, Shimmer, EmptyState |
+| `09_translation.md` | easy_localization, LocaleCubit, multi-bahasa |
+| `10_push_notifications.md` | FCM dan local notification dengan deep linking routing |
 
-### Fase 4: Quality & Deploy
+### Fase 4: Quality, Security & Deploy
 | File | Deskripsi |
 |------|-----------|
-| `12_push_notifications.md` | FCM, local notifications, deep linking |
-| `13_performance_monitoring.md` | Firebase Performance, Sentry, profiling |
+| `11_testing_production.md` | blocTest, MockBloc, CI/CD, integration tests |
+| `12_performance_monitoring.md` | Sentry tracing, Firebase Crashlytics, Security Hardening |
 
 ---
 

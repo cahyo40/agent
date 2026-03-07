@@ -1,14 +1,13 @@
 ---
-description: Setup error monitoring, crash reporting, performance profiling, dan analytics untuk production Flutter app.
+description: Setup error monitoring, crash reporting, performance profiling, dan security hardening (Certificate Pinning, Biometric Auth, Root Detection) untuk production Flutter app.
 ---
-# Workflow: Performance & Monitoring (Sentry + Crashlytics)
+# Workflow: Performance, Monitoring & Security Hardening
 
 // turbo-all
 
 ## Overview
 
-Setup error monitoring, crash reporting, performance profiling,
-dan analytics untuk production Flutter app.
+Setup error monitoring, crash reporting, performance profiling, analytics, dan security hardening tingkat lanjut (Certificate Pinning, Biometric Authentication, Root/Jailbreak detection) untuk memastikan aplikasi Flutter siap rilis di skala Enterprise.
 
 
 ## Prerequisites
@@ -23,13 +22,15 @@ dan analytics untuk production Flutter app.
 - **Jangan hardcode Sentry DSN** — gunakan env vars.
 - **Set user context** setelah login untuk error attribution.
 - **Upload debug symbols** — ke Sentry dan Firebase.
-- **Wrap `runApp`** dengan error handlers.
+- **Gunakan standard validateCertificate** di Dio untuk pinning.
+- **Terapkan Root/Jailbreak detection** sebelum `runApp`.
 
 
 ## Recommended Skills
 
 - `observability-engineer` — Monitoring & tracing
 - `senior-site-reliability-engineer` — SRE practices
+- `senior-api-security-specialist` — API Security & Pinning
 
 ---
 
@@ -40,6 +41,8 @@ dependencies:
   firebase_crashlytics: ^4.3.0
   firebase_performance: ^0.10.0+8
   sentry_flutter: ^8.9.0
+  local_auth: ^2.1.8
+  freerasp: ^6.1.0 # Root/Jailbreak detection
 ```
 
 ---
@@ -281,7 +284,68 @@ class PerformanceOverlayWrapper extends StatelessWidget {
 
 ---
 
-### 6. Production Checklist
+### 6. Security: Certificate Pinning (Dio)
+
+Mencegah serangan *Mitm* (Man In The Middle) dengan memvalidasi SHA-256 hash.
+
+```dart
+// lib/core/network/dio_provider.dart
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+
+// ... in your Dio provider setup
+dio.httpClientAdapter = IOHttpClientAdapter(
+  createHttpClient: () => HttpClient(),
+  validateCertificate: (cert, host, port) {
+    if (host != 'api.yoursite.com') return true;
+    if (cert == null) return false;
+    // Tambahkan logika komparasi cert byte dengan SHA256 pinning
+    // const pinnedHash = 'YOUR_SHA256_HASH_HERE';
+    return true; 
+  },
+);
+```
+
+---
+
+### 7. Security: Root / Jailbreak Detection
+
+Mencegah API abuse dan pencurian credentials.
+
+```dart
+// lib/core/security/threat_detection.dart
+import 'package:freerasp/freerasp.dart';
+
+Future<void> initSecurityThreatDetection() async {
+  final config = TalsecConfig(
+    androidConfig: AndroidConfig(
+      packageName: 'com.example.app',
+      signingCertHashes: ['SHA256_CERT_HASH_HERE'],
+    ),
+    iosConfig: IOSConfig(
+      bundleIds: ['com.example.app'],
+      teamId: 'YOUR_APPLE_TEAM_ID',
+    ),
+    watcherMail: 'security@example.com',
+  );
+
+  final callback = ThreatCallback(
+    onAppIntegrity: () => print("App is modified"),
+    onPrivilegedAccess: () => print("Device is Rooted/Jailbroken"),
+    onHooks: () => print("Hooks detected (Frida/Xposed)"),
+  );
+
+  Talsec.instance.attachListener(callback);
+  await Talsec.instance.start(config);
+}
+```
+
+Panggil module di atas di dalam metode `bootstrap()` sebelum inisialisasi runApp.
+
+---
+
+### 8. Production Checklist
 
 ```markdown
 ## Pre-Release Performance Checklist
@@ -346,6 +410,8 @@ class PerformanceOverlayWrapper extends StatelessWidget {
 - [ ] Performance traces tampil di Firebase Console
 - [ ] User context (ID, email) ter-set setelah login
 - [ ] Debug symbols ter-upload ke Sentry
+- [ ] Pengecekan Certificate Pinning aktif
+- [ ] Aplikasi dapat men-detect jika di-run pada emulator/root/jailbreak
 
 
 ## Selesai! 🎉

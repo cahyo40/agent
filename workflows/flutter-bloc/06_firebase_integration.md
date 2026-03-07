@@ -667,6 +667,54 @@ abstract class FirebaseModule {
 }
 ```
 
+### Step 8: Isolates untuk Parsing JSON Data Besar dari Firestore
+
+Untuk menghindari UI freeze saat mem-parsing JSON payload besar dari firestore (seperti array 1000 items), gunakan `Isolate.run()`:
+
+```dart
+// features/posts/data/repositories/post_repository_impl.dart
+import 'dart:isolate';
+
+  @override
+  Future<Result<List<Post>>> getMassivePosts() async {
+    try {
+      final snapshot = await _firestore.collection(_collection).limit(5000).get();
+      final docsData = snapshot.docs.map((d) => d.data()).toList();
+      
+      final postsList = await Isolate.run<List<Post>>(() {
+        return docsData.map((d) => PostModel.fromJson(d).toEntity()).toList();
+      });
+
+      return Success(postsList);
+    } on FirebaseException catch (e) {
+      return ResultFailure(ServerFailure(message: e.message ?? 'Firestore error'));
+    }
+  }
+```
+
+### Step 9: Background Workmanager dengan Firebase
+
+Jika perlu menjalankan task background (seperti sinkronisasi firestore offline) tiap interval waktu:
+
+```dart
+// lib/bootstrap/background_worker.dart
+import 'package:workmanager/workmanager.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    await Firebase.initializeApp(); // Initialize Firebase untuk background task
+    switch (task) {
+      case 'syncFirestore':
+        // logic sinkronisasi Firebase
+        break;
+    }
+    return Future.value(true);
+  });
+}
+```
+
 
 ## Success Criteria
 

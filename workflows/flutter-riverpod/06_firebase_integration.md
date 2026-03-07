@@ -31,6 +31,7 @@ dan best practices.
 
 - `senior-firebase-developer` — Firebase services
 - `senior-flutter-developer` — Flutter patterns
+- `python-async-specialist` — Concurrency & Parallelism (Dart isolates equivalent)
 
 
 ## Workflow Steps
@@ -567,17 +568,63 @@ service firebase.storage {
       allow write: if request.auth != null
           && request.auth.uid == userId;
     }
-  }
 }
 ```
 
-### Step 7: Test Integration
+### Step 7: Isolate Parsing & Background Sync
+
+Jika listener Firestore (`snapshots()`) mengembalikan ribuan dokumen yang merombak UI thread, gunakan `Isolate.run()` untuk memproses mapping JSON/Map ke Entity.
+
+```dart
+// Untuk single future read berukuran masif
+Future<List<ProductModel>> getMassiveProducts() async {
+  final snapshot = await _productsCollection.limit(10000).get();
+  
+  // Karena snapshot.docs binding ke native plugin, 
+  // kita ekstrak datanya dulu ke List<Map> polos sebelum dilempar ke Isolate
+  final rawData = snapshot.docs.map((doc) => {
+    'id': doc.id,
+    ...doc.data() as Map<String, dynamic>
+  }).toList();
+
+  return await Isolate.run(() {
+    return rawData.map((data) => ProductModel.fromJson(data)).toList();
+  });
+}
+```
+
+Untuk menjadwalkan background sync (misal Firebase offline persistence tidak cukup, atau perlu sinkronisasi hybrid backend):
+
+```yaml
+dependencies:
+  workmanager: ^0.5.2
+```
+
+```dart
+// lib/bootstrap/background_worker.dart
+import 'package:workmanager/workmanager.dart';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case 'syncFirebaseTask':
+        // Background sync logic
+        break;
+    }
+    return Future.value(true);
+  });
+}
+```
+
+### Step 8: Test Integration
 
 - Test authentication flows
 - Test Firestore operations
 - Test file upload/download
 - Test push notifications
 - Verify security rules
+- Test background processing (Isolate dan periodic sync)
 
 
 ## Success Criteria
@@ -592,6 +639,7 @@ service firebase.storage {
 - [ ] Push notifications received (foreground & background)
 - [ ] Local notifications displayed correctly
 - [ ] Offline persistence enabled
+- [ ] Heavy Firestore query diparsing memakai `Isolate.run()` tanpa UI freeze
 
 
 ## Next Steps

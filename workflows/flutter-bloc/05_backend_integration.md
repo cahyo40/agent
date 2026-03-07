@@ -985,6 +985,68 @@ class PaginatedResult<T> {
 }
 ```
 
+### Step 8: Isolates untuk Parsing JSON Besar
+
+Untuk menghindari UI freeze saat mem-parsing JSON payload besar (>1MB), gunakan `Isolate.run()` dari Dart 3. Ini memindahkan proses decoding ke background thread.
+
+```dart
+// features/product/data/repositories/product_repository_impl.dart
+import 'dart:convert';
+import 'dart:isolate';
+
+  @override
+  Future<Result<List<Product>>> getMassiveProducts() async {
+    try {
+      final response = await remoteDataSource.getMassivePayload();
+      
+      // Memindahkan komputasi berat ke Isolate
+      final productsList = await Isolate.run<List<Product>>(() {
+        // PROSES BERAT DALAM ISOLATE (Background Thread)
+        final List<dynamic> jsonList = jsonDecode(response.data.toString());
+        return jsonList.map((e) => ProductModel.fromJson(e as Map<String, dynamic>).toEntity()).toList();
+      });
+
+      return Success(productsList);
+    } catch (e) {
+      return ResultFailure(ServerFailure(message: 'Failed to parse massive products'));
+    }
+  }
+```
+
+### Step 9: Periodic Background Sync (Workmanager)
+
+Untuk melakukan sinkronisasi data lokal ke server secara batch ketika aplikasi di background (misal tiap 12 jam).
+
+```dart
+// lib/bootstrap/background_worker.dart
+import 'package:workmanager/workmanager.dart';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case 'syncDataTask':
+        // Lakukan sinkronisasi background (misal: API calls)
+        break;
+    }
+    return Future.value(true);
+  });
+}
+
+class BackgroundWorker {
+  static Future<void> initialize() async {
+    await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+  }
+
+  static void registerPeriodicSync() {
+    Workmanager().registerPeriodicTask(
+      "1",
+      "syncDataTask",
+      frequency: const Duration(hours: 12),
+    );
+  }
+}
+```
 
 ## Success Criteria
 

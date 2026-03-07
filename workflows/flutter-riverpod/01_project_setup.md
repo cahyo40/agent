@@ -32,6 +32,7 @@ error handling, DI, dan example feature implementation.
 ## Recommended Skills
 
 - `senior-flutter-developer` — Flutter + Riverpod patterns
+- `senior-devops-engineer` — Environment Config & Flavors
 - `senior-software-architect` — Clean Architecture
 
 
@@ -81,6 +82,7 @@ dependencies:
   intl: ^0.19.0
   logger: ^2.0.0
   uuid: ^4.3.3
+  envied: ^0.5.3
 
   # Code Generation (runtime)
   freezed_annotation: ^2.4.1
@@ -96,6 +98,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.0
   freezed: ^2.5.2
   json_serializable: ^6.8.0
+  envied_generator: ^0.5.3
 
   # Testing
   mocktail: ^1.0.3
@@ -158,7 +161,60 @@ lib/
 
 ### Step 4: Core Layer Setup
 
-#### 4.1 Error Handling
+#### 4.1 Environment Configuration (envied & flavors)
+
+Buat file `.env` untuk menyimpan secrets (wajib dimasukkan `.gitignore`):
+```text
+# .env
+API_BASE_URL=https://api-dev.example.com
+API_KEY=dev_secret_key_123
+```
+
+Setup file environment config obfuscated:
+```dart
+// lib/core/config/env.dart
+import 'package:envied/envied.dart';
+
+part 'env.g.dart';
+
+@Envied(path: '.env', requireEnvFile: true)
+abstract class Env {
+  @EnviedField(varName: 'API_BASE_URL', obfuscate: true)
+  static final String apiBaseUrl = _Env.apiBaseUrl;
+
+  @EnviedField(varName: 'API_KEY', obfuscate: true)
+  static final String apiKey = _Env.apiKey;
+}
+```
+
+Setup Provider untuk Environment Runtime via `--dart-define`:
+```dart
+// lib/core/config/app_config.dart
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'env.dart';
+
+enum Environment { dev, staging, prod }
+
+class AppConfig {
+  final Environment environment;
+  final String apiBaseUrl;
+  final String apiKey;
+
+  AppConfig({required this.environment, required this.apiBaseUrl, required this.apiKey});
+}
+
+final appConfigProvider = Provider<AppConfig>((ref) {
+  const envString = String.fromEnvironment('ENV', defaultValue: 'dev');
+  final env = switch (envString) {
+    'prod' => Environment.prod,
+    'staging' => Environment.staging,
+    _ => Environment.dev,
+  };
+  return AppConfig(environment: env, apiBaseUrl: Env.apiBaseUrl, apiKey: Env.apiKey);
+});
+```
+
+#### 4.2 Error Handling
 
 ```dart
 // lib/core/error/exceptions.dart
@@ -696,6 +752,8 @@ flutter run
 - [ ] GoRouter configured dengan routes lengkap
 - [ ] Route constants defined di `routes.dart`
 - [ ] Auth guard implemented
+- [ ] Obfuscated API Keys via `envied` telah diimplementasikan
+- [ ] Environment Setup (`--dart-define`) berfungsi
 - [ ] Example feature berjalan dengan semua states
 - [ ] Navigation antar screens berfungsi
 - [ ] Code generation berjalan tanpa error
