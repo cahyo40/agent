@@ -1,12 +1,30 @@
 ---
 description: This workflow handles change requests and scope modifications during project execution.
-version: 1.0.0
-last_updated: 2024-02-21
+version: 1.1.0
+last_updated: 2026-03-11
+skills:
+  - senior-project-manager
+  - senior-system-analyst
+  - senior-technical-writer
 ---
+
+// turbo-all
+
 # Workflow: Change Request Management
+
+## Agent Behavior
+
+When executing this workflow, the agent MUST:
+- Use `senior-project-manager` for CR approval workflows and impact assessment
+- Use `senior-system-analyst` for technical impact analysis
+- Assign a unique CR-ID to every change request (CR-001, CR-002, ...)
+- Evaluate impact on all 5 dimensions: Scope, Schedule, Budget, Quality, Risk
+- Do not approve CRs without completing the Impact Analysis document first
+- Update the RTM from `01_requirement_analysis.md` when requirements change
 
 ## Overview
 This workflow handles change requests and scope modifications that occur during project execution. The goal is to manage changes systematically, assess impact, and maintain project control.
+
 
 ## Output Location
 **Base Folder:** `sdlc/08-change-request/`

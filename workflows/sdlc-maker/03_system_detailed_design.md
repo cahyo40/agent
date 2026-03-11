@@ -1,12 +1,33 @@
 ---
 description: This workflow covers the System Design and Detailed Design phases.
+version: 1.1.0
+last_updated: 2026-03-11
+skills:
+  - senior-software-architect
+  - uml-specialist
+  - api-design-specialist
+  - mermaid-diagram-expert
 ---
+
+// turbo-all
+
 # Workflow: System & Detailed Design
+
+## Agent Behavior
+
+When executing this workflow, the agent MUST:
+- Use `mermaid-diagram-expert` for ALL diagram creation
+- Use **Mermaid syntax exclusively** — never use PlantUML or other tools
+- Use `api-design-specialist` for OpenAPI specification
+- Generate all output files to `sdlc/03-system-detailed-design/`
+- Follow diagram order: Use Case → Activity → Architecture → Class → Sequence
+- API specification MUST be valid OpenAPI 3.0 YAML format
 
 ## Overview
 This workflow covers the System Design and Detailed Design phases. The goal is to visualize system behavior, high-level structure, and define low-level technical specifications for implementation.
 
 **IMPORTANT: All diagrams MUST use Mermaid syntax natively supported by Markdown.**
+
 
 ## Output Location
 **Base Folder:** `sdlc/03-system-detailed-design/`

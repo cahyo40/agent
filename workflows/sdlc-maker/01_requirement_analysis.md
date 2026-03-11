@@ -1,7 +1,26 @@
 ---
 description: This workflow covers the first phase of SDLC: Requirement Analysis.
+version: 1.1.0
+last_updated: 2026-03-11
+skills:
+  - senior-system-analyst
+  - senior-project-manager
+  - prd
 ---
+
+// turbo-all
+
 # Workflow: Requirement Analysis
+
+## Agent Behavior
+
+When executing this workflow, the agent MUST:
+- Use `senior-system-analyst` for stakeholder analysis and use case modeling
+- Use `prd` skill to generate the PRD document
+- Generate all output files to `sdlc/01-requirement-analysis/`
+- Complete the Stakeholder Register BEFORE writing requirements
+- Every requirement must have an ID (REQ-001, REQ-002, ...) for traceability
+- Create RTM (Requirements Traceability Matrix) linking requirements to test cases
 
 ## Overview
 This workflow covers the first phase of SDLC: Requirement Analysis. The goal is to identify business needs and user requirements clearly.

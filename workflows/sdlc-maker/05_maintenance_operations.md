@@ -1,10 +1,31 @@
 ---
 description: This workflow covers the Maintenance & Operations phase.
+version: 1.1.0
+last_updated: 2026-03-11
+skills:
+  - observability-engineer
+  - senior-site-reliability-engineer
+  - senior-technical-writer
+  - senior-devops-engineer
 ---
+
+// turbo-all
+
 # Workflow: Maintenance & Operations
+
+## Agent Behavior
+
+When executing this workflow, the agent MUST:
+- Use `observability-engineer` for monitoring setup (Prometheus, Grafana, alerts)
+- Use `senior-site-reliability-engineer` for SLO/SLI definitions and incident runbooks
+- Use `senior-technical-writer` for all documentation and runbooks
+- Generate all output files to `sdlc/05-maintenance-operations/`
+- SLOs must include: Availability, Latency (p95), Error Rate targets
+- Every incident type needs a corresponding runbook with escalation path
 
 ## Overview
 This workflow covers the Maintenance & Operations phase. The goal is to monitor, maintain, and update the live system effectively.
+
 
 ## Output Location
 **Base Folder:** `sdlc/05-maintenance-operations/`

@@ -1,7 +1,27 @@
 ---
 description: This workflow covers the UI/UX Design phase.
+version: 1.1.0
+last_updated: 2026-03-11
+skills:
+  - senior-ui-ux-designer
+  - mobile-app-designer
+  - figma-specialist
+  - stitch-enhance-prompt
 ---
+
+// turbo-all
+
 # Workflow: UI/UX Design
+
+## Agent Behavior
+
+When executing this workflow, the agent MUST:
+- Use `senior-ui-ux-designer` for user flow and wireframe design
+- Use `figma-specialist` when creating design system components
+- Use ASCII wireframe notation for all wireframe representations (no external tools)
+- Generate all output files to `sdlc/02-ui-ux-design/`
+- After completing wireframes, proceed to Part 2 (`02b_stitch_design_context.md`) for Stitch AI prompts
+- Design systems must include: colors, typography, spacing, and component states
 
 ## Overview
 This workflow covers the UI/UX Design phase. The goal is to design the user interface and experience to ensure usability and visual appeal.
@@ -543,7 +563,7 @@ Error Alert:
 ## Cross-References
 
 - **Previous Phase** → `01_requirement_analysis.md`
-- **Next Phase** → `02_ui_ux_design_part2.md` (for Stitch AI generation) or `03_system_detailed_design.md`
+- **Next Phase** → `02b_stitch_design_context.md` (for Stitch AI generation) or `03_system_detailed_design.md`
 - **Related** → `06_data_modeling_estimation.md` (for UI-related data display)
 - **SDLC Mapping** → `../../other/sdlc/SDLC_MAPPING.md`
 - **Implementation** → `../flutter-bloc/`, `../flutter-getx/`, `../nextjs-frontend/`

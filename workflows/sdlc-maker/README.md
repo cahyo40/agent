@@ -14,17 +14,17 @@ Workflows untuk membuat dokumentasi teknis lengkap mengikuti fase **Software Dev
 workflows/sdlc-maker/
 ├── 01_requirement_analysis.md          # Analisis kebutuhan & PRD
 ├── 02_ui_ux_design.md                  # User flow, wireframe, design system, ASCII wireframes
-├── 03_system_detailed_design.md        # UML diagrams & API specification
-├── 04_quality_security_deployment_part1.md  # Test plan, threat model, database schema
-├── 04_quality_security_deployment_part2.md  # Performance testing, CI/CD, deployment
+├── 02b_stitch_design_context.md        # Stitch AI design context & screen prompts
+├── 03_system_detailed_design.md        # UML diagrams (Mermaid) & API specification
+├── 04_quality_security_deployment.md   # Test plan, threat model, database schema, CI/CD
 ├── 05_maintenance_operations.md        # Monitoring, docs, runbooks
-├── 06_data_modeling_estimation_part1.md     # Data dictionary, ERD, migration plan
-├── 06_data_modeling_estimation_part2.md     # Sprint plan, estimation, resources
-├── 07_project_handoff_part1.md              # Handoff checklist, KT plan, acceptance
-├── 07_project_handoff_part2.md              # Post-launch review, retrospective
-├── 08_change_request.md                # Change request management (NEW)
+├── 06_data_modeling_estimation.md      # Data dictionary, ERD (Mermaid), migration, estimation
+├── 07_project_handoff.md               # Handoff checklist, KT plan, acceptance, retrospective
+├── 08_change_request.md                # Change request management
 └── README.md                           # Dokumentasi ini
 ```
+
+> **Note:** File `02b_stitch_design_context.md` adalah sub-workflow dari fase 02 yang khusus menangani Stitch AI. Jalankan setelah `02_ui_ux_design.md` selesai.
 
 ## Output Folder Structure
 
@@ -38,19 +38,24 @@ sdlc/
 ├── 02-ui-ux-design/
 │   ├── user-flow-wireframes.md
 │   ├── high-fidelity-mockups.md
-│   └── design-system.md
+│   ├── design-system.md
+│   └── stitch/
+│       ├── stitch-design-context.md
+│       └── stitch-screen-prompts.md
 │
 ├── 03-system-detailed-design/
-│   ├── use-case-diagram.puml
-│   ├── activity-diagram.puml
+│   ├── use-case-diagram.md        ← Mermaid
+│   ├── activity-diagram.md        ← Mermaid
 │   ├── system-architecture.md
-│   ├── class-diagram.puml
-│   ├── sequence-diagram.puml
+│   ├── dependencies-specification.md
+│   ├── class-diagram.md           ← Mermaid
+│   ├── sequence-diagram.md        ← Mermaid
 │   └── api-specification.yaml
 │
 ├── 04-quality-security-deployment/
 │   ├── test-plan.md
 │   ├── threat-model.md
+│   ├── accessibility-test-plan.md
 │   ├── database-schema.md
 │   ├── deployment-architecture.md
 │   └── cicd-pipeline.md
@@ -62,14 +67,15 @@ sdlc/
 │
 ├── 06-data-modeling-estimation/
 │   ├── data-dictionary.md
-│   ├── erd-diagram.puml
+│   ├── erd-diagram.md             ← Mermaid
 │   ├── migration-plan.md
 │   └── project-estimation.md
 │
 ├── 07-project-handoff/
 │   ├── handoff-checklist.md
 │   ├── knowledge-transfer-plan.md
-│   └── acceptance-signoff.md
+│   ├── acceptance-signoff.md
+│   └── post-launch-review.md
 │
 └── 08-change-request/
     ├── change-request-log.md
@@ -87,9 +93,9 @@ sdlc/
     ↓
 02 UI/UX Design
     ↓
-03 System & Detailed Design
-    ↓
-06 Data Modeling & Estimation  ← dapat paralel dengan 03
+03 System & Detailed Design ──┐
+    ↓                         │ (paralel)
+06 Data Modeling & Estimation ┘
     ↓
 04 Quality, Security & Deployment
     ↓
@@ -99,6 +105,8 @@ sdlc/
     ↓
 08 Change Request  ← digunakan kapan saja selama proyek
 ```
+
+> **Catatan Penomoran:** Fase 06 (Data Modeling) sengaja bernomor 06 karena merupakan ekstensi dari fase desain. Dalam urutan eksekusi nyata, 06 dijalankan **bersamaan** dengan 03 (System Design). Ikuti urutan panah di atas, bukan urutan nomor file.
 
 ### Independent (Per Kebutuhan)
 
@@ -130,72 +138,48 @@ sdlc/
 
 > Lihat juga: [`other/sdlc/SDLC_MAPPING.md`](../../other/sdlc/SDLC_MAPPING.md) untuk mapping lengkap skill → dokumen.
 
-## UML Standards
+## Diagram Standards
 
-**PENTING: Semua diagram UML WAJIB menggunakan PlantUML syntax.** Jangan gunakan Mermaid.
+**PENTING: Semua diagram WAJIB menggunakan Mermaid syntax** yang sudah didukung native oleh GitHub, GitLab, VS Code, dan Notion. Tidak perlu renderer eksternal.
 
-```plantuml
-@startuml
-' Example PlantUML
-actor User
-User -> System : Request
-System --> User : Response
-@enduml
+```mermaid
+flowchart LR
+    Actor([User]) --> UC1([Use Case])
+    UC1 -. "<<include>>" .-> UC2([Sub-Use Case])
 ```
+
+### Kenapa Mermaid?
+- ✅ Native support di GitHub/GitLab Markdown
+- ✅ Live preview di VS Code
+- ✅ Tidak butuh instalasi atau server eksternal
+- ✅ Version-control friendly (plain text)
 
 ## SDLC Workflow Sequence
 
-```plantuml
-@startuml
-skinparam backgroundColor #FEFEFE
-skinparam packageStyle rectangle
+```mermaid
+flowchart TD
+    A["01 Requirement Analysis"] --> B["02 UI/UX Design"]
+    B --> C["02b Stitch Design Context"]
+    C --> D["03 System & Detailed Design"]
+    D --> F["06 Data Modeling & Estimation"]
+    D --> F
+    F --> G["04 Quality, Security & Deployment"]
+    G --> H["05 Maintenance & Operations"]
+    H --> I["07 Project Handoff"]
 
-title SDLC Workflow Sequence
-legend right
-  | Phase | Color |
-  | Analysis | LightBlue |
-  | Design | LightGreen |
-  | Data & Estimation | Yellow |
-  | QA/Security | Orange |
-  | Operations | Pink |
-  | Handoff | LightGray |
-endlegend
+    CR["08 Change Request\n(kapan saja)"] -.-> A
+    CR -.-> D
+    CR -.-> G
 
-package "Analysis" #LightBlue {
-  :01 Requirement Analysis;
-}
-
-package "Design" #LightGreen {
-  :02 UI/UX Design;
-  :03 System Detailed Design;
-}
-
-package "Data & Estimation" #Yellow {
-  :06 Data Modeling & Estimation;
-}
-
-package "QA & Security" #Orange {
-  :04 Quality Security Deployment;
-}
-
-package "Operations" #Pink {
-  :05 Maintenance Operations;
-}
-
-package "Handoff" #LightGray {
-  :07 Project Handoff;
-}
-
-:01 Requirement Analysis --> :02 UI/UX Design
-:02 UI/UX Design --> :03 System Detailed Design
-:03 System Detailed Design --> :06 Data Modeling
-:06 Data Modeling --> :04 Quality Security
-:04 Quality Security --> :05 Maintenance
-:05 Maintenance --> :07 Project Handoff
-
-note right: 03 dan 06 dapat berjalan paralel
-
-@enduml
+    style A fill:#AED6F1
+    style B fill:#A9DFBF
+    style C fill:#A9DFBF
+    style D fill:#A9DFBF
+    style F fill:#F9E79F
+    style G fill:#F0B27A
+    style H fill:#F1948A
+    style I fill:#D5D8DC
+    style CR fill:#E8DAEF
 ```
 
 ## Related Technology Workflows
