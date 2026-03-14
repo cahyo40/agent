@@ -128,18 +128,6 @@
 
 - 📝 **Flutter Best Practices** - Comprehensive documentation update
 - ✨ **5 New Patterns Documented:**
-  - Pull-to-refresh + pagination combo for list screens
-  - Optimistic update pattern (toggle, delete with rollback)
-  - Shimmer loading skeletons (replace plain spinners)
-  - Connectivity check + offline fallback
-  - Dart 3 sealed class `Result<T>` (modern alternative to `dartz Either`)
-- 📄 **6 Files Updated:**
-  - `performance.md` - 4 new sections (#16-#19) with full Riverpod code examples
-  - `repository_pattern.md` - `Result<T>` sealed class + `guardAsync()` helper
-  - `senior-flutter-developer/SKILL.md` - Expanded best practices & production checklist
-  - `yo-flutter-dev/SKILL.md` - New UX Patterns section + 5 checklist items
-  - `vibe-coding-flutter.md` - 4 new EXAMPLES.md sections (#12-#15)
-  - `vibe-coding-yo-flutter.md` - 4 new EXAMPLES.md sections (#16-#19)
 - 📊 **+1,355 lines** of documentation & code examples added
 
 ---
@@ -231,7 +219,6 @@
 - 🆕 `appwrite-developer` - Appwrite BaaS (cloud & Docker self-host)
 - 🆕 `library-system-developer` - Library management systems
 - 🆕 `mit-cs-professor` - CS fundamentals education (Indonesian)
-- 🆕 `yo-flutter-dev` - yo.dart generator & YoUI components
 - 📝 Enhanced `senior-firebase-developer` with multi-language examples
 - 📝 Enhanced `senior-supabase-developer` with RLS patterns
 

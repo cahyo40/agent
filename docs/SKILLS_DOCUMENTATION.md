@@ -2,8 +2,8 @@
 
 > **Version:** 6.19.0
 > **Last Updated:** 2026-02-22
-> **Total Skills:** 280
-> **Total Workflows:** 10 collections (686+ files)
+> **Total Skills:** 279
+> **Total Workflows:** 10 collections (400+ files)
 
 ---
 
@@ -149,7 +149,6 @@ implementasi design dari Figma ke Flutter code
 | Skill | Description |
 |-------|-------------|
 | `senior-flutter-developer` | **Consolidated** - Includes state management, Firebase, Supabase, Web, Desktop, Testing, CI/CD, and Package Development as templates |
-| `yo-flutter-dev` | Flutter dengan yo.dart generator dan YoUI component library |
 | `senior-ios-developer` | Swift, SwiftUI, UIKit, Combine |
 | `senior-android-developer` | Kotlin, Jetpack Compose, MVVM |
 | `react-native-developer` | React Native, Expo, cross-platform |
@@ -299,7 +298,7 @@ implementasi design dari Figma ke Flutter code
 - 📁 **New Directory:** `vibe-coding-guides/`
   - `FLUTTER_VIBE_CODING.md` - Vibe coding playbook for Flutter and YoDev
   - `GOLANG_VIBE_CODING.md` - Vibe coding playbook for Golang Backend
-- 🧹 **Cleanup:** Moved vibe coding documentation out of `yo-flutter-vibe-coder` and `yo-flutter-dev` skills to the new root directory.
+- 🧹 **Cleanup:** Moved vibe coding documentation to the new root directory.
 
 ### v6.19.0 (2026-02-22)
 
@@ -365,9 +364,7 @@ implementasi design dari Figma ke Flutter code
 - 📄 `performance.md` - Added 4 new sections (#16-#19) with full code examples
 - 📄 `repository_pattern.md` - Added Result sealed class + `guardAsync()` helper
 - 📄 `senior-flutter-developer/SKILL.md` - Expanded best practices & production checklist
-- 📄 `yo-flutter-dev/SKILL.md` - Added UX Patterns section + checklist items
 - 📄 `vibe-coding-flutter.md` - Added 4 new EXAMPLES.md sections (#12-#15)
-- 📄 `vibe-coding-yo-flutter.md` - Added 4 new EXAMPLES.md sections (#16-#19)
 
 ### v6.11.0 (2026-02-09)
 
@@ -397,7 +394,6 @@ implementasi design dari Figma ke Flutter code
   - Backend Integration: `firebase.md`, `supabase.md`
   - Platform: `ios.md`, `android.md`, `web.md`, `desktop.md`, `platform_channels.md`
   - Tooling: `testing.md`, `ci_cd.md`, `package_development.md`
-- ✅ Kept `yo-flutter-dev` as separate specialized skill
 - 📉 Skill count reduced from 309 to 300 (consolidation)
 
 ### v6.8.0 (2026-02-07)

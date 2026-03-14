@@ -7,7 +7,7 @@
 ![Version](https://img.shields.io/badge/Version-6.20.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 280 skills + 12 workflow collections (700+ files) untuk memperluas kemampuan AI Agent**
+**Koleksi 279 skills + 10 workflow collections (500+ files) untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -17,8 +17,8 @@
 
 ## ✨ Features
 
-- 🤖 **280 Specialized Skills** - Dari Flutter hingga AI/ML
-- 📋 **12 Workflow Collections (700+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
+- 🤖 **279 Specialized Skills** - Dari Flutter hingga AI/ML
+- 📋 **10 Workflow Collections (500+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
@@ -253,8 +253,6 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 | `flutter-bloc` | 104 | Flutter + BLoC + get_it + injectable |
 | `flutter-getx` | 108 | Flutter + GetX (all-in-one, no code gen) |
 | `flutter-riverpod` | 47 | Flutter + Riverpod + Clean Architecture |
-| `flutter-youi-getx` | 108 | Flutter + GetX + YoUI component library |
-| `flutter-youi-riverpod` | 47 | Flutter + Riverpod + YoUI component library |
 | `flutter-ui-kit` | 8 | 📋 Flutter UI Kit planning — PRD, UI/UX, technical spec, components, GTM, roadmap |
 | `flutter-ui-kit-vibe` | 8 | ⚡ Flutter UI Kit execution — init, add component/theme/locale, quality check, publish |
 | `golang-backend` | 76 | Go + Gin/Fiber + GORM + Clean Architecture |
@@ -286,8 +284,6 @@ agents/
 │   ├── flutter-bloc/          # 104 workflow files
 │   ├── flutter-getx/          # 108 workflow files
 │   ├── flutter-riverpod/      # 47 workflow files
-│   ├── flutter-youi-getx/     # 108 workflow files (YoUI + GetX)
-│   ├── flutter-youi-riverpod/ # 47 workflow files (YoUI + Riverpod)
 │   ├── flutter-ui-kit/        # 8 files — Planning workflows (PRD → Roadmap)
 │   ├── flutter-ui-kit-vibe/   # 8 files — Execution workflows (init → publish)
 │   ├── golang-backend/        # 76 workflow files
