@@ -1,55 +1,122 @@
 # Flutter UI Kit Workflow
 
-> **Produk: Flutter UI Kit** — Component library yang dijual ke developer Flutter.
-> Bukan app, bukan SaaS, bukan jasa. Yang berubah per project adalah *tema, domain, dan scope*.
+> **Flexible Workflow** — Build UI Kit Package, Showcase App, atau Hybrid approach.
+> Pilih mode yang sesuai dengan goal kamu: passive income, business building, atau keduanya.
 
-Workflow SDLC lengkap untuk membuat, mendesain, membangun, dan meluncurkan **Flutter UI Kit** sebagai produk komersial. Cukup berikan prompt sederhana — agen akan menginterpretasi, memperkaya, dan mengeksekusi seluruh pipeline.
+Workflow SDLC lengkap untuk membuat, mendesain, membangun, dan meluncurkan produk Flutter berbasis UI. Cukup berikan prompt sederhana — agen akan menginterpretasi, memperkaya, dan mengeksekusi seluruh pipeline sesuai mode yang dipilih.
+
+---
+
+## 🎯 Pilih Mode Anda
+
+**START HERE!** Pilih mode sebelum melanjutkan ke Phase 1.
+
+### Mode A: UI Kit Package 📦 (Recommended untuk Developer)
+
+**Apa:** Component library yang dijual ke developer Flutter  
+**Output:** Package (pub.dev, Gumroad)  
+**Revenue:** $39-299 per license (one-time + recurring)  
+**Best For:** Passive income, global market, minimal support
+
+```
+Prompt: "Saya ingin UI Kit e-commerce modern minimalis"
+```
+
+### Mode B: Showcase App 📱 (Untuk Business Builder)
+
+**Apa:** Aplikasi lengkap yang bisa langsung dijalankan  
+**Output:** Flutter app ( runnable)  
+**Revenue:** Template license (Rp 2-5jt) atau SaaS (Rp 100-200K/bulan)  
+**Best For:** Build business, recurring revenue, local market
+
+```
+Prompt: "Saya ingin aplikasi POS bengkel modern minimalis"
+```
+
+### Mode C: Hybrid 🎯 (RECOMMENDED - Best of Both)
+
+**Apa:** UI Kit + Showcase App (UI Kit sebagai demo)  
+**Output:** Package + App  
+**Revenue:** Diversified (license + template/SaaS)  
+**Best For:** Developer yang mau credibility + passive income
+
+```
+Prompt: "Saya ingin UI Kit bengkel POS dengan showcase app untuk demo"
+```
+
+### Quick Decision (30 seconds)
+
+Jawab 4 pertanyaan:
+
+1. **Goal utama?** Passive income → A | Build business → B | Both → C
+2. **Siap jualan aktif?** Tidak → A | Ya → B | Mau tapi prefer passive → C
+3. **Revenue model?** One-time → A | Recurring → B | Both → C
+4. **Support capacity?** Minimal → A | High → B | Medium → C
+
+**Kebanyakan A?** → Mode A | **Kebanyakan B?** → Mode B | **Mixed/C?** → Mode C
+
+👉 **Detailed guide:** [`00_mode_selection.md`](00_mode_selection.md)
 
 ---
 
 ## Cara Pakai (Quick Start)
 
-### Contoh Prompt Sederhana
+### Step 1: Pilih Mode
+Lihat section "🎯 Pilih Mode Anda" di atas atau baca [`00_mode_selection.md`](00_mode_selection.md)
+
+### Step 2: Submit Prompt
+
+**Mode A (UI Kit):**
 ```
 "Saya ingin UI Kit e-commerce modern minimalis"
 ```
 
-Agen akan otomatis:
-1. **Interpretasi** → UI Kit bertema e-commerce, gaya modern minimalis
-2. **PRD** → Analisis market UI Kit, personas developer, pricing $39/$99/$299
-3. **UI/UX** → Generate showcase screens via Stitch AI, extract DESIGN.md
-4. **Technical** → Setup package, tokens dari DESIGN.md, 16 themes
-5. **Components** → Build 13 P0 + domain components (ProductCard, CartItem, dll)
-6. **Launch** → pub.dev, Gumroad, landing page, Product Hunt
-7. **Track** → Sprint planning, milestones, risk management
+**Mode B (Showcase App):**
+```
+"Saya ingin aplikasi POS bengkel modern minimalis"
+```
 
-### Contoh Prompt Lainnya
+**Mode C (Hybrid):**
 ```
-"UI Kit fintech dark premium"
-"UI Kit social media colorful"
-"UI Kit dashboard enterprise"
-"UI Kit general purpose"     ← default, multi-domain
+"Saya ingin UI Kit bengkel POS dengan showcase app untuk demo"
 ```
+
+### Step 3: Workflow Executes
+
+Agen akan otomatis:
+1. **Mode Selection** → Konfirmasi mode yang dipilih
+2. **Interpretasi** → Parse 5 dimensi (domain, style, scope, templates, platform)
+3. **PRD** → Analisis market sesuai mode (developer vs end-user personas)
+4. **UI/UX** → Generate screens via Stitch AI, extract DESIGN.md
+5. **Technical** → Setup structure sesuai mode (package vs app)
+6. **Components** → Build 13 P0 + domain components
+7. **Launch** → Mode A: pub.dev/Gumroad | Mode B: Direct sales | Mode C: Both
+8. **Track** → Sprint planning, milestones, risk management
 
 ---
 
-## Konsep Kunci: 5 Dimensi UI Kit
+## Konsep Kunci: 5 Dimensi + Mode Selection
 
-Setiap prompt di-parse menjadi 5 dimensi. Yang tidak disebutkan user = auto-filled:
+**Step 0: Mode Selection** (NEW!)
+- Mode A: UI Kit Package → Developer personas, license pricing
+- Mode B: Showcase App → End-user personas, SaaS pricing  
+- Mode C: Hybrid → Both personas, diversified revenue
+
+**5 Dimensi** (same untuk semua mode, context berbeda):
 
 | # | Dimensi | Contoh | Default |
 |---|---------|--------|---------|
 | 1 | **Target Domain** | e-commerce, fintech, social, dashboard | General-purpose |
 | 2 | **Gaya Desain** | modern minimalis, dark premium, glassmorphism | Modern clean |
-| 3 | **Scope Kit** | MVP (30 komponen), Full (50+), Enterprise | MVP |
+| 3 | **Scope** | MVP (30 komponen), Full (50+), Enterprise | MVP |
 | 4 | **Template Screens** | Login, Dashboard, Cart, Profile | Login, Dashboard, Settings |
 | 5 | **Platform** | Mobile-first, Web, Desktop, Responsive | Mobile-first |
 
-Dimensi ini mengalir ke SEMUA phase:
+Dimensi ini mengalir ke SEMUA phase dengan context berbeda per mode:
 
 ```
-User Prompt → Parse 5 Dimensi → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
-                                  PRD       UI/UX     Technical  Components  Launch    Track
+User Prompt → Mode Selection → 5 Dimensi → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
+              (A/B/C)                      (mode-aware PRD & execution)
 ```
 
 ---
@@ -75,18 +142,20 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 
 ## Detail per Phase
 
-### Phase 1: PRD Analysis
+### Phase 1: PRD Analysis (Mode-Aware)
 **File:** `01_prd_analysis.md`
 **Output Folder:** `flutter-ui-kit/01-prd-analysis/`
 
-| Output File | Isi |
-|-------------|-----|
-| `market-analysis.md` | Market size, kompetitor UI Kit (GetWidget, Shadcn Flutter, VelocityX) |
-| `user-personas.md` | Developer personas (freelancer, agency CTO, junior dev) |
-| `requirements-validation.md` | Component & theme requirements, prioritas P0/P1/P2 |
-| `pricing-strategy.md` | License tiers: Individual $39 / Team $99 / Enterprise $299 |
+**Mode Differences:**
 
-**Key:** Menginterpretasi prompt sederhana → output kaya. Produk = SELALU UI Kit.
+| Output File | Mode A (UI Kit) | Mode B (Showcase App) |
+|-------------|-----------------|----------------------|
+| `market-analysis.md` | UI Kit competitors (GetWidget, Shadcn) | App competitors (local POS) |
+| `user-personas.md` | Developer personas | End-user personas (bengkel owner) |
+| `requirements-validation.md` | Component requirements | Feature requirements |
+| `pricing-strategy.md` | License: $39/$99/$299 | Template/SaaS: Rp 2-5jt / Rp 100-200K |
+
+**Key:** Mode menentukan target market, personas, dan revenue model.
 
 ---
 
@@ -119,33 +188,41 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 
 ---
 
-### Phase 3: Technical Implementation
+### Phase 3: Technical Implementation (Mode-Specific Structure)
 **File:** `03_technical_implementation.md`
 **Output Folder:** `flutter-ui-kit/03-technical-implementation/`
 
-| Output File | Isi |
-|-------------|-----|
-| `package-structure.md` | Directory layout, pubspec.yaml (minimal curated deps) |
-| `dependencies.md` | Dependency policy (google_fonts, intl, flutter_localizations) |
-| `design-tokens.md` | Colors (8 palettes), typography (Google Fonts), spacing, radius, shadows |
-| `theme-system.md` | ThemeConfig class, 16 pre-built themes, ThemeProvider |
-| `component-api-spec.md` | 13+ P0 component API definitions |
-| `testing-strategy.md` | Coverage targets (>85%), golden tests, CI/CD |
+**Mode A (UI Kit Package):**
+```
+lib/
+├── src/
+│   ├── components/    # UI components
+│   ├── tokens/        # Design tokens
+│   └── theme/         # Theme system
+└── example/           # Demo kecil
+pubspec.yaml (package)
+```
 
-**Key:** Translate `DESIGN.md` → Flutter `ThemeData`. Values must match 1:1.
+**Mode B (Showcase App):**
+```
+lib/
+├── main.dart          # Entry point
+├── features/          # Feature modules
+├── shared/            # Shared widgets
+└── data/              # Dummy data
+pubspec.yaml (app)
+```
+
+**Mode C (Hybrid):**
+- Week 1-8: Build Mode A structure
+- Week 9-12: Build Mode B structure (reuses UI Kit)
 
 **Dependencies (MINIMAL curated):**
-- `google_fonts` — typography premium (Inter, Outfit, Plus Jakarta Sans)
-- `intl` — date, number, currency formatting + ARB translations
-- `flutter_localizations` (SDK) — multi-language support (EN, ID, ES, JA, ZH)
-- **DILARANG:** state management (Riverpod/BLoC/GetX), database, HTTP clients
-
-**Showcase App Architecture (di `example/`):**
-- **Clean Architecture:** domain → data → presentation layers
-- **Dummy Data:** Hardcoded lists (NO database — Hive/Sqflite/Isar)
-- **State Management:** Built-in only (`ChangeNotifier` + `ValueNotifier`)
-- **Navigation:** `go_router` (satu-satunya third-party di example app)
-- **TIDAK BOLEH:** Riverpod, BLoC, GetX — supaya compatible dengan semua pembeli
+- `google_fonts` — typography premium
+- `intl` — i18n support
+- `flutter_localizations` (SDK) — multi-language
+- **Mode A only:** DILARANG state management, database di core package
+- **Mode B only:** Boleh Riverpod/BLoC untuk state management
 
 ---
 
@@ -183,19 +260,28 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 
 ---
 
-### Phase 5: GTM Launch
+### Phase 5: GTM Launch (Mode-Specific Channels)
 **File:** `05_gtm_launch.md`
 **Output Folder:** `flutter-ui-kit/05-gtm-launch/`
 
-| Output File | Isi |
-|-------------|-----|
-| `distribution-channels.md` | pub.dev (free tier), Gumroad (paid), GitHub, Landing Page |
-| `launch-timeline.md` | Pre-launch W6-7, Launch Week W8, Post-launch W9+ |
-| `marketing-content.md` | 4 content pillars, calendar, Twitter/blog templates |
-| `sales-funnel.md` | Awareness → Interest → Consideration → Conversion → Retention |
-| `metrics-tracking.md` | KPIs, revenue projections, analytics stack |
+**Mode A (UI Kit Package):**
+- **Channels:** pub.dev (free tier), Gumroad (paid), Product Hunt
+- **Marketing:** Developer communities (Twitter, Discord, Reddit)
+- **Pricing:** $39 Individual / $99 Team / $299 Enterprise
+- **Target:** Flutter developer
 
-**Key:** Target buyer = developer Flutter. Pricing dari Phase 1: $39/$99/$299.
+**Mode B (Showcase App):**
+- **Channels:** Direct sales, local marketing, demo presentations
+- **Marketing:** Bengkel associations, business networks
+- **Pricing:** Rp 2-5jt template / Rp 100-200K/bulan SaaS
+- **Target:** Pemilik bengkel (end-user)
+
+**Mode C (Hybrid):**
+- **Phase 1:** Launch UI Kit (Mode A channels)
+- **Phase 2:** Launch Showcase App as live demo
+- **Cross-promote:** "Built with [UI Kit Name]" in demo app
+
+**Key:** Mode menentukan go-to-market strategy dan pricing.
 
 ---
 
@@ -215,14 +301,15 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 
 ---
 
-## Timeline Overview
+## Timeline Overview (Mode-Specific)
 
+**Mode A (UI Kit Package) - 8 weeks:**
 ```
 ┌──────────────────────────────────────────────────────┐
 │  WEEK 1-2: FOUNDATION                                │
-│  ├─ Phase 1: PRD Analysis                            │
+│  ├─ Phase 1: PRD Analysis (developer personas)       │
 │  ├─ Phase 2: UI/UX Prototyping (Stitch AI)           │
-│  └─ Phase 3: Technical Implementation (tokens+themes)│
+│  └─ Phase 3: Technical (package structure)           │
 ├──────────────────────────────────────────────────────┤
 │  WEEK 3-4: MVP (P0 Components)                       │
 │  └─ Phase 4: 13 core components                      │
@@ -240,7 +327,48 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 └──────────────────────────────────────────────────────┘
 ```
 
-## Milestones
+**Mode B (Showcase App) - 8-12 weeks:**
+```
+┌──────────────────────────────────────────────────────┐
+│  WEEK 1-2: FOUNDATION                                │
+│  ├─ Phase 1: PRD (end-user personas)                 │
+│  ├─ Phase 2: UI/UX (Stitch AI)                       │
+│  └─ Phase 3: Technical (app structure)               │
+├──────────────────────────────────────────────────────┤
+│  WEEK 3-6: CORE FEATURES                             │
+│  └─ Build main screens + state management            │
+├──────────────────────────────────────────────────────┤
+│  WEEK 7-8: POLISH + DEMO                             │
+│  ├─ Testing, deployment setup                        │
+│  └─ Demo data, user guide                            │
+├──────────────────────────────────────────────────────┤
+│  WEEK 9+: SALES                                      │
+│  ├─ Direct outreach, demo presentations              │
+│  └─ Customer onboarding                              │
+└──────────────────────────────────────────────────────┘
+```
+
+**Mode C (Hybrid) - 12-16 weeks:**
+```
+┌──────────────────────────────────────────────────────┐
+│  WEEK 1-8: UI KIT PACKAGE (Mode A)                   │
+│  └─ Complete UI Kit with 23+ components              │
+├──────────────────────────────────────────────────────┤
+│  WEEK 9-12: SHOWCASE APP                             │
+│  ├─ Reuse UI Kit components                          │
+│  ├─ Build domain screens                             │
+│  └─ Deploy as live demo                              │
+├──────────────────────────────────────────────────────┤
+│  WEEK 13+: DUAL MARKETING                            │
+│  ├─ UI Kit: Developer marketing                      │
+│  ├─ Showcase: Demo for credibility                   │
+│  └─ Cross-promote both                               │
+└──────────────────────────────────────────────────────┘
+```
+
+## Milestones (Mode-Specific)
+
+**Mode A (UI Kit Package):**
 
 | # | Milestone | Week | Acceptance Criteria |
 |---|-----------|------|---------------------|
@@ -249,6 +377,26 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 | M3 | Core | W6 | 15-20 P1 components, >85% coverage |
 | M4 | Polish | W7 | Full docs, >85% overall coverage, example app polished |
 | M5 | Launch | W8 | pub.dev + Gumroad live, first sale made |
+
+**Mode B (Showcase App):**
+
+| # | Milestone | Week | Acceptance Criteria |
+|---|-----------|------|---------------------|
+| M1 | Foundation | W2 | DESIGN.md + app structure ready |
+| M2 | MVP | W6 | Core features working, dummy data |
+| M3 | Polish | W8 | All screens complete, tested |
+| M4 | Demo | W10 | Live demo deployed, ready for sales |
+| M5 | First Sale | W12 | First paying customer |
+
+**Mode C (Hybrid):**
+
+| # | Milestone | Week | Acceptance Criteria |
+|---|-----------|------|---------------------|
+| M1 | UI Kit MVP | W8 | 13 P0 components, pub.dev ready |
+| M2 | Showcase App | W12 | Demo app deployed, uses UI Kit |
+| M3 | Dual Launch | W14 | Both products live |
+| M4 | Cross-Promote | W16 | Demo drives UI Kit sales |
+| M5 | Scale | W20+ | Diversified revenue streams |
 
 ---
 
@@ -265,7 +413,9 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 
 ---
 
-## Budget Estimate
+## Budget Estimate (Mode-Specific)
+
+**Mode A (UI Kit Package):**
 
 | Category | Amount |
 |----------|--------|
@@ -277,6 +427,28 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 | **Total (6 months)** | **~$1,840** |
 
 **Revenue Target:** $13,650 dalam 6 bulan (100 customers × avg $39 + upgrades)
+
+**Mode B (Showcase App):**
+
+| Category | Amount |
+|----------|--------|
+| Domain + Hosting (6 months) | ~$140 |
+| Demo deployment (6 months) | ~$180 |
+| Sales materials | ~$200 |
+| Local marketing | ~$500 |
+| **Total (6 months)** | **~$1,020** |
+
+**Revenue Target:** Rp 50-100 juta dalam 6 bulan (10-20 customers)
+
+**Mode C (Hybrid):**
+
+| Category | Amount |
+|----------|--------|
+| UI Kit marketing | ~$1,840 |
+| Showcase App demo | ~$1,020 |
+| **Total (6 months)** | **~$2,860** |
+
+**Revenue Target:** $20-40K (UI Kit) + Rp 50-100jt (Template) dalam 6 bulan
 
 ---
 
@@ -294,9 +466,33 @@ Phase 6: Roadmap Execution             ← berjalan sepanjang project
 
 ## Pre-Project Checklist
 
+**Mode Selection (CRITICAL):**
+- [ ] Read [`00_mode_selection.md`](00_mode_selection.md)
+- [ ] Choose mode: A (UI Kit) / B (Showcase) / C (Hybrid)
+- [ ] Note mode in project documentation
+
+**Common Requirements:**
 - [ ] Flutter SDK >=3.10.0 installed
 - [ ] Development environment ready (VS Code / Android Studio)
 - [ ] GitHub account for repository + CI/CD
 - [ ] Stitch AI MCP tools accessible
+
+**Mode-Specific:**
+
+**Mode A (UI Kit):**
 - [ ] Budget approved (~$1,840 / 6 months)
 - [ ] Timeline committed (8 weeks for MVP + launch)
+- [ ] Marketing plan (developer communities)
+
+**Mode B (Showcase App):**
+- [ ] Domain knowledge (bengkel, clinic, etc.)
+- [ ] Sales readiness (direct outreach)
+- [ ] Support capacity (high touch)
+- [ ] Budget approved (~$1,020 / 6 months)
+- [ ] Timeline committed (12 weeks for demo)
+
+**Mode C (Hybrid):**
+- [ ] All Mode A requirements
+- [ ] Extra 4-6 weeks for Phase 2
+- [ ] Ability to manage 2 products
+- [ ] Budget approved (~$2,860 / 6 months)

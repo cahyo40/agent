@@ -1,38 +1,118 @@
 ---
-description: PRD analysis untuk Flutter UI Kit commercial product. Menghasilkan output kaya bahkan dari prompt sederhana.
+description: PRD analysis untuk Flutter UI Kit. Support 3 mode: UI Kit Package, Showcase App, atau Hybrid. Menghasilkan output kaya bahkan dari prompt sederhana.
 ---
 # Workflow: PRD Analysis - Flutter UI Kit
 
 ## Overview
-Workflow ini menganalisis dan memvalidasi Product Requirements Document (PRD) untuk produk **Flutter UI Kit**. Produk yang dihasilkan SELALU berupa **component library / UI Kit** yang dijual ke developer — bukan aplikasi end-user.
 
-**CRITICAL:** Jika user memberikan prompt sederhana, agen harus menginterpretasinya dalam konteks UI Kit. Contoh: "saya ingin aplikasi e-commerce modern minimalis" → berarti **UI Kit bertema e-commerce dengan gaya modern minimalist**, bukan membuat app e-commerce itu sendiri.
+Workflow ini menganalisis dan memvalidasi Product Requirements Document (PRD) untuk produk Flutter. **Mode yang dipilih akan menentukan output.**
+
+**3 Mode Tersedia:**
+
+| Mode | Product | Target Buyer | Output |
+|------|---------|--------------|--------|
+| **Mode A** | UI Kit Package | Developer Flutter | Component library (pub.dev) |
+| **Mode B** | Showcase App | End-user (business owner) | Aplikasi lengkap (runnable) |
+| **Mode C** | Hybrid | Both | UI Kit + Showcase App |
+
+**CRITICAL:** Mode HARUS dipilih sebelum memulai Phase 1. Lihat [`00_mode_selection.md`](00_mode_selection.md) untuk decision guide.
 
 ## Output Location
+
 **Base Folder:** `flutter-ui-kit/01-prd-analysis/`
 
-**Output Files:**
-- `market-analysis.md` - Market Size, Competitor Analysis (UI Kit market)
-- `user-personas.md` - Developer Personas with Jobs-to-be-Done
-- `requirements-validation.md` - Validated Component & Theme Requirements
-- `pricing-strategy.md` - License Tiers and Revenue Model
+**Output Files (Mode-Aware):**
+
+| File | Mode A (UI Kit) | Mode B (Showcase) | Mode C (Hybrid) |
+|------|-----------------|-------------------|-----------------|
+| `market-analysis.md` | UI Kit competitors | App competitors | Both analyses |
+| `user-personas.md` | Developer personas | End-user personas | Both personas |
+| `requirements-validation.md` | Component requirements | Feature requirements | Both |
+| `pricing-strategy.md` | License: $39-299 | Template/SaaS pricing | Both pricing |
 
 ## Prerequisites
+
+- **Mode selected:** Read [`00_mode_selection.md`](00_mode_selection.md)
 - PRD draft di `docs/flutter-ui-kit/01_PRD.md` (jika tidak ada, agen auto-generate)
 - Market research data (jika tidak ada, agen generate dari industry knowledge)
 
 ---
 
-## Agent Behavior: Handling Simple Prompts
+## Agent Behavior: Mode Selection + Prompt Interpretation
 
-**GOLDEN RULE:** Agen TIDAK BOLEH bertanya "bisa jelaskan lebih detail?" sebelum mulai bekerja. Agen harus menginterpretasi, memperkaya, dan mengisi gap secara otomatis.
+**GOLDEN RULE:** Agen TIDAK BOLEH bertanya "bisa jelaskan lebih detail?" sebelum mulai bekerja. Agen harus:
+1. Konfirmasi mode yang dipilih (A/B/C)
+2. Menginterpretasi prompt sesuai mode
+3. Memperkaya dan mengisi gap secara otomatis
 
-### Prinsip Utama: PRODUK = SELALU UI KIT
+### Step 0: Mode Confirmation (WAJIB PERTAMA)
 
-Apapun prompt user, produknya SELALU Flutter UI Kit. Yang berubah berdasarkan prompt adalah:
-- **Target Domain**: App domain apa yang didukung oleh UI Kit ini (e-commerce, fintech, dll)
-- **Gaya Desain**: Aesthetic dari komponen-komponen di dalam kit
-- **Template Screens**: Screen template apa yang disertakan dalam showcase app
+**Sebelum interpretasi, konfirmasi mode:**
+
+```
+IF mode NOT selected:
+  → Prompt user to read 00_mode_selection.md
+  → Ask user to choose Mode A / B / C
+  → DO NOT proceed until mode is selected
+```
+
+**Mode Selection Impact:**
+
+| Aspect | Mode A (UI Kit) | Mode B (Showcase) | Mode C (Hybrid) |
+|--------|-----------------|-------------------|-----------------|
+| **Market Analysis** | UI Kit market | App market | Both markets |
+| **Personas** | Developer | End-user | Both |
+| **Competitors** | GetWidget, Shadcn | Local POS apps | Both |
+| **Pricing** | License $39-299 | Template/SaaS | Both streams |
+| **Requirements** | Components | Features | Both |
+| **Output Structure** | Package | App | Both |
+
+### Step 1: Prompt Interpretation (Mode-Aware)
+
+**Mode A (UI Kit Package):**
+
+```yaml
+# Prompt: "saya ingin aplikasi e-commerce modern minimalis"
+produk: "Flutter UI Kit — E-Commerce Edition"
+target_domain: "E-Commerce"
+pembeli_kit: "Flutter developer yang membangun app e-commerce"
+kompetitor: [GetWidget, Shadcn Flutter, VelocityX]
+persona: "Budi, 28 thn, Flutter freelancer"
+pricing: "$39 Individual / $99 Team / $299 Enterprise"
+```
+
+**Mode B (Showcase App):**
+
+```yaml
+# Prompt: "saya ingin aplikasi POS bengkel modern minimalis"
+produk: "Bengkel POS — Showcase App"
+target_domain: "Automotive Repair Shop"
+pembeli_app: "Pemilik bengkel"
+kompetitor: [Local POS apps, manual processes]
+persona: "Budi, 42 thn, pemilik bengkel"
+pricing: "Rp 3jt template / Rp 150K/bulan SaaS"
+```
+
+**Mode C (Hybrid):**
+
+```yaml
+# Prompt: "saya ingin UI Kit bengkel POS dengan showcase app"
+produk_primary: "Bengkel UI Kit"
+produk_secondary: "Bengkel POS Showcase App"
+target_domain: "Automotive Repair Shop"
+pembeli_kit: "Flutter developer"
+pembeli_app: "Pemilik bengkel (via demo)"
+kompetitor: [GetWidget (UI Kit), Local POS (App)]
+persona_kit: "Rizky, 28 thn, Flutter freelancer"
+persona_app: "Budi, 42 thn, pemilik bengkel"
+pricing: "$39-299 (UI Kit) + Rp 3jt/150K (App)"
+```
+
+### Prinsip Utama: PRODUK BERDASARKAN MODE
+
+**Mode A:** Produk = SELALU UI Kit (component library)  
+**Mode B:** Produk = SELALU Showcase App (aplikasi lengkap)  
+**Mode C:** Produk = UI Kit + Showcase App (dual product)
 
 ### Step 0: Prompt Interpretation Layer (WAJIB PERTAMA)
 

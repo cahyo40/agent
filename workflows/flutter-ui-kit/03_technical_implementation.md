@@ -1,56 +1,86 @@
 ---
-description: Technical Implementation untuk Flutter UI Kit package. Translate DESIGN.md ke Flutter ThemeData, tokens, dan component APIs.
+description: Technical Implementation untuk Flutter UI Kit. Support 3 mode: UI Kit Package, Showcase App, atau Hybrid.
 ---
 # Workflow: Technical Implementation - Flutter UI Kit
 
 ## Overview
-Workflow ini memandu implementasi teknis **Flutter UI Kit package** — mulai dari setup package, design tokens, theme system, hingga component API specifications. Input utamanya adalah `DESIGN.md` dari Phase 2.
 
-**CRITICAL:** Output dari fase ini SELALU berupa **Flutter package** (library yang di-publish ke pub.dev), BUKAN berupa aplikasi standalone. Semua code harus dirancang untuk dikonsumsi oleh developer lain via `import 'package:flutter_ui_kit/flutter_ui_kit.dart';`.
+Workflow ini memandu implementasi teknis produk Flutter. **Mode yang dipilih akan menentukan output structure.**
+
+**Mode Selection Impact:**
+
+| Mode | Product Type | Output Structure | pubspec.yaml |
+|------|-------------|------------------|--------------|
+| **Mode A** | UI Kit Package | `lib/src/components/` | package |
+| **Mode B** | Showcase App | `lib/features/` + `main.dart` | app |
+| **Mode C** | Hybrid | Both structures | Both files |
+
+**CRITICAL:** Mode HARUS sudah dipilih di Phase 1. Structure berbeda berdasarkan mode.
 
 ## Output Location
+
 **Base Folder:** `flutter-ui-kit/03-technical-implementation/`
 
-**Output Files:**
-- `package-structure.md` - Package Directory Structure and Organization
-- `dependencies.md` - `pubspec.yaml` constraints (zero third-party in core)
-- `design-tokens.md` - Complete Design Tokens Implementation (from DESIGN.md)
-- `theme-system.md` - Theme Config Data Models (`AppThemeConfig`, `AppColorPalette`)
-- `component-api-spec.md` - Component API Patterns and Specifications
-- `testing-strategy.md` - Testing Approach (`flutter_test`, `golden_toolkit`)
+**Output Files (Mode-Aware):**
+
+| File | Mode A (UI Kit) | Mode B (Showcase) | Mode C (Hybrid) |
+|------|-----------------|-------------------|-----------------|
+| `package-structure.md` | Package layout | App layout | Both layouts |
+| `dependencies.md` | Minimal deps | Full app deps | Both |
+| `design-tokens.md` | Same (from DESIGN.md) | Same | Same |
+| `theme-system.md` | ThemeConfig | ThemeData | Both |
+| `component-api-spec.md` | Component APIs | Screen APIs | Both |
+| `testing-strategy.md` | Widget tests | Integration tests | Both |
 
 ## Prerequisites
-- PRD Analysis selesai (`01_prd_analysis.md` → 5 dimensi UI Kit ter-extract)
+
+- **Mode selected:** Confirmed in Phase 1
+- PRD Analysis selesai (`01_prd_analysis.md` → mode + requirements)
 - UI/UX Prototyping selesai (`02_ui_ux_prototyping.md` → `DESIGN.md` ready)
 - Component priorities defined (P0/P1/P2 dari Phase 1)
 - Flutter SDK >=3.10.0 installed
 
 ---
 
-## Agent Behavior: Context Chain
+## Agent Behavior: Mode-Specific Implementation
 
-**GOLDEN RULE:** Agen TIDAK BOLEH mengabaikan output dari Phase 1 dan 2. Semua keputusan teknis HARUS di-drive oleh `DESIGN.md` dan dimensi UI Kit, bukan dari asumsi baru.
+**GOLDEN RULE:** Struktur teknis HARUS sesuai mode yang dipilih di Phase 1. Jangan mix structure!
 
-### Prinsip Utama: OUTPUT = SELALU FLUTTER PACKAGE
+### Prinsip Utama: OUTPUT BERDASARKAN MODE
 
-Semua code yang dihasilkan adalah untuk **package/library**, bukan app:
-- Public API via single entry point (`flutter_ui_kit.dart`)
-- **MINIMAL curated dependencies** — hanya yang benar-benar dibutuhkan:
-  - `google_fonts` — typography premium
-  - `intl` — internationalization (date/number/currency formatting)
-  - `flutter_localizations` (Flutter SDK) — multi-language support
-- Dev dependencies ok (flutter_test, mocktail, golden_toolkit)
-- Semua komponen harus theme-aware (menggunakan `Theme.of(context)`)
-- **DILARANG:** state management packages (Riverpod/BLoC/GetX), database (Hive/Sqflite/Isar), HTTP clients
+**Mode A (UI Kit Package):**
+```
+Output: Flutter package untuk developer
+Structure: lib/src/components/
+Constraint: DILARANG state management, database di core package
+Dependencies: Minimal (google_fonts, intl, flutter_localizations)
+Example: Small demo app di folder example/
+```
+
+**Mode B (Showcase App):**
+```
+Output: Flutter app runnable
+Structure: lib/features/ (feature-first) + main.dart
+Constraint: Boleh state management (Riverpod/BLoC)
+Dependencies: Sesuai kebutuhan app (boleh Riverpod, go_router, dll)
+Data: Dummy/hardcoded (NO database untuk demo)
+```
+
+**Mode C (Hybrid):**
+```
+Phase 1 (Week 1-8): Build Mode A structure
+Phase 2 (Week 9-12): Build Mode B structure (reuses UI Kit)
+Result: UI Kit package + Showcase app
+```
 
 ### Input dari Phase Sebelumnya
 
 ```
-Phase 1 (PRD) → 5 Dimensi UI Kit (domain, gaya, scope, templates, platform)
+Phase 1 (PRD) → Mode Selection (A/B/C)
                            ↓
 Phase 2 (UI/UX) → DESIGN.md (colors, typography, spacing, radius, shadows)
                            ↓
-Phase 3 (Technical) → ThemeData + Tokens + Component APIs
+Phase 3 (Technical) → Structure + Code (MODE-DEPENDENT)
 ```
 
 #### DESIGN.md → ThemeData Translation Rules
@@ -89,30 +119,173 @@ lib/src/components/
 
 ## Deliverables
 
-### 1. Package Structure
+### 1. Package Structure (Mode-Specific)
 
-**Description:** Setup package directory structure mengikuti Flutter/Dart best practices untuk distribusi via pub.dev.
+**Description:** Setup directory structure sesuai mode yang dipilih.
 
 **Recommended Skills:** `senior-flutter-developer`
 
-**Instructions:**
+**Mode A (UI Kit Package):**
+```
 1. Create package structure:
-   - Single entry point (`flutter_ui_kit.dart`) — single import untuk user
-   - Internal implementation dalam `src/` folder
+   - Single entry point (`flutter_ui_kit.dart`)
+   - Internal implementation dalam src/ folder
    - Component organization by category
    - Test structure mirroring source
+
 2. Configure package metadata:
-   - `pubspec.yaml` dengan ZERO third-party di dependencies
-   - `analysis_options.yaml` dengan strict linting (very_good_analysis)
-   - `README.md`, `CHANGELOG.md`, `LICENSE` (MIT)
-3. Setup example app structure (showcase):
+   - pubspec.yaml dengan ZERO third-party di dependencies
+   - analysis_options.yaml dengan strict linting
+   - README.md, CHANGELOG.md, LICENSE (MIT)
+
+3. Setup example app structure (showcase kecil):
    - Demo screen per component
    - Theme switching capability
    - Code example display
+
 4. Setup CI/CD:
    - GitHub Actions for tests
    - Coverage reporting (>85% gate)
    - Automated pub.dev publishing
+```
+
+**Mode B (Showcase App):**
+```
+1. Create app structure:
+   - main.dart entry point
+   - Feature-first organization (lib/features/)
+   - Shared widgets (lib/shared/)
+   - Data layer (lib/data/) - dummy only
+
+2. Configure app metadata:
+   - pubspec.yaml untuk aplikasi
+   - analysis_options.yaml
+   - README.md, LICENSE
+
+3. Setup state management (optional):
+   - Riverpod / BLoC (boleh untuk app)
+   - DI setup (manual atau package)
+
+4. Setup CI/CD:
+   - GitHub Actions for tests
+   - Build/deployment pipeline
+```
+
+**Mode C (Hybrid):**
+```
+Phase 1: Build Mode A structure (Week 1-8)
+Phase 2: Build Mode B structure (Week 9-12)
+Result: Both structures exist, Mode B reuses Mode A components
+```
+
+**Mode A Structure:**
+```text
+flutter_ui_kit/
+│
+├── lib/
+│   ├── flutter_ui_kit.dart            # Main export (PUBLIC API)
+│   │
+│   └── src/
+│       ├── tokens/                    # Design Tokens
+│       │   ├── colors.dart
+│       │   ├── typography.dart
+│       │   ├── spacing.dart
+│       │   ├── radius.dart
+│       │   ├── shadows.dart
+│       │   └── tokens.dart
+│       │
+│       ├── theme/                     # Theme Configuration
+│       │   ├── theme_config.dart
+│       │   ├── color_palette.dart
+│       │   ├── light_theme.dart
+│       │   ├── dark_theme.dart
+│       │   ├── themes.dart
+│       │   └── theme.dart
+│       │
+│       ├── components/                # UI Components
+│       │   ├── core/                  # P0 Core Components
+│       │   │   ├── button/
+│       │   │   ├── text_field/
+│       │   │   ├── card/
+│       │   │   └── ...
+│       │   ├── navigation/
+│       │   ├── feedback/
+│       │   └── domain/                # Domain-specific
+│       │
+│       └── utils/
+│
+├── example/                           # Showcase App (kecil)
+│   ├── lib/
+│   │   ├── main.dart
+│   │   └── screens/
+│   └── pubspec.yaml
+│
+├── test/
+├── pubspec.yaml                       # Package config
+└── README.md
+```
+
+**Mode B Structure (Feature-First):**
+```text
+showcase_app/
+│
+├── lib/
+│   ├── main.dart                      # Entry point
+│   │
+│   ├── bootstrap/                     # App initialization
+│   │   ├── app.dart
+│   │   └── bootstrap.dart
+│   │
+│   ├── core/                          # App-level concerns
+│   │   ├── di/                        # Dependency injection
+│   │   ├── error/
+│   │   ├── router/                    # GoRouter config
+│   │   ├── storage/
+│   │   └── theme/                     # App theme
+│   │
+│   ├── features/                      # Feature modules (FEATURE-FIRST!)
+│   │   ├── auth/
+│   │   │   ├── data/
+│   │   │   ├── domain/
+│   │   │   └── presentation/
+│   │   │
+│   │   ├── dashboard/
+│   │   │   ├── data/
+│   │   │   ├── domain/
+│   │   │   └── presentation/
+│   │   │
+│   │   ├── service_order/             # Fitur utama
+│   │   │   ├── data/
+│   │   │   │   ├── datasources/
+│   │   │   │   ├── models/
+│   │   │   │   └── repositories/
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   ├── repositories/
+│   │   │   │   └── usecases/
+│   │   │   └── presentation/
+│   │   │       ├── controllers/
+│   │   │       ├── screens/
+│   │   │       └── widgets/
+│   │   │
+│   │   ├── service_tracking/
+│   │   ├── payment/
+│   │   └── customer/
+│   │
+│   ├── shared/                        # Shared across features
+│   │   ├── extensions/
+│   │   ├── utils/
+│   │   └── widgets/                   # Reusable UI components
+│   │
+│   └── data/                          # Dummy data only
+│       ├── dummy_customers.dart
+│       ├── dummy_vehicles.dart
+│       └── dummy_services.dart
+│
+├── test/
+├── pubspec.yaml                       # App config
+└── README.md
+```
 
 **Output Format:**
 ```markdown
