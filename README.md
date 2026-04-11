@@ -2,12 +2,12 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-280-blue?style=for-the-badge)
-![Workflows](https://img.shields.io/badge/Workflows-700+-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.20.0-green?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-282-blue?style=for-the-badge)
+![Workflows](https://img.shields.io/badge/Workflows-13_Collections-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.21.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 279 skills + 10 workflow collections (500+ files) untuk memperluas kemampuan AI Agent**
+**Koleksi 282 skills + 13 workflow collections untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -17,8 +17,8 @@
 
 ## ✨ Features
 
-- 🤖 **279 Specialized Skills** - Dari Flutter hingga AI/ML
-- 📋 **10 Workflow Collections (500+ files)** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python
+- 🤖 **282 Specialized Skills** - Dari Flutter hingga AI/ML
+- 📋 **13 Workflow Collections** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python, UI/UX, SDLC
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
@@ -250,18 +250,19 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 
 | Workflow | Files | Deskripsi |
 |----------|-------|-----------|
-| `flutter-bloc` | 104 | Flutter + BLoC + get_it + injectable |
-| `flutter-getx` | 108 | Flutter + GetX (all-in-one, no code gen) |
-| `flutter-riverpod` | 47 | Flutter + Riverpod + Clean Architecture |
-| `flutter-ui-kit` | 8 | 📋 Flutter UI Kit planning — PRD, UI/UX, technical spec, components, GTM, roadmap |
+| `flutter-bloc` | 15 | Flutter + BLoC + get_it + injectable |
+| `flutter-getx` | 15 | Flutter + GetX (all-in-one, no code gen) |
+| `flutter-riverpod` | 15 | Flutter + Riverpod + Clean Architecture |
+| `flutter-ui-kit` | 9 | 📋 Flutter UI Kit planning — PRD, UI/UX, technical spec, components, GTM, roadmap |
 | `flutter-ui-kit-vibe` | 8 | ⚡ Flutter UI Kit execution — init, add component/theme/locale, quality check, publish |
-| `golang-backend` | 76 | Go + Gin/Fiber + GORM + Clean Architecture |
-| `nextjs-frontend` | 19 | Next.js 14 + TypeScript + Tailwind + Shadcn |
+| `golang-backend` | 12 | Go + Gin/Fiber + GORM + Clean Architecture |
+| `learning-material-maker` | 6 | 📚 Learning material generator — brainstorming, roadmap, materi, output, review |
+| `nextjs-frontend` | 15 | Next.js 14 + TypeScript + Tailwind + Shadcn |
 | `nuxt-frontend` | 14 | Nuxt 3 + TypeScript + Tailwind + Shadcn-vue |
-| `python-backend` | 40 | Python + FastAPI + SQLAlchemy + Alembic |
-| `sdlc-maker` | 16 | SDLC documentation generator |
-
-> 💡 File counts include split parts. Workflow files besar dipecah menjadi beberapa part (max 12K chars per file) agar optimal untuk AI processing.
+| `python-backend` | 14 | Python + FastAPI + SQLAlchemy + Alembic |
+| `sdlc-maker` | 11 | SDLC documentation generator |
+| `ui-ux-generator` | 10 | 🎨 Design-to-code pipeline — referensi → evaluasi → design system → Stitch → code |
+| `vibe-coding-toolkit` | 8 | ⚡ Vibe coding toolkit — rules, design, AI instructions, checklist, architecture |
 
 ### Setiap Flutter Workflow Mencakup:
 - Project setup, feature generator, backend integration (REST/Firebase/Supabase)
@@ -281,16 +282,19 @@ agents/
 │   │   └── ...
 │   └── workflows/        # Symlink → workflows/ (slash command discovery)
 ├── workflows/
-│   ├── flutter-bloc/          # 104 workflow files
-│   ├── flutter-getx/          # 108 workflow files
-│   ├── flutter-riverpod/      # 47 workflow files
-│   ├── flutter-ui-kit/        # 8 files — Planning workflows (PRD → Roadmap)
-│   ├── flutter-ui-kit-vibe/   # 8 files — Execution workflows (init → publish)
-│   ├── golang-backend/        # 76 workflow files
-│   ├── nextjs-frontend/       # 19 workflow files
-│   ├── nuxt-frontend/         # 14 workflow files
-│   ├── python-backend/        # 40 workflow files
-│   └── sdlc-maker/            # 15 workflow files
+│   ├── flutter-bloc/              # Flutter + BLoC workflows
+│   ├── flutter-getx/              # Flutter + GetX workflows
+│   ├── flutter-riverpod/          # Flutter + Riverpod workflows
+│   ├── flutter-ui-kit/            # UI Kit planning (PRD → Roadmap)
+│   ├── flutter-ui-kit-vibe/       # UI Kit execution (init → publish)
+│   ├── golang-backend/            # Go backend workflows
+│   ├── learning-material-maker/   # Learning material generator
+│   ├── nextjs-frontend/           # Next.js frontend workflows
+│   ├── nuxt-frontend/             # Nuxt frontend workflows
+│   ├── python-backend/            # Python backend workflows
+│   ├── sdlc-maker/                # SDLC documentation generator
+│   ├── ui-ux-generator/           # 🆕 Design-to-code pipeline
+│   └── vibe-coding-toolkit/       # Vibe coding toolkit
 ├── docs/
 │   ├── SKILLS_DOCUMENTATION.md
 │   ├── ROADMAP.md

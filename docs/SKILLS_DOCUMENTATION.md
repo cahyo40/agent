@@ -1,9 +1,9 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.19.0
-> **Last Updated:** 2026-02-22
-> **Total Skills:** 279
-> **Total Workflows:** 10 collections (400+ files)
+> **Version:** 6.21.0
+> **Last Updated:** 2026-04-11
+> **Total Skills:** 282
+> **Total Workflows:** 13 collections
 
 ---
 
@@ -20,7 +20,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **280 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **282 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -291,6 +291,15 @@ implementasi design dari Figma ke Flutter code
 ---
 
 ## Changelog
+
+### v6.21.0 (2026-04-11)
+
+- ✨ **New Workflow:** `ui-ux-generator` — 8-phase design-to-code pipeline (referensi → evaluasi → design system → Stitch → code conversion → QA)
+- 📚 **New Workflow:** `learning-material-maker` — Learning material generator with brainstorming, roadmap, materi, output, and review phases
+- ⚡ **New Workflow:** `vibe-coding-toolkit` — AI-assisted development toolkit for rules, design, instructions, checklist, and architecture
+- 🗑️ **Removed:** `docs/plans/` folder — deprecated PRD documents (`bengkel-pos-prd.md`, `personal-finance-app-prd.md`)
+- 📊 **Total Workflows:** 13 collections (up from 10)
+- 📊 **Total Skills:** 282
 
 ### v6.20.0 (2026-02-25)
 

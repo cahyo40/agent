@@ -1,9 +1,9 @@
 # 🗺️ AI Agent Skills - Roadmap
 
-> **Last Updated:** February 2026
-> **Current Version:** v6.17.0
-> **Total Skills:** 278
-> **Total Workflows:** 8 collections (409+ workflow files)
+> **Last Updated:** April 2026
+> **Current Version:** v6.21.0
+> **Total Skills:** 282
+> **Total Workflows:** 13 collections
 
 ---
 
@@ -11,12 +11,30 @@
 
 ```text
 ████████████████████████████████████████ 100%
-278/278 Skills Complete ✅
+282/282 Skills Complete ✅
 ```
 
 ---
 
 ## ✅ Completed Milestones
+
+### v6.21.0 - New Workflow Collections (Apr 2026) ✅
+
+**Goal:** Add 3 new workflow collections and clean up deprecated docs
+
+**New in v6.21.0:**
+
+- 🎨 **`ui-ux-generator`** — 8-phase design-to-code pipeline (10 files):
+  - Input referensi → Evaluasi desain → Design system generation → Prompt engineering → Stitch generation → Download & organize → Code conversion → Quality assurance
+- 📚 **`learning-material-maker`** — Learning material generator (6 files):
+  - Brainstorming → Roadmap → Materi → Output interface → Review QA
+- ⚡ **`vibe-coding-toolkit`** — AI-assisted development toolkit (8 files):
+  - Generate rules, design, Stitch prompts, AI instructions, checklist, architecture
+- 🗑️ **Removed** `docs/plans/` — deprecated PRD documents
+- 📊 **Total Workflows:** 13 collections (up from 10)
+- 📊 **Total Skills:** 282
+
+---
 
 ### v6.17.0 - Major Skill Expansion (Feb 2026) ✅
 
@@ -425,6 +443,7 @@ What this skill does and when to use it.
 | **v6.15.0** | **Feb 2026** | **309** | **409+ workflow files** ⚡ |
 | **v6.16.0** | **Feb 2026** | **268** | **-13.3%** 🎯 |
 | **v6.17.0** | **Feb 2026** | **278** | **+3.7%** ✨ |
+| **v6.21.0** | **Apr 2026** | **282** | **+1.4%** 🎨 |
 
 ---
 
