@@ -3,11 +3,11 @@
 <div align="center">
 
 ![Skills](https://img.shields.io/badge/Skills-272-blue?style=for-the-badge)
-![Workflows](https://img.shields.io/badge/Workflows-13_Collections-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.22.0-green?style=for-the-badge)
+![Workflows](https://img.shields.io/badge/Workflows-11_Collections-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.23.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 272 skills + 13 workflow collections untuk memperluas kemampuan AI Agent**
+**Koleksi 272 skills + 11 workflow collections untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -18,7 +18,7 @@
 ## ✨ Features
 
 - 🤖 **272 Specialized Skills** - Dari Flutter hingga AI/ML
-- 📋 **13 Workflow Collections** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python, UI/UX, SDLC
+- 📋 **11 Workflow Collections** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python, UI/UX, SDLC
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
 - 🔗 **Combinable** - Gabungkan beberapa skills sekaligus
@@ -255,10 +255,8 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 | Workflow | Files | Deskripsi |
 |----------|-------|-----------|
 | `flutter-bloc` | 15 | Flutter + BLoC + get_it + injectable |
-| `flutter-getx` | 15 | Flutter + GetX (all-in-one, no code gen) |
 | `flutter-riverpod` | 15 | Flutter + Riverpod + Clean Architecture |
-| `flutter-ui-kit` | 9 | 📋 Flutter UI Kit planning — PRD, UI/UX, technical spec, components, GTM, roadmap |
-| `flutter-ui-kit-vibe` | 8 | ⚡ Flutter UI Kit execution — init, add component/theme/locale, quality check, publish |
+| `flutter-ui-kit` | 15 | 📋 Flutter UI Kit — planning (PRD/design/roadmap) + execution (components/themes/localization/publishing) |
 | `golang-backend` | 12 | Go + Gin/Fiber + GORM + Clean Architecture |
 | `learning-material-maker` | 6 | 📚 Learning material generator — brainstorming, roadmap, materi, output, review |
 | `nextjs-frontend` | 15 | Next.js 14 + TypeScript + Tailwind + Shadcn |
@@ -287,10 +285,8 @@ agents/
 │   └── workflows/        # Symlink → workflows/ (slash command discovery)
 ├── workflows/
 │   ├── flutter-bloc/              # Flutter + BLoC workflows
-│   ├── flutter-getx/              # Flutter + GetX workflows
 │   ├── flutter-riverpod/          # Flutter + Riverpod workflows
-│   ├── flutter-ui-kit/            # UI Kit planning (PRD → Roadmap)
-│   ├── flutter-ui-kit-vibe/       # UI Kit execution (init → publish)
+│   ├── flutter-ui-kit/            # UI Kit planning + execution (12 phases)
 │   ├── golang-backend/            # Go backend workflows
 │   ├── learning-material-maker/   # Learning material generator
 │   ├── nextjs-frontend/           # Next.js frontend workflows

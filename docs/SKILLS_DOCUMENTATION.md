@@ -1,9 +1,9 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.22.0
+> **Version:** 6.23.0
 > **Last Updated:** 2026-06-05
 > **Total Skills:** 272
-> **Total Workflows:** 13 collections
+> **Total Workflows:** 11 collections
 
 ---
 
@@ -294,6 +294,13 @@ implementasi design dari Figma ke Flutter code
 ---
 
 ## Changelog
+
+### v6.23.0 (2026-06-05)
+
+- 🗑️ **Removed Workflows:** `flutter-getx` (lowest Flutter state management adoption), `flutter-ui-kit-vibe` (merged into `flutter-ui-kit`)
+- 🔀 **Merged:** `flutter-ui-kit` + `flutter-ui-kit-vibe` → single `flutter-ui-kit` with 12 phases (planning + execution)
+- ✨ **New:** SKILL.md added to all 11 workflows for AI auto-discovery
+- 📊 **Total Workflows:** 11 collections (down from 13)
 
 ### v6.22.0 (2026-06-05)
 
