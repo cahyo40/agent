@@ -2,12 +2,12 @@
 
 <div align="center">
 
-![Skills](https://img.shields.io/badge/Skills-282-blue?style=for-the-badge)
+![Skills](https://img.shields.io/badge/Skills-272-blue?style=for-the-badge)
 ![Workflows](https://img.shields.io/badge/Workflows-13_Collections-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-6.21.0-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-6.22.0-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Koleksi 282 skills + 13 workflow collections untuk memperluas kemampuan AI Agent**
+**Koleksi 272 skills + 13 workflow collections untuk memperluas kemampuan AI Agent**
 
 [📖 Documentation](./docs/SKILLS_DOCUMENTATION.md) · [🗺️ Roadmap](./docs/ROADMAP.md) · [🐛 Report Bug](../../issues)
 
@@ -17,7 +17,7 @@
 
 ## ✨ Features
 
-- 🤖 **282 Specialized Skills** - Dari Flutter hingga AI/ML
+- 🤖 **272 Specialized Skills** - Dari Flutter hingga AI/ML
 - 📋 **13 Workflow Collections** - Step-by-step guides untuk Flutter, Next.js, Nuxt, Go, Python, UI/UX, SDLC
 - ⚡ **Slash Commands** - Akses workflow langsung via `/workflow-name`
 - 🎯 **Auto-Activated** - Skills aktif berdasarkan konteks
@@ -205,6 +205,10 @@ implementasi design dari Figma ke Flutter code
 - `@senior-react-developer` - React.js applications
 - `@senior-python-developer` - Python/FastAPI backend
 - `@senior-nextjs-developer` - Next.js full-stack
+- `@prisma-specialist` - ORM schema design & type-safe queries
+- `@shadcn-ui-developer` - Radix UI + Tailwind component system
+- `@zod-specialist` - TypeScript schema validation
+- `@biome-specialist` - Unified linting & formatting
 
 ### AI & Automation
 
@@ -262,7 +266,7 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 | `python-backend` | 14 | Python + FastAPI + SQLAlchemy + Alembic |
 | `sdlc-maker` | 11 | SDLC documentation generator |
 | `ui-ux-generator` | 10 | 🎨 Design-to-code pipeline — referensi → evaluasi → design system → Stitch → code |
-| `vibe-coding-toolkit` | 8 | ⚡ Vibe coding toolkit — rules, design, AI instructions, checklist, architecture |
+| `vibe-coding-toolkit` | 16 | ⚡ Vibe coding toolkit — PRD generator, quality gate, rules, design, AI instructions, AI context bundle, error recovery, test execution, code review |
 
 ### Setiap Flutter Workflow Mencakup:
 - Project setup, feature generator, backend integration (REST/Firebase/Supabase)
@@ -276,7 +280,7 @@ Workflows adalah panduan step-by-step untuk development project dari awal hingga
 ```text
 agents/
 ├── .agent/
-│   ├── skills/           # 280 skill folders
+│   ├── skills/           # 272 skill folders
 │   │   ├── senior-flutter-developer/
 │   │   ├── senior-react-developer/
 │   │   └── ...
