@@ -1,7 +1,7 @@
 ---
 description: Generate ARCHITECTURE_CHEATSHEET.md — Quick reference patterns dan architectural guide dari sebuah PRD untuk vibe coding
-version: 1.0.0
-last_updated: 2026-03-14
+version: 2.0.0
+last_updated: 2026-06-05
 skills:
   - vibe-coding-specialist
   - senior-software-architect
@@ -165,6 +165,35 @@ Buat table ❌ vs ✅:
 
 Ambil anti-patterns dari RULE.md dan convert jadi table format.
 
+### Step 8b: Generate Testing Patterns
+
+Tambahkan section testing patterns yang mencakup:
+
+```markdown
+## 🧪 Testing Patterns
+
+### Unit Test Template
+[Minimal example: test entity, model, usecase, repository]
+
+### Widget Test Template
+[Minimal example: test screen rendering, user interaction]
+
+### Integration Test Template
+[Minimal example: test feature flow end-to-end]
+
+### Mock Strategy
+- Layer mana yang boleh di-mock
+- Layer mana yang pakai real implementation
+- Pattern dependency injection yang digunakan
+
+### Coverage Targets
+| Layer | Target | Tools |
+|-------|--------|-------|
+| Unit (data/domain) | 80%+ | [framework native] |
+| Widget (presentation) | 70%+ | [widget testing] |
+| Integration | 50%+ | [integration testing] |
+```
+
 ### Step 9: Generate Quick Commands
 
 List common development commands:
@@ -261,7 +290,7 @@ Simpan ke `{output_dir}/ARCHITECTURE_CHEATSHEET.md`
 ## Example Prompt
 
 ```
-Jalankan workflow vibe-coding-toolkit/05_generate_architecture.md
+Jalankan workflow vibe-coding-toolkit/06_generate_architecture.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 RULE.md: @prd/my-app/RULE.md
@@ -273,6 +302,6 @@ Output: prd/my-app/ARCHITECTURE_CHEATSHEET.md
 
 ## Cross-References
 
-- **Depends on:** `01_generate_rule.md` (RULE.md), `02_generate_design.md` (DESIGN.md)
-- **Output standalone** — bisa dibaca independen
+- **Depends on:** `01_validate_prd.md` (PRD_VALIDATION), `02_generate_rule.md` (RULE.md), `03_generate_design.md` (DESIGN.md)
+- **Output digunakan oleh:** `07_review_and_iterate.md`
 - **Sumber data:** PRD, RULE.md, DESIGN.md, AI_INSTRUCTIONS.md

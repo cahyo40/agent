@@ -1,7 +1,7 @@
 ---
 description: Generate CHECKLIST.md — Development progress checklist dari sebuah PRD untuk vibe coding
-version: 1.0.0
-last_updated: 2026-03-14
+version: 2.0.0
+last_updated: 2026-06-05
 skills:
   - vibe-coding-specialist
   - senior-project-manager
@@ -195,7 +195,7 @@ Simpan ke `{output_dir}/CHECKLIST.md`
 ## Example Prompt
 
 ```
-Jalankan workflow vibe-coding-toolkit/04_generate_checklist.md
+Jalankan workflow vibe-coding-toolkit/05_generate_checklist.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 AI_INSTRUCTIONS: @prd/my-app/AI_INSTRUCTIONS.md
@@ -206,6 +206,7 @@ Output: prd/my-app/CHECKLIST.md
 
 ## Cross-References
 
-- **Depends on:** `03_generate_ai_instructions.md` (AI_INSTRUCTIONS.md) — optional but recommended
+- **Depends on:** `04_generate_ai_instructions.md` (AI_INSTRUCTIONS.md) — optional but recommended
 - **Output standalone** — tidak di-reference oleh workflow lain
 - **Sumber data:** PRD (features list), AI_INSTRUCTIONS.md (task list)
+- **Digunakan oleh:** `07_review_and_iterate.md` (sebagai referensi validasi)

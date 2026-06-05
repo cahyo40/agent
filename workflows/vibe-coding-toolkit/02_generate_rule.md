@@ -1,7 +1,7 @@
 ---
 description: Generate RULE.md — AI governance rules (DO & DON'T) dari sebuah PRD untuk vibe coding
-version: 1.0.0
-last_updated: 2026-03-14
+version: 2.0.0
+last_updated: 2026-06-05
 skills:
   - vibe-coding-specialist
   - senior-software-architect
@@ -129,9 +129,31 @@ Buat file RULE.md dengan struktur berikut. Setiap section HARUS ada:
 ### HANYA gunakan packages berikut: [list from PRD]
 ### DILARANG menambahkan: [common alternatives that should NOT be used]
 
-## 🧪 Testing (jika ada di PRD)
+## 🧪 Testing (WAJIB — Harus Ada)
 ### WAJIB: [testing patterns, coverage targets]
-### Test file structure
+- Test framework dan tools dari PRD
+- Coverage target minimal (unit: 80%, widget: 70%, integration: 50%)
+- Test naming convention (describe/it atau test())
+- File structure: test files mirror source structure
+- Mock strategy: dependency injection over mocking
+### DILARANG: [testing anti-patterns]
+- Testing implementation details instead of behavior
+- Mengabaikan error/edge case tests
+- Integration tests tanpa real API/database
+- Snapshot tests sebagai satu-satunya coverage
+- Test yang flaky (time-dependent, random, network-dependent without mock)
+
+## 🧪 Testing Phase (WAJIB — Setelah Setiap Fitur)
+### WAJIB:
+- TDD cycle untuk setiap feature: RED (test gagal) → GREEN (implementasi minimal) → REFACTOR
+- Setiap task HARUS punya minimal satu test sebelum dianggap selesai
+- Test HARUS bisa dijalankan dengan satu command
+- Test output HARUS deterministic (tidak flaky)
+
+### DILARANG:
+- Menulis kode produksi tanpa test terlebih dahulu
+- Skip test yang gagal tanpa fix
+- Test yang bergantung pada environment spesifik (waktu, network, locale)
 
 ## 📝 Code Quality
 ### WAJIB: [lint rules, max file length, etc.]
@@ -162,7 +184,7 @@ Simpan ke `{output_dir}/RULE.md`
 ## Example Prompt
 
 ```
-Jalankan workflow vibe-coding-toolkit/01_generate_rule.md
+Jalankan workflow vibe-coding-toolkit/02_generate_rule.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 Output: prd/my-app/RULE.md
@@ -172,5 +194,6 @@ Output: prd/my-app/RULE.md
 
 ## Cross-References
 
-- **Output digunakan oleh:** `03_generate_ai_instructions.md`, `05_generate_architecture.md`
+- **Output digunakan oleh:** `04_generate_ai_instructions.md`, `06_generate_architecture.md`, `07_review_and_iterate.md`
+- **Prerequisite:** `01_validate_prd.md` (PRD_VALIDATION) — pastikan PRD sudah lolos quality gate
 - **Sumber data:** PRD (tech stack, architecture, dependencies sections)

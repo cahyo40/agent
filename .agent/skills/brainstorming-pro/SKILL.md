@@ -14,6 +14,7 @@ Enhanced version of brainstorming with:
 - Structured templates for adaptive questioning (8-15+ questions)
 - UI/UX design exploration
 - Integrated PRD generation with detailed tech specs
+- **vibe-coding-toolkit compatible** — PRD output matches `00-12` pipeline format for seamless handoff
 
 Turns ideas into fully-formed, production-ready requirements through efficient collaborative dialogue and MCP-powered research.
 
@@ -27,11 +28,11 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 
 | Phase | MCP Tool | Purpose |
 |-------|----------|---------|
-| **Discovery** | `mcp__context7__resolve-library-id` | Resolve library IDs for tech stack research |
-| **Discovery** | `mcp__context7__query-docs` | Fetch latest docs for chosen libraries/frameworks |
-| **Tech Spec** | `task` (general-purpose agent) | Deep dive into complex technical requirements |
-| **Tech Spec** | `web_search` | Research best practices, benchmarks, comparisons |
-| **Tech Spec** | `web_fetch` | Fetch specific documentation pages or RFCs |
+| **Discovery** | `context7_resolve-library-id` | Resolve library IDs for tech stack research |
+| **Discovery** | `context7_query-docs` | Fetch latest docs for chosen libraries/frameworks |
+| **Tech Spec** | `task` (general agent) | Deep dive into complex technical requirements |
+| **Tech Spec** | `websearch` | Research best practices, benchmarks, comparisons |
+| **Tech Spec** | `webfetch` | Fetch specific documentation pages or RFCs |
 
 ### MCP-Powered Research Flow
 
@@ -76,22 +77,12 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 
 ## Checklist
 
-Complete in order. Each item is a task:
+Complete in order. Each item is a task. Use `todowrite` to track progress:
 
+0. **Initialize todowrite** — Create task list with all items for progress tracking
 1. **Explore project context** — Check files, docs, recent commits (5 min max)
 2. **Ask clarifying questions** — Adaptive 8-15+ questions (or until saturation)
-   - **CRITICAL: ONE QUESTION PER MESSAGE. ALWAYS.** Wait for user's answer before asking next question.
-   - Q1-2: Problem & Users (Always)
-   - Q3-4: UI/UX Design (Always)
-   - Q5-6: Tech Stack & Scope (Always)
-   - Q7-10: Platform & Features (Conditional)
-   - Q11-12: Monetization & Analytics (Conditional)
-   - Q13-15+: Edge Cases, Security, Integrations (Conditional)
 3. **MCP Research** — After tech stack confirmed
-   - Use `mcp__context7__resolve-library-id` for each library
-   - Use `mcp__context7__query-docs` for architecture patterns & best practices
-   - Use `task` agent for complex technical deep-dives
-   - Use `web_search` for benchmarks & real-world case studies
 4. **Propose 2-3 approaches** — With trade-offs, costs, recommendation, **MCP-validated**
 5. **Present PRD sections** — Section by section, validate each
 6. **Handle objections** — Revise based on feedback, re-present
@@ -209,13 +200,13 @@ This ensures:
 
 ### Step 1: Resolve Library IDs
 
-For each confirmed technology, use `mcp__context7__resolve-library-id`:
+For each confirmed technology, use `context7_resolve-library-id`:
 
 ```markdown
 **Example: Flutter + Firebase + Riverpod**
 
 You: [Internal tool call]
-→ mcp__context7__resolve-library-id(
+→ context7_resolve-library-id(
     libraryName: "flutter",
     query: "cross-platform mobile development best practices"
   )
@@ -223,7 +214,7 @@ You: [Internal tool call]
 Result: /flutter/flutter
 
 You: [Internal tool call]
-→ mcp__context7__resolve-library-id(
+→ context7_resolve-library-id(
     libraryName: "firebase",
     query: "firebase flutter integration authentication firestore"
   )
@@ -231,7 +222,7 @@ You: [Internal tool call]
 Result: /firebase/flutterfire
 
 You: [Internal tool call]
-→ mcp__context7__resolve-library-id(
+→ context7_resolve-library-id(
     libraryName: "riverpod",
     query: "flutter state management riverpod architecture"
   )
@@ -247,7 +238,7 @@ For each resolved library, fetch relevant docs:
 **Example: Architecture Patterns**
 
 You: [Internal tool call]
-→ mcp__context7__query-docs(
+→ context7_query-docs(
     libraryId: "/flutter/flutter",
     query: "clean architecture folder structure best practices mobile app"
   )
@@ -255,7 +246,7 @@ You: [Internal tool call]
 Result: [Latest architecture patterns from Flutter docs]
 
 You: [Internal tool call]
-→ mcp__context7__query-docs(
+→ context7_query-docs(
     libraryId: "/firebase/flutterfire",
     query: "firestore security rules authentication authorization best practices"
   )
@@ -263,7 +254,7 @@ You: [Internal tool call]
 Result: [Latest Firestore security rules examples]
 
 You: [Internal tool call]
-→ mcp__context7__query-docs(
+→ context7_query-docs(
     libraryId: "/rrousselGit/riverpod",
     query: "riverpod provider architecture state management patterns"
   )
@@ -281,7 +272,7 @@ For complex requirements, delegate to task agent:
 You: [Internal tool call]
 → task(
     description: "Research Firebase scalability",
-    subagent_type: "general-purpose",
+    subagent_type: "general",
     prompt: """
     Research and analyze Firebase free tier scalability for a ticketing app 
     with 1000+ concurrent users. Include:
@@ -305,14 +296,14 @@ Result: [Detailed scalability analysis with numbers]
 **Example: Performance Benchmarks**
 
 You: [Internal tool call]
-→ web_search(
+→ websearch(
     query: "Firebase vs Supabase performance comparison 2025 2026 ticketing app"
   )
 
 Result: [Latest benchmarks from tech blogs, Reddit, Stack Overflow]
 
 You: [Internal tool call]
-→ web_search(
+→ websearch(
     query: "Flutter Riverpod state management performance benchmarks"
   )
 
@@ -870,8 +861,8 @@ For complex tech specs, use this structure:
 [Diagram with MCP-validated patterns]
 
 **Research Source:** 
-- mcp__context7__query-docs("/flutter/flutter", "clean architecture best practices")
-- task("Research Flutter clean architecture for ticketing app", general-purpose)
+- context7_query-docs("/flutter/flutter", "clean architecture best practices")
+- task("Research Flutter clean architecture for ticketing app", general)
 
 ### Tech Stack (Version Verified)
 
@@ -888,7 +879,7 @@ For complex tech specs, use this structure:
 
 **Security Rules (from MCP research):**
 ```javascript
-// Validated via: mcp__context7__query-docs("/firebase/flutterfire", "security rules")
+// Validated via: context7_query-docs("/firebase/flutterfire", "security rules")
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -921,58 +912,53 @@ service cloud.firestore {
 
 ---
 
-### 2.4 Present PRD Sections
-
-Scale each section to complexity:
-
-| Section | Simple (sentences) | Complex (paragraphs) |
-|---------|-------------------|---------------------|
-| Executive Summary | 2-3 | 4-6 |
-| User Personas | 1-2 | 3-4 |
-| User Stories | 3-5 | 8-12 |
-| Architecture | 2-3 | 4-6 |
-| Tech Stack | 1-2 | 3-4 |
-| Data Model | 1-2 | 3-5 |
-| Security | 1 | 2-3 |
-| Risks & Roadmap | 2-3 | 4-6 |
-
-**Validation Pattern:**
-```
-After each section: "Does this align with your expectations, or should I adjust anything?"
-```
-
----
 
 ## Phase 3: Delivery
 
-### 3.1 PRD Document Template
+### 3.1 Directory Setup
 
-Save to `docs/plans/YYYY-MM-DD-<topic>-prd.md`:
+Create the PRD directory if it does not exist:
+```bash
+mkdir -p docs/plans
+```
+
+### 3.2 PRD Document Template
+
+Save to `{output_dir}/PRD.md` (default: `docs/plans/YYYY-MM-DD-<topic>-prd.md`).
+
+> **Compatible with vibe-coding-toolkit:** This template matches the format expected by `01_validate_prd.md` Quality Gate. All 14 mandatory sections are present.
 
 ```markdown
-# [Feature Name] - Product Requirements Document
+# PRD: {Project Name}
 
-**Date:** YYYY-MM-DD  
-**Author:** [Your name]  
-**Status:** Draft → Approved → Implemented  
+> **Product Requirements Document**
+> Generated by: brainstorming-pro skill with MCP-powered research
 
 ---
 
 ## 1. Executive Summary
 
-**Problem Statement:** 1-2 sentences on the pain point.  
-**Proposed Solution:** 1-2 sentences on the fix.  
-**Success Criteria:** 3-5 measurable KPIs.
+**Problem Statement:** [1-2 sentences on the pain point]
+**Proposed Solution:** [1-2 sentences on the fix]
+**Target Users:** [Who will use this]
+**Value Proposition:** [Why this matters]
+**Success Metrics:** [3-5 measurable KPIs]
 
 ---
 
-## 2. User Experience & Functionality
+## 2. Product Overview
+
+**App Name:** [Name]
+**Tagline:** [Short description]
+**Platform:** [Mobile / Web / Desktop / Cross-platform]
+**Key Differentiators:** [What makes this unique]
+**Technical Constraints:** [Budget, timeline, legacy integration]
 
 ### User Personas
 
 | Persona | Goal | Pain Point |
 |---------|------|------------|
-| ... | ... | ... |
+| [Persona] | [Goal] | [Pain point] |
 
 ### User Stories
 
@@ -980,73 +966,210 @@ Save to `docs/plans/YYYY-MM-DD-<topic>-prd.md`:
 |----|-------|
 | US-01 | As a [user], I want to [action] so that [benefit] |
 
-### Acceptance Criteria
-
-| Story | Done When |
-|-------|-----------|
-| US-01 | ... |
-
-### Non-Goals (MVP)
-
-- ❌ ...
-
 ---
 
-## 3. Technical Specifications
+## 3. Tech Stack & Architecture
 
-### Architecture Overview
-
-[Diagram or description]
-
-### Tech Stack
+**Framework:** [Framework name]
+**Language:** [Language]
+**State Management:** [State management approach]
+**Architecture Pattern:** [Clean Architecture / MVVM / MVC]
+**Target Platform:** [Detail]
+**Deployment:** [Strategy]
 
 | Layer | Technology | Rationale |
 |-------|------------|-----------|
-| ... | ... | ... |
+| Frontend | [Tech] | [Why] |
+| State | [Tech] | [Why] |
+| Backend | [Tech] | [Why] |
+| Database | [Tech] | [Why] |
 
-### Data Model
+### Architecture Overview
 
-[Schema or description]
+[Diagram or description — MCP-validated patterns]
 
-### Security & Privacy
+### MCP Validation
 
-[Security requirements]
+| Library | Version | Docs Status | Key Patterns |
+|---------|---------|-------------|--------------|
+| [Name] | [Version] | ✅ Verified | [Patterns] |
 
 ---
 
-## 4. UI/UX Design
+## 4. Features
+
+### Phase 1: MVP (Core)
+
+| ID | Feature | Description | Acceptance Criteria |
+|----|---------|-------------|-------------------|
+| F1 | [Feature] | [Description] | [Testable criteria] |
+
+### Phase 2: Advanced
+
+| ID | Feature | Description | Acceptance Criteria |
+|----|---------|-------------|-------------------|
+
+### Phase 3: Polish
+
+| ID | Feature | Description | Acceptance Criteria |
+|----|---------|-------------|-------------------|
+
+### Non-Goals (MVP)
+
+- ❌ [Explicitly excluded features]
+
+---
+
+## 5. Screen / Route List
+
+| # | Screen | Route | Feature | Description |
+|---|--------|-------|---------|-------------|
+| 1 | [Name] | /[path] | [Feature] | [Purpose] |
+
+---
+
+## 6. UI/UX Design Guidelines
 
 ### Design System
 
-[Design system choice + rationale]
+[Design system choice + rationale — from Q3-Q4 answers]
+
+### Color Palette
+
+- **Primary:** #HEX
+- **Secondary:** #HEX
+- **Background:** #HEX
+- **Surface:** #HEX
+- **Text:** #HEX
+- **Semantic (success/warning/error):** #HEX
+
+### Typography
+
+- **Font Family:** [Name]
+- **Headline:** [Size/Weight]
+- **Body:** [Size/Weight]
+- **Caption:** [Size/Weight]
+
+### Spacing & Component Specs
+
+- **Spacing Base:** [X]px
+- **Buttons:** [Height, radius, style]
+- **Cards:** [Radius, elevation]
+- **Inputs:** [Style, height]
 
 ### Screen Flow
 
 [Key screens description or wireframe references]
 
-### Color & Typography
+---
 
-[If custom/brand-specific]
+## 7. Data Model
+
+### Core Entities
+
+#### [Entity Name]
+| Field | Type | Notes |
+|-------|------|-------|
+| id | String | UUID |
+| [field] | [type] | [notes] |
+
+### Relationships
+
+- [Entity A] 1:N [Entity B]
+- [Entity B] N:M [Entity C]
 
 ---
 
-## 5. Risks & Roadmap
+## 8. Database Schema
+
+### Local Storage
+
+- **Solution:** [Hive / SQLite / SharedPreferences]
+- **Collections / Tables:** [List]
+
+### Remote Storage
+
+- **Database:** [Firestore / PostgreSQL / Supabase]
+- **Collections / Tables:** [List]
+- **Security Rules:** [Summary of MCP-validated rules]
+
+---
+
+## 9. Error Handling Strategy
+
+- **Pattern:** [Result<T> / Either / try-catch]
+- **Global Handler:** [Yes/No]
+- **User-facing:** [Snackbar / Dialog / Toast]
+- **Edge Cases Covered:** [Offline mode, payment failure, concurrency]
+
+---
+
+## 10. Testing Strategy
+
+- **Framework:** [flutter_test / jest / pytest]
+- **Coverage Targets:** Unit: 80%, Widget: 70%, Integration: 50%
+- **Approach:** TDD (RED → GREEN → REFACTOR)
+- **Key Test Scenarios:** [Critical flows to test]
+
+---
+
+## 11. Folder Structure
+
+```
+project_root/
+├── lib/
+│   ├── core/
+│   ├── features/
+│   │   └── [feature]/
+│   │       ├── data/
+│   │       ├── domain/
+│   │       └── presentation/
+│   └── main.dart
+├── test/
+│   ├── unit/
+│   ├── widget/
+│   └── integration/
+└── ...
+```
+
+---
+
+## 12. Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| [Name] | [Version] | [Purpose] |
+
+---
+
+## 13. Route Definitions
+
+| Path | Screen | Parameters | Auth Required |
+|------|--------|------------|---------------|
+| /[path] | [Screen] | [params] | [Yes/No] |
+
+---
+
+## 14. Open Questions
+
+- [ ] [Question from Q&A or unresolved item]
+
+---
+
+## 15. Risks & Roadmap
 
 ### Phased Rollout
 
 | Phase | Scope | Timeline | Goal |
 |-------|-------|----------|------|
-| MVP | ... | ... | ... |
+| MVP | [Scope] | [Timeline] | [Goal] |
+| Phase 2 | [Scope] | [Timeline] | [Goal] |
 
 ### Technical Risks
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| ... | ... | ... |
-
-### Open Questions
-
-- [ ] ...
+| [Risk] | [Impact] | [Mitigation] |
 
 ---
 
@@ -1056,7 +1179,7 @@ Save to `docs/plans/YYYY-MM-DD-<topic>-prd.md`:
 
 | # | Question | Answer |
 |---|----------|--------|
-| 1 | ... | ... |
+| 1 | [Q from session] | [Answer] |
 
 ### Approach Recommendation
 
@@ -1072,7 +1195,7 @@ Save to `docs/plans/YYYY-MM-DD-<topic>-prd.md`:
 
 ---
 
-### 3.2 Success Metrics
+### 3.3 Success Metrics
 
 Before transitioning, verify:
 
@@ -1083,21 +1206,42 @@ Before transitioning, verify:
 - [ ] UI/UX preferences captured
 - [ ] Edge cases addressed or explicitly excluded
 - [ ] User approved each PRD section
-- [ ] PRD doc committed to git
+- [ ] PRD doc saved to output directory
 - [ ] Zero "we assumed X but user wanted Y" risks
+- [ ] **vibe-coding-toolkit compatibility:** All 14 required sections present (Tech Stack, Architecture, Features, Screen List, Data Model, UI/UX, Error Handling, Testing, Folder Structure, Dependencies, Routes)
 ```
 
-### 3.3 Transition
+### 3.4 Transition
 
-**ONLY** invoke `writing-plans` after:
-1. PRD doc is written and committed
-2. User explicitly approved the PRD
-3. Success checklist is complete
+**Choose transition path based on user's workflow:**
+
+### Option A: Standard Path → `writing-plans`
+
+Use when no vibe-coding-toolkit is involved.
 
 ```
 "PRD is complete and documented. I'll now invoke writing-plans to create the implementation plan."
 → Invoke: writing-plans
 ```
+
+### Option B: Vibe Coding Toolkit Path → `vibe-coding-toolkit`
+
+Use when collaborating with vibe-coding-toolkit pipeline.
+
+1. PRD is saved to `{output_dir}/PRD.md`
+2. Run `01_validate_prd.md` Quality Gate first
+3. If PASS, proceed with `02-07` generation pipeline
+4. Then `08_bundle_ai_context.md` before coding
+
+```
+"PRD is complete. I'll now invoke the vibe-coding-toolkit Quality Gate to validate it."
+→ Invoke: vibe-coding-toolkit/01_validate_prd.md
+```
+
+**ONLY** invoke `writing-plans` or `vibe-coding-toolkit` after:
+1. PRD doc is saved to output directory
+2. User explicitly approved the PRD
+3. Success checklist is complete
 
 ---
 
@@ -1155,7 +1299,7 @@ Before transitioning, verify:
 | Question flow | Generic | Categorized (Core → Platform → Features → Business → Contextual) |
 | Documentation | Basic | Real-time summary every 3-4 questions |
 | **MCP Integration** | ❌ | ✅ (Context7 + Task Agent + Web Search) |
-| **Tech Stack Research** | ❌ | ✅ (mcp__context7__resolve-library-id + query-docs) |
+| **Tech Stack Research** | ❌ | ✅ (context7_resolve-library-id + query-docs) |
 | **Deep Technical Analysis** | ❌ | ✅ (task agent delegation for scalability, security, performance) |
 | **Version Validation** | ❌ | ✅ (MCP-verified library versions) |
 | **Best Practices** | ❌ | ✅ (MCP-researched architecture patterns, security rules) |

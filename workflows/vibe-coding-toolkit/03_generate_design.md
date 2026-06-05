@@ -1,7 +1,7 @@
 ---
 description: Generate DESIGN.md — Design system dalam format kode + Stitch UI/UX context dari sebuah PRD untuk vibe coding
-version: 1.1.0
-last_updated: 2026-03-14
+version: 2.0.0
+last_updated: 2026-06-05
 skills:
   - vibe-coding-specialist
   - senior-ui-ux-designer
@@ -339,7 +339,7 @@ Simpan ke `{output_dir}/DESIGN.md` (dan optionally `{output_dir}/STITCH_PROMPTS.
 
 ### Generate Design + Stitch (Default)
 ```
-Jalankan workflow vibe-coding-toolkit/02_generate_design.md
+Jalankan workflow vibe-coding-toolkit/03_generate_design.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 Output: prd/my-app/DESIGN.md
@@ -348,7 +348,7 @@ Tech stack: Flutter (Dart)
 
 ### Generate Design + Stitch (File Terpisah)
 ```
-Jalankan workflow vibe-coding-toolkit/02_generate_design.md
+Jalankan workflow vibe-coding-toolkit/03_generate_design.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 Output: prd/my-app/
@@ -358,7 +358,7 @@ Pisahkan Stitch prompts ke file terpisah (STITCH_PROMPTS.md)
 
 ### Generate Stitch Prompts Saja (Jika DESIGN.md Sudah Ada)
 ```
-Jalankan workflow vibe-coding-toolkit/02b_generate_stitch_prompts.md
+Jalankan workflow vibe-coding-toolkit/03b_generate_stitch_prompts.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 DESIGN.md: @prd/my-app/DESIGN.md
@@ -399,7 +399,7 @@ Pastikan tetap mengikuti design system:
 
 ## Cross-References
 
-- **Sub-workflow:** `02b_generate_stitch_prompts.md` — generate Stitch prompts terpisah
-- **Output digunakan oleh:** `03_generate_ai_instructions.md`, `05_generate_architecture.md`
+- **Sub-workflow:** `03b_generate_stitch_prompts.md` — generate Stitch prompts terpisah
+- **Output digunakan oleh:** `04_generate_ai_instructions.md`, `06_generate_architecture.md`, `07_review_and_iterate.md`
 - **Skills terkait:** `stitch-design-md`, `stitch-enhance-prompt`
 - **Sumber data:** PRD (UI/UX guidelines, color palette, typography, component specs, screen list)

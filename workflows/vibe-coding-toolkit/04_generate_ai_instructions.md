@@ -1,7 +1,7 @@
 ---
 description: Generate AI_INSTRUCTIONS.md — Template prompt per fitur/fase dari sebuah PRD untuk vibe coding
-version: 1.0.0
-last_updated: 2026-03-14
+version: 2.0.0
+last_updated: 2026-06-05
 skills:
   - vibe-coding-specialist
   - senior-software-engineer
@@ -69,18 +69,23 @@ Bagi features menjadi development phases berdasarkan dependency:
 ```
 Phase 1: Foundation
   → Setup, theme, core utilities, shared widgets, database, routing
+  → Testing: Setup test framework, write infrastructure tests
 
 Phase 2: Core Features  
   → Fitur utama yang menjadi backbone app
+  → Testing: TDD untuk setiap fitur (unit test + widget test)
 
 Phase 3: Advanced Features
   → Fitur value-add, integrations, advanced UX
+  → Testing: Integration tests untuk cross-feature flows
 
 Phase 4: Analytics/Reporting (jika ada)
   → Charts, statistics, insights
+  → Testing: Snapshot tests, data accuracy tests
 
 Phase 5: Polish & Testing
   → Onboarding, settings, animations, tests
+  → Testing: Integration E2E, edge cases, performance tests, regression
 ```
 
 ### Step 3: Breakdown Tasks per Phase
@@ -92,6 +97,8 @@ Setiap phase dipecah menjadi tasks yang cukup kecil:
 2. Task layer data dulu, lalu domain, lalu presentation
 3. Setiap task bisa di-verify secara independen
 4. Task TIDAK boleh depend-on task yang belum di-generate
+5. **Setiap task WAJIB punya testing subtask** — unit test untuk data/domain layer, widget test untuk presentation layer
+6. Test HARUS ditulis SEBELUM implementasi (TDD) — prompt harus menyebutkan test expectations terlebih dahulu
 
 ### Step 4: Generate Template Prompts
 
@@ -201,7 +208,7 @@ Simpan ke `{output_dir}/AI_INSTRUCTIONS.md`
 ## Example Prompt
 
 ```
-Jalankan workflow vibe-coding-toolkit/03_generate_ai_instructions.md
+Jalankan workflow vibe-coding-toolkit/04_generate_ai_instructions.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 RULE.md: @prd/my-app/RULE.md
@@ -213,6 +220,6 @@ Output: prd/my-app/AI_INSTRUCTIONS.md
 
 ## Cross-References
 
-- **Depends on:** `01_generate_rule.md` (RULE.md), `02_generate_design.md` (DESIGN.md)
-- **Output digunakan oleh:** `04_generate_checklist.md`
+- **Depends on:** `01_validate_prd.md` (PRD_VALIDATION), `02_generate_rule.md` (RULE.md), `03_generate_design.md` (DESIGN.md)
+- **Output digunakan oleh:** `05_generate_checklist.md`, `07_review_and_iterate.md`
 - **Sumber data:** PRD (features, screens, data models, architecture)

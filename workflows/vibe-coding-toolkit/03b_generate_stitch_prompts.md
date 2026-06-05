@@ -1,7 +1,7 @@
 ---
 description: Generate STITCH_PROMPTS.md — Kumpulan prompt Stitch siap pakai untuk generate UI/UX setiap screen dari PRD
-version: 1.0.0
-last_updated: 2026-03-14
+version: 2.0.0
+last_updated: 2026-06-05
 skills:
   - stitch-enhance-prompt
   - stitch-design-md
@@ -47,7 +47,7 @@ Generate file `STITCH_PROMPTS.md` dari sebuah PRD. File ini berisi kumpulan prom
 
 - PRD yang mencakup daftar screens dan deskripsi per screen
 - DESIGN.md yang sudah ada Stitch Design Context block (dari workflow 02)
-- Jika DESIGN.md belum ada, jalankan `02_generate_design.md` dulu
+- Jika DESIGN.md belum ada, jalankan `03_generate_design.md` dulu
 
 ## Steps
 
@@ -283,7 +283,7 @@ Simpan ke `{output_dir}/STITCH_PROMPTS.md`
 
 ### Generate Stitch Prompts (Dengan DESIGN.md)
 ```
-Jalankan workflow vibe-coding-toolkit/02b_generate_stitch_prompts.md
+Jalankan workflow vibe-coding-toolkit/03b_generate_stitch_prompts.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 DESIGN.md: @prd/my-app/DESIGN.md
@@ -292,7 +292,7 @@ Output: prd/my-app/STITCH_PROMPTS.md
 
 ### Generate Stitch Prompts (Tanpa DESIGN.md)
 ```
-Jalankan workflow vibe-coding-toolkit/02b_generate_stitch_prompts.md
+Jalankan workflow vibe-coding-toolkit/03b_generate_stitch_prompts.md
 
 PRD: @agents/docs/plans/my-app-prd.md
 Output: prd/my-app/STITCH_PROMPTS.md
@@ -309,7 +309,7 @@ Device Type: MOBILE
 
 ### Generate + Execute via MCP
 ```
-1. Jalankan workflow 02b_generate_stitch_prompts.md
+1. Jalankan workflow 03b_generate_stitch_prompts.md
 2. Buat Stitch project baru: "My App UI"
 3. Generate setiap screen menggunakan mcp_stitch_generate_screen_from_text
 4. Review hasil dan edit jika perlu menggunakan mcp_stitch_edit_screens
@@ -336,7 +336,8 @@ DESIGN.md: @prd/my-app/DESIGN.md
 
 ## Cross-References
 
-- **Parent workflow:** `02_generate_design.md` — generates DESIGN.md with Stitch context
+- **Parent workflow:** `03_generate_design.md` — generates DESIGN.md with Stitch context
 - **Skills yang digunakan:** `stitch-enhance-prompt`, `stitch-design-md`, `stitch-loop`
 - **Sumber data:** PRD (screen list, wireframes, UI specs), DESIGN.md (design tokens)
+- **Prerequisite:** `01_validate_prd.md` (PRD_VALIDATION)
 - **Tools terkait:** `mcp_stitch_generate_screen_from_text`, `mcp_stitch_edit_screens`, `mcp_stitch_create_project`
