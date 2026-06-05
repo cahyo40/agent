@@ -1,8 +1,8 @@
 # 🚀 Antigravity AI Agent Skills - Complete Documentation
 
-> **Version:** 6.21.0
-> **Last Updated:** 2026-04-11
-> **Total Skills:** 282
+> **Version:** 6.22.0
+> **Last Updated:** 2026-06-05
+> **Total Skills:** 272
 > **Total Workflows:** 13 collections
 
 ---
@@ -20,7 +20,7 @@
 
 ## Overview
 
-Antigravity AI Agent Skills adalah koleksi **282 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
+Antigravity AI Agent Skills adalah koleksi **272 skills** yang memperluas kemampuan AI agent untuk berbagai domain teknis dan non-teknis. Skills ini dirancang untuk membantu developer, content creator, dan profesional IT dalam pekerjaan sehari-hari.
 
 ### Apa itu Skill?
 
@@ -91,7 +91,7 @@ implementasi design dari Figma ke Flutter code
 
 ## Skills by Category
 
-### 🤖 AI & Machine Learning (13 Skills)
+### 🤖 AI & Machine Learning (12 Skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -99,7 +99,6 @@ implementasi design dari Figma ke Flutter code
 | `senior-ai-agent-developer` | Autonomous agents, multi-agent systems |
 | `senior-rag-engineer` | Vector databases, embeddings, RAG pipelines |
 | `senior-edge-ai-engineer` | On-device ML, TensorFlow Lite, ONNX |
-| `senior-prompt-engineer` | Prompt design, LLM optimization |
 | `senior-prompt-engineering-patterns` | Meta-prompting, prompt chaining |
 | `ai-wrapper-product` | AI-powered products, LLM API wrappers |
 | `autonomous-agent-patterns` | Agent design patterns, tool integration |
@@ -141,6 +140,10 @@ implementasi design dari Figma ke Flutter code
 | `bun-developer` | Bun runtime, fast JS/TS, SQLite |
 | `deno-developer` | Deno runtime, secure, TypeScript |
 | `senior-nestjs-developer` | NestJS, modular architecture, TypeORM |
+| `prisma-specialist` | 🆕 ORM schema design, migrations, type-safe queries |
+| `zod-specialist` | 🆕 TypeScript schema validation, type inference |
+| `shadcn-ui-developer` | 🆕 Radix UI + Tailwind component system |
+| `biome-specialist` | 🆕 Unified linting & formatting toolchain |
 
 ---
 
@@ -174,7 +177,7 @@ implementasi design dari Figma ke Flutter code
 | `ride-hailing-developer` | 🆕 Driver matching, tracking, fare (Gojek/Grab) |
 | `dating-app-developer` | 🆕 Matching algorithms, swipe mechanics, safety |
 | `social-network-developer` | 🆕 Feed algorithms, stories, friend systems |
-| `geolocation-specialist` | 🆕 GPS tracking, geofencing, mapping APIs |
+
 | `pdf-document-specialist` | 🆕 PDF generation, forms, digital signatures |
 | `inventory-management-developer` | 🆕 Stock tracking, warehouse, barcode/QR |
 | `notification-system-architect` | 🆕 Push notifications, FCM, APNS |
@@ -282,7 +285,7 @@ implementasi design dari Figma ke Flutter code
 | Dating app | `@dating-app-developer` |
 | Social network | `@social-network-developer` |
 | Indonesian payments | `@indonesia-payment-integration` |
-| GPS tracking / geofencing | `@geolocation-specialist` |
+| GPS tracking / geofencing | `@gis-specialist` |
 | PDF generation | `@pdf-document-specialist` |
 | Video editing automation | `@video-editor-automation` |
 | QA test strategy & automation | `@senior-quality-assurance-engineer` |
@@ -291,6 +294,28 @@ implementasi design dari Figma ke Flutter code
 ---
 
 ## Changelog
+
+### v6.22.0 (2026-06-05)
+
+- 🗑️ **Removed 14 Redundant Skills:**
+  - `brainstorming` — superseded by `brainstorming-pro`
+  - `roblox-developer` — superseded by pro version
+  - `unity-game-developer` — superseded by pro version
+  - `desktop-developer`, `mobile-developer`, `web-developer`, `software-developer` — too generic
+  - `docker-compose-orchestrator` — covered by `docker-containerization-specialist`
+  - `r-data-scientist` — covered by `r-statistician`
+  - `senior-software-engineer`, `expert-senior-software-engineer` — overlap with senior-* skills
+  - `software-architecture-patterns` — covered by `senior-software-architect`
+  - `senior-prompt-engineer` — covered by `senior-prompt-engineering-patterns`
+  - `geolocation-specialist` — covered by `gis-specialist`
+- ✨ **4 New Skills Added:**
+  - `prisma-specialist` — ORM schema design, migrations, type-safe queries
+  - `shadcn-ui-developer` — Radix UI + Tailwind component system
+  - `zod-specialist` — TypeScript schema validation, type inference
+  - `biome-specialist` — Unified linting & formatting toolchain
+- 📝 **Enhanced:** `brainstorming-pro` — vibe-coding-toolkit compatibility, MCP tool name fixes, PRD template restructured to 15-section format
+- 🚀 **Upgraded:** `vibe-coding-toolkit` v2.0.0 — PRD Generator (00), Quality Gate (01), AI Context (08), Error Recovery (09), Test Execution (11), Code Review (12), Sync Progress (10), review & iterate (07), validation script, testing wajib
+- 📊 **Total Skills:** 272 (down from 282)
 
 ### v6.21.0 (2026-04-11)
 
