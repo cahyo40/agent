@@ -121,21 +121,35 @@ User Prompt → Mode Selection → 5 Dimensi → Phase 1 → Phase 2 → Phase 3
 
 ---
 
-## 6 Phase Workflow
+## 12 Phase Workflow (Planning + Execution)
 
 ```
-Phase 1: PRD Analysis
+PHASE 00: Mode Selection
+    ↓ (A=Package / B=Showcase / C=Hybrid)
+PHASE 01: PRD Analysis
     ↓ (5 dimensi, pricing, personas)
-Phase 2: UI/UX Prototyping (Stitch AI)
+PHASE 02: UI/UX Prototyping (Stitch AI)
     ↓ (DESIGN.md, wireframes, screens)
-Phase 3: Technical Implementation
+PHASE 03: Technical Implementation
     ↓ (tokens, themes, API specs)
-Phase 4: Component Development
+PHASE 04: Component Development
     ↓ (13 P0 + P1 + domain components)
-Phase 5: GTM Launch                    ← paralel dengan Phase 4 akhir
+PHASE 05: GTM Launch                    ← paralel dengan Phase 4 akhir
     ↓ (channels, marketing, launch)
-Phase 6: Roadmap Execution             ← berjalan sepanjang project
-    (sprints, milestones, tracking)
+PHASE 06: Roadmap Execution             ← berjalan sepanjang project
+    ↓ (sprints, milestones, tracking)
+PHASE 07: Project Initialization        ← execution start
+    ↓ (scaffold, dependencies, structure)
+PHASE 08: Component Building
+    ↓ (add per component)
+PHASE 09: Theme Customization
+    ↓ (light/dark, color schemes)
+PHASE 10: Localization Setup
+    ↓ (multi-language support)
+PHASE 11: Quality Check
+    ↓ (analyzer, tests, coverage)
+PHASE 12: Publishing
+    (pub.dev, GitHub, Gumroad)
 ```
 
 ---
@@ -404,12 +418,14 @@ pubspec.yaml (app)
 
 | Phase | Skills & Tools |
 |-------|---------------|
-| 1 PRD | `brainstorming`, `prd`, `senior-ui-ux-designer` |
-| 2 UI/UX | `stitch-enhance-prompt`, `mcp_stitch_generate_screen_from_text`, `stitch-design-md`, `senior-ui-ux-designer` |
+| 00 Mode | `brainstorming-pro`, `senior-product-manager` |
+| 1 PRD | `brainstorming-pro`, `prd`, `senior-ui-ux-designer` |
+| 2 UI/UX | `stitch-enhance-prompt`, `stitch-design-md`, `senior-ui-ux-designer` |
 | 3 Technical | `senior-flutter-developer` |
 | 4 Components | `senior-flutter-developer` |
-| 5 GTM | `senior-technical-writer`, content & marketing skills |
+| 5 GTM | `senior-technical-writer`, `senior-project-manager` |
 | 6 Roadmap | `senior-project-manager` |
+| 7-12 Execution | `senior-flutter-developer`, `github-actions-specialist` |
 
 ---
 
